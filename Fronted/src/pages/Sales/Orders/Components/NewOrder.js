@@ -185,7 +185,7 @@ function NewOrder(props) {
   }
 
   // console.log("selectedOrderType", selectedOrderType);
-
+  const [isGenerating, setIsGenerating] = useState(false);
   async function SaveOrder(e) {
     if (e) {
       e.preventDefault();
@@ -202,16 +202,14 @@ function NewOrder(props) {
     }
     e.preventDefault();
 
-    if(e.target.elements?.formPurchaseOrderNo.value.length > 100){
+    if (e.target.elements?.formPurchaseOrderNo.value.length > 100) {
       // toast.error("Data too long for the column Purchase_Order at row 1!");
-      alert("Data too long for Purchase_Order field, Data not Saved..")
+      alert("Data too long for Purchase_Order field, Data not Saved..");
       return;
-    }
-    else if(e.target.elements?.formSpecialInstructions.value.length > 100){
+    } else if (e.target.elements?.formSpecialInstructions.value.length > 100) {
       // toast.error("Data too long for Special_Instruction field, Data not Saved..!");
-      alert("Data too long for Special_Instruction field, Data not Saved..")
+      alert("Data too long for Special_Instruction field, Data not Saved..");
       return;
-
     }
     // Order_Type = "complete"
     // Type = "Service"
@@ -315,6 +313,9 @@ function NewOrder(props) {
         // await setOrderState(orders);
         //   localStorage.setItem("LazerOrder", JSON.stringify(orderno,customer))
         let Ordno = resp.orderno;
+        if (isGenerating) return; // Prevent multiple clicks
+
+        setIsGenerating(true); // Disable button immediately
 
         toast.success("Order Created with " + Ordno, { autoClose: 2100 });
         setTimeout(() => {
@@ -350,7 +351,6 @@ function NewOrder(props) {
     if (e.target.value.length > 100) {
       // toast.error("PO No cannot be more than 100 characters!");
       toast.error("Data too long for the column Purchase_Order at row 1!");
-
     }
   };
 
@@ -358,7 +358,7 @@ function NewOrder(props) {
     e.preventDefault();
     const value = e.target.value;
     setFormSpecialInstructions(value);
-  
+
     // Check if length exceeds 100 characters
     if (value.length > 100) {
       // toast.error("Special Instructions cannot be more than 100 characters!");
@@ -366,7 +366,7 @@ function NewOrder(props) {
         "Data too long for the column Special_Instructions at row 1!!"
       );
     }
-  }
+  };
   const handleCheckboxChange = () => {
     const newCheckedValue = !isChecked;
     setChecked(newCheckedValue);
@@ -412,13 +412,19 @@ function NewOrder(props) {
       <Form className="form" onSubmit={SaveOrder}>
         <div className="d-flex col-md-12 justify-content-end mb-2">
           <button
-            className={
-              purchaseorder ? "button-style" : "button-style button-disabled"
-            }
+            // className={
+            //   purchaseorder ? "button-style" : "button-style button-disabled"
+            // }
             // className="button-style button-disabled"
             // onClick={openModal}
             // onClick={(e) => openModal(e)}
-            disabled={!purchaseorder}
+            // disabled={!purchaseorder  }
+            className={
+              purchaseorder && !isGenerating
+                ? "button-style"
+                : "button-style button-disabled"
+            }
+            disabled={!purchaseorder || isGenerating}
           >
             Save Order
           </button>

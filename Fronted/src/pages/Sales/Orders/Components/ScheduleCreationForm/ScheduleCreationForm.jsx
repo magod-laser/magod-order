@@ -66,6 +66,7 @@ const InputField = ({
       <input
         type="text"
         id={id}
+        autoComplete="off"
         value={value}
         onChange={handleInputChange}
         disabled={disabled}

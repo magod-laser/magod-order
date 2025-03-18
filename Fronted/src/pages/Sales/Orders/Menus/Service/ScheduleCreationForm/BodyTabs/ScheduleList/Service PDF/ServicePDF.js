@@ -210,10 +210,10 @@ const styles = StyleSheet.create({
   POnodata: {
     width: "70%",
     paddingBottom: "3px",
-    flexWrap: "wrap",         // Ensures text wraps within the width
-    whiteSpace: "pre-wrap",   // Maintains spacing and line breaks
-    wordBreak: "break-word", 
-  },  
+    flexWrap: "wrap", // Ensures text wraps within the width
+    whiteSpace: "pre-wrap", // Maintains spacing and line breaks
+    wordBreak: "break-word",
+  },
 
   SalesContact: {
     width: "30%",
@@ -685,11 +685,60 @@ const styles = StyleSheet.create({
     width: "100%", // Use full width for better centering
     fontSize: "9px",
     textAlign: "center", // Center align text
-    marginBottom: "2px"
+    marginBottom: "2px",
   },
 });
 
+const TableHeader = () => (
+  // <View style={styles.tableDisplay}>
+  //   <View style={styles.column}>
+  //     <Text style={styles.tableHeaderText}>Srl</Text>
+  //     <Text style={styles.tableHeaderText}>Drawing Name</Text>
+  //     <Text style={styles.tableHeaderText}>Inspection</Text>
+  //     <Text style={styles.tableHeaderText}>Packing</Text>
+  //     <Text style={styles.tableHeaderText}>Scheduled</Text>
+  //     <Text style={styles.tableHeaderText}>Produced</Text>
+  //     <Text style={styles.tableHeaderText}>Delivered</Text>
+  //   </View>
+  // </View>
+  <View style={[styles.tableDisplay, { marginBottom: "10px" }]}>
+    <View style={styles.column}>
+      <View style={styles.srl}>
+        <Text style={styles.datawithoutbline}>Srl</Text>
+      </View>
+
+      <View style={styles.drawingname}>
+        <Text style={styles.datawithoutbline}>Drawing name</Text>
+      </View>
+
+      <View style={styles.Inspection}>
+        <Text style={styles.datawithoutbline}>Inspection</Text>
+      </View>
+
+      <View style={styles.Packing}>
+        <Text style={styles.datawithoutbline}>Packing</Text>
+      </View>
+
+      <View style={styles.Scheduled}>
+        <Text style={styles.datawithoutbline}>Scheduled</Text>
+      </View>
+
+      <View style={styles.Produced}>
+        <Text style={styles.datawithoutbline}>Produced</Text>
+      </View>
+      <View style={styles.Delivered}>
+        <Text style={styles.datawithoutbline}>Delivered</Text>
+      </View>
+      <View style={styles.scheduleNotable}>
+        <Text style={styles.datawithoutbline}>{/* {item.taskno} */}</Text>
+      </View>
+    </View>
+  </View>
+);
+
 const ServicePDF = ({ formdata, PDFData }) => {
+  console.log("formdata", formdata[0].OrdSchNo);
+
   const [Tabledata, setTabledata] = useState([]);
   const [index, setIndex] = useState(0);
 
@@ -711,10 +760,12 @@ const ServicePDF = ({ formdata, PDFData }) => {
 
   useEffect(() => {
     postRequest(endpoints.pdfdata, { formdata }, (response) => {
-      // console.log("response is",response);
+      console.log("response is", response);
       setTabledata(response);
     });
   }, []);
+
+  console.log(Tabledata);
 
   //get customer Name
   const [custname, setCustname] = useState("");
@@ -735,6 +786,7 @@ const ServicePDF = ({ formdata, PDFData }) => {
   // },[])
 
   // console.log('formdata.Cust_name', formdata[0].Cust_name);
+  // console.log(otherdetails[0].ScheduleNo);
 
   return (
     <Document>
@@ -748,7 +800,6 @@ const ServicePDF = ({ formdata, PDFData }) => {
           <View style={styles.codestyle}>
             <Text style={styles.code}>F 32 Rev 3</Text>
           </View>
-
           <View style={styles.tableContainer}>
             {Tabledata.map((item, index) => (
               <View key={index}>
@@ -767,7 +818,7 @@ const ServicePDF = ({ formdata, PDFData }) => {
                         justifyContent: "center",
                         alignItems: "center",
                         width: "100%",
-                        marginLeft:'-50px'
+                        marginLeft: "-50px",
                       }}
                     >
                       <Text
@@ -845,7 +896,7 @@ const ServicePDF = ({ formdata, PDFData }) => {
                         <View
                           style={[
                             styles.pageNumberContainer,
-                            { marginRight:'10px' },
+                            { marginRight: "10px" },
                           ]}
                         >
                           <Text
@@ -983,7 +1034,8 @@ const ServicePDF = ({ formdata, PDFData }) => {
                               { fontSize: "11px" },
                             ]}
                           >
-                            Schedule No: {item.otherdetails[0].ScheduleNo}
+                            {/* Schedule No: {item.otherdetails[0].ScheduleNo} */}
+                            Schedule No: {formdata[0].OrdSchNo}
                           </Text>
                         </View>
                         {/* <View style={styles.targerdatedata}>
@@ -1011,46 +1063,11 @@ const ServicePDF = ({ formdata, PDFData }) => {
               </View>
             ))}
             <View style={styles.maintableview}>
-              <View
-                style={[
-                  styles.tableDisplay,
-                  { marginBottom: "10px" },
-                ]}
-              >
-                <View style={styles.column}>
-                  <View style={styles.srl}>
-                    <Text style={styles.datawithoutbline}>Srl</Text>
-                  </View>
+              {/* <View fixed>
+                <TableHeader />
+              </View> */}
 
-                  <View style={styles.drawingname}>
-                    <Text style={styles.datawithoutbline}>Drawing name</Text>
-                  </View>
-
-                  <View style={styles.Inspection}>
-                    <Text style={styles.datawithoutbline}>Inspection</Text>
-                  </View>
-
-                  <View style={styles.Packing}>
-                    <Text style={styles.datawithoutbline}>Packing</Text>
-                  </View>
-
-                  <View style={styles.Scheduled}>
-                    <Text style={styles.datawithoutbline}>Scheduled</Text>
-                  </View>
-
-                  <View style={styles.Produced}>
-                    <Text style={styles.datawithoutbline}>Produced</Text>
-                  </View>
-                  <View style={styles.Delivered}>
-                    <Text style={styles.datawithoutbline}>Delivered</Text>
-                  </View>
-                  <View style={styles.scheduleNotable}>
-                    <Text style={styles.datawithoutbline}>
-                      {/* {item.taskno} */}
-                    </Text>
-                  </View>
-                </View>
-              </View>
+              <TableHeader />
               {Tabledata.slice(
                 pageIndex * recordsPerPage,
                 (pageIndex + 1) * recordsPerPage
@@ -1114,11 +1131,26 @@ const ServicePDF = ({ formdata, PDFData }) => {
                     </View> */}
                     </View>
                   </View>
-                  <View key={index} style={styles.tableDataView}>
+
+                  <View
+                    key={index}
+                    style={[
+                      styles.tableDataView,
+                      { borderBottom: "1px solid black" },
+                    ]}
+                  >
                     {item.otherdetails.map((detail, subIndex) => (
-                      <View style={styles.row}>
+                      <View
+                        style={[
+                          styles.row,
+                          { borderBottom: "1px solid black", paddingBottom: 5 },
+                        ]}
+                      >
                         <View style={styles.srldata}>
-                          <Text style={styles.tabletext}>{index + 1}</Text>
+                          {/* <Text style={styles.tabletext}>{index + 1}</Text> */}
+                          <Text style={styles.tabletext}>
+                            {detail.Schedule_Srl}
+                          </Text>
                         </View>
 
                         <View style={styles.drawingnamedata}>

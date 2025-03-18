@@ -272,6 +272,9 @@ export default function Set(props) {
                     element.materialError = false;
                 }
                 if (selectedData.Operation !== "") {
+                    console.log("=1", element.Operation);
+                    console.log("=2", selectedData.Operation);
+                    
                     element.Operation = selectedData.Operation;
                     element.operationError = false;
                 }
@@ -280,6 +283,7 @@ export default function Set(props) {
             element.Order_Srl = i + 1;
             arr.push(element);
         }
+console.log("arr-0", arr);
 
         props.setImportedExcelData(arr);
         console.log("Updated Array:", arr);

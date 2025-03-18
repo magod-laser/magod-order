@@ -935,7 +935,7 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                                                     row.TaskNo = `${neworderSch} ${taskCounters[key]}`;
 
                                                                     console.log(
-                                                                      "row.TaskNo is",
+                                                                      "1803row.TaskNo is",
                                                                       row.TaskNo
                                                                     );
 
@@ -1105,6 +1105,8 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                                                     existingTaskData.length >
                                                                     0
                                                                   ) {
+                                                                    console.log("1803row.TaskNo",row.TaskNo);
+                                                                    
                                                                     // Entry exists, so update it
                                                                     let updateNcTaskListQuery = `UPDATE magodmis.nc_task_list
                                                                                              SET TaskNo='${row.TaskNo}', NoOfDwgs='${noOfDwgs}', TotalParts='${totalParts}', 
@@ -1976,6 +1978,8 @@ ScheduleListRouter.post(`/createProfileOrder`, async (req, res, next) => {
 
 // Print PDF ScheduleList
 ScheduleListRouter.post(`/PrintPdf`, async (req, res, next) => {
+  console.log("===", req.body.formdata[0].ScheduleId);
+  
   try {
     let query = `SELECT * FROM magodmis.orderscheduledetails where ScheduleId='${req.body.formdata[0].ScheduleId}';`;
 

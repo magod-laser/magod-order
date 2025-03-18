@@ -14,9 +14,11 @@ import { type } from "@testing-library/user-event/dist/type";
 import ScheduleLogin from "./ScheduleLogin";
 import axios from "axios";
 import moment from "moment";
-import * as XLSX from "xlsx" ;
+import * as XLSX from "xlsx";
+// import { useNavigation } from "../../../../../../../../../src/context/NavigationContext";
 
 function ServiceOpenSchedule() {
+  //  const { customNavigate, handleClose } = useNavigation();
   const location = useLocation(); // Access location object using useLocation hook
   const DwgNameList = location?.state?.DwgNameList || []; // Get DwgNameList from location state
   const Type = location?.state?.Type || []; //get types
@@ -459,26 +461,25 @@ function ServiceOpenSchedule() {
   const [deleteResponse, setDeleteResponse] = useState("");
 
   const onClickScheduled = () => {
-
-    console.log("newState",newState);
-    console.log("Scheduled",newState[0].QtyScheduled);// 800
-    console.log("To Schedule",newState[0].QtyToSchedule); //100
+    console.log("newState", newState);
+    console.log("Scheduled", newState[0].QtyScheduled); // 800
+    console.log("To Schedule", newState[0].QtyToSchedule); //100
 
     // if( newState[0].QtyToSchedule < newState[0].QtyScheduled){
-    if(newState[0].QtyScheduled > newState[0].QtyToSchedule){
-      alert("Check Qty to Schedule. Make sure Qty to Schedule is correct")
+    if (newState[0].QtyScheduled > newState[0].QtyToSchedule) {
+      alert("Check Qty to Schedule. Make sure Qty to Schedule is correct");
       // toast.warning("Check Qty to Schedule. Make sure Qty to Schedule is correct", {
-        // position: toast.POSITION.TOP_CENTER,
-     // }
-    // );
+      // position: toast.POSITION.TOP_CENTER,
+      // }
+      // );
       // toast.error("Not Scheduled", {
       //   position: toast.POSITION.TOP_CENTER,
       // });
-      alert("Not Scheduled")
+      alert("Not Scheduled");
       return;
     }
-    
-// console.log("123==",scheduleDetailsRow, formdata, newState,  OrdrDetailsData);
+
+    // console.log("123==",scheduleDetailsRow, formdata, newState,  OrdrDetailsData);
 
     postRequest(
       endpoints.onClickScheduled,
@@ -598,15 +599,17 @@ function ServiceOpenSchedule() {
   const [Performancedata, setPerformancedata] = useState([]);
   const [showPerformancedata, setShowPerformance] = useState(false);
   const onClickPerformance = () => {
+    console.log("TaskMaterialData", TaskMaterialData);
 
-    console.log('TaskMaterialData', TaskMaterialData);
-
-
-    postRequest(endpoints.onClickPerformance, { formdata, TaskMaterialData }, (response) => {
-      setPerformancedata(response);
-      setShowPerformance(true);
-      console.log(response);
-    });
+    postRequest(
+      endpoints.onClickPerformance,
+      { formdata, TaskMaterialData },
+      (response) => {
+        setPerformancedata(response);
+        setShowPerformance(true);
+        console.log(response);
+      }
+    );
   };
 
   //OnClick Yes Fixture Order
@@ -812,8 +815,9 @@ function ServiceOpenSchedule() {
                 Operation: task.Operation,
                 MProcess: task.MProcess,
                 CustMtrl: task.Mtrl_Source,
-                TaskNo: `${schRow[0].OrdSchNo || `${schRow[0].Order_No} 00`
-                  } ${strTaskNo}`,
+                TaskNo: `${
+                  schRow[0].OrdSchNo || `${schRow[0].Order_No} 00`
+                } ${strTaskNo}`,
                 TStatus: "Created",
                 Priority: "Normal",
                 TotalParts: 0,
@@ -1013,7 +1017,6 @@ function ServiceOpenSchedule() {
 
   console.log("formdata[0]?.Order_No", formdata[0]?.Order_No);
 
-
   const selectedMtrlDimenrow = (itm, id) => {
     setSelectedMtrlDimenId(id);
     setMtrlLength(itm.Length);
@@ -1021,20 +1024,37 @@ function ServiceOpenSchedule() {
     setMtrlQuantity(itm.Quantity);
   };
 
-  //To EXcel functionality 
+  //To EXcel functionality
   const XLScheduleDetails = () => {
     console.log("newState", newState);
     if (newState.length > 0) {
-      const columns = ['DwgName', 'Mtrl_Code', 'Mtrl_Source', 'Operation', 'QtyScheduled', 'QtyProgrammed', 'QtyProduced', 'QtyCleared', 'QtyPacked', 'QtyDelivered', 'JWCost', 'MtrlCost'];
-      let fileName = "OrderScheduleDetails_" + newState[0].Order_No + "_" + moment(new Date()).format("DDMMYYYY")
+      const columns = [
+        "DwgName",
+        "Mtrl_Code",
+        "Mtrl_Source",
+        "Operation",
+        "QtyScheduled",
+        "QtyProgrammed",
+        "QtyProduced",
+        "QtyCleared",
+        "QtyPacked",
+        "QtyDelivered",
+        "JWCost",
+        "MtrlCost",
+      ];
+      let fileName =
+        "OrderScheduleDetails_" +
+        newState[0].Order_No +
+        "_" +
+        moment(new Date()).format("DDMMYYYY");
       exportToExcel(newState, columns, fileName);
     }
-  }
+  };
 
-  const exportToExcel = ( data, columns, fileName) => {
-    const filteredData = data.map(row => {
+  const exportToExcel = (data, columns, fileName) => {
+    const filteredData = data.map((row) => {
       const filteredRow = {};
-      columns.forEach(column => {
+      columns.forEach((column) => {
         if (row.hasOwnProperty(column)) {
           filteredRow[column] = row[column];
         }
@@ -1044,15 +1064,15 @@ function ServiceOpenSchedule() {
 
     const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
     XLSX.writeFile(workbook, `${fileName}.xlsx`);
-  }
+  };
   // const NavigationToStepBack = () => {
   //   // const location = useLocation();
   //   // const navigate = useNavigate();
-  
+
   //   console.log("location?.state?.Type", location?.state?.Type);
-  
+
   //   const path =
   //     location?.state?.Type === "Service"
   //       ? "/Orders/Service/ScheduleCreationForm"
@@ -1061,7 +1081,7 @@ function ServiceOpenSchedule() {
   //       : location?.state?.Type === "Fabrication"
   //       ? "/Orders/Fabrication/ScheduleCreationForm"
   //       : null;
-  
+
   //   if (path) {
   //     navigate(path);
   //   } else {
@@ -1294,7 +1314,7 @@ function ServiceOpenSchedule() {
             <button className="button-style">Close</button>
           </Link> */}
 
-{/* VEERANNA  */}
+          {/* VEERANNA  */}
           <button
             className="button-style "
             // onClick={ NavigationToStepBack}
@@ -1303,6 +1323,22 @@ function ServiceOpenSchedule() {
           >
             Close
           </button>
+          {/* <button
+            onClick={() =>
+              customNavigate(
+                Type === "Service"
+                  ? "/Orders/Service/ScheduleCreationForm"
+                  : Type === "Profile"
+                  ? "/Orders/Profile/ScheduleCreationForm"
+                  : Type === "Fabrication"
+                  ? "/Orders/Fabrication/ScheduleCreationForm"
+                  : null
+              )
+            }
+          >
+            Close
+          </button> */}
+          {/* <button onClick={handleClose}>Close</button> */}
         </div>
       </div>
 
@@ -1395,7 +1431,7 @@ function ServiceOpenSchedule() {
               formdata[0]?.Schedule_Status === "ShortClosed" ||
               formdata[0]?.Schedule_Status === "Suspended" ||
               formdata[0]?.Schedule_Status === "Ready" ||
-              formdata[0]?.Schedule_Status === "Programmed" ||
+              // formdata[0]?.Schedule_Status === "Programmed" ||
               formdata[0]?.Schedule_Status === "Production" ||
               formdata[0]?.Schedule_Status === "Completed" ||
               formdata[0]?.Schedule_Status === "Inspected" ||
@@ -1449,7 +1485,9 @@ function ServiceOpenSchedule() {
       <div className="row">
         <Tabs className=" tab_font mt-1">
           <Tab eventKey="Schedule Details" title="Schedule Details">
-            <button  className="button-style" onClick={XLScheduleDetails}>To Excel</button>
+            <button className="button-style" onClick={XLScheduleDetails}>
+              To Excel
+            </button>
             <div className="mt-1" style={{ overflow: "auto", height: "auto" }}>
               <Table
                 striped
@@ -1601,9 +1639,14 @@ function ServiceOpenSchedule() {
                           (item) => item.NcTaskId === value.NcTaskId
                         );
 
-                        console.log('Performancedata inside table', Performancedata);
-                        console.log('performanceRow inside table', performanceRow);
-
+                        console.log(
+                          "Performancedata inside table",
+                          Performancedata
+                        );
+                        console.log(
+                          "performanceRow inside table",
+                          performanceRow
+                        );
 
                         // Define the default values
                         let machineTime = "Not Processed";
@@ -1631,7 +1674,7 @@ function ServiceOpenSchedule() {
                           tgtRate =
                             typeof performanceRow.TargetHourRate === "number"
                               ? performanceRow.TgtRate
-                              : 'Not Invoiced';
+                              : "Not Invoiced";
                         }
 
                         return (

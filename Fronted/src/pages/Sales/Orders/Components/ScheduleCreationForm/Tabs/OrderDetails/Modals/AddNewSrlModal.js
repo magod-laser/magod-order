@@ -98,7 +98,7 @@ function AddNewSrlModal(props) {
                         autoComplete="off"
                         // value={DwgName}
                         // value={newSerial.DwgName}
-                        value={newSerial.DwgName }
+                        value={newSerial.DwgName}
                         // onChange={handleDwgInputChange}
                         onChange={handleChange}
                         required
@@ -375,7 +375,8 @@ function AddNewSrlModal(props) {
                       name="newSrlJWRate"
                       autoComplete="off"
                       id="JWrate"
-                      value={jwRate}
+                      // value={jwRate}
+                      value={jwRate === "0" || jwRate === 0 ? "" : jwRate}
                       onChangeCallback={setJwRate}
                       required
                     />
@@ -434,7 +435,12 @@ function AddNewSrlModal(props) {
                       id="MaterialRate"
                       name="newSrlMaterialRate"
                       autoComplete="off"
-                      value={materialRate}
+                      // value={materialRate}
+                      value={
+                        materialRate === "0" || materialRate === 0
+                          ? ""
+                          : materialRate
+                      }
                       onChangeCallback={setMaterialRate}
                       required
                       disabled={NewSrlFormData?.MtrlSrc === "Customer"}
@@ -512,7 +518,7 @@ function AddNewSrlModal(props) {
             </button>
             <button
               className="button-style"
-              style={{ backgroundColor: "gray" }}
+              // style={{ backgroundColor: "gray" }}
               variant="secondary"
               onClick={() => handleCloseImportDwg()}
             >

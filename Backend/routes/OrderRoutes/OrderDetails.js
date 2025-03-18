@@ -573,10 +573,10 @@ OrderDetailsRouter.post(`/LoadArrival2`, async (req, res, next) => {
 
 OrderDetailsRouter.post(`/getQtnList`, async (req, res, next) => {
   console.log("entering getQtnList");
-  
+
   console.log(req.body);
   let QtnFormat = req.body.QtnFormat;
-  
+
   try {
     qtnQueryMod(
       `SELECT *, DATE_FORMAT(ValidUpTo, '%d/%m/%Y') AS Printable_ValidUpTo FROM magodqtn.qtnlist  where QtnFormat='${QtnFormat}' And QtnStatus = 'Qtn Sent' ORDER BY QtnID DESC`,
@@ -767,13 +767,23 @@ OrderDetailsRouter.post(
             Mtrl_Source, Qty_Ordered, InspLevel, PackingLevel, UnitPrice, 
             UnitWt, Order_Status, JWCost, MtrlCost, Operation, tolerance) 
             VALUES 
-            ('${element.Order_No}', '${element.Order_Srl}', '${element.Cust_Code}', 
+            ('${element.Order_No}', '${element.Order_Srl}', '${
+            element.Cust_Code
+          }', 
             '${element.DwgName || ""}', '${element.Mtrl_Code || ""}', 
             '${element.MProcess || ""}', '${element.Mtrl_Source || ""}', 
-            '${parseInt(element.Qty_Ordered || 0)}', '${element.InspLevel || "Insp1"}', 
-            '${element.PackingLevel || "Pkng1"}', '${parseFloat(element.UnitPrice || 0).toFixed(2)}', 
-            '${parseFloat(element.UnitWt || 0).toFixed(3)}', '${element.Order_Status || "Received"}', 
-            '${parseFloat(element.JWCost || 0).toFixed(2)}', '${parseFloat(element.MtrlCost || 0).toFixed(2)}', 
+            '${parseInt(element.Qty_Ordered || 0)}', '${
+            element.InspLevel || "Insp1"
+          }', 
+            '${element.PackingLevel || "Pkng1"}', '${parseFloat(
+            element.UnitPrice || 0
+          ).toFixed(2)}', 
+            '${parseFloat(element.UnitWt || 0).toFixed(3)}', '${
+            element.Order_Status || "Received"
+          }', 
+            '${parseFloat(element.JWCost || 0).toFixed(2)}', '${parseFloat(
+            element.MtrlCost || 0
+          ).toFixed(2)}', 
             '${element.Operation || ""}', '${element.tolerance || ""}')`;
 
           misQueryMod(insertQuery, (err) => {
@@ -863,13 +873,13 @@ OrderDetailsRouter.post(
 //               // If Order_No exists, insert into order_details
 //               const insertQuery = `
 //                 INSERT INTO magodmis.order_details (Order_No, Order_Srl, Cust_Code, DwgName, Mtrl_Code, MProcess,  Mtrl_Source, Qty_Ordered, InspLevel, PackingLevel, UnitPrice, UnitWt, Order_Status, JWCost, MtrlCost, Operation, tolerance)
-//                 VALUES ('${element.Order_No}', '${element.Order_Srl}', '${element.Cust_Code}', 
-//                         '${element.DwgName || ""}', '${element.Mtrl_Code || ""}', '${element.MProcess || ""}', 
-//                         '${element.Mtrl_Source || ""}', '${parseInt(element.Qty_Ordered || 0)}', 
-//                         '${element.InspLevel || "Insp1"}', '${element.PackingLevel || "Pkng1"}', 
-//                         '${parseFloat(element.UnitPrice || 0).toFixed(2)}', '${parseFloat(element.UnitWt || 0).toFixed(3)}', 
-//                         '${element.Order_Status || "Received"}', '${parseFloat(element.JWCost || 0).toFixed(2)}', 
-//                         '${parseFloat(element.MtrlCost || 0).toFixed(2)}', '${element.Operation || ""}', 
+//                 VALUES ('${element.Order_No}', '${element.Order_Srl}', '${element.Cust_Code}',
+//                         '${element.DwgName || ""}', '${element.Mtrl_Code || ""}', '${element.MProcess || ""}',
+//                         '${element.Mtrl_Source || ""}', '${parseInt(element.Qty_Ordered || 0)}',
+//                         '${element.InspLevel || "Insp1"}', '${element.PackingLevel || "Pkng1"}',
+//                         '${parseFloat(element.UnitPrice || 0).toFixed(2)}', '${parseFloat(element.UnitWt || 0).toFixed(3)}',
+//                         '${element.Order_Status || "Received"}', '${parseFloat(element.JWCost || 0).toFixed(2)}',
+//                         '${parseFloat(element.MtrlCost || 0).toFixed(2)}', '${element.Operation || ""}',
 //                         '${element.tolerance || ""}')`;
 //                         misQueryMod(insertQuery, (insertErr) => {
 //                 if (insertErr) {
@@ -885,18 +895,18 @@ OrderDetailsRouter.post(
 //                           .send("Error fetching current order value.");
 //                       }
 //           console.log("result order value",result);
-          
+
 //                       if (result.length === 0) {
 //                         return res.status(404).send("Order not found.");
 //                       }
-          
+
 //                       const currentOrderValue = result[0].ordervalue;
 //                       const newOrderValue = parseInt(element.Qty_Ordered) * (parseFloat(element.JWCost) + parseFloat(element.MtrlCost));
 //                       const updatedOrderValue = (currentOrderValue || 0) + newOrderValue;
 //           console.log("currentOrderValue",currentOrderValue);
 //           console.log("newOrderValue",newOrderValue);
 //           console.log("updatedOrderValue",updatedOrderValue);
-          
+
 //                       // Step 2: Update the ordervalue
 //                       console.log ("entering into the UPDATE magodmis.order_list ")
 //                       misQueryMod(
@@ -908,9 +918,9 @@ OrderDetailsRouter.post(
 //                             logger.error(err);
 //                             return res.status(500).send("Error updating order value.");
 //                           }
-          
+
 //                           // console.log("updateResult", updateResult);
-          
+
 //                           // res.send({ updateResult });
 //                         }
 //                       );
@@ -954,18 +964,36 @@ OrderDetailsRouter.post(
             if (err) {
               reject(err);
             } else if (results.length === 0) {
-              reject(new Error(`Order_No ${element.Order_No} not found in order_list`));
+              reject(
+                new Error(
+                  `Order_No ${element.Order_No} not found in order_list`
+                )
+              );
             } else {
               // Insert into order_details
               const insertQuery = `
                 INSERT INTO magodmis.order_details (Order_No, Order_Srl, Cust_Code, DwgName, Mtrl_Code, MProcess, Mtrl_Source, Qty_Ordered, InspLevel, PackingLevel, UnitPrice, UnitWt, Order_Status, JWCost, MtrlCost, Operation, tolerance)
-                VALUES ('${element.Order_No}', '${element.Order_Srl}', '${element.Cust_Code}', 
-                        '${element.DwgName || ""}', '${element.Mtrl_Code || ""}', '${element.MProcess || ""}', 
-                        '${element.Mtrl_Source || ""}', '${parseInt(element.Qty_Ordered || 0)}', 
-                        '${element.InspLevel || "Insp1"}', '${element.PackingLevel || "Pkng1"}', 
-                        '${parseFloat(element.UnitPrice || 0).toFixed(2)}', '${parseFloat(element.UnitWt || 0).toFixed(3)}', 
-                        '${element.Order_Status || "Received"}', '${parseFloat(element.JWCost || 0).toFixed(2)}', 
-                        '${parseFloat(element.MtrlCost || 0).toFixed(2)}', '${element.Operation || ""}', 
+                VALUES ('${element.Order_No}', '${element.Order_Srl}', '${
+                element.Cust_Code
+              }', 
+                        '${element.DwgName || ""}', '${
+                element.Mtrl_Code || ""
+              }', '${element.MProcess || ""}', 
+                        '${element.Mtrl_Source || ""}', '${parseInt(
+                element.Qty_Ordered || 0
+              )}', 
+                        '${element.InspLevel || "Insp1"}', '${
+                element.PackingLevel || "Pkng1"
+              }', 
+                        '${parseFloat(element.UnitPrice || 0).toFixed(
+                          2
+                        )}', '${parseFloat(element.UnitWt || 0).toFixed(3)}', 
+                        '${element.Order_Status || "Received"}', '${parseFloat(
+                element.JWCost || 0
+              ).toFixed(2)}', 
+                        '${parseFloat(element.MtrlCost || 0).toFixed(2)}', '${
+                element.Operation || ""
+              }', 
                         '${element.tolerance || ""}')`;
 
               misQueryMod(insertQuery, (insertErr) => {
@@ -1098,10 +1126,10 @@ OrderDetailsRouter.post(
 //           misQueryMod(
 //             `INSERT INTO magodmis.order_details (Order_No, Order_Srl, Cust_Code, DwgName, Mtrl_Code, MProcess,  Mtrl_Source, Qty_Ordered,QtyScheduled,
 //             InspLevel, PackingLevel, UnitPrice, UnitWt, Order_Status, JWCost, MtrlCost, Operation, tolerance, Delivery_Date)
-//             VALUES ('${element.Order_No}', '${element.Order_Srl}', '${element.Cust_Code}', '${element.DwgName || ""}', '${element.Mtrl_Code || ""}', 
+//             VALUES ('${element.Order_No}', '${element.Order_Srl}', '${element.Cust_Code}', '${element.DwgName || ""}', '${element.Mtrl_Code || ""}',
 //             '${element.MProcess || ""}', '${element.Mtrl_Source || ""}', '${parseInt(element.Qty_Ordered || 0)}', '${parseInt(element.QtyScheduled || 0)}',
-//             '${element.InspLevel || "Insp1"}', '${element.PackingLevel || "Pkng1"}', '${parseFloat(element.UnitPrice || 0).toFixed(2)}', 
-//             '${parseFloat(element.UnitWt || 0).toFixed(3)}', '${element.Order_Status || "Received"}', '${parseFloat(element.JWCost || 0).toFixed(2)}', 
+//             '${element.InspLevel || "Insp1"}', '${element.PackingLevel || "Pkng1"}', '${parseFloat(element.UnitPrice || 0).toFixed(2)}',
+//             '${parseFloat(element.UnitWt || 0).toFixed(3)}', '${element.Order_Status || "Received"}', '${parseFloat(element.JWCost || 0).toFixed(2)}',
 //             '${parseFloat(element.MtrlCost || 0).toFixed(2)}', '${element.Operation || ""}', '${element.tolerance || ""}', ${deliveryDate ? `'${deliveryDate}'` : 'NULL'})`,
 //             (err, result) => {
 //               if (err) {
@@ -1140,7 +1168,10 @@ OrderDetailsRouter.post(
         return new Promise((resolve, reject) => {
           // Convert Delivery_Date to MySQL DATETIME format if it exists
           const deliveryDate = element.Delivery_Date
-            ? new Date(element.Delivery_Date).toISOString().slice(0, 19).replace("T", " ")
+            ? new Date(element.Delivery_Date)
+                .toISOString()
+                .slice(0, 19)
+                .replace("T", " ")
             : null;
 
           // Set orderNo for later use
@@ -1153,14 +1184,28 @@ OrderDetailsRouter.post(
             Qty_Ordered, QtyScheduled, InspLevel, PackingLevel, UnitPrice, UnitWt, Order_Status, 
             JWCost, MtrlCost, Operation, tolerance, Delivery_Date) 
             VALUES 
-            ('${element.Order_No}', '${element.Order_Srl}', '${element.Cust_Code}', '${element.DwgName || ""}', 
-            '${element.Mtrl_Code || ""}', '${element.MProcess || ""}', '${element.Mtrl_Source || ""}', 
-            '${parseInt(element.Qty_Ordered || 0)}', '${parseInt(element.QtyScheduled || 0)}', 
-            '${element.InspLevel || "Insp1"}', '${element.PackingLevel || "Pkng1"}', 
-            '${parseFloat(element.UnitPrice || 0).toFixed(2)}', '${parseFloat(element.UnitWt || 0).toFixed(3)}', 
-            '${element.Order_Status || "Received"}', '${parseFloat(element.JWCost || 0).toFixed(2)}', 
-            '${parseFloat(element.MtrlCost || 0).toFixed(2)}', '${element.Operation || ""}', '${element.tolerance || ""}', 
-            ${deliveryDate ? `'${deliveryDate}'` : 'NULL'})`;
+            ('${element.Order_No}', '${element.Order_Srl}', '${
+            element.Cust_Code
+          }', '${element.DwgName || ""}', 
+            '${element.Mtrl_Code || ""}', '${element.MProcess || ""}', '${
+            element.Mtrl_Source || ""
+          }', 
+            '${parseInt(element.Qty_Ordered || 0)}', '${parseInt(
+            element.QtyScheduled || 0
+          )}', 
+            '${element.InspLevel || "Insp1"}', '${
+            element.PackingLevel || "Pkng1"
+          }', 
+            '${parseFloat(element.UnitPrice || 0).toFixed(2)}', '${parseFloat(
+            element.UnitWt || 0
+          ).toFixed(3)}', 
+            '${element.Order_Status || "Received"}', '${parseFloat(
+            element.JWCost || 0
+          ).toFixed(2)}', 
+            '${parseFloat(element.MtrlCost || 0).toFixed(2)}', '${
+            element.Operation || ""
+          }', '${element.tolerance || ""}', 
+            ${deliveryDate ? `'${deliveryDate}'` : "NULL"})`;
 
           misQueryMod(insertQuery, (err) => {
             if (err) {
@@ -1223,9 +1268,6 @@ OrderDetailsRouter.post(
     }
   }
 );
-
-
-
 
 //NEW BULK CHANGE
 OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
@@ -1411,94 +1453,94 @@ OrderDetailsRouter.post("/ordertablevaluesupdate", async (req, res, next) => {
   }
 });
 
-OrderDetailsRouter.post("/singleChangeUpdate", async (req, res, next) => {
-  // console.log("enter into singleChangeUpdate -- shravan");
-  // console.log("req.body", req.body);
+// OrderDetailsRouter.post("/singleChangeUpdate", async (req, res, next) => {
+//   // console.log("enter into singleChangeUpdate -- shravan");
+//   // console.log("req.body", req.body);
 
-  try {
-    const qtyOrdered = parseInt(req.body.quantity);
-    const jwRate = parseFloat(req.body.JwCost);
-    const materialRate = parseFloat(req.body.mtrlcost);
-    const unitPrice = parseFloat(req.body.unitPrice);
-    const Operation = req.body.Operation;
-    const InspLvl = req.body.InspLvl;
-    const PkngLvl = req.body.PkngLvl;
-    const DwgName = req.body.DwgName;
-    const Mtrl_Source = req.body.MtrlSrc;
-    const Mtrl_Code = req.body.strmtrlcode;
+//   try {
+//     const qtyOrdered = parseInt(req.body.quantity);
+//     const jwRate = parseFloat(req.body.JwCost);
+//     const materialRate = parseFloat(req.body.mtrlcost);
+//     const unitPrice = parseFloat(req.body.unitPrice);
+//     const Operation = req.body.Operation;
+//     const InspLvl = req.body.InspLvl;
+//     const PkngLvl = req.body.PkngLvl;
+//     const DwgName = req.body.DwgName;
+//     const Mtrl_Source = req.body.MtrlSrc;
+//     const Mtrl_Code = req.body.strmtrlcode;
 
-    const updateQuery = `
-    UPDATE magodmis.order_details
-    SET
-      Qty_Ordered = CASE WHEN ${qtyOrdered} IS NOT NULL THEN ${qtyOrdered} ELSE Qty_Ordered END,
-      JWCost = CASE WHEN ${jwRate} IS NOT NULL THEN ${jwRate} ELSE JWCost END,
-      MtrlCost = CASE WHEN ${materialRate} IS NOT NULL THEN ${materialRate} ELSE MtrlCost END,
-      UnitPrice = CASE WHEN ${unitPrice} IS NOT NULL THEN ${unitPrice} ELSE UnitPrice END,
-      Operation = '${Operation}',
-      InspLevel = '${InspLvl}',
-      PackingLevel = '${PkngLvl}',
-      DwgName = '${DwgName}',
-      Mtrl_Source = '${Mtrl_Source}',
-      Mtrl_Code = '${Mtrl_Code}'
-    WHERE Order_No = '${req.body.OrderNo}' AND Order_Srl = '${req.body.OrderSrl}'
-  `;
+//     const updateQuery = `
+//     UPDATE magodmis.order_details
+//     SET
+//       Qty_Ordered = CASE WHEN ${qtyOrdered} IS NOT NULL THEN ${qtyOrdered} ELSE Qty_Ordered END,
+//       JWCost = CASE WHEN ${jwRate} IS NOT NULL THEN ${jwRate} ELSE JWCost END,
+//       MtrlCost = CASE WHEN ${materialRate} IS NOT NULL THEN ${materialRate} ELSE MtrlCost END,
+//       UnitPrice = CASE WHEN ${unitPrice} IS NOT NULL THEN ${unitPrice} ELSE UnitPrice END,
+//       Operation = '${Operation}',
+//       InspLevel = '${InspLvl}',
+//       PackingLevel = '${PkngLvl}',
+//       DwgName = '${DwgName}',
+//       Mtrl_Source = '${Mtrl_Source}',
+//       Mtrl_Code = '${Mtrl_Code}'
+//     WHERE Order_No = '${req.body.OrderNo}' AND Order_Srl = '${req.body.OrderSrl}'
+//   `;
 
-    misQueryMod(updateQuery, (err, singlecngdata) => {
-      if (err) {
-        console.log("err", err);
-        logger.error(err);
-        // res.send("error");
-        return next(err);
-      } else {
-        //console.log("blkcngdata", singlecngdata);
-        // res.send(singlecngdata);
-        misQueryMod(
-          `SELECT ordervalue FROM magodmis.order_list WHERE order_no = '${req.body.OrderNo}'`,
-          (err, result) => {
-            if (err) {
-              logger.error(err);
-              return res
-                .status(500)
-                .send("Error fetching current order value.");
-            }
+//     misQueryMod(updateQuery, (err, singlecngdata) => {
+//       if (err) {
+//         console.log("err", err);
+//         logger.error(err);
+//         // res.send("error");
+//         return next(err);
+//       } else {
+//         //console.log("blkcngdata", singlecngdata);
+//         // res.send(singlecngdata);
+//         misQueryMod(
+//           `SELECT ordervalue FROM magodmis.order_list WHERE order_no = '${req.body.OrderNo}'`,
+//           (err, result) => {
+//             if (err) {
+//               logger.error(err);
+//               return res
+//                 .status(500)
+//                 .send("Error fetching current order value.");
+//             }
 
-            if (result.length === 0) {
-              return res.status(404).send("Order not found.");
-            }
+//             if (result.length === 0) {
+//               return res.status(404).send("Order not found.");
+//             }
 
-            const currentOrderValue = result[0].ordervalue;
-            console.log("==currentOrderValue",currentOrderValue);
-            
-            const newOrderValue = qtyOrdered * (jwRate + materialRate);
-            console.log("==newOrderValue",newOrderValue);
+//             const currentOrderValue = result[0].ordervalue;
+//             console.log("==currentOrderValue",currentOrderValue);
 
-            const updatedOrderValue = (currentOrderValue || 0) + newOrderValue;
+//             const newOrderValue = qtyOrdered * (jwRate + materialRate);
+//             console.log("==newOrderValue",newOrderValue);
 
-            console.log("==updatedOrderValue",updatedOrderValue);
-            // Step 2: Update the ordervalue
-            misQueryMod(
-              `UPDATE magodmis.order_list
-		 SET ordervalue = ${updatedOrderValue}
-		 WHERE order_no = '${req.body.OrderNo}'`,
-              (err, updateResult) => {
-                if (err) {
-                  logger.error(err);
-                  return res.status(500).send("Error updating order value.");
-                }
+//             const updatedOrderValue = (currentOrderValue || 0) + newOrderValue;
 
-                // console.log("updateResult", updateResult);
+//             console.log("==updatedOrderValue",updatedOrderValue);
+//             // Step 2: Update the ordervalue
+//             misQueryMod(
+//               `UPDATE magodmis.order_list
+// 		 SET ordervalue = ${updatedOrderValue}
+// 		 WHERE order_no = '${req.body.OrderNo}'`,
+//               (err, updateResult) => {
+//                 if (err) {
+//                   logger.error(err);
+//                   return res.status(500).send("Error updating order value.");
+//                 }
 
-                res.send({ singlecngdata, updateResult });
-              }
-            );
-          }
-        );
-      }
-    });
-  } catch (error) {
-    next(error);
-  }
-});
+//                 // console.log("updateResult", updateResult);
+
+//                 res.send({ singlecngdata, updateResult });
+//               }
+//             );
+//           }
+//         );
+//       }
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 // OrderDetailsRouter.post(`/postDeleteDetailsBySrl`, async (req, res, next) => {
 //   // console.log("req.body", req.body);
@@ -1516,7 +1558,7 @@ OrderDetailsRouter.post("/singleChangeUpdate", async (req, res, next) => {
 //             res.status(500).send("Internal Server Error");
 //           } else {
 //             console.log("deleteOrderData",deleteOrderData);
-            
+
 //             // console.log(
 //             //   `Deleted order with Order_No '${req.body.Order_No}' and Order_Srl '${selectedItems[i].Order_Srl}'`
 //             // );
@@ -1527,9 +1569,9 @@ OrderDetailsRouter.post("/singleChangeUpdate", async (req, res, next) => {
 //                   console.error("Error fetching remaining order details:", err);
 //                   return res.status(500).send("Error fetching remaining order details.");
 //                 }
-        
+
 //                 console.log("Remaining order details:", orderDetails);
-        
+
 //                 // If no records remain, reset ordervalue to 0
 //                 let updatedOrderValue = 0;
 //                 if (orderDetails.length > 0) {
@@ -1537,9 +1579,9 @@ OrderDetailsRouter.post("/singleChangeUpdate", async (req, res, next) => {
 //                     return total + row.Qty_Ordered * (row.JWCost + row.MtrlCost);
 //                   }, 0);
 //                 }
-        
+
 //                 console.log(`New calculated order value: ${updatedOrderValue}`);
-        
+
 //                 // Step 3: Update the order value in order_list
 //                 misQueryMod(
 //                   `UPDATE magodmis.order_list SET ordervalue = ${updatedOrderValue} WHERE Order_No = '${req.body.Order_No}'`,
@@ -1548,7 +1590,7 @@ OrderDetailsRouter.post("/singleChangeUpdate", async (req, res, next) => {
 //                       console.error("Error updating order value:", err);
 //                       return res.status(500).send("Error updating order value.");
 //                     }
-        
+
 //                     console.log(`Updated order value for Order_No: ${req.body.Order_No} to ${updatedOrderValue}`);
 //                     res.send({ success: true, updatedOrderValue });
 //                   }
@@ -1582,6 +1624,103 @@ OrderDetailsRouter.post("/singleChangeUpdate", async (req, res, next) => {
 //   }
 // });
 
+OrderDetailsRouter.post("/singleChangeUpdate", async (req, res, next) => {
+  try {
+    // Ensure all numeric values are valid, else default to 0
+    const qtyOrdered = parseInt(req.body.quantity) || 0;
+    const jwRate = parseFloat(req.body.JwCost) || 0;
+    const materialRate = parseFloat(req.body.mtrlcost) || 0;
+    const unitPrice = parseFloat(req.body.unitPrice) || 0;
+
+    const Operation = req.body.Operation || "";
+    const InspLvl = req.body.InspLvl || "";
+    const PkngLvl = req.body.PkngLvl || "";
+    const DwgName = req.body.DwgName || "";
+    const Mtrl_Source = req.body.MtrlSrc || "";
+    const Mtrl_Code = req.body.strmtrlcode || "";
+
+    // Fetch the old order details before updating
+    misQueryMod(
+      `SELECT Qty_Ordered, JWCost, MtrlCost FROM magodmis.order_details 
+       WHERE Order_No = '${req.body.OrderNo}' AND Order_Srl = '${req.body.OrderSrl}'`,
+      (err, oldRowResult) => {
+        if (err) {
+          logger.error(err);
+          return res.status(500).send("Error fetching old order details.");
+        }
+
+        if (oldRowResult.length === 0) {
+          return res.status(404).send("Order detail not found.");
+        }
+
+        const oldQtyOrdered = parseInt(oldRowResult[0].Qty_Ordered) || 0;
+        const oldJwCost = parseFloat(oldRowResult[0].JWCost) || 0;
+        const oldMtrlCost = parseFloat(oldRowResult[0].MtrlCost) || 0;
+        const oldOrderValue = oldQtyOrdered * (oldJwCost + oldMtrlCost);
+
+        // Update order details
+        const updateQuery = `
+        UPDATE magodmis.order_details
+        SET
+          Qty_Ordered = ${qtyOrdered},
+          JWCost = ${jwRate},
+          MtrlCost = ${materialRate},
+          UnitPrice = ${unitPrice},
+          Operation = '${Operation}',
+          InspLevel = '${InspLvl}',
+          PackingLevel = '${PkngLvl}',
+          DwgName = '${DwgName}',
+          Mtrl_Source = '${Mtrl_Source}',
+          Mtrl_Code = '${Mtrl_Code}'
+        WHERE Order_No = '${req.body.OrderNo}' AND Order_Srl = '${req.body.OrderSrl}'`;
+
+        misQueryMod(updateQuery, (err, singlecngdata) => {
+          if (err) {
+            logger.error(err);
+            return next(err);
+          }
+
+          // Fetch current order value
+          misQueryMod(
+            `SELECT ordervalue FROM magodmis.order_list WHERE order_no = '${req.body.OrderNo}'`,
+            (err, result) => {
+              if (err) {
+                logger.error(err);
+                return res
+                  .status(500)
+                  .send("Error fetching current order value.");
+              }
+
+              if (result.length === 0) {
+                return res.status(404).send("Order not found.");
+              }
+
+              const currentOrderValue = parseFloat(result[0].ordervalue) || 0;
+              const newOrderValue = qtyOrdered * (jwRate + materialRate);
+              const finalOrderValue =
+                currentOrderValue - oldOrderValue + newOrderValue;
+
+              // Update order value in order_list
+              misQueryMod(
+                `UPDATE magodmis.order_list SET ordervalue = ${finalOrderValue} WHERE order_no = '${req.body.OrderNo}'`,
+                (err, updateResult) => {
+                  if (err) {
+                    logger.error(err);
+                    return res.status(500).send("Error updating order value.");
+                  }
+                  res.send({ singlecngdata, updateResult });
+                }
+              );
+            }
+          );
+        });
+      }
+    );
+  } catch (error) {
+    next(error);
+  }
+});
+
 OrderDetailsRouter.post(`/postDeleteDetailsBySrl`, async (req, res, next) => {
   try {
     const { Order_No, selectedItems } = req.body;
@@ -1606,32 +1745,32 @@ OrderDetailsRouter.post(`/postDeleteDetailsBySrl`, async (req, res, next) => {
     let updatedOrderValue = 0;
     if (Array.isArray(orderDetails) && orderDetails.length > 0) {
       updatedOrderValue = orderDetails.reduce((total, row) => {
-        console.log("row",row);
-        
-        return total + (row.Qty_Ordered ?? 0) * ((parseFloat(row.JWCost) ?? 0.00) + (parseFloat(row.MtrlCost) ?? 0.00));
+        console.log("row", row);
+
+        return (
+          total +
+          (row.Qty_Ordered ?? 0) *
+            ((parseFloat(row.JWCost) ?? 0.0) +
+              (parseFloat(row.MtrlCost) ?? 0.0))
+        );
       }, 0);
     }
-console.log("TYPE",typeof(updatedOrderValue));
-console.log("updatedOrderValue",updatedOrderValue);
-
+    console.log("TYPE", typeof updatedOrderValue);
+    console.log("updatedOrderValue", updatedOrderValue);
 
     await misQueryMod(
       `UPDATE magodmis.order_list SET OrderValue = ? WHERE Order_No = ?`,
       [parseInt(updatedOrderValue), Order_No]
     );
 
-    console.log(`Updated order value for Order_No: ${Order_No} to ${updatedOrderValue}`);
+    console.log(
+      `Updated order value for Order_No: ${Order_No} to ${updatedOrderValue}`
+    );
     res.send({ success: true, updatedOrderValue });
-
   } catch (error) {
     console.error("Error:", error);
     next(error);
   }
 });
-
-
-
-
-
 
 module.exports = OrderDetailsRouter;

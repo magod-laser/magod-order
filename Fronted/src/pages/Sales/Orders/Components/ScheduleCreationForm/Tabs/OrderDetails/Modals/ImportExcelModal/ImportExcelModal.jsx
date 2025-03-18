@@ -31,6 +31,8 @@ export default function ImportExcelModal(props) {
 		setOrderTotal(total);
 	}, [importedExcelData]);
 
+	console.log("importedExcelData", importedExcelData);
+	
 	const closeModal = () => {
 		props.setImportExcelModal(false);
 		setImportedExcelData([]);

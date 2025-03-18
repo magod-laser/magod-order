@@ -30,6 +30,8 @@ export default function IEFormHeader(props) {
   // console.log("props in excel", props.procdata);
   // console.log("procdata", props.procdata);
   const handleChange = (e) => {
+    console.log("entering into handle change");
+    
     const reader = new FileReader();
 
     if (e.target.files.length > 0) {
@@ -84,7 +86,9 @@ export default function IEFormHeader(props) {
             // making array for process data
             for (let i = 0; i < procData.length; i++) {
               const element = procData[i];
-              processArray.push(element.ProcessDescription);
+             console.log("element",element);
+              // processArray.push(element.ProcessDescription);
+              processArray.push(element.Operation);
             }
 
             for (let i = 0; i < parsedData.length; i++) {
@@ -110,7 +114,11 @@ export default function IEFormHeader(props) {
               }
 
               // check for operation
+              console.log("=processArray", processArray);
+              
               if (processArray.includes(element.Operation)) {
+                console.log("=element.Operation", element.Operation);
+                
                 element.operationError = false;
               } else {
                 element.operationError = true;
@@ -158,22 +166,20 @@ export default function IEFormHeader(props) {
       setConfirmModalOpen(true);
     }
   };
-console.log("OrderData",props.OrderData.Order_No);
-
+  console.log("OrderData", props.OrderData.Order_No);
 
   const loadToOrderFunc = () => {
     if (props.importedExcelData.length > 0) {
       console.log("entring into Excel loadToOrderFunc");
-      console.log("props.importedExcelData",props.importedExcelData);
+      console.log("props.importedExcelData", props.importedExcelData);
 
-    
       let arr = [];
-  
+
       for (let i = 0; i < props.importedExcelData.length; i++) {
         const element = props.importedExcelData[i];
-  
+
         let obj = {
-          Order_No:props.OrderData. Order_No,
+          Order_No: props.OrderData.Order_No,
           Cust_Code: props.OrderData.Cust_Code,
           Order_Srl: i + 1,
           DwgName: element.Dwg_Name || "",
@@ -188,50 +194,53 @@ console.log("OrderData",props.OrderData.Order_No);
           MtrlCost: parseFloat(element.Mtrl_Cost || 0).toFixed(2),
           // OrderValue:props.orderTotal,
           UnitPrice: (
-            parseFloat(element.Source === "Magod" ? element.Mtrl_Cost || 0 : 0) +
-            parseFloat(element.JW_Cost || 0)
+            parseFloat(
+              element.Source === "Magod" ? element.Mtrl_Cost || 0 : 0
+            ) + parseFloat(element.JW_Cost || 0)
           ).toFixed(2),
           Qty_Ordered: element.Order_Qty || 0,
           Total: (
             parseFloat(element.Order_Qty || 0) *
-            (parseFloat(element.Source === "Magod" ? element.Mtrl_Cost || 0 : 0) +
+            (parseFloat(
+              element.Source === "Magod" ? element.Mtrl_Cost || 0 : 0
+            ) +
               parseFloat(element.JW_Cost || 0))
           ).toFixed(2),
         };
-  
+
         arr.push(obj);
       }
-  console.log("arr",arr);
-  // API CALL TO INSERT
-     postRequest(
-          endpoints.postDetailsDataInImportExcel,
-          {
-            detailsData: arr,
-          },
-          (detailsDataInImportExcel) => {
-            // console.log("detailsDataInImportAtn", detailsDataInImportAtn);
-            if (detailsDataInImportExcel.result) {
-              props.setOrdrDetailsData(arr);
-              toast.success("Srls loaded to order successfull.");
-              props.closeModal();
-              props.fetchData();
-            } else {
-              toast.warning("uncaught backend error");
-            }
+      console.log("arr", arr);
+      // API CALL TO INSERT
+      postRequest(
+        endpoints.postDetailsDataInImportExcel,
+        {
+          detailsData: arr,
+        },
+        (detailsDataInImportExcel) => {
+          // console.log("detailsDataInImportAtn", detailsDataInImportAtn);
+          if (detailsDataInImportExcel.result) {
+            props.setOrdrDetailsData(arr);
+            toast.success("Srls loaded to order successfull.");
+            props.closeModal();
+            props.fetchData();
+          } else {
+            toast.warning("uncaught backend error");
           }
-        );
-  
+        }
+      );
+
       props.setOrdrDetailsData(arr);
-  
+
       // toast.success("Srls loaded to order successfull.");
       // props.closeModal();
-    }else{
- toast.warning("Please Load the data properly");
+    } else {
+      toast.warning("Please Load the data properly");
     }
   };
 
   // console.log("orderDEtailsData",OrdrDetailsData);
-  
+
   // console.log(
   //   "dsdsdsdsd",
   //   props.importedExcelData.filter(

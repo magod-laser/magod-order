@@ -19,22 +19,43 @@ export default function ImportExcelModal(props) {
     setSelectedQtn({});
     setFilteredQtnListData([]);
   };
-  useEffect(()=>{
-    console.log("props?.OrderData?.Type",props?.OrderData?.Type);
-  },[props.OrderData?.Type])
-// console.log("props?.OrderData?.Type",props?.OrderData?.Type);
+  //   useEffect(()=>{
+  //     console.log("props?.OrderData?.Type",props?.OrderData?.Type);
+  //   },[props.OrderData?.Type])
+  // // console.log("props?.OrderData?.Type",props?.OrderData?.Type);
+  useEffect(() => {
+    if (props?.OrderData?.Type) {
+      // Ensure Type is defined before making the request
+      postRequest(
+        endpoints.getQtnList,
+        { QtnFormat: props.OrderData.Type },
+        (QtnData) => {
+          let arr = QtnData.qtnList.map((element) => ({
+            ...element,
+            label: element.QtnNo,
+            value: element.QtnNo,
+          }));
+          setQtnListData(arr);
+        }
+      );
+    }
+  }, [props.OrderData?.Type]); // Dependency array includes OrderData.Type
 
   useEffect(() => {
-    postRequest(endpoints.getQtnList, {QtnFormat: props?.OrderData?.Type}, (QtnData) => {
-      let arr = [];
-      for (let i = 0; i < QtnData.qtnList.length; i++) {
-        const element = QtnData.qtnList[i];
-        element.label = element.QtnNo;
-        element.value = element.QtnNo;
-        arr.push(element);
+    postRequest(
+      endpoints.getQtnList,
+      { QtnFormat: props?.OrderData?.Type },
+      (QtnData) => {
+        let arr = [];
+        for (let i = 0; i < QtnData.qtnList.length; i++) {
+          const element = QtnData.qtnList[i];
+          element.label = element.QtnNo;
+          element.value = element.QtnNo;
+          arr.push(element);
+        }
+        setQtnListData(arr);
       }
-      setQtnListData(arr);
-    });
+    );
   }, []);
 
   function handleChangeQtn(qtnId) {
@@ -95,7 +116,7 @@ export default function ImportExcelModal(props) {
             props.setOrdrDetailsData(arr);
             toast.success("Import Quotation Successful");
             closeModal();
-            props.fetchData()
+            props.fetchData();
           } else {
             toast.warning("uncaught backend error");
           }
@@ -115,7 +136,9 @@ export default function ImportExcelModal(props) {
         fullscreen
       >
         <Modal.Header closeButton>
-          <Modal.Title style={{fontSize:'14px'}}>Import Quotation Form</Modal.Title>
+          <Modal.Title style={{ fontSize: "14px" }}>
+            Import Quotation Form
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <IQMFormHeader
@@ -134,10 +157,7 @@ export default function ImportExcelModal(props) {
           </div>
         </Modal.Body>
         <Modal.Footer className="d-flex flex-row justify-content-end">
-          <button
-            className="button-style m-0 me-3"
-            onClick={loadQuotationFunc}
-          >
+          <button className="button-style m-0 me-3" onClick={loadQuotationFunc}>
             Load Quotation
           </button>
 

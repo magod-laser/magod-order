@@ -297,8 +297,17 @@ export default function IETable(props) {
     }));
     props.setImportedExcelData(updatedData);
   }, [props.importedExcelData.length]); // Run only when data length changes
-
-  const handleChange = (key, name, val, materialError, sourceError, operationError) => {
+  console.log("err-m", props.materialError);
+  console.log("err-s", props.sourceError);
+  console.log("err-o", props.operationError);
+  const handleChange = (
+    key,
+    name,
+    val,
+    materialError,
+    sourceError,
+    operationError
+  ) => {
     let updatedData = props.importedExcelData.map((item, index) =>
       index === key
         ? {
@@ -314,9 +323,11 @@ export default function IETable(props) {
     props.setImportedExcelData(updatedData);
   };
 
+  console.log("err-0", props?.importedExcelData);
+
   return (
-    <div style={{ overflow: "auto" , height:" 500px"}}>
-      <Table striped className="table-data border" >
+    <div style={{ overflow: "auto", height: " 500px" }}>
+      <Table striped className="table-data border">
         <thead className="tableHeaderBGColor">
           <tr>
             <th>SL No</th>
@@ -349,16 +360,50 @@ export default function IETable(props) {
                   value={val.Dwg_Name}
                   name="Dwg_Name"
                   style={{ background: "transparent", border: "none" }}
-                  onChange={(e) => handleChange(key, e.target.name, e.target.value, val.materialError, val.sourceError, val.operationError)}
+                  onChange={(e) =>
+                    handleChange(
+                      key,
+                      e.target.name,
+                      e.target.value,
+                      val.materialError,
+                      val.sourceError,
+                      val.operationError
+                    )
+                  }
                 />
               </td>
               <td>
+                {val.materialError && (
+                  <span className="text-danger">Mtrl_Code data error</span>
+                )}
                 <Typeahead
-                  className={val.materialError ? "border rounded border-1 border-danger typeaheadClass" : "typeaheadClass"}
+                  className={
+                    val.materialError
+                      ? "border rounded border-1 border-danger typeaheadClass"
+                      : "typeaheadClass"
+                  }
                   id="Mtrl_Code"
                   name="Mtrl_Code"
-                  onChange={(e) => handleChange(key, "Mtrl_Code", e.length > 0 ? e[0].label : "", e.length > 0 ? false : true, val.sourceError, val.operationError)}
-                  onInputChange={(text) => handleChange(key, "Mtrl_Code", text, text.length > 0 ? false : true, val.sourceError, val.operationError)}
+                  onChange={(e) =>
+                    handleChange(
+                      key,
+                      "Mtrl_Code",
+                      e.length > 0 ? e[0].label : "",
+                      e.length > 0 ? false : true,
+                      val.sourceError,
+                      val.operationError
+                    )
+                  }
+                  onInputChange={(text) =>
+                    handleChange(
+                      key,
+                      "Mtrl_Code",
+                      text,
+                      text.length > 0 ? false : true,
+                      val.sourceError,
+                      val.operationError
+                    )
+                  }
                   options={props.mtrldata}
                   selected={val.Mtrl_Code ? [{ label: val.Mtrl_Code }] : []}
                   allowNew
@@ -366,40 +411,77 @@ export default function IETable(props) {
                 />
               </td>
               <td>
-              {val.sourceError && <span className="text-danger">Source data error</span>}
+                {val.sourceError && (
+                  <span className="text-danger">Source data error</span>
+                )}
                 <Typeahead
-                  className={val.sourceError ? "border rounded border-1 border-danger typeaheadClass" : "typeaheadClass"}
+                  className={
+                    val.sourceError
+                      ? "border rounded border-1 border-danger typeaheadClass"
+                      : "typeaheadClass"
+                  }
                   id="Source"
                   name="Source"
-                  onChange={(e) => handleChange(key, "Source", e.length > 0 ? e[0].label : "", val.materialError, e.length > 0 ? false : true, val.operationError)}
+                  onChange={(e) =>
+                    handleChange(
+                      key,
+                      "Source",
+                      e.length > 0 ? e[0].label : "",
+                      val.materialError,
+                      e.length > 0 ? false : true,
+                      val.operationError
+                    )
+                  }
                   options={props.materialSource}
                   selected={[{ label: val.Source }]}
                   placeholder="Choose a Source..."
                 />
               </td>
-  
+
               <td>
-              {/* {val.operationError && <span className="text-danger">Operation data error</span>} */}
+                {val.operationError && (
+                  <span className="text-danger">Operation data error</span>
+                )}
                 <Typeahead
                   // className={val.operationError ? "border rounded border-1 border-danger typeaheadClass" : "typeaheadClass"}
-                  className={`typeaheadClass ${val.operationError ? "border rounded border-1 border-danger" : ""}`}
-  
+                  className={`typeaheadClass ${
+                    val.operationError
+                      ? "border rounded border-1 border-danger"
+                      : ""
+                  }`}
                   id="Operation"
                   name="Operation"
-                  onChange={(e) => handleChange(key, "Operation", e.length > 0 ? e[0].label : "", val.materialError, val.sourceError, e.length > 0 ? false : true)}
-                  
-                //  onChange={(e) => {
-                //     const newValue = e.length > 0 ? e[0].label : "";
-                //     const hasError = newValue.length === 0; // If empty, it's an error
-                
-                //     console.log("onChange Triggered");
-                //     console.log("Selected Value:", newValue);
-                //     console.log("operationError Before:", val.operationError);
-                //     console.log("Setting operationError to:", hasError);
-                
-                //     handleChange(key, "Operation", newValue, val.materialError, val.sourceError, hasError);
-                //   }}
-                  onInputChange={(text) => handleChange(key, "Operation", text, val.materialError, val.sourceError, text.length > 0 ? false : true)}
+                  onChange={(e) =>
+                    handleChange(
+                      key,
+                      "Operation",
+                      e.length > 0 ? e[0].label : "",
+                      val.materialError,
+                      val.sourceError,
+                      e.length > 0 ? false : true
+                    )
+                  }
+                  //  onChange={(e) => {
+                  //     const newValue = e.length > 0 ? e[0].label : "";
+                  //     const hasError = newValue.length === 0; // If empty, it's an error
+
+                  //     console.log("onChange Triggered");
+                  //     console.log("Selected Value:", newValue);
+                  //     console.log("operationError Before:", val.operationError);
+                  //     console.log("Setting operationError to:", hasError);
+
+                  //     handleChange(key, "Operation", newValue, val.materialError, val.sourceError, hasError);
+                  //   }}
+                  onInputChange={(text) =>
+                    handleChange(
+                      key,
+                      "Operation",
+                      text,
+                      val.materialError,
+                      val.sourceError,
+                      text.length > 0 ? false : true
+                    )
+                  }
                   options={props.procdata}
                   selected={val.Operation ? [{ label: val.Operation }] : []}
                   allowNew
@@ -413,7 +495,16 @@ export default function IETable(props) {
                   value={val.Order_Qty}
                   name="Order_Qty"
                   style={{ background: "transparent", border: "none" }}
-                  onChange={(e) => handleChange(key, e.target.name, e.target.value, val.materialError, val.sourceError, val.operationError)}
+                  onChange={(e) =>
+                    handleChange(
+                      key,
+                      e.target.name,
+                      e.target.value,
+                      val.materialError,
+                      val.sourceError,
+                      val.operationError
+                    )
+                  }
                 />
               </td>
               <td>
@@ -423,7 +514,16 @@ export default function IETable(props) {
                   value={val.JW_Cost}
                   name="JW_Cost"
                   style={{ background: "transparent", border: "none" }}
-                  onChange={(e) => handleChange(key, e.target.name, e.target.value, val.materialError, val.sourceError, val.operationError)}
+                  onChange={(e) =>
+                    handleChange(
+                      key,
+                      e.target.name,
+                      e.target.value,
+                      val.materialError,
+                      val.sourceError,
+                      val.operationError
+                    )
+                  }
                 />
               </td>
               <td>
@@ -433,7 +533,16 @@ export default function IETable(props) {
                   value={val.Mtrl_Cost}
                   name="Mtrl_Cost"
                   style={{ background: "transparent", border: "none" }}
-                  onChange={(e) => handleChange(key, e.target.name, e.target.value, val.materialError, val.sourceError, val.operationError)}
+                  onChange={(e) =>
+                    handleChange(
+                      key,
+                      e.target.name,
+                      e.target.value,
+                      val.materialError,
+                      val.sourceError,
+                      val.operationError
+                    )
+                  }
                 />
               </td>
               <td>
