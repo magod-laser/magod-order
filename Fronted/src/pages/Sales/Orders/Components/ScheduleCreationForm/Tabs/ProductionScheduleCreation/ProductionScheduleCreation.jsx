@@ -14,6 +14,7 @@ export default function ProductionScheduleCreation({
   setScheduleListData,
   handleScheduleOptionChange,
   handleScheduleTypeChange,
+  handleClearFilters,
   scheduleOption,
   scheduleType,
   OrdrDetailsData,
@@ -479,7 +480,9 @@ export default function ProductionScheduleCreation({
               Refresh Status
             </button>
 
-            <button className="button-style">Clear Filter</button>
+            <button className="button-style" onClick={handleClearFilters}>
+              Clear Filter
+            </button>
 
             <button
               className="button-style"

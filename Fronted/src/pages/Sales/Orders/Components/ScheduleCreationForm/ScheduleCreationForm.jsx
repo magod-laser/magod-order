@@ -77,7 +77,17 @@ const InputField = ({
   );
 };
 export default function ScheduleCreationForm(props) {
+  console.log("props", props);
+
   const location = useLocation();
+
+  const orderNUmber = location.state?.Order_No || props.OrersData;
+  const orderType = location.state?.Type || props.Type;
+  const Cust_Code = location.state?.Cust_Code;
+
+  console.log("0", orderNUmber);
+  console.log("0", orderType);
+  console.log("0", Cust_Code);
 
   const [intSchStatus, setIntSchStatus] = useState(0);
   const [mtrldata, setMtrldata] = useState([]);
@@ -732,7 +742,7 @@ export default function ScheduleCreationForm(props) {
   //   updatedDwgdata[index] = updatedRow;
   //   setFilteredData(updatedDwgdata);
   // };
-  
+
   const handleJWMR = (index, field, value) => {
     console.log("value is", value);
     if (value < 0) {
@@ -897,8 +907,11 @@ export default function ScheduleCreationForm(props) {
       const orderData = await postRequest(
         endpoints.getOrderDetailsByOrdrNoAndType,
         {
-          orderNo: orderNo,
-          orderType: props.Type,
+          // orderNo: orderNo,
+          // orderType: props.Type,
+
+          orderNo: orderNUmber,
+          orderType: orderType,
         }
       );
       if (orderData?.orderData?.length > 0 && orderData?.custData?.length > 0) {
@@ -908,7 +921,8 @@ export default function ScheduleCreationForm(props) {
 
         // Fetch BOM Data
         const bomData = await postRequest(endpoints.GetBomData, {
-          custcode: custCode,
+          // custcode: custCode,
+          custcode: Cust_Code || custCode,
         });
         setBomData(bomData);
 
@@ -916,15 +930,16 @@ export default function ScheduleCreationForm(props) {
         const findOldPartData = await postRequest(
           endpoints.GetFindOldpartData,
           {
-            custcode: custCode,
+            // custcode: custCode,
+            custcode: Cust_Code || custCode,
           }
         );
         setfindOldpart(findOldPartData);
 
         // Fetch New Serial Data
         const ordrDetailsData = await postRequest(endpoints.PostNewSrlData, {
-          custcode: custCode,
-          OrderNo: orderNo,
+          custcode: Cust_Code || custCode,
+          OrderNo: orderNUmber,
         });
         setOrdrDetailsData(ordrDetailsData);
 
@@ -932,8 +947,8 @@ export default function ScheduleCreationForm(props) {
         const oldOrderData = await postRequest(
           endpoints.getOldOrderByCustCodeAndOrderNo,
           {
-            Cust_Code: orderData.orderData[0].Cust_Code,
-            Order_No: orderData.orderData[0].Order_No,
+            Cust_Code: Cust_Code || orderData.orderData[0].Cust_Code,
+            Order_No: orderNUmber || orderData.orderData[0].Order_No,
           }
         );
         setOldOrderListData(oldOrderData?.orderListData);
@@ -944,7 +959,7 @@ export default function ScheduleCreationForm(props) {
 
       // Fetch Profarma Main Data
       const profarmaMainData = await postRequest(endpoints.getProfarmaMain, {
-        OrderNo: orderNo,
+        OrderNo: orderNUmber,
       });
       setProfarmaInvMain(profarmaMainData);
 
@@ -952,7 +967,7 @@ export default function ScheduleCreationForm(props) {
       const profarmaDetailsData = await postRequest(
         endpoints.getProfarmaDetails,
         {
-          OrderNo: orderNo,
+          OrderNo: orderNUmber,
         }
       );
       setProfarmaInvDetails(profarmaDetailsData);
@@ -1476,13 +1491,13 @@ export default function ScheduleCreationForm(props) {
   //   setSelectedSrl([]);
   // };
   const handleRowClick = async (rowData) => {
-    console.log("rowData-123456",rowData);
-    
+    console.log("rowData-123456", rowData);
+
     setSelectedItems([]);
     setSelectedSrl([]);
 
     if (!rowData || !rowData.Order_Srl) {
-    // if (!rowData ) {
+      // if (!rowData ) {
       console.error("Invalid rowData", rowData);
       alert("Invalid rowData, Please check");
       return;
@@ -1855,9 +1870,22 @@ export default function ScheduleCreationForm(props) {
     setFilteredData(OrdrDetailsData);
   }, [OrdrDetailsData]);
 
+   useEffect(() => {
+     postRequest(
+       endpoints.getScheduleListData,
+       { Order_No: OrderData.Order_No },
+       (response) => {
+         setScheduleListData(response);
+         console.log("==Updated scheduleListData:", scheduleListData);
+       }
+     );
+   }, [filteredData]);
+
   const handleScheduleTypeChange = (event) => {
     const { value } = event.target;
     setScheduleType(value);
+
+    console.log("=Radio Button Changed:", value);
 
     if (value === "Job Work") {
       const JWData = OrdrDetailsData.filter(
@@ -1873,6 +1901,11 @@ export default function ScheduleCreationForm(props) {
     } else {
       setFilteredData(OrdrDetailsData);
     }
+  };
+
+  const handleClearFilters = () => {
+    setScheduleType(""); // Reset schedule type selection
+    setFilteredData(OrdrDetailsData); // Reset data to original unfiltered state
   };
 
   // Handle change for schedule option radio buttons
@@ -1912,6 +1945,7 @@ export default function ScheduleCreationForm(props) {
             <OrderInfo
               OrderData={OrderData}
               salesExecdata={salesExecdata}
+
               // handleChangeOrderInfo={handleChangeOrderInfo}
               // deliveryDate={deliveryDate}
             />
@@ -1927,6 +1961,7 @@ export default function ScheduleCreationForm(props) {
               scheduleType={scheduleType}
               scheduleOption={scheduleOption}
               handleScheduleTypeChange={handleScheduleTypeChange}
+              handleClearFilters={handleClearFilters}
               handleScheduleOptionChange={handleScheduleOptionChange}
               OrdrDetailsData={OrdrDetailsData}
               selectedRows={selectedRows}
@@ -2022,6 +2057,9 @@ export default function ScheduleCreationForm(props) {
                 type={props.Type}
                 scheduleType={scheduleType}
                 OrdrDetailsData={OrdrDetailsData}
+                orderNUmber={orderNUmber}
+                orderType={orderType}
+                Cust_Code={Cust_Code}
               />
             </Tab>
             <Tab eventKey="profarmaInvoiceList" title="Proforma Invoice List">

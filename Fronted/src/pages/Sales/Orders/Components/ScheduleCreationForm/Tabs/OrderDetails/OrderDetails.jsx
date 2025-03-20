@@ -16,7 +16,7 @@ import ConfirmationModal from "../../../../Modal/ConfirmationModal";
 import Loading from "../../Loading";
 import { Profiler } from "react";
 import moment from "moment";
-import * as XLSX from 'xlsx';
+import * as XLSX from "xlsx";
 import { Helper } from "dxf";
 const {
   getRequest,
@@ -77,7 +77,7 @@ export default function OrderDetails(props) {
     sortConfig,
     setSortConfig,
     sortedData,
-    OrdrDetailsItem
+    OrdrDetailsItem,
   } = props;
 
   const [groupBoxAddSrlVisible, setGroupBoxAddSrlVisible] = useState(true);
@@ -93,7 +93,7 @@ export default function OrderDetails(props) {
   const [isLoading, setisLoading] = useState(false);
 
   console.log("LastSlctedRow", LastSlctedRow);
-  
+
   function importExcelFunc() {
     setImportExcelModal(true);
   }
@@ -675,13 +675,11 @@ export default function OrderDetails(props) {
   //         toast.success("Serial Deleted sucessfully");
   //         fetchData();
   //         console.log("Deleted sucessfully");
-          
+
   //         clearSelections();
   //         // setSelectedItems([]);
   //         // setSelectedSrl([]);
   //         // setLastSlctedRow([])
-       
-
 
   //         window.location.reload();
   //       } else {
@@ -692,7 +690,7 @@ export default function OrderDetails(props) {
   //     // setSelectedSrl([]);
   //     // setLastSlctedRow([])
   //     console.log("Deleted sucessfully ---2");
-          
+
   //     clearSelections();
   //     setLastSlctedRow(null)
   //     setordrDetailsChange([])
@@ -700,16 +698,15 @@ export default function OrderDetails(props) {
   //     setRefresh(prev => !prev);
   //     window.location.reload();
   //       }
-      
+
   //     }
   //   );
   //   setisLoading(false);
   // }
 
   function deleteRowsBySrl() {
-
     // setRefresh(prev => !prev); // Toggle refresh
-  
+
     postRequest(
       endpoints.postDeleteDetailsBySrl,
       {
@@ -718,22 +715,22 @@ export default function OrderDetails(props) {
         selectedItems: selectedItems,
       },
       (deleteData) => {
-        console.log("deleteData",deleteData);
-        
+        console.log("deleteData", deleteData);
+
         // if (deleteData.flag > 0) {
         if (deleteData.success === true) {
           toast.success("Serial Deleted successfully");
           fetchData();
-  
+          window.location.reload();
+
           // Clear selections
           clearSelections();
           setLastSlctedRow(null);
           setordrDetailsChange([]);
-    
+
           console.log("Deleted successfully");
-          window.location.reload();
-          setRefreshKey(prev => prev + 1);
-        
+          // window.location.reload();
+          // setRefreshKey((prev) => prev + 1);
         } else {
           toast.warning("Not Deleted, Please Check Once");
         }
@@ -741,21 +738,20 @@ export default function OrderDetails(props) {
     );
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     deleteRowsBySrl();
-  },[])
-  
+  }, []);
+
   function clearSelections() {
     console.log("clearSelections");
-    
-    setSelectedRows([]);       // Clear multi-selection
-    setSelectedItems([]);      // Clear selected item list
-    setSelectedSrl([]);        // Clear selected serial numbers
-    setLastSlctedRow(null);    // Reset last selected row
-    setSelectedRow(null);      // Reset single selected row
-  }
 
-  
+    setSelectedRows([]); // Clear multi-selection
+    setSelectedItems([]); // Clear selected item list
+    setSelectedSrl([]); // Clear selected serial numbers
+    setLastSlctedRow(null); // Reset last selected row
+    setSelectedRow(null);
+    // Reset single selected row
+  }
 
   function deleteRowsByOrderNoFunc() {
     postRequest(
@@ -1192,7 +1188,10 @@ export default function OrderDetails(props) {
       });
 
       for (let i = 0; i < dwgnamefiles.length; i++) {
-        console.log("material, grade, thickness ", material + " "+ grade + " "+ thickness);
+        console.log(
+          "material, grade, thickness ",
+          material + " " + grade + " " + thickness
+        );
         await locCalc(dwgnamefiles[i], material, grade, thickness, (output) => {
           impDwgFileData = [
             ...impDwgFileData,
@@ -1217,7 +1216,7 @@ export default function OrderDetails(props) {
         });
 
         window.dxffiles = dwgnamefiles[i];
-       
+
         await postRequest(
           endpoints.dxfCopy,
           { Dwg: dwgnamefiles[i].name, destPath: destPath },
@@ -1346,23 +1345,41 @@ export default function OrderDetails(props) {
     });
   };
   // Drawing/Part Name	Material	Operation	Source	Insp Level	Tolerance	Packing Level	LOC	Pierces	JW Cost	Mtrl Cost	Unit Rate	Qty Ordered	Total
- const PrintXLOrderTable =()=>{
-  console.log("filteredData",filteredData); 
-    if(filteredData.length>0){
-      console.log("filteredData",filteredData);
-      const columns=['DwgName','Mtrl_Code','Operation','Mtrl_Source','InspLevel','tolerance','PackingLevel','LOC','Holes','JWCost','MtrlCost','UnitPrice','Qty_Ordered','Total'];
-      let fileName = "OrderTable_"+filteredData[0].Order_No +"_"+moment(new Date()).format("DDMMYYYY");
-      exportToExcel(filteredData,columns,fileName)
-
+  const PrintXLOrderTable = () => {
+    console.log("filteredData", filteredData);
+    if (filteredData.length > 0) {
+      console.log("filteredData", filteredData);
+      const columns = [
+        "DwgName",
+        "Mtrl_Code",
+        "Operation",
+        "Mtrl_Source",
+        "InspLevel",
+        "tolerance",
+        "PackingLevel",
+        "LOC",
+        "Holes",
+        "JWCost",
+        "MtrlCost",
+        "UnitPrice",
+        "Qty_Ordered",
+        "Total",
+      ];
+      let fileName =
+        "OrderTable_" +
+        filteredData[0].Order_No +
+        "_" +
+        moment(new Date()).format("DDMMYYYY");
+      exportToExcel(filteredData, columns, fileName);
     }
-  }
+  };
 
-  const exportToExcel= (data, columns, filName) => {
+  const exportToExcel = (data, columns, filName) => {
     const processedData = preprocessedData(data);
-    const filtereddata = processedData.map(row => {
+    const filtereddata = processedData.map((row) => {
       const filteredRow = {};
-      columns.forEach(column => {
-        if(row.hasOwnProperty(column)) {
+      columns.forEach((column) => {
+        if (row.hasOwnProperty(column)) {
           filteredRow[column] = row[column];
         }
       });
@@ -1371,14 +1388,14 @@ export default function OrderDetails(props) {
 
     const worksheet = XLSX.utils.json_to_sheet(filtereddata);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
     XLSX.writeFile(workbook, `${filName}.xlsx`);
   };
 
   const preprocessedData = (data) => {
-    return data.map(row => ({
+    return data.map((row) => ({
       ...row,
-      Total : parseFloat( row["UnitPrice"] * row["Qty_Ordered"]).toFixed(2)
+      Total: parseFloat(row["UnitPrice"] * row["Qty_Ordered"]).toFixed(2),
     }));
   };
   return (
@@ -1631,10 +1648,7 @@ export default function OrderDetails(props) {
                 Edit DXF
               </button>
             ) : null}
-             <button
-              className="button-style"
-              onClick={PrintXLOrderTable}
-            >
+            <button className="button-style" onClick={PrintXLOrderTable}>
               To Excel
             </button>
           </div>
@@ -1759,7 +1773,7 @@ export default function OrderDetails(props) {
               ) : null}
               <Tab eventKey="orderDetailsForm" title="Order Details">
                 <OrdrDtls
-                key={refreshKey}
+                  key={refreshKey}
                   OrderData={OrderData}
                   OrderCustData={OrderCustData}
                   OrdrDetailsData={OrdrDetailsData}
@@ -1822,7 +1836,6 @@ export default function OrderDetails(props) {
                   }
                   magodCode={magodCode}
                   NewSrlFormData={NewSrlFormData}
-
                   // key={refresh}
                   deleteRowsBySrl={deleteRowsBySrl}
                 />

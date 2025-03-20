@@ -39,7 +39,7 @@ export default function ImportExcelModal(props) {
         }
       );
     }
-  }, [props.OrderData?.Type]); // Dependency array includes OrderData.Type
+  }, [props.OrderData?.Type]); 
 
   useEffect(() => {
     postRequest(

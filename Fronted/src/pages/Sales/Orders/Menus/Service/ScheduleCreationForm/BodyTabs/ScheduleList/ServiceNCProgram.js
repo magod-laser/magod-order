@@ -91,6 +91,16 @@ function ServiceNCProgram() {
 					getNCProgramData();
 				}
 			);
+			postRequest(
+        endpoints.SaveButton,
+        { selectedMachine: selectedMachine, NCprogramForm },
+        (response) => {
+          // console.log("response of Scheduled is",response);
+        //   toast.success("Saved", {
+        //     position: toast.POSITION.TOP_CENTER,
+        //   });
+        }
+      );
 		}
 	};
 

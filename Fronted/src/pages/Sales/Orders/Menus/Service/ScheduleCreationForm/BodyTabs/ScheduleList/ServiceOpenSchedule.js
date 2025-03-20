@@ -465,19 +465,58 @@ function ServiceOpenSchedule() {
     console.log("Scheduled", newState[0].QtyScheduled); // 800
     console.log("To Schedule", newState[0].QtyToSchedule); //100
 
-    // if( newState[0].QtyToSchedule < newState[0].QtyScheduled){
-    if (newState[0].QtyScheduled > newState[0].QtyToSchedule) {
+    // // if( newState[0].QtyToSchedule < newState[0].QtyScheduled){
+    let hasInvalidQty = false;
+    let hasZeroQty = false;
+    let newState1;
+
+    newState.forEach((row) => {
+      if (row.QtyToSchedule === 0) {
+        hasZeroQty = true;
+      }
+      if (row.QtyScheduled > row.QtyToSchedule) {
+        hasInvalidQty = true;
+      }
+    });
+
+    // Show alert if any row has an invalid quantity
+
+    // Show confirmation popup if any row has QtyToSchedule === 0
+    if (hasZeroQty) {
+      if (
+        window.confirm(
+          "Some rows have Qty to Schedule as 0. Do you want to delete them?"
+        )
+      ) {
+        newState1 = newState.filter((row) => row.QtyToSchedule !== 0);
+        setNewState(newState1);
+        console.log("==newState", newState1);
+
+        alert("Rows Deleted");
+        return;
+      } else {
+        alert("Not Scheduled");
+      }
+    }
+    if (hasInvalidQty) {
       alert("Check Qty to Schedule. Make sure Qty to Schedule is correct");
-      // toast.warning("Check Qty to Schedule. Make sure Qty to Schedule is correct", {
-      // position: toast.POSITION.TOP_CENTER,
-      // }
-      // );
-      // toast.error("Not Scheduled", {
-      //   position: toast.POSITION.TOP_CENTER,
-      // });
       alert("Not Scheduled");
       return;
     }
+
+    // if( newState[0].QtyToSchedule < newState[0].QtyScheduled){
+    // if (newState[0].QtyScheduled > newState[0].QtyToSchedule) {
+    //   alert("Check Qty to Schedule. Make sure Qty to Schedule is correct");
+    //   // toast.warning("Check Qty to Schedule. Make sure Qty to Schedule is correct", {
+    //   // position: toast.POSITION.TOP_CENTER,
+    //   // }
+    //   // );
+    //   // toast.error("Not Scheduled", {
+    //   //   position: toast.POSITION.TOP_CENTER,
+    //   // });
+    //   alert("Not Scheduled");
+    //   return;
+    // }
 
     // console.log("123==",scheduleDetailsRow, formdata, newState,  OrdrDetailsData);
 
@@ -1313,16 +1352,44 @@ function ServiceOpenSchedule() {
           >
             <button className="button-style">Close</button>
           </Link> */}
+          <Link
+            to={
+              Type === "Service"
+                ? "/Orders/Service/ScheduleCreationForm"
+                : Type === "Profile"
+                ? "/Orders/Profile/ScheduleCreationForm"
+                : Type === "Fabrication"
+                ? "/Orders/Fabrication/ScheduleCreationForm"
+                : null
+            }
+            state={{
+              Order_No: formdata[0]?.Order_No,
+              Type,
+              Cust_Code: DwgNameList[0]?.Cust_Code,
+            }}
+          >
+            <button
+              className="button-style"
+              onClick={() =>
+                console.log("Navigating with:", {
+                  Order_No: formdata[0]?.Order_No,
+                  Type,
+                })
+              }
+            >
+              Close
+            </button>
+          </Link>
 
           {/* VEERANNA  */}
-          <button
+          {/* <button
             className="button-style "
             // onClick={ NavigationToStepBack}
             onClick={() => navigate(-1)}
             style={{ float: "right" }}
           >
             Close
-          </button>
+          </button> */}
           {/* <button
             onClick={() =>
               customNavigate(
