@@ -270,10 +270,10 @@ export default function ScheduleCreationForm(props) {
   let importdrawings = async (e) => {
     e.preventDefault();
 
-    if (!(orderStatus === "Created" || orderStatus === "Recorded")) {
-      alert("Cannot import after the Order is recorded");
-      return;
-    }
+    // if (!(orderStatus === "Created" || orderStatus === "Recorded")) {
+    //   alert("Cannot import after the Order is recorded");
+    //   return;
+    // }
 
     let materialcode = strmtrlcode;
     let process = strprocess; //e.target.elements.processdescription.value;

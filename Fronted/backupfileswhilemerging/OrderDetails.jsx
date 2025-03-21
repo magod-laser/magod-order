@@ -642,8 +642,8 @@ export default function OrderDetails(props) {
 	const [importdwgmdlshow, setImportDwgmdlShow] = useState(false);
 
 	const handleImportDwgmdl = () => {
-		if (props.OrderData?.Order_Status === "Recorded") {
-			toast.warning("Cannot import after the Order is recorded");
+		if (props.OrderData?.Order_Status === "Processing") {
+			toast.warning("Cannot import after the Order is Processing");
 		} else {
 			setImportDwgmdlShow(true);
 		}

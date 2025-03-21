@@ -365,10 +365,10 @@ export default function OrderDetails(props) {
     e.preventDefault();
     //Console.log("Import Drawings");
 
-    if (!(orderStatus === "Created" || orderStatus === "Recorded")) {
-      alert("Cannot import after the Order is recorded");
-      return;
-    }
+    // if (!(orderStatus === "Created" || orderStatus === "Recorded")) {
+    //   alert("Cannot import after the Order is recorded");
+    //   return;
+    // }
 
     ////Console.log(document.getElementById("mtrlcode").value);
     // let materialcode = mtrlcode; //e.target.elements.mtrlcode.value;
