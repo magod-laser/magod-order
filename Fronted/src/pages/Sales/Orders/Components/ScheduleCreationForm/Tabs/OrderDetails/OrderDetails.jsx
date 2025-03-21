@@ -1558,8 +1558,8 @@ export default function OrderDetails(props) {
                 className="button-style"
                 onClick={() => handleImportDwgmdl()}
                 disabled={
-                  props.OrderData?.Order_Status === "Processing" ||
-                  props.OrderData?.Order_Status === "Recorded"
+                  props.OrderData?.Order_Status === "Processing" 
+                  // props.OrderData?.Order_Status === "Recorded"
                 }
               >
                 Import Dwg

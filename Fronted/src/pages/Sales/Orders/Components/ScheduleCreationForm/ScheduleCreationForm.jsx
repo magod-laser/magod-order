@@ -81,7 +81,8 @@ export default function ScheduleCreationForm(props) {
 
   const location = useLocation();
 
-  const orderNUmber = location.state?.Order_No || props.OrersData;
+  const orderNUmber =
+    location.state?.Order_No || props.OrersData || location?.state;
   const orderType = location.state?.Type || props.Type;
   const Cust_Code = location.state?.Cust_Code;
 
@@ -1222,7 +1223,7 @@ export default function ScheduleCreationForm(props) {
       `${endpoints.getOrdDxf}?dxfName=${filename}&srcPath=${srcpath}`,
       async (res) => {
         if (res.status !== 200) {
-          alert(" Try again Error fetching DXF file");
+          // alert(" Try again Error fetching DXF file");
           return;
         }
         const content = await res.text();
@@ -1308,7 +1309,7 @@ export default function ScheduleCreationForm(props) {
         `${endpoints.getOrdDxf}?dxfName=${filename}&srcPath=${srcpath}`,
         async (res) => {
           if (res.status !== 200) {
-            toast.error(" Try again Error fetching DXF file");
+            // toast.error(" Try again Error fetching DXF file");
             return;
           }
           const content = await res.text();
@@ -1464,7 +1465,7 @@ export default function ScheduleCreationForm(props) {
   //         `${endpoints.getOrdDxf}?dxfName=${filename}&srcPath=${srcpath}`,
   //         async (res) => {
   //           if (res.status !== 200) {
-  //             toast.error(" Try again Error fetching DXF file");
+  //             toast.error(" Search Order List");
   //             return;
   //           }
   //           const content = await res.text();
@@ -1551,7 +1552,7 @@ export default function ScheduleCreationForm(props) {
         `${endpoints.getOrdDxf}?dxfName=${filename}&srcPath=${srcpath}`,
         async (res) => {
           if (res.status !== 200) {
-            toast.error(" Try again Error fetching DXF file");
+            // toast.error(" Try again Error fetching DXF file");
             return;
           }
           const content = await res.text();
@@ -1729,7 +1730,7 @@ export default function ScheduleCreationForm(props) {
           `${endpoints.getOrdDxf}?dxfName=${filename}&srcPath=${srcpath}`,
           async (res) => {
             if (res.status !== 200) {
-              toast.error(" Try again Error fetching DXF file");
+              // toast.error(" Try again Error fetching DXF file");
               return;
             }
             const content = await res.text();
@@ -1870,16 +1871,16 @@ export default function ScheduleCreationForm(props) {
     setFilteredData(OrdrDetailsData);
   }, [OrdrDetailsData]);
 
-   useEffect(() => {
-     postRequest(
-       endpoints.getScheduleListData,
-       { Order_No: OrderData.Order_No },
-       (response) => {
-         setScheduleListData(response);
-         console.log("==Updated scheduleListData:", scheduleListData);
-       }
-     );
-   }, [filteredData]);
+  useEffect(() => {
+    postRequest(
+      endpoints.getScheduleListData,
+      { Order_No: OrderData.Order_No },
+      (response) => {
+        setScheduleListData(response);
+        console.log("==Updated scheduleListData:", scheduleListData);
+      }
+    );
+  }, [filteredData]);
 
   const handleScheduleTypeChange = (event) => {
     const { value } = event.target;

@@ -3,9 +3,9 @@ import Axios from "axios";
 import { Form, Table } from "react-bootstrap";
 
 export default function OLTable(props) {
-console.log("props.FilteredOrderListData",props.FilteredOrderListData);
+  console.log("props.FilteredOrderListData", props.FilteredOrderListData);
 
-const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
 
   // sorting function for table headings of the table
   const requestSort = (key) => {
@@ -26,14 +26,19 @@ const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
         let valueB = b[sortConfig.key];
 
         // Convert only for the "intiger" columns
-        if (
-          sortConfig.key === "Order_No"
-         
-        ) {
+        if (sortConfig.key === "Order_No") {
           valueA = parseFloat(valueA);
           valueB = parseFloat(valueB);
         }
 
+        // Convert Printable_Order_Date to date object for proper sorting
+        if (
+          sortConfig.key === "Printable_Order_Date" ||
+          sortConfig.key === "Printable_Delivery_Date"
+        ) {
+          valueA = new Date(valueA.split("/").reverse().join("-")); // Convert "DD/MM/YYYY" to "YYYY-MM-DD"
+          valueB = new Date(valueB.split("/").reverse().join("-"));
+        }
         if (valueA < valueB) {
           return sortConfig.direction === "asc" ? -1 : 1;
         }
@@ -46,8 +51,6 @@ const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
     return dataCopy;
   };
 
-
-
   return (
     <>
       <div style={{ maxHeight: "50vh", overflow: "auto" }}>
@@ -59,7 +62,9 @@ const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
               <th onClick={() => requestSort("Order_No")}>Order No</th>
               <th onClick={() => requestSort("Printable_Order_Date")}>Date</th>
               <th onClick={() => requestSort("Cust_name")}>Customer</th>
-              <th onClick={() => requestSort("Printable_Delivery_Date")}>Delivery Date</th>
+              <th onClick={() => requestSort("Printable_Delivery_Date")}>
+                Delivery Date
+              </th>
               <th onClick={() => requestSort("Contact_Name")}>Contact Name</th>
               <th onClick={() => requestSort("Purchase_Order")}>PO No</th>
               <th>Special Instructions</th>
