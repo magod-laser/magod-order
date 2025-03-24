@@ -27,6 +27,8 @@ OrderDetailsRouter.post(`/insertnewsrldata`, async (req, res, next) => {
               const orderNo = req.body.requestData.OrderNo;
               const UnitPrice = req.body.requestData.UnitPrice;
               const newOrderSrl = req.body.requestData.newOrderSrl;
+              console.log("newOrderSrl", newOrderSrl);
+
               const custcode = req.body.requestData.custcode;
               const dwgName = req.body.requestData.DwgName;
               const dwgCode = req.body.requestData.Dwg_Code || "";
@@ -1382,72 +1384,191 @@ OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
 });
 
 //ORDER table values update
+// OrderDetailsRouter.post("/ordertablevaluesupdate", async (req, res, next) => {
+//   console.log("ordertablevaluesupdate");
+//   // console.log("req.body", req.body);
+//   // console.log(
+//   //   "req.body.updatedRows.Qty_Ordered",
+//   //   req.body.updatedRows.Qty_Ordered
+//   // );
+//   if (Array.isArray(req.body.updatedRows) && req.body.updatedRows.length > 0) {
+//   console.log(
+//     "req.body.updatedRows[0].Qty_Ordered",
+//     req.body.updatedRows[0].Qty_Ordered
+//   );}
+
+//   try {
+//     // const qtyOrdered = parseInt(req.body.LastSlctedRow.Qty_Ordered);
+//     // const materialRate = parseFloat(req.body.LastSlctedRow.MtrlCost);
+//     // const jwRate = parseFloat(req.body.LastSlctedRow.JWCost);
+//     // const qtyOrdered = parseInt(req.body.updatedRows.Qty_Ordered);
+//     // const materialRate = parseFloat(req.body.updatedRows.MtrlCost);
+//     // const jwRate = parseFloat(req.body.updatedRows.JWCost);
+
+//     // console.log("qtyOrdered", qtyOrdered);
+//     // console.log("materialRate", materialRate);
+//     // console.log("jwRate", jwRate);
+//     // console.log("orderNo", req.body.orderNo, jwRate);
+//     // // console.log("Order_Srl", req.body.LastSlctedRow.Order_Srl);
+//     // console.log("Order_Srl", req.body.updatedRows.Order_Srl);
+
+//     const updateQuery = `
+//     UPDATE magodmis.order_details
+//     SET
+//       Qty_Ordered = CASE WHEN ${qtyOrdered} IS NOT NULL THEN ${qtyOrdered} ELSE Qty_Ordered END,
+//       JWCost = CASE WHEN ${jwRate} IS NOT NULL THEN ${jwRate} ELSE JWCost END,
+//       MtrlCost = CASE WHEN ${materialRate} IS NOT NULL THEN ${materialRate} ELSE MtrlCost END
+//     WHERE Order_No = ${req.body.orderNo} AND Order_Srl = ${req.body.updatedRows.Order_Srl}
+//   `;
+
+//     misQueryMod(updateQuery, (err, cngdata) => {
+//       if (err) {
+//         // console.log("err", err);
+//         logger.error(err);
+//         return next(err);
+//       } else {
+//         // res.send(singlecngdata);
+//         misQueryMod(
+//           `SELECT ordervalue FROM magodmis.order_list WHERE order_no = '${req.body.orderNo}'`,
+//           (err, result) => {
+//             if (err) {
+//               logger.error(err);
+//               return res
+//                 .status(500)
+//                 .send("Error fetching current order value.");
+//             }
+
+//             if (result.length === 0) {
+//               return res.status(404).send("Order not found.");
+//             }
+
+//             const currentOrderValue = result[0].ordervalue;
+//             const newOrderValue = qtyOrdered * (jwRate + materialRate);
+//             const updatedOrderValue = (currentOrderValue || 0) + newOrderValue;
+
+//             // Step 2: Update the ordervalue
+//             misQueryMod(
+//               `UPDATE magodmis.order_list
+// 		       SET ordervalue = ${updatedOrderValue}
+// 		       WHERE order_no = '${req.body.orderNo}'`,
+//               (err, updateResult) => {
+//                 if (err) {
+//                   logger.error(err);
+//                   return res.status(500).send("Error updating order value.");
+//                 }
+//                 // console.log("updateResult", updateResult);
+//                 res.send({ cngdata, updateResult });
+//               }
+//             );
+//           }
+//         );
+//       }
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 OrderDetailsRouter.post("/ordertablevaluesupdate", async (req, res, next) => {
-  // console.log("req.body", req.body);
+  console.log("ordertablevaluesupdate");
+
+  if (
+    !Array.isArray(req.body.updatedRows) ||
+    req.body.updatedRows.length === 0
+  ) {
+    console.log("updatedRows is empty or not an array");
+    return res.status(400).send("Invalid updatedRows data.");
+  }
+
+  const orderNo = req.body.orderNo;
+  console.log("orderNo:", orderNo);
 
   try {
-    const qtyOrdered = parseInt(req.body.LastSlctedRow.Qty_Ordered);
-    const materialRate = parseFloat(req.body.LastSlctedRow.MtrlCost);
-    const jwRate = parseFloat(req.body.LastSlctedRow.JWCost);
+    let updateQueries = [];
 
-    console.log("qtyOrdered", qtyOrdered);
-    console.log("materialRate", materialRate);
-    console.log("jwRate", jwRate);
-    console.log("orderNo", req.body.orderNo, jwRate);
-    console.log("Order_Srl", req.body.LastSlctedRow.Order_Srl);
+    // Prepare update queries for all rows
+    req.body.updatedRows.forEach((row) => {
+      const { Qty_Ordered, MtrlCost, JWCost, Order_Srl } = row;
+      const qtyOrdered = parseInt(Qty_Ordered) || 0;
+      const materialRate = parseFloat(MtrlCost) || 0.0;
+      const jwRate = parseFloat(JWCost) || 0.0;
+      const UnitPrice = jwRate + materialRate || 0.0;
 
-    const updateQuery = `
-    UPDATE magodmis.order_details
-    SET
-      Qty_Ordered = CASE WHEN ${qtyOrdered} IS NOT NULL THEN ${qtyOrdered} ELSE Qty_Ordered END,
-      JWCost = CASE WHEN ${jwRate} IS NOT NULL THEN ${jwRate} ELSE JWCost END,
-      MtrlCost = CASE WHEN ${materialRate} IS NOT NULL THEN ${materialRate} ELSE MtrlCost END
-    WHERE Order_No = ${req.body.orderNo} AND Order_Srl = ${req.body.LastSlctedRow.Order_Srl}
-  `;
+      console.log(
+        `Processing Order_Srl: ${Order_Srl}, Qty_Ordered: ${qtyOrdered}`
+      );
 
-    misQueryMod(updateQuery, (err, cngdata) => {
-      if (err) {
-        // console.log("err", err);
-        logger.error(err);
-        return next(err);
-      } else {
-        // res.send(singlecngdata);
+      const updateQuery = `
+        UPDATE magodmis.order_details
+        SET
+          Qty_Ordered = CASE WHEN ${qtyOrdered} IS NOT NULL THEN ${qtyOrdered} ELSE Qty_Ordered END,
+          JWCost = CASE WHEN ${jwRate} IS NOT NULL THEN ${jwRate} ELSE JWCost END,
+          MtrlCost = CASE WHEN ${materialRate} IS NOT NULL THEN ${materialRate} ELSE MtrlCost END,
+             UnitPrice = CASE WHEN ${UnitPrice} IS NOT NULL THEN ${UnitPrice} ELSE UnitPrice END
+        WHERE Order_No = '${orderNo}' AND Order_Srl = '${Order_Srl}';
+      `;
+      updateQueries.push(updateQuery);
+    });
+
+    // Execute all update queries
+    const updatePromises = updateQueries.map(
+      (query) =>
+        new Promise((resolve, reject) => {
+          misQueryMod(query, (err, result) => {
+            if (err) reject(err);
+            else resolve(result);
+          });
+        })
+    );
+
+    // Execute all updates in parallel
+    await Promise.all(updatePromises);
+    console.log("All rows updated successfully");
+
+    // Fetch the current order value
+    misQueryMod(
+      `SELECT ordervalue FROM magodmis.order_list WHERE order_no = '${orderNo}'`,
+      (err, result) => {
+        if (err) {
+          logger.error(err);
+          return res.status(500).send("Error fetching current order value.");
+        }
+
+        if (result.length === 0) {
+          return res.status(404).send("Order not found.");
+        }
+
+        const currentOrderValue = result[0].ordervalue;
+        let newOrderValue = 0;
+
+        // Calculate total order value
+        req.body.updatedRows.forEach((row) => {
+          const qtyOrdered = parseInt(row.Qty_Ordered) || 0;
+          const materialRate = parseFloat(row.MtrlCost) || 0.0;
+          const jwRate = parseFloat(row.JWCost) || 0.0;
+          newOrderValue += qtyOrdered * (jwRate + materialRate);
+        });
+
+        const updatedOrderValue = (currentOrderValue || 0) + newOrderValue;
+
+        // Update the total order value
         misQueryMod(
-          `SELECT ordervalue FROM magodmis.order_list WHERE order_no = '${req.body.orderNo}'`,
-          (err, result) => {
+          `UPDATE magodmis.order_list
+           SET ordervalue = ${updatedOrderValue}
+           WHERE order_no = '${orderNo}'`,
+          (err, updateResult) => {
             if (err) {
               logger.error(err);
-              return res
-                .status(500)
-                .send("Error fetching current order value.");
+              return res.status(500).send("Error updating order value.");
             }
-
-            if (result.length === 0) {
-              return res.status(404).send("Order not found.");
-            }
-
-            const currentOrderValue = result[0].ordervalue;
-            const newOrderValue = qtyOrdered * (jwRate + materialRate);
-            const updatedOrderValue = (currentOrderValue || 0) + newOrderValue;
-
-            // Step 2: Update the ordervalue
-            misQueryMod(
-              `UPDATE magodmis.order_list
-		       SET ordervalue = ${updatedOrderValue}
-		       WHERE order_no = '${req.body.orderNo}'`,
-              (err, updateResult) => {
-                if (err) {
-                  logger.error(err);
-                  return res.status(500).send("Error updating order value.");
-                }
-                // console.log("updateResult", updateResult);
-                res.send({ cngdata, updateResult });
-              }
-            );
+            res.send({
+              success: true,
+              message: "Rows updated successfully",
+              updateResult,
+            });
           }
         );
       }
-    });
+    );
   } catch (error) {
     next(error);
   }

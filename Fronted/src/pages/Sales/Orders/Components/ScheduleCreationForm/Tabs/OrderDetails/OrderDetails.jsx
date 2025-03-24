@@ -92,7 +92,7 @@ export default function OrderDetails(props) {
 
   const [isLoading, setisLoading] = useState(false);
 
-  console.log("LastSlctedRow", LastSlctedRow);
+  // console.log("LastSlctedRow", LastSlctedRow);
 
   function importExcelFunc() {
     setImportExcelModal(true);
@@ -425,7 +425,7 @@ export default function OrderDetails(props) {
   };
 
   // console.log("blukchangeSelectedItems", selectedItems);
-  console.log("AAfter bulkchange SelectedSrl", selectedSrl);
+  // console.log("AAfter bulkchange SelectedSrl", selectedSrl);
   let singleupdateOrdrData = () => {
     postRequest(
       endpoints.singleChangeUpdate,
@@ -715,7 +715,7 @@ export default function OrderDetails(props) {
         selectedItems: selectedItems,
       },
       (deleteData) => {
-        console.log("deleteData", deleteData);
+        // console.log("deleteData", deleteData);
 
         // if (deleteData.flag > 0) {
         if (deleteData.success === true) {
@@ -728,7 +728,7 @@ export default function OrderDetails(props) {
           setLastSlctedRow(null);
           setordrDetailsChange([]);
 
-          console.log("Deleted successfully");
+          // console.log("Deleted successfully");
           // window.location.reload();
           // setRefreshKey((prev) => prev + 1);
         } else {
@@ -743,7 +743,7 @@ export default function OrderDetails(props) {
   }, []);
 
   function clearSelections() {
-    console.log("clearSelections");
+    // console.log("clearSelections");
 
     setSelectedRows([]); // Clear multi-selection
     setSelectedItems([]); // Clear selected item list
@@ -947,7 +947,7 @@ export default function OrderDetails(props) {
       //   alert("Service is not running. Please start the service.");
       // }
     } catch (error) {
-      console.error("Error:", error);
+      // console.error("Error:", error);
       //alert("Failed to connect to the DXF service. Please ensure the service is running.");
     }
   };
@@ -1007,7 +1007,7 @@ export default function OrderDetails(props) {
                     window.dxffile.name,
                     { type: "text/plain" }
                   );
-                  console.log(newdxf);
+                  // console.log(newdxf);
                   window.dxffile = newdxf;
 
                   // let qno = quotationNo.replaceAll("/", "_");
@@ -1026,10 +1026,10 @@ export default function OrderDetails(props) {
             }
           }
         }
-        console.log(launchservice);
+        // console.log(launchservice);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       if (
         window.confirm(
           "LazerCADService is not installed / running. Do you want to Download the installer ?"
@@ -1164,7 +1164,7 @@ export default function OrderDetails(props) {
         { MtrlCode: strmtrlcode },
         async (mtrldata1) => {
           if (mtrldata1.length > 0) {
-            console.log("MtrlData : ", mtrldata1);
+            // console.log("MtrlData : ", mtrldata1);
             setThickness(mtrldata1[0]["Thickness"]);
             setGradeID(mtrldata1[0]["MtrlGradeID"]);
             setMaterial(mtrldata1[0]["Mtrl_Type"]);
@@ -1188,10 +1188,10 @@ export default function OrderDetails(props) {
       });
 
       for (let i = 0; i < dwgnamefiles.length; i++) {
-        console.log(
-          "material, grade, thickness ",
-          material + " " + grade + " " + thickness
-        );
+        // console.log(
+        //   "material, grade, thickness ",
+        //   material + " " + grade + " " + thickness
+        // );
         await locCalc(dwgnamefiles[i], material, grade, thickness, (output) => {
           impDwgFileData = [
             ...impDwgFileData,
@@ -1221,7 +1221,7 @@ export default function OrderDetails(props) {
           endpoints.dxfCopy,
           { Dwg: dwgnamefiles[i].name, destPath: destPath },
           (res) => {
-            console.log(res);
+            // console.log(res);
           }
         );
         //        copydxf(dwgnamefiles, destPath, (res) => { });
@@ -1286,7 +1286,7 @@ export default function OrderDetails(props) {
     } else {
     }
 
-    console.log("===requestData", requestData);
+    // console.log("===requestData", requestData);
     postRequest(
       endpoints.InsertNewSrlData,
 
@@ -1322,7 +1322,7 @@ export default function OrderDetails(props) {
     formData.append("thickness", thickness);
     formData.append("specficWeight", specificwt); // resp[0].Specific_Wt);
 
-    console.log("Sending to Service");
+    // console.log("Sending to Service");
     // const getCalcReq = await fetch('http://127.0.0.1:21341/getCalc', {
     const getCalcReq = await fetch("http://localhost:21341/getCalc", {
       //const getCalcReq = await fetch(process.env.GETCALC_API, {
@@ -1346,9 +1346,9 @@ export default function OrderDetails(props) {
   };
   // Drawing/Part Name	Material	Operation	Source	Insp Level	Tolerance	Packing Level	LOC	Pierces	JW Cost	Mtrl Cost	Unit Rate	Qty Ordered	Total
   const PrintXLOrderTable = () => {
-    console.log("filteredData", filteredData);
+    // console.log("filteredData", filteredData);
     if (filteredData.length > 0) {
-      console.log("filteredData", filteredData);
+      // console.log("filteredData", filteredData);
       const columns = [
         "DwgName",
         "Mtrl_Code",
@@ -1558,7 +1558,7 @@ export default function OrderDetails(props) {
                 className="button-style"
                 onClick={() => handleImportDwgmdl()}
                 disabled={
-                  props.OrderData?.Order_Status === "Processing" 
+                  props.OrderData?.Order_Status === "Processing"
                   // props.OrderData?.Order_Status === "Recorded"
                 }
               >
@@ -1838,6 +1838,7 @@ export default function OrderDetails(props) {
                   NewSrlFormData={NewSrlFormData}
                   // key={refresh}
                   deleteRowsBySrl={deleteRowsBySrl}
+                  selectedRow={selectedRow}
                 />
               </Tab>
             </Tabs>

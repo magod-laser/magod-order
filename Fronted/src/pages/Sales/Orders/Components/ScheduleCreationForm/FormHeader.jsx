@@ -136,6 +136,11 @@ export default function FormHeader(props) {
             className="button-style"
             onClick={() => {
               updateOrdrData();
+              
+    if (props.saveJWMRChanges) {
+      props.saveJWMRChanges();
+    }
+
             }}
             // onClick={props.openModal}
           >
