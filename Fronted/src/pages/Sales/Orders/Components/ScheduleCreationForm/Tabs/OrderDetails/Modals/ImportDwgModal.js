@@ -575,8 +575,16 @@ function ImportDwgModal(props) {
   };
 
   const handleQuantityChange = (e) => {
-    setFormValues(prev => ({ ...prev, quantity: e.target.value }));
-    setQuantity(e.target.value);
+	
+    // setFormValues(prev => ({ ...prev, quantity: e.target.value }));
+    // setQuantity(e.target.value);
+	const value = e.target.value;
+
+	// Allow only positive whole numbers
+	if (/^\d*$/.test(value)) {
+	  setFormValues((prev) => ({ ...prev, quantity: value }));
+	  setQuantity(value);
+	}
   };
 
   const handleCuttingRateChange = (e) => {
@@ -967,8 +975,8 @@ function ImportDwgModal(props) {
                 </div>
               </div>
 
-              <div className="row ">
-                <div>
+              <div className="row justify-content-end">
+                <div className="col-auto">
                   <button
                     className="button-style"
                     type="submit"
@@ -988,7 +996,7 @@ function ImportDwgModal(props) {
                   <button
                     className="button-style"
                     variant="secondary"
-                    style={{ backgroundColor: "gray" }}
+                    // style={{ backgroundColor: "gray" }}
                     onClick={() => handleModalClose()}
                     // onClick={() => handleCloseImportDwgmdl()}
                     

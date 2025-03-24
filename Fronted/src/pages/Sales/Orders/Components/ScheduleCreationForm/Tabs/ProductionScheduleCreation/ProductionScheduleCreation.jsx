@@ -206,7 +206,9 @@ export default function ProductionScheduleCreation({
               }
             }
           );
+        }
         });
+    
       })
 
 
@@ -544,28 +546,28 @@ export default function ProductionScheduleCreation({
           </div>
         </div>
 
-        <div className="col-md-12 row mt-3">
-          <div className="col-md-1"></div>
+        <div className=" row mt-3 " >
+          {/* <div className="col-md-1"></div> */}
 
-          <div className="col-md-6">
-            <div className="row">
+          {/* <div className="col-md-6 justify-content-center"> */}
+            {/* <div className="row"> */}
               {/* <div className="col-md-4 mt-3 col-sm-12">
                 <button className="button-style" onClick={openFolder}>
                   Open Folder
                 </button>
               </div> */}
 
-              <div className="col-md-4 mt-3 col-sm-12">
+              <div className="col-md-1 mt-3 col-sm-12" style={{marginLeft:"420px"}}>
                 <button className="button-style" onClick={fnCheckDxf}>Check DXF</button>
               </div>
 
-              <div className="col-md-4 mt-3 col-sm-12">
+              <div className="col-md-1 mt-3 col-sm-12">
                 <button className="button-style" onClick={ fnCopyDxf }>Copy DXF</button>
               </div>
-            </div>
-          </div>
+            {/* </div> */}
+          {/* </div> */}
 
-          <div className="col-md-5"></div>
+          {/* <div className="col-md-5"></div> */}
         </div>
       </div>
 

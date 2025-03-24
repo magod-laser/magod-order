@@ -247,10 +247,13 @@ export default function FormHeader(props) {
           <button
             className="button-style"
             onClick={() => {
-              updateOrdrData();
+              
               
     if (props.saveJWMRChanges) {
       props.saveJWMRChanges();
+    }
+    else{
+      updateOrdrData();
     }
 
             }}
