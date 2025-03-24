@@ -77,19 +77,18 @@ const InputField = ({
   );
 };
 export default function ScheduleCreationForm(props) {
-  console.log("props", props);
-
-  
+  // console.log("props", props);
 
   const location = useLocation();
 
-  const orderNUmber = location.state?.Order_No || props.OrersData || location?.state ;
+  const orderNUmber =
+    location.state?.Order_No || props.OrersData || location?.state;
   const orderType = location.state?.Type || props.Type;
   const Cust_Code = location.state?.Cust_Code;
 
-  console.log("0", orderNUmber);
-  console.log("0", orderType);
-  console.log("0", Cust_Code);
+  // console.log("0", orderNUmber);
+  // console.log("0", orderType);
+  // console.log("0", Cust_Code);
 
   const [intSchStatus, setIntSchStatus] = useState(0);
   const [mtrldata, setMtrldata] = useState([]);
@@ -271,10 +270,10 @@ export default function ScheduleCreationForm(props) {
   let importdrawings = async (e) => {
     e.preventDefault();
 
-    if (!(orderStatus === "Created" || orderStatus === "Recorded")) {
-      alert("Cannot import after the Order is recorded");
-      return;
-    }
+    // if (!(orderStatus === "Created" || orderStatus === "Recorded")) {
+    //   alert("Cannot import after the Order is recorded");
+    //   return;
+    // }
 
     let materialcode = strmtrlcode;
     let process = strprocess; //e.target.elements.processdescription.value;
@@ -745,6 +744,69 @@ export default function ScheduleCreationForm(props) {
   //   setFilteredData(updatedDwgdata);
   // };
 
+  // const handleJWMR = (index, field, value) => {
+  //   console.log("value is", value);
+  //   if (value < 0) {
+  //     toast.error("Please Enter a Positive Number", {
+  //       position: toast.POSITION.TOP_CENTER,
+  //     });
+  //     return;
+  //   }
+
+  //   // Check LastSlctedRow exists and update accordingly
+  //   if (!LastSlctedRow) {
+  //     // console.error("LastSlctedRow is undefined.");
+  //     return;
+  //   }
+
+  //   // Update the row in LastSlctedRow safely
+  //   const updatedRow = {
+  //     ...LastSlctedRow,
+  //     [field]: value,
+  //   };
+
+  //   // Save the updated row data in the state
+  //   setLastSlctedRow(updatedRow);
+
+  //   // Update the filteredData for the table view
+  //   const updatedDwgdata = [...filteredData];
+  //   updatedDwgdata[index] = updatedRow;
+  //   setFilteredData(updatedDwgdata);
+  // };
+
+  // const saveJWMRChanges = async () => {
+  //   if (!Object.keys(editedData).length) {
+  //     toast.warning("No changes to update!", {
+  //       position: toast.POSITION.TOP_CENTER,
+  //     });
+  //     return;
+  //   }
+
+  //   const updateOrderDetailsData = {
+  //     orderNo: OrderData.Order_No,
+  //     OrderSrl: selectedSrl,
+  //     LastSlctedRow: LastSlctedRow, // Sending the latest edited row
+  //   };
+
+  //   // console.log("Updating order details:", updateOrderDetailsData);
+
+  //   const orderDetailsResponse = await postRequest(
+  //     endpoints.ordertablevaluesupdate,
+  //     updateOrderDetailsData
+  //   );
+
+  //   if (orderDetailsResponse.success) {
+  //     toast.success("Order details updated successfully", {
+  //       position: toast.POSITION.TOP_CENTER,
+  //     });
+  //     setEditedData({}); // Clear stored changes after successful update
+  //   } else {
+  //     toast.error("Order update failed. Try again!", {
+  //       position: toast.POSITION.TOP_CENTER,
+  //     });
+  //   }
+  // };
+
   const handleJWMR = (index, field, value) => {
     console.log("value is", value);
     if (value < 0) {
@@ -754,25 +816,31 @@ export default function ScheduleCreationForm(props) {
       return;
     }
 
-    // Check LastSlctedRow exists and update accordingly
     if (!LastSlctedRow) {
-      console.error("LastSlctedRow is undefined.");
       return;
     }
 
-    // Update the row in LastSlctedRow safely
+    // Clone row and update field
     const updatedRow = {
-      ...LastSlctedRow,
+      ...filteredData[index], // Ensure we update from the latest row
       [field]: value,
     };
 
-    // Save the updated row data in the state
+    // Save last edited row
     setLastSlctedRow(updatedRow);
 
-    // Update the filteredData for the table view
-    const updatedDwgdata = [...filteredData];
-    updatedDwgdata[index] = updatedRow;
-    setFilteredData(updatedDwgdata);
+    // Update filteredData (create a new array reference for React state update detection)
+    const updatedData = filteredData.map((row, i) =>
+      i === index ? updatedRow : row
+    );
+
+    setFilteredData(updatedData);
+
+    // Store edited fields to track changes before saving
+    setEditedData((prev) => ({
+      ...prev,
+      [updatedRow.Order_Srl]: { ...updatedRow }, // Store changes per row
+    }));
   };
 
   const saveJWMRChanges = async () => {
@@ -785,8 +853,7 @@ export default function ScheduleCreationForm(props) {
 
     const updateOrderDetailsData = {
       orderNo: OrderData.Order_No,
-      OrderSrl: selectedSrl,
-      LastSlctedRow: LastSlctedRow, // Sending the latest edited row
+      updatedRows: Object.values(editedData), // Send all edited rows
     };
 
     console.log("Updating order details:", updateOrderDetailsData);
@@ -800,7 +867,8 @@ export default function ScheduleCreationForm(props) {
       toast.success("Order details updated successfully", {
         position: toast.POSITION.TOP_CENTER,
       });
-      setEditedData({}); // Clear stored changes after successful update
+
+      setEditedData({}); // Clear stored changes
     } else {
       toast.error("Order update failed. Try again!", {
         position: toast.POSITION.TOP_CENTER,
@@ -812,41 +880,64 @@ export default function ScheduleCreationForm(props) {
     // console.log("selectedSrl", selectedSrl);
     // console.log("ordrDetailsChange", ordrDetailsChange);
 
-    postRequest(
-      endpoints.singleChangeUpdate,
-      {
-        OrderNo: Orderno,
-        custcode: props.OrderCustData?.Cust_Code,
-        DwgName: ordrDetailsChange.DwgName,
-        MtrlSrc: ordrDetailsChange.MtrlSrc,
-        quantity: ordrDetailsChange.quantity,
-        OrderSrl: selectedSrl,
-        JwCost: ordrDetailsChange.jwRate,
-        mtrlcost: ordrDetailsChange.materialRate,
+    // postRequest(
+    //   endpoints.singleChangeUpdate,
+    //   {
+    //     OrderNo: Orderno,
+    //     custcode: props.OrderCustData?.Cust_Code,
+    //     DwgName: ordrDetailsChange.DwgName,
+    //     MtrlSrc: ordrDetailsChange.MtrlSrc,
+    //     quantity: ordrDetailsChange.quantity,
+    //     OrderSrl: selectedSrl,
+    //     JwCost: ordrDetailsChange.jwRate,
+    //     mtrlcost: ordrDetailsChange.materialRate,
 
-        unitPrice:
-          parseFloat(ordrDetailsChange.jwRate) +
-          parseFloat(ordrDetailsChange.materialRate),
-        Operation: ordrDetailsChange.Operation,
-        InspLvl: ordrDetailsChange.InspLvl,
-        PkngLvl: ordrDetailsChange.PkngLvl,
-        strmtrlcode: LastSlctedRow?.Mtrl_Code,
-      },
-      async (singleChngData) => {
-        if (singleChngData.affectedRows != 0) {
-          toast.success("Updated successfully");
-          fetchData();
-          // setSelectedRow(null);
-          // setSelectedRows([]);
-          // setSelectedRowItems([]);
-          // setSelectedItems([]);
-          // setLastSlctedRow([]);
-          // setSelectedSrl([]);
+    //     unitPrice:
+    //       parseFloat(ordrDetailsChange.jwRate) +
+    //       parseFloat(ordrDetailsChange.materialRate),
+    //     Operation: ordrDetailsChange.Operation,
+    //     InspLvl: ordrDetailsChange.InspLvl,
+    //     PkngLvl: ordrDetailsChange.PkngLvl,
+    //     strmtrlcode: LastSlctedRow?.Mtrl_Code,
+    //   },
+    //   async (singleChngData) => {
+    //     if (singleChngData.affectedRows != 0) {
+    //       toast.success("Updated successfully");
+    //       fetchData();
+    //       // setSelectedRow(null);
+    //       // setSelectedRows([]);
+    //       // setSelectedRowItems([]);
+    //       // setSelectedItems([]);
+    //       // setLastSlctedRow([]);
+    //       // setSelectedSrl([]);
+    //     } else {
+    //       toast.warning("Serial not updated check once");
+    //     }
+    //   }
+    // );
+    const postRequest = async (url, data) => {
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          return { success: true, data: result };
         } else {
-          toast.warning("Serial not updated check once");
+          console.error("Error in postRequest:", result);
+          return { success: false, error: result };
         }
+      } catch (error) {
+        console.error("Network error in postRequest:", error);
+        return { success: false, error };
       }
-    );
+    };
 
     // window.location.reload();
   };
@@ -1231,7 +1322,7 @@ export default function ScheduleCreationForm(props) {
       `${endpoints.getOrdDxf}?dxfName=${filename}&srcPath=${srcpath}`,
       async (res) => {
         if (res.status !== 200) {
-          alert(" Try again Error fetching DXF file");
+          // alert(" Try again Error fetching DXF file");
           return;
         }
         const content = await res.text();
@@ -1317,7 +1408,7 @@ export default function ScheduleCreationForm(props) {
         `${endpoints.getOrdDxf}?dxfName=${filename}&srcPath=${srcpath}`,
         async (res) => {
           if (res.status !== 200) {
-            toast.error(" Try again Error fetching DXF file");
+            // toast.error(" Try again Error fetching DXF file");
             return;
           }
           const content = await res.text();
@@ -1473,7 +1564,7 @@ export default function ScheduleCreationForm(props) {
   //         `${endpoints.getOrdDxf}?dxfName=${filename}&srcPath=${srcpath}`,
   //         async (res) => {
   //           if (res.status !== 200) {
-  //             toast.error(" Try again Error fetching DXF file");
+  //             toast.error(" Search Order List");
   //             return;
   //           }
   //           const content = await res.text();
@@ -1500,14 +1591,14 @@ export default function ScheduleCreationForm(props) {
   //   setSelectedSrl([]);
   // };
   const handleRowClick = async (rowData) => {
-    console.log("rowData-123456", rowData);
+    // console.log("rowData-123456", rowData);
 
     setSelectedItems([]);
     setSelectedSrl([]);
 
     if (!rowData || !rowData.Order_Srl) {
       // if (!rowData ) {
-      console.error("Invalid rowData", rowData);
+      // console.error("Invalid rowData", rowData);
       alert("Invalid rowData, Please check");
       return;
     }
@@ -1560,7 +1651,7 @@ export default function ScheduleCreationForm(props) {
         `${endpoints.getOrdDxf}?dxfName=${filename}&srcPath=${srcpath}`,
         async (res) => {
           if (res.status !== 200) {
-            toast.error(" Try again Error fetching DXF file");
+            // toast.error(" Try again Error fetching DXF file");
             return;
           }
           const content = await res.text();
@@ -1697,7 +1788,7 @@ export default function ScheduleCreationForm(props) {
       const lastUncheckedRow =
         updatedSelectedItems[updatedSelectedItems.length] || null;
       // setSelectedRow(lastSelectedRow);
-      console.log("lastSelectedRow", lastSelectedRow);
+      // console.log("lastSelectedRow", lastSelectedRow);
       // console.log("lastUncheckedRow", lastUncheckedRow);
       // console.log("selectedRows", selectedRows);
 
@@ -1738,7 +1829,7 @@ export default function ScheduleCreationForm(props) {
           `${endpoints.getOrdDxf}?dxfName=${filename}&srcPath=${srcpath}`,
           async (res) => {
             if (res.status !== 200) {
-              toast.error(" Try again Error fetching DXF file");
+              // toast.error(" Try again Error fetching DXF file");
               return;
             }
             const content = await res.text();
@@ -1760,11 +1851,11 @@ export default function ScheduleCreationForm(props) {
     setSelectedRow(null);
   };
   // console.log("multiSelectedRows", selectedRows);
-  console.log("multiSelectedRow", selectedRow);
-  console.log("multiSelectedRows", selectedRows);
-  console.log("multiLastSlctedRow", LastSlctedRow);
-  console.log("multiSelectedItems", selectedItems);
-  console.log("multiSelectedSrl", selectedSrl);
+  // console.log("multiSelectedRow", selectedRow);
+  // console.log("multiSelectedRows", selectedRows);
+  // console.log("multiLastSlctedRow", LastSlctedRow);
+  // console.log("multiSelectedItems", selectedItems);
+  // console.log("multiSelectedSrl", selectedSrl);
 
   //28-01-2025
   // // // Checkbox selection handler
@@ -1848,7 +1939,7 @@ export default function ScheduleCreationForm(props) {
     setSelectedItems(OrdrDetailsData);
     // Extract Order_Srl from selected items
     const selectedOrderSrl = OrdrDetailsData.map((item) => item.Order_Srl);
-    console.log("selectallselectedOrderSrl", selectedOrderSrl);
+    // console.log("selectallselectedOrderSrl", selectedOrderSrl);
     setSelectedSrl(selectedOrderSrl); // Update selectedSrl state
   };
 
@@ -1879,22 +1970,22 @@ export default function ScheduleCreationForm(props) {
     setFilteredData(OrdrDetailsData);
   }, [OrdrDetailsData]);
 
-   useEffect(() => {
-     postRequest(
-       endpoints.getScheduleListData,
-       { Order_No: OrderData.Order_No },
-       (response) => {
-         setScheduleListData(response);
-         console.log("==Updated scheduleListData:", scheduleListData);
-       }
-     );
-   }, [filteredData]);
+  useEffect(() => {
+    postRequest(
+      endpoints.getScheduleListData,
+      { Order_No: OrderData.Order_No },
+      (response) => {
+        setScheduleListData(response);
+        // console.log("==Updated scheduleListData:", scheduleListData);
+      }
+    );
+  }, [filteredData]);
 
   const handleScheduleTypeChange = (event) => {
     const { value } = event.target;
     setScheduleType(value);
 
-    console.log("=Radio Button Changed:", value);
+    // console.log("=Radio Button Changed:", value);
 
     if (value === "Job Work") {
       const JWData = OrdrDetailsData.filter(
@@ -1935,6 +2026,7 @@ export default function ScheduleCreationForm(props) {
   return (
     <>
       <div>
+        {/* <button onClick={saveJWMRChanges}>update</button> */}
         <FormHeader
           OrderData={OrderData}
           OrderCustData={OrderCustData}
@@ -1946,7 +2038,12 @@ export default function ScheduleCreationForm(props) {
           openModal={openModal}
           closeModal={closeModal}
           updateOrdrData={updateOrdrData}
-          saveJWMRChanges={saveJWMRChanges}
+          // saveJWMRChanges={saveJWMRChanges}
+          saveJWMRChanges={
+            editedData && Object.keys(editedData).length > 0
+              ? saveJWMRChanges
+              : null
+          }
         />
 
         <Tabs className="nav-tabs tab_font">

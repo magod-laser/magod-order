@@ -514,11 +514,16 @@ function OrdrTable(props) {
                 }}
                 data-srlstatus={OrdrDetailsItem.SrlStatus}
               >
-                <td 
-                  style={{ textAlign: "center", paddingLeft: "10px", display: "flex", justifyContent: "center", alignItems: "center"  }}                
+                <td
+                  style={{
+                    textAlign: "center",
+                    paddingLeft: "10px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
                 >
                   <Form.Check
-
                     type="checkbox"
                     id={`select-checkbox-${i}`}
                     checked={selectedRows.some(
@@ -554,9 +559,12 @@ function OrdrTable(props) {
                     // onChange={(e) =>
                     //   handleJWMR(i, "Qty_Ordered", e.target.value)
                     // }
-                    onChange={(e) => {
-                      handleJWMR(i, "Qty_Ordered", e.target.value, true); // Pass `true` for JRM
-                    }}
+                    // onChange={(e) => {
+                    //   handleJWMR(i, "Qty_Ordered", e.target.value, true);
+                    // }}
+                    onChange={(e) =>
+                      handleJWMR(i, "Qty_Ordered", e.target.value)
+                    }
                   />
                 </td>
                 <td>
@@ -570,7 +578,7 @@ function OrdrTable(props) {
                     value={OrdrDetailsItem.JWCost}
                     // onChange={(e) => handleJWMR(i, "JWCost", e.target.value)}
                     onChange={(e) => {
-                      handleJWMR(i, "JWCost", e.target.value, true); // Pass `true` for JRM
+                      handleJWMR(i, "JWCost", e.target.value, true);
                     }}
                   />
                 </td>
@@ -585,13 +593,19 @@ function OrdrTable(props) {
                     value={OrdrDetailsItem.MtrlCost}
                     // onChange={(e) => handleJWMR(i, "MtrlCost", e.target.value)}
                     onChange={(e) => {
-                      handleJWMR(i, "MtrlCost", e.target.value, true); // Pass `true` for JRM
+                      handleJWMR(i, "MtrlCost", e.target.value, true);
                     }}
                   />
                 </td>
                 <td>
                   {/* <input value={OrdrDetailsItem.UnitPrice} /> */}
-                  {OrdrDetailsItem.UnitPrice}
+                  {/* {OrdrDetailsItem.UnitPrice} */}
+                  {/* {parseFloat(parseFloat(OrdrDetailsItem.MtrlCost) +
+                    parseFloat(OrdrDetailsItem.JWCost))} */}
+                  {(
+                    parseFloat(OrdrDetailsItem.MtrlCost) +
+                    parseFloat(OrdrDetailsItem.JWCost)
+                  ).toFixed(2)}
                 </td>
                 <td>{OrdrDetailsItem.LOC}</td>
                 <td>{OrdrDetailsItem.Holes}</td>
@@ -599,23 +613,21 @@ function OrdrTable(props) {
                 <td>{OrdrDetailsItem.PackingLevel}</td>
 
                 <td>{OrdrDetailsItem.tolerance}</td>
-               
+
                 {/* <td>
 									{" "}
 									<input value={OrdrDetailsItem.JWCost} />{" "}
 								</td> */}
 
-               
                 {/* <td>
 									<input value={OrdrDetailsItem.MtrlCost} />
 								</td> */}
-                
-               
+
                 {/* <td> */}
                 {/* <input value={OrdrDetailsItem.Qty_Ordered} /> */}
                 {/* {OrdrDetailsItem.Qty_Ordered} */}
                 {/* </td> */}
-                
+
                 <td>
                   {parseFloat(
                     OrdrDetailsItem.UnitPrice * OrdrDetailsItem.Qty_Ordered

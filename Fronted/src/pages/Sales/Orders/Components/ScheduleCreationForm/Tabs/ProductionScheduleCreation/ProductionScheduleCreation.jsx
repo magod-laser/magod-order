@@ -45,8 +45,8 @@ export default function ProductionScheduleCreation({
     }
   }, [OrderData, scheduleType]);
 
-  console.log("OrderData", OrderData);
-
+  // console.log("OrderData",OrderData);
+  
   //onclick Refresh Status
   const onClickRefreshStatus = () => {
     toast.success("Status Updated", {
@@ -63,12 +63,12 @@ export default function ProductionScheduleCreation({
     } else {
       let filteredItems;
 
-      console.log(
-        "scheduleOption is",
-        scheduleOption,
-        "scheduleType is",
-        scheduleType
-      );
+      // console.log(
+      //   "scheduleOption is",
+      //   scheduleOption,
+      //   "scheduleType is",
+      //   scheduleType
+      // );
 
       if (scheduleType === "Job Work") {
         if (scheduleOption === "Full Order") {
@@ -92,7 +92,7 @@ export default function ProductionScheduleCreation({
         }
       }
 
-      console.log("filteredItems is", filteredItems);
+      // console.log("filteredItems is", filteredItems);
 
       // Check if filteredItems is empty
       if (!filteredItems || filteredItems.length === 0) {
@@ -129,9 +129,9 @@ export default function ProductionScheduleCreation({
           ...process,
           label: process.Operation,
         }));
-
-        console.log("arr...", arr);
-
+      
+        // console.log("arr...", arr);
+      
         // Check if the selected item's Operation exists in arr
         const allOperations = arr.map((proc) => proc.Operation);
 
@@ -150,18 +150,18 @@ export default function ProductionScheduleCreation({
             ...material,
             label: material.Mtrl_Code,
           }));
-
-          console.log("all Material List: ", materialArr);
-          console.log("all Material Codes: ", materialArr.map(mtrl => mtrl.Mtrl_Code));
-
+      
+          // console.log("all Material List: ", materialArr);
+          // console.log("all Material Codes: ", materialArr.map(mtrl => mtrl.Mtrl_Code));
+      
           // Check if the selected item's mtrl_code exists in materialArr
           // const allMtrlCodes = materialArr.map((mtrl) => mtrl === mtrl.Mtrl_Code);
 
           const allMtrlCodes = materialArr.map((mtrl) => mtrl.Mtrl_Code);
 
           const hasValidMtrlCode = filteredItems2.every((item) => {
-            console.log("all checking item:", item); // Log each item in filteredItems2
-            console.log("all Mtrl_Code in item:", item.Mtrl_Code);
+            // console.log("all checking item:", item); // Log each item in filteredItems2
+            // console.log("all Mtrl_Code in item:", item.Mtrl_Code);
             return allMtrlCodes.includes(item.Mtrl_Code);
           });
 
@@ -191,7 +191,7 @@ export default function ProductionScheduleCreation({
                   endpoints.getScheduleListData,
                   { Order_No: OrderData.Order_No },
                   (response) => {
-                    console.log("response");
+                    // console.log("response");
                     setScheduleListData(response);
                   }
                 );

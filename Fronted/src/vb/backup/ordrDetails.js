@@ -731,8 +731,8 @@ export default function OrderDetails(props) {
       };
       ////  //console.log("clicked on Add new serial button");
     } else if (flag === 2) {
-      if (props.OrderData?.Order_Status === "Recorded") {
-        toast.warning("Cannot import after the Order is recorded");
+      if (props.OrderData?.Order_Status === "Processing") {
+        toast.warning("Cannot import after the Order is Processing");
       } else {
         handleImportDwgmdl();
       }

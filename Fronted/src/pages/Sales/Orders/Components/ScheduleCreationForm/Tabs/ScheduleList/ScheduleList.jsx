@@ -32,7 +32,7 @@ export default function ScheduleList({
 
   // Fetch schedule list data when OrderData changes
   useEffect(() => {
-    console.log("enetring into the Fetch schedule list data ");
+    // console.log("enetring into the Fetch schedule list data ");
 
     if (OrderData && OrderData.Order_No) {
       postRequest(
@@ -40,15 +40,15 @@ export default function ScheduleList({
         { Order_No: OrderData.Order_No },
         (response) => {
           setScheduleListData(response);
-          console.log("==Updated scheduleListData:", scheduleListData);
+        //   console.log("==Updated scheduleListData:", scheduleListData);
         }
       );
     }
   }, [OrderData, setScheduleListData]);
 
-  useEffect(() => {
-    console.log("Updated scheduleListData:", scheduleListData.length);
-  }, [scheduleListData]);
+//   useEffect(() => {
+//     console.log("Updated scheduleListData:", scheduleListData.length);
+//   }, [scheduleListData]);
 
   //onClick ScheduleList table
   const [DwgNameList, setDwgNameList] = useState([]);
