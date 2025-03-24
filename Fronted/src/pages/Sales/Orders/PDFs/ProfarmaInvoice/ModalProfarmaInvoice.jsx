@@ -26,6 +26,7 @@ export default function ModalProfarmaInvoice(props) {
 
   function fetchPDFData() {
     Axios.post(endpoints.getPDFData, {}).then((res) => {
+      console.log(" axios response ::", res.data[0]);
       setPDFData(res.data[0]);
     });
   }
@@ -80,42 +81,47 @@ export default function ModalProfarmaInvoice(props) {
   //   }
   // };
 
+  useEffect(() => {
+    if (props.printInvoiceModal) {
+      fetchPDFData();
+    }
+  }, [props.printInvoiceModal]);
 
-   const savePdfToServer = async () => {
-     try {
-       const adjustment = "Performa_Invoice"; // Replace with the actual name you want to send
+  const savePdfToServer = async () => {
+    try {
+      const adjustment = "Performa_Invoice"; // Replace with the actual name you want to send
 
-       // Step 1: Call the API to set the adjustment name
-       await axios.post(baseURL + `/PDF/set-adjustment-name`, { adjustment });
-       const blob = await pdf(
-         <PrintProfarmaInvoice
+      // Step 1: Call the API to set the adjustment name
+      await axios.post(baseURL + `/PDF/set-adjustment-name`, { adjustment });
+      const blob = await pdf(
+        <PrintProfarmaInvoice
           PDFData={PDFData}
           rowLimit={props.rowLimit}
           profarmaMainData={props.profarmaMainData}
           profarmaDetailsData={props.profarmaDetailsData}
           profarmaTaxData={props.profarmaTaxData}
         />
-       ).toBlob();
+      ).toBlob();
 
-       const file = new File([blob], "GeneratedPDF.pdf", {
-         type: "application/pdf",
-       });
+      const file = new File([blob], "GeneratedPDF.pdf", {
+        type: "application/pdf",
+      });
 
-       const formData = new FormData();
+      const formData = new FormData();
 
-       formData.append("file", file);
+      formData.append("file", file);
 
-       const response = await axios.post(baseURL + `/PDF/save-pdf`, formData, {
-         headers: { "Content-Type": "multipart/form-data" },
-       });
+      const response = await axios.post(baseURL + `/PDF/save-pdf`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-       if (response.status === 200) {
-         toast.success("PDF saved successfully!");
-       }
-     } catch (error) {
-       console.error("Error saving PDF to server:", error);
-     }
-   };
+      if (response.status === 200) {
+        toast.success("PDF saved successfully!");
+      }
+    } catch (error) {
+      console.error("Error saving PDF to server:", error);
+    }
+  };
   return (
     <>
       <Modal fullscreen show={props.printInvoiceModal} onHide={handleClose}>
@@ -133,7 +139,7 @@ export default function ModalProfarmaInvoice(props) {
             <div>
               <button
                 className="button-style"
-                variant="primary"                
+                variant="primary"
                 style={{ fontSize: "10px", marginRight: "35px" }}
                 onClick={savePdfToServer}
               >
