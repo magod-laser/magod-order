@@ -9,6 +9,8 @@ const { sendDueList } = require("../helpers/sendmail");
 const { logger } = require("../helpers/logger");
 
 customerRouter.post("/allcustomers", async (req, res, next) => {
+	console.log(" all customersss");
+	
 	try {
 		misQueryMod(
 			"Select * from magodmis.cust_data  where CURRENT !=0 order by Cust_name asc",

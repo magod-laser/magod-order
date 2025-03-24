@@ -568,12 +568,15 @@ function ImportDwgModal(props) {
       dgfiles: dwgfiles,
     };
 
-    // console.log("imprtdwgobjtemp", imprtdwgobjtemp);
+    console.log("imprtdwgobjtemp", imprtdwgobjtemp);
 
     setImprtDwgObj(imprtdwgobjtemp);
     PostOrderDetails(2, imprtdwgobjtemp);
     setImportDwgmdlShow(false);
   };
+
+  console.log("2403imprtDwgObj",imprtDwgObj);
+  
 	return (
 		<div
 			className="row mt-1"

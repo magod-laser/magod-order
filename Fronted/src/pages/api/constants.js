@@ -72,8 +72,11 @@ export const endpoints = {
   sendAttachmentMails: `${API}/mailer/sendDirectMail`,
 
   dxfupload: `${API}/file/uploaddxf`,
-  getDwgFiles: `${API}/file/getdxfnames`,
+  //getDwgFiles: `${API}/file/getdxfnames`,
+  getDwgFiles: `${API}/file/getfolderfilenames`,
   dxfCopy: `${API}/file/copydxf`,
+  checkDxf: `${API}/file/checkdxf`,
+  orderCopyDxf:`${API}/file/ordcopydxf`,
   getOrdDxf: `${API}/file/orddxf`,
   getStates: `${API}/states/allstates`,
   getStateCode: `${API}/states/getstatecode`,

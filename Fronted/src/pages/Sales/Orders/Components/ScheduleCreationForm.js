@@ -27,6 +27,7 @@ export default function ScheduleCreationForm(props) {
 
   const [orderStatus, setOrderStatus] = useState("Created");
   const [orderSrl, setOrderSrl] = useState(0);
+  //let [dxfFolderShow, setDxfFolderShow] = useState(false);
 
   let [Orderno, setOrderno] = useState("");
   let [ordertype, setOrdertype] = useState("");
@@ -258,7 +259,7 @@ export default function ScheduleCreationForm(props) {
             mtrldata[0]["Mtrl_Type"],
             mtrldata[0]["Grade"],
             mtrldata[0]["Thickness"],
-            (output) => {}
+            (output) => { }
           );
         }
       }
@@ -368,6 +369,28 @@ export default function ScheduleCreationForm(props) {
     const content = await rawResponse.json();
     response(content);
   }
+
+  const fnOpenFolder = () => {
+alert("Scchedule Creation Form.jsx - Open Folder");
+
+    // let docNo = Orderno;
+    // let Doctype = "Order";
+    // let mspath = process.env.REACT_APP_SERVER_FILES;
+    // let mpath = `${mspath}\\${docNo}\\DXF\\`;
+
+    // //***************************************************** */
+    // // Popup to open the folder 
+    // //***************************************************** */
+    // setDxfFolderShow(true);
+
+    // let destPath = `\\Wo\\` + docNo + "\\DXF\\";
+
+    // postRequest(endpoints.getDwgFiles, { Doctype, docNo, destPath }, (fileslist) => {
+    //   setBS_DxfFilesList(fileslist);
+    // });
+
+  }
+
 
   let importdrawings = async (e) => {
     e.preventDefault();
@@ -602,7 +625,7 @@ export default function ScheduleCreationForm(props) {
                 <input
                   type="text"
                   className="mt-2"
-                  // value={orders.CustomerContact}
+                // value={orders.CustomerContact}
                 />
               </div>
               <div className="col-md-4 sm-12 ">
@@ -743,12 +766,12 @@ export default function ScheduleCreationForm(props) {
               </div>
             </div>
             <div className="col-md-12 row">
-              <div className="col-md-1"></div>
+              {/* <div className="col-md-1"></div> */}
 
               <div className="col-md-6">
                 <div className="row">
                   <div className="col-md-4 mt-3 col-sm-12">
-                    <button className="button-style">Open Folder</button>
+                    <button className="button-style" onClick={fnOpenFolder}>Open Folder</button>
                   </div>
 
                   <div className="col-md-4 mt-3 col-sm-12">
@@ -2227,6 +2250,8 @@ export default function ScheduleCreationForm(props) {
           </Modal.Body>
         </Modal>
       </div>
+
+
     </div>
   );
 }

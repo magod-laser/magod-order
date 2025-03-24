@@ -45,8 +45,8 @@ export default function ProductionScheduleCreation({
     }
   }, [OrderData, scheduleType]);
 
-  console.log("OrderData",OrderData);
-  
+  console.log("OrderData", OrderData);
+
   //onclick Refresh Status
   const onClickRefreshStatus = () => {
     toast.success("Status Updated", {
@@ -102,7 +102,7 @@ export default function ProductionScheduleCreation({
         return; // Exit the function without making the API request
       }
 
-       // Check if material and operation with table data
+      // Check if material and operation with table data
       //  if (!filteredItems || filteredItems.length === 0) {
       //   toast.warning("No items to schedule", {
       //     position: toast.POSITION.TOP_CENTER,
@@ -123,22 +123,22 @@ export default function ProductionScheduleCreation({
         return; // Exit the function without making the API request
       }
 
-       // get process list
-       getRequest(endpoints.getProcessLists, (pdata) => {
+      // get process list
+      getRequest(endpoints.getProcessLists, (pdata) => {
         let arr = pdata.map((process) => ({
           ...process,
           label: process.Operation,
         }));
-      
+
         console.log("arr...", arr);
-      
+
         // Check if the selected item's Operation exists in arr
         const allOperations = arr.map((proc) => proc.Operation);
-        
+
         const hasValidOperation = filteredItems2.every(item =>
           allOperations.includes(item.Operation)
         );
-      
+
         if (!hasValidOperation) {
           toast.warning("Operation is not matching", {
             position: toast.POSITION.TOP_CENTER,
@@ -150,13 +150,13 @@ export default function ProductionScheduleCreation({
             ...material,
             label: material.Mtrl_Code,
           }));
-      
+
           console.log("all Material List: ", materialArr);
           console.log("all Material Codes: ", materialArr.map(mtrl => mtrl.Mtrl_Code));
-      
+
           // Check if the selected item's mtrl_code exists in materialArr
           // const allMtrlCodes = materialArr.map((mtrl) => mtrl === mtrl.Mtrl_Code);
-      
+
           const allMtrlCodes = materialArr.map((mtrl) => mtrl.Mtrl_Code);
 
           const hasValidMtrlCode = filteredItems2.every((item) => {
@@ -164,14 +164,14 @@ export default function ProductionScheduleCreation({
             console.log("all Mtrl_Code in item:", item.Mtrl_Code);
             return allMtrlCodes.includes(item.Mtrl_Code);
           });
-          
-            if (!hasValidMtrlCode) {
+
+          if (!hasValidMtrlCode) {
             toast.warning("Material Code is not matching", {
               position: toast.POSITION.TOP_CENTER,
             });
             return; // Exit if material code does not match
           }
-      
+
           postRequest(
             endpoints.CreateProductionSchedule,
             {
@@ -179,8 +179,8 @@ export default function ProductionScheduleCreation({
               scheduleType: scheduleType,
               selectedItems: filteredItems2,
               scheduleOption: scheduleOption,
-              filteredItems:filteredItems
-              
+              filteredItems: filteredItems
+
             },
             (response) => {
               if (response.message === "Draft Schedule Created") {
@@ -205,7 +205,7 @@ export default function ProductionScheduleCreation({
         });
       })
 
-     
+
 
       // postRequest(
       //   endpoints.CreateProductionSchedule,
@@ -215,7 +215,7 @@ export default function ProductionScheduleCreation({
       //     selectedItems: filteredItems2,
       //     scheduleOption: scheduleOption,
       //     filteredItems:filteredItems
-          
+
       //   },
       //   (response) => {
       //     if (response.message === "Draft Schedule Created") {
@@ -250,7 +250,42 @@ export default function ProductionScheduleCreation({
     setLastSlctedRow(null);
     setSelectedRow(null);
   };
-    console.log("After sch selectedSrl:", selectedSrl);
+
+  // copy Dxf Button Click
+  const fnCopyDxf = async () => {
+    // console.log("OrderData: ",OrderData);
+    // console.log("selectedSrl :",selectedSrl);
+    // console.log("OrdrDetailsData :",OrdrDetailsData);
+    // console.log("selectedItems :",selectedItems);
+   // console.log(LastSlctedRow);
+//    alert("fnCopyDxf")
+    let custcd = OrderData.Cust_Code;
+    let custpath = process.env.REACT_APP_SERVER_CUST_PATH;
+    let custdwgname = selectedItems[0].DwgName
+    
+    let orderno = OrderData.Order_No;
+
+    let srcfolder = custpath+'\\'+custcd;
+    let destfolder= process.env.REACT_APP_SERVER_FILES+'\\'+ orderno;
+
+    await postRequest(endpoints.orderCopyDxf, {srcfolder,destfolder,custdwgname}, (copydata) => {
+  //    console.log("Order copy Dxf : ",copydata.message);
+      alert(copydata.status);
+    })
+  }
+
+  // Check Dxf Button Click
+  const fnCheckDxf = async () => {
+ //   alert("fnCheckDxf");
+  //  console.log("Order No :", OrderData.Order_No)
+    let orderno = OrderData.Order_No;
+    await postRequest(endpoints.checkDxf,{orderno},(checkdata)=>{
+ //     console.log("check dxf: ",checkdata);
+
+    })
+  }
+
+  console.log("After sch selectedSrl:", selectedSrl);
   //   console.log("After clearing2:", selectedRows);
   //   console.log("After clearing2:", selectedItems);
 
@@ -317,7 +352,7 @@ export default function ProductionScheduleCreation({
   };
 
   //open Folder
-  const openFolder = () => {};
+  const openFolder = () => { };
 
   return (
     <>
@@ -513,14 +548,14 @@ export default function ProductionScheduleCreation({
                   Open Folder
                 </button>
               </div> */}
-              {/* 
+
               <div className="col-md-4 mt-3 col-sm-12">
-                <button className="button-style">Check DXF</button>
+                <button className="button-style" onClick={fnCheckDxf}>Check DXF</button>
               </div>
 
               <div className="col-md-4 mt-3 col-sm-12">
-                <button className="button-style">Copy DXF</button>
-              </div> */}
+                <button className="button-style" onClick={ fnCopyDxf }>Copy DXF</button>
+              </div>
             </div>
           </div>
 
