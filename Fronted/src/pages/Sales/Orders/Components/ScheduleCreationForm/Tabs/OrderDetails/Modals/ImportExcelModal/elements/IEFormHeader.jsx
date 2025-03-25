@@ -54,14 +54,22 @@ export default function IEFormHeader(props) {
             parsedData[0].Mtrl_Cost === ""
           )
         ) {
+          console.log("Keys in parsedData[0]:", Object.keys(parsedData[0]));
+console.log("parsedData[0]:", parsedData[0]);  // Print the full object for reference
+
+          
           if (
             parsedData[0].Dwg_Name &&
             parsedData[0].Mtrl_Code &&
             parsedData[0].Source &&
             parsedData[0].Operation &&
-            parsedData[0].Order_Qty &&
-            parsedData[0].JW_Cost &&
-            parsedData[0].Mtrl_Cost
+            //
+            "Order_Qty" in parsedData[0] &&
+            parsedData[0].Order_Qty !== undefined &&
+            "JW_Cost" in parsedData[0] &&
+            parsedData[0].JW_Cost !== undefined &&
+            "Mtrl_Cost" in parsedData[0] &&
+            parsedData[0].Mtrl_Cost !== undefined
           ) {
             let procData = props.procdata?.filter((obj) =>
               props.OrderData.Type === "Service"
@@ -86,7 +94,7 @@ export default function IEFormHeader(props) {
             // making array for process data
             for (let i = 0; i < procData.length; i++) {
               const element = procData[i];
-             console.log("element",element);
+              console.log("element", element);
               // processArray.push(element.ProcessDescription);
               processArray.push(element.Operation);
             }
@@ -115,10 +123,10 @@ export default function IEFormHeader(props) {
 
               // check for operation
               console.log("=processArray", processArray);
-              
+
               if (processArray.includes(element.Operation)) {
                 console.log("=element.Operation", element.Operation);
-                
+
                 element.operationError = false;
               } else {
                 element.operationError = true;
@@ -148,9 +156,30 @@ export default function IEFormHeader(props) {
             props.setImportedExcelData(parsedData);
             toast.success("All order details correctly loaded.");
           } else {
-            toast.error(
-              `Template error, Please click on "Download Excel Template"`
-            );
+            let missingFields = [];
+
+            if (!("Dwg_Name" in parsedData[0])) missingFields.push("Dwg_Name");
+            if (!("Mtrl_Code" in parsedData[0]))
+              missingFields.push("Mtrl_Code");
+            if (!("Source" in parsedData[0])) missingFields.push("Source");
+            if (!("Operation" in parsedData[0]))
+              missingFields.push("Operation");
+            if (!("Order_Qty" in parsedData[0]))
+              missingFields.push("Order_Qty");
+            if (!("JW_Cost" in parsedData[0])) missingFields.push("JW_Cost");
+            if (!("Mtrl_Cost" in parsedData[0]))
+              missingFields.push("Mtrl_Cost");
+
+            if (missingFields.length > 0) {
+              toast.error(
+                `Template error: Missing fields - ${missingFields.join(", ")}`
+              );
+            } else {
+              toast.success("All order details correctly loaded.");
+            }
+            // toast.error(
+            //   `Template error, Please click on "Download Excel Template"`
+            // );
             props.setImportedExcelData([]);
           }
         } else {

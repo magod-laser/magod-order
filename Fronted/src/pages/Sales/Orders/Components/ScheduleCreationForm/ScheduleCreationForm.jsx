@@ -994,7 +994,7 @@ export default function ScheduleCreationForm(props) {
   // Alert Modals
   const [alertModal, setAlertModal] = useState(false);
   const [registerOrder, setRegisterOrder] = useState(false);
-
+// veeranna 
   const fetchData = async () => {
     try {
       const orderData = await postRequest(
@@ -1033,6 +1033,9 @@ export default function ScheduleCreationForm(props) {
         const ordrDetailsData = await postRequest(endpoints.PostNewSrlData, {
           custcode: Cust_Code || custCode,
           OrderNo: orderNUmber,
+
+          //   custcode:  custCode,
+          // OrderNo: orderNo,
         });
         setOrdrDetailsData(ordrDetailsData);
 
@@ -1042,6 +1045,8 @@ export default function ScheduleCreationForm(props) {
           {
             Cust_Code: Cust_Code || orderData.orderData[0].Cust_Code,
             Order_No: orderNUmber || orderData.orderData[0].Order_No,
+            // Cust_Code:  orderData.orderData[0].Cust_Code,
+            // Order_No:  orderData.orderData[0].Order_No,
           }
         );
         setOldOrderListData(oldOrderData?.orderListData);
@@ -1053,6 +1058,7 @@ export default function ScheduleCreationForm(props) {
       // Fetch Profarma Main Data
       const profarmaMainData = await postRequest(endpoints.getProfarmaMain, {
         OrderNo: orderNUmber,
+        // OrderNo: orderNo,
       });
       setProfarmaInvMain(profarmaMainData);
 
@@ -1060,7 +1066,8 @@ export default function ScheduleCreationForm(props) {
       const profarmaDetailsData = await postRequest(
         endpoints.getProfarmaDetails,
         {
-          OrderNo: orderNUmber,
+          // OrderNo: orderNUmber,
+          OrderNo: orderNo,
         }
       );
       setProfarmaInvDetails(profarmaDetailsData);

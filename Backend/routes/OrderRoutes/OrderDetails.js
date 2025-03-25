@@ -155,12 +155,16 @@ OrderDetailsRouter.post(`/insertnewsrldata`, async (req, res, next) => {
 
       let ordno = req.body.requestData.imprtDwgData["OrderNo"];
       misQueryMod(
-        `SELECT * FROM magodmis.order_details where Order_No=${ordno}`,
+        `SELECT * FROM magodmis.order_details where Order_No=${ordno} `,
         (err, data1) => {
           if (err) {
             logger.error(err);
           } else {
+            // console.log("data1",data1);
+            // console.log("data1",data1.length);
+            // console.log("data1",data1[0].Order_Srl);
             try {
+              let j = data1.length || 0;
               for (
                 let i = 0;
                 i < req.body.requestData.imprtDwgData.impDwgFileData.length;
@@ -173,7 +177,9 @@ OrderDetailsRouter.post(`/insertnewsrldata`, async (req, res, next) => {
                 // );
 
                 const orderNo = req.body.requestData.imprtDwgData.OrderNo;
-                const newOrderSrl = i + 1; // req.body.requestData.imprtDwgData.newOrderSrl;
+                const newOrderSrl = j + 1; // req.body.requestData.imprtDwgData.newOrderSrl;
+                console.log("newOrderSrl",newOrderSrl);
+                
                 const custcode = req.body.requestData.imprtDwgData.custcode;
                 const dwgName =
                   req.body.requestData.imprtDwgData.impDwgFileData[i].file;
@@ -258,12 +264,14 @@ OrderDetailsRouter.post(`/insertnewsrldata`, async (req, res, next) => {
                     if (err) {
                       logger.error(err);
                     } else {
+                       console.log("srldata...123", srldata);
                       ressrldata.push(srldata);
                       //res.send(srldata);
                     }
                     // console.log("srldata...123", srldata);
                   }
                 );
+                j++;
               }
             } catch (error) {
               logger.error(error);
@@ -578,6 +586,8 @@ OrderDetailsRouter.post(`/getQtnList`, async (req, res, next) => {
 
   console.log(req.body);
   let QtnFormat = req.body.QtnFormat;
+  console.log("QtnFormat", QtnFormat);
+  
 
   try {
     qtnQueryMod(

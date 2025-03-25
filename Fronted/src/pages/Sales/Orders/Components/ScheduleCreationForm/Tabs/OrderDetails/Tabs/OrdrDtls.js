@@ -484,12 +484,11 @@ function OrdrDtls(props) {
                     // props.OrderData?.Order_Type === "Scheduled" ||
                     // LastSlctedRow?.Mtrl_Source === "Customer" ||
                     // OrderData?.Order_Status === "Recorded"
-                    // (props.OrderData?.Order_Type === "Scheduled" &&
-                    //   props.OrderData?.Order_Status === "Recorded") ||
-                    // props.OrderData?.Order_Type === "Complete" &&
-                    // props.OrderData?.Order_Status === "Recorded"
-                    props.selectedRow?.Mtrl_Source === "Customer"  
-                    
+                    LastSlctedRow?.Mtrl_Source === "Customer" ||
+                    (props.OrderData?.Order_Type === "Scheduled" &&
+                      props.OrderData?.Order_Status === "Recorded") ||
+                    (props.OrderData?.Order_Type === "Complete" &&
+                      props.OrderData?.Order_Status === "Recorded")
                   }
                 />
 

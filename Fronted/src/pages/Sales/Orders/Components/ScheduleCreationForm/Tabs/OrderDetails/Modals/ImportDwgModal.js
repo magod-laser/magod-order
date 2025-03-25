@@ -16,6 +16,14 @@
 // 	// 	mtrldata,
 // 	// 	selectMtrl,
 // 	// 	strmtrlcode,
+// 	// 	stroperation,
+// 	// 	strsource,
+// 	// 	strtolerance,
+// 	// 	strinsp,
+// 	// 	strpkng,
+// 	// 	dblCuttingRate,
+// 	// 	dblPierceRate,
+// 	// 	imprtDwgfiles,
 // 	// 	procdata,
 // 	// 	selectProc,
 // 	// 	selectMtrlSrc,
@@ -458,7 +466,7 @@
 
 // new
 
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import { Form, Modal } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { postRequest } from "../../../../../../../api/apiinstance";
@@ -510,37 +518,100 @@ function ImportDwgModal(props) {
     handleCloseImportDwgmdl,
     handleMtrlCodeTypeaheadChange,
     PostOrderDetails,
-    // NEW
+		// NEW
     imprtDwgObj,
     setImprtDwgObj,
     handleChange,
   } = props;
 
-  // const PostOrderDwgData = async (e) => {
-  // 	e.preventDefault();
-  // 	console.log("PostOrderDwgData");
-  // 	let dwgfiles = [];
-  // 	dwgfiles = e.target.elements.impDwgFiles;
-  // 	// alert(dwgfiles.files.length);
-  // 	// alert(dwgfiles.files[0].name);
-  // 	// alert(e.target.dblCuttingRate.value);
-  // 	// alert(e.target.dblPierceRate.value);
-  // 	imprtDwgObj = {
-  // 		strmtrlcode: strmtrlcode,
-  // 		stroperation: stroperation,
-  // 		strsource: strsource,
-  // 		strtolerance: strtolerance,
-  // 		strinsp: strinsp,
-  // 		strpkng: strpkng,
-  // 		quantity: quantity,
-  // 		dblCuttingRate: e.target.dblCuttingRate.value,
-  // 		dblPierceRate: e.target.dblPierceRate.value,
-  // 		dgfiles: dwgfiles,
-  // 	};
-  // 	setImprtDwgObj(imprtDwgObj);
-  // 	PostOrderDetails(2, imprtDwgObj);
-  // 	setImportDwgmdlShow(false);
-  // };
+  // Add state to track form values
+  const [formValues, setFormValues] = useState({
+    strmtrlcode: '',
+    stroperation: '',
+    strsource: '',
+    strtolerance: '',
+    strinsp: '',
+    strpkng: '',
+    quantity: '',
+    dblCuttingRate: '',
+    dblPierceRate: ''
+  });
+
+  // Update handlers to track values
+  const handleMtrlChange = (selected) => {
+    if (selected && selected.length > 0) {
+      const selectedMtrl = selected[0].Mtrl_Code;
+      setFormValues(prev => ({ ...prev, strmtrlcode: selectedMtrl }));
+      selectMtrl(selectedMtrl); // Call the parent handler with the material code
+    } else {
+      setFormValues(prev => ({ ...prev, strmtrlcode: '' }));
+      selectMtrl(''); // Clear the material code in parent component
+    }
+  };
+
+  const handleProcChange = (e) => {
+    setFormValues(prev => ({ ...prev, stroperation: e.target.value }));
+    selectProc(e);
+  };
+
+  const handleSourceChange = (e) => {
+    setFormValues(prev => ({ ...prev, strsource: e.target.value }));
+    selectMtrlSrc(e);
+  };
+
+  const handleToleranceChange = (e) => {
+    setFormValues(prev => ({ ...prev, strtolerance: e.target.value }));
+    selectTolerance(e);
+  };
+
+  const handleInspChange = (e) => {
+    setFormValues(prev => ({ ...prev, strinsp: e.target.value }));
+    selectInsp(e);
+  };
+
+  const handlePkngChange = (e) => {
+    setFormValues(prev => ({ ...prev, strpkng: e.target.value }));
+    selectPack(e);
+  };
+
+  const handleQuantityChange = (e) => {
+    setFormValues(prev => ({ ...prev, quantity: e.target.value }));
+    setQuantity(e.target.value);
+  };
+
+  const handleCuttingRateChange = (e) => {
+    setFormValues(prev => ({ ...prev, dblCuttingRate: e.target.value }));
+  };
+
+  const handlePierceRateChange = (e) => {
+    setFormValues(prev => ({ ...prev, dblPierceRate: e.target.value }));
+  };
+
+  // Load saved values when modal opens
+  useEffect(() => {
+    if (importdwgmdlshow) {
+      const savedValues = JSON.parse(localStorage.getItem('importDwgModalValues') || '{}');
+      console.log("Loading saved values:", savedValues);
+      
+      if (savedValues) {
+        setFormValues(savedValues);
+        if (savedValues.strmtrlcode) selectMtrl(savedValues.strmtrlcode);
+        if (savedValues.stroperation) selectProc({ target: { value: savedValues.stroperation } });
+        if (savedValues.strsource) selectMtrlSrc({ target: { value: savedValues.strsource } });
+        if (savedValues.strtolerance) selectTolerance({ target: { value: savedValues.strtolerance } });
+        if (savedValues.strinsp) selectInsp({ target: { value: savedValues.strinsp } });
+        if (savedValues.strpkng) selectPack({ target: { value: savedValues.strpkng } });
+        if (savedValues.quantity) setQuantity(savedValues.quantity);
+      }
+    }
+  }, [importdwgmdlshow]);
+
+  // Save values when modal closes
+  const handleModalClose = () => {
+    console.log("Saving values:", formValues);
+    localStorage.setItem('importDwgModalValues', JSON.stringify(formValues));
+    handleCloseImportDwgmdl();
+  };
 
   //20012025
   const PostOrderDwgData = async (e) => {
@@ -556,42 +627,49 @@ function ImportDwgModal(props) {
 
     let imprtdwgobjtemp = {
       ...imprtDwgObj,
-      strmtrlcode: strmtrlcode,
+      strmtrlcode: formValues.strmtrlcode,
       stroperation: e.target.elements.stroperation.value,
       strsource: e.target.elements.strsource.value,
       strtolerance: e.target.elements.strtolerance.value,
       strinsp: e.target.elements.strinspLvl.value,
       strpkng: e.target.elements.strpkngLvl.value,
-      quantity: quantity,
+      quantity: formValues.quantity,
       dblCuttingRate: e.target.dblCuttingRate.value,
       dblPierceRate: e.target.dblPierceRate.value,
       dgfiles: dwgfiles,
     };
 
-    // console.log("imprtdwgobjtemp", imprtdwgobjtemp);
+    console.log("imprtdwgobjtemp", imprtdwgobjtemp);
 
     setImprtDwgObj(imprtdwgobjtemp);
     PostOrderDetails(2, imprtdwgobjtemp);
     setImportDwgmdlShow(false);
   };
+
   return (
-    <div className="row mt-1" style={{ maxHeight: "600px" }}>
-      <Modal show={importdwgmdlshow} onHide={handleCloseImportDwgmdl}>
+    <div
+      className="row mt-1"
+      style={{ maxHeight: "600px" }}>
+      <Modal
+        show={importdwgmdlshow}
+        // onHide={handleCloseImportDwgmdl}
+        onHide={handleModalClose}>
         <Modal.Header
           className="justify-content-md-center"
           style={{
             paddingTop: "10px",
             backgroundColor: "#283E81",
             color: "#ffffff",
-          }}
-        >
+          }}>
           <Modal.Title style={{ fontSize: "14px" }}>
             Enter Default Parameters for Import
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="form-style">
-            <Form onSubmit={PostOrderDwgData} style={{ overflowY: "scroll" }}>
+            <Form
+              onSubmit={PostOrderDwgData}
+              style={{ overflowY: "scroll" }}>
               <div className="row mb-1">
                 <div className="col">
                   <div className="row">
@@ -606,13 +684,14 @@ function ImportDwgModal(props) {
                             id="strmtrlcode"
                             labelKey="Mtrl_Code"
                             name="impDwgMaterial"
-                            // onChange={selectMtrl}
-                            onChange={handleMtrlCodeTypeaheadChange}
-                            // onChange={handleChange}
-                            required
+                            onChange={handleMtrlChange}
+                            clearButton
+                            backspaceRemoves={true}
+                            selected={formValues.strmtrlcode ? [{ Mtrl_Code: formValues.strmtrlcode }] : []}
                             options={mtrldata}
                             placeholder="Choose a Material..."
-                          ></Typeahead>
+                            required
+                          />
                         ) : (
                           ""
                         )}
@@ -623,29 +702,27 @@ function ImportDwgModal(props) {
                     <Form.Group controlId="strprocess">
                       <div
                         className="d-flex col-md-12 field-gap"
-                        style={{ gap: "45px" }}
-                      >
+                        style={{ gap: "45px" }}>
                         <label className="form-label">Process</label>
                         {procdata?.length > 0 ? (
                           <select
                             className="ip-select"
                             id="stroperation"
                             name="impDwgProcess"
-                            onChange={selectProc}
-                          >
+                            onChange={handleProcChange}>
                             {/* <option
-															value=""
-															disabled
-															selected>
-															** Select **
-														</option> */}
+                              value=""
+                              disabled
+                              selected>
+                              ** Select **
+                            </option> */}
                             {/* {procdata?.map((proc) => {
-															return (
-																<option value={proc["ProcessDescription"]}>
-																	{proc["ProcessDescription"]}
-																</option>
-															);
-														})} */}
+                              return (
+                                <option value={proc["ProcessDescription"]}>
+                                  {proc["ProcessDescription"]}
+                                </option>
+                              );
+                            })} */}
                             {procdata.map((proc) => {
                               // Check for the Type and map options based on that
                               if (props.OrderData?.Type === "Service") {
@@ -657,8 +734,7 @@ function ImportDwgModal(props) {
                                   return (
                                     <option
                                       key={proc["OperationID"]}
-                                      value={proc["Operation"]}
-                                    >
+                                      value={proc["Operation"]}>
                                       {proc["Operation"]}
                                     </option>
                                   );
@@ -672,8 +748,7 @@ function ImportDwgModal(props) {
                                     <option
                                       key={proc["OperationID"]}
                                       value={proc["Operation"]}
-                                      required
-                                    >
+                                      required>
                                       {proc["Operation"]}
                                     </option>
                                   );
@@ -687,8 +762,7 @@ function ImportDwgModal(props) {
                                   return (
                                     <option
                                       key={proc["OperationID"]}
-                                      value={proc["Operation"]}
-                                    >
+                                      value={proc["Operation"]}>
                                       {proc["Operation"]}
                                     </option>
                                   );
@@ -708,21 +782,19 @@ function ImportDwgModal(props) {
                     <Form.Group controlId="source">
                       <div
                         className="d-flex md-col-4 field-gap"
-                        style={{ gap: "50px" }}
-                      >
+                        style={{ gap: "50px" }}>
                         <label className="form-label">Source</label>
                         <select
                           className="ip-select"
                           id="strsource"
                           name="impDwgSource"
-                          onChange={selectMtrlSrc}
-                        >
+                          onChange={handleSourceChange}>
                           {/* <option
-														value=""
-														disabled
-														selected>
-														** Select **
-													</option> */}
+                            value=""
+                            disabled
+                            selected>
+                            ** Select **
+                          </option> */}
                           <option value={"Customer"}>Customer</option>
                           <option value={"Magod"}>Magod</option>
                         </select>
@@ -733,22 +805,20 @@ function ImportDwgModal(props) {
                   <div className="row mt-1">
                     <div
                       className="d-flex md-col-4 field-gap"
-                      style={{ gap: "35px" }}
-                    >
+                      style={{ gap: "35px" }}>
                       <label className="form-label">Tolerance</label>
                       {tolerancedata?.length > 0 ? (
                         <select
                           className="ip-select"
                           id="strtolerance"
                           name="impDwgTolerance"
-                          onChange={selectTolerance}
-                        >
+                          onChange={handleToleranceChange}>
                           {/* <option
-														value=""
-														disabled
-														selected>
-														** Select **
-													</option> */}
+                            value=""
+                            disabled
+                            selected>
+                            ** Select **
+                          </option> */}
                           {tolerancedata?.map((toltype) => {
                             return (
                               <option value={toltype["ToleranceType"]}>
@@ -766,8 +836,7 @@ function ImportDwgModal(props) {
                   <div className="row mt-1">
                     <div
                       className="d-flex col-md-6 field-gap"
-                      style={{ gap: "33px" }}
-                    >
+                      style={{ gap: "33px" }}>
                       <label className="form-label label-space">
                         Insp Level
                       </label>
@@ -776,14 +845,13 @@ function ImportDwgModal(props) {
                           id="strinspLvl"
                           className="ip-select"
                           name="impDwgInspLvl"
-                          onChange={selectInsp}
-                        >
+                          onChange={handleInspChange}>
                           {/* <option
-														value=""
-														disabled
-														selected>
-														** Select **
-													</option> */}
+                            value=""
+                            disabled
+                            selected>
+                            ** Select **
+                          </option> */}
                           {inspdata?.map((insplvl) => {
                             return (
                               <option value={insplvl["InspLevel"]}>
@@ -805,14 +873,13 @@ function ImportDwgModal(props) {
                           id="strpkngLvl"
                           className="ip-select"
                           name="impDwgPkngLvl"
-                          onChange={selectPack}
-                        >
+                          onChange={handlePkngChange}>
                           {/* <option
-														value=""
-														disabled
-														selected>
-														** Select **
-													</option> */}
+                            value=""
+                            disabled
+                            selected>
+                            ** Select **
+                          </option> */}
                           {packdata.map((packlvl) => {
                             return (
                               <option value={packlvl["PkngLevel"]}>
@@ -831,22 +898,15 @@ function ImportDwgModal(props) {
                   <div className="row mt-1">
                     <div
                       className="d-flex col-md-12 field-gap"
-                      style={{ gap: "40px" }}
-                    >
+                      style={{ gap: "40px" }}>
                       <label className="form-label">Quantity</label>
                       <input
                         className="in-field"
                         autoComplete="off"
                         id="quantity"
                         name="impDwgQty"
-                        value={quantity}
-                        // onChange={(e) => setQuantity(e.target.value)}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          if (/^\d*$/.test(value)) {
-                            setQuantity(value);
-                          }
-                        }}
+                        value={formValues.quantity}
+                        onChange={handleQuantityChange}
                         required
                       />
                     </div>
@@ -856,15 +916,13 @@ function ImportDwgModal(props) {
                     <div className="row">
                       <label
                         className=" ms-1 form-label"
-                        style={{ fontWeight: "bold" }}
-                      >
+                        style={{ fontWeight: "bold" }}>
                         {" "}
                         Rate{" "}
                       </label>
                       <div
                         className="d-flex field-gap col-md-6"
-                        style={{ gap: "45px" }}
-                      >
+                        style={{ gap: "45px" }}>
                         <label className="form-label">Cutting </label>
                         <input
                           className="in-field"
@@ -872,6 +930,8 @@ function ImportDwgModal(props) {
                           type="text"
                           id="dblCuttingRate"
                           name="Cutting"
+                          value={formValues.dblCuttingRate}
+                          onChange={handleCuttingRateChange}
                         />
                       </div>
                       <div className="d-flex field-gap col-md-6">
@@ -882,6 +942,8 @@ function ImportDwgModal(props) {
                           type="text"
                           id="dblPierceRate"
                           name="Piercing"
+                          value={formValues.dblPierceRate}
+                          onChange={handlePierceRateChange}
                         />
                       </div>
                     </div>
@@ -889,8 +951,7 @@ function ImportDwgModal(props) {
                   <div className="row mt-1">
                     <div
                       className="d-flex field-gap md-col-4"
-                      style={{ gap: "25px" }}
-                    >
+                      style={{ gap: "25px" }}>
                       <label className="form-label label-space">
                         Select Files{" "}
                       </label>
@@ -906,8 +967,8 @@ function ImportDwgModal(props) {
                 </div>
               </div>
 
-              <div className="row justify-content-end">
-                <div className="col-auto">
+              <div className="row ">
+                <div>
                   <button
                     className="button-style"
                     type="submit"
@@ -917,19 +978,21 @@ function ImportDwgModal(props) {
                     Save
                   </button>
                   {/* <button
-										className="button-style"
-										variant="secondary"
-										style={{ backgroundColor: "gray" }}
-										onClick={() => setImportDwgmdlShow(false)} //   handleCloseImportDwgmdl()}
-									>
-										Close
-									</button> */}
+                    className="button-style"
+                    variant="secondary"
+                    style={{ backgroundColor: "gray" }}
+                    onClick={() => setImportDwgmdlShow(false)} //   handleCloseImportDwgmdl()}
+                  >
+                    Close
+                  </button> */}
                   <button
                     className="button-style"
-                    // variant="secondary"
-                    // style={{ backgroundColor: "gray" }}
-                    onClick={() => handleCloseImportDwgmdl()}
-                  >
+                    variant="secondary"
+                    style={{ backgroundColor: "gray" }}
+                    onClick={() => handleModalClose()}
+                    // onClick={() => handleCloseImportDwgmdl()}
+                    
+                    >
                     Close
                   </button>
                 </div>

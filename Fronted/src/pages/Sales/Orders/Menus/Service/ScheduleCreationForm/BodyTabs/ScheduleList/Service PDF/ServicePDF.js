@@ -787,7 +787,7 @@ const ServicePDF = ({ formdata, PDFData }) => {
 
   // console.log('formdata.Cust_name', formdata[0].Cust_name);
   // console.log(otherdetails[0].ScheduleNo);
-
+  let serialNumber = 1; // Initialize counter before mapping
   return (
     <Document>
       {Array.from({ length: totalPages }, (_, pageIndex) => (
@@ -1132,63 +1132,58 @@ const ServicePDF = ({ formdata, PDFData }) => {
                     </View>
                   </View>
 
-                  <View
-                    key={index}
-                    style={[
-                      styles.tableDataView,
-                      { borderBottom: "1px solid black" },
-                    ]}
-                  >
-                    {item.otherdetails.map((detail, subIndex) => (
-                      <View
-                        style={[
-                          styles.row,
-                          { borderBottom: "1px solid black", paddingBottom: 5 },
-                        ]}
-                      >
-                        <View style={styles.srldata}>
-                          {/* <Text style={styles.tabletext}>{index + 1}</Text> */}
-                          <Text style={styles.tabletext}>
-                            {detail.Schedule_Srl}
-                          </Text>
-                        </View>
+                  
 
-                        <View style={styles.drawingnamedata}>
-                          <Text style={styles.tabletext}>{detail.DwgName}</Text>
-                        </View>
+<View
+  key={index}
+  style={[
+    styles.tableDataView,
+    { borderBottom: "1px solid black" },
+  ]}
+>
+  {item.otherdetails.map((detail, subIndex) => (
+    <View
+      key={subIndex}
+      style={[
+        styles.row,
+        { borderBottom: "1px solid black", paddingBottom: 5 },
+      ]}
+    >
+      <View style={styles.srldata}>
+        <Text style={styles.tabletext}>{serialNumber++}</Text>
+      </View>
 
-                        <View style={styles.Inspectiondata}>
-                          <Text style={styles.tabletext}>
-                            {detail.InspLevel}
-                          </Text>
-                        </View>
+      <View style={styles.drawingnamedata}>
+        <Text style={styles.tabletext}>{detail.DwgName}</Text>
+      </View>
 
-                        <View style={styles.Packingdata}>
-                          <Text style={styles.tabletext}>
-                            {detail.PackingLevel}
-                          </Text>
-                        </View>
+      <View style={styles.Inspectiondata}>
+        <Text style={styles.tabletext}>{detail.InspLevel}</Text>
+      </View>
 
-                        <View style={styles.Scheduleddata}>
-                          <Text style={styles.tabletext}>
-                            {detail.QtyScheduled}
-                          </Text>
-                        </View>
+      <View style={styles.Packingdata}>
+        <Text style={styles.tabletext}>{detail.PackingLevel}</Text>
+      </View>
 
-                        <View style={styles.Produceddata}>
-                          <Text style={styles.tabletext}></Text>
-                        </View>
+      <View style={styles.Scheduleddata}>
+        <Text style={styles.tabletext}>{detail.QtyScheduled}</Text>
+      </View>
 
-                        <View style={styles.Delivereddata}>
-                          <Text style={styles.tabletext}></Text>
-                        </View>
+      <View style={styles.Produceddata}>
+        <Text style={styles.tabletext}></Text>
+      </View>
 
-                        <View style={styles.scheduleNotabledata}>
-                          <Text style={styles.tabletext}></Text>
-                        </View>
-                      </View>
-                    ))}
-                  </View>
+      <View style={styles.Delivereddata}>
+        <Text style={styles.tabletext}></Text>
+      </View>
+
+      <View style={styles.scheduleNotabledata}>
+        <Text style={styles.tabletext}></Text>
+      </View>
+    </View>
+  ))}
+</View>
+
                 </>
               ))}
 

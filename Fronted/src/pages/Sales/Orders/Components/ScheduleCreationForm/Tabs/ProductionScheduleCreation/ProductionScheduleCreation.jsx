@@ -102,7 +102,7 @@ export default function ProductionScheduleCreation({
         return; // Exit the function without making the API request
       }
 
-       // Check if material and operation with table data
+      // Check if material and operation with table data
       //  if (!filteredItems || filteredItems.length === 0) {
       //   toast.warning("No items to schedule", {
       //     position: toast.POSITION.TOP_CENTER,
@@ -123,8 +123,8 @@ export default function ProductionScheduleCreation({
         return; // Exit the function without making the API request
       }
 
-       // get process list
-       getRequest(endpoints.getProcessLists, (pdata) => {
+      // get process list
+      getRequest(endpoints.getProcessLists, (pdata) => {
         let arr = pdata.map((process) => ({
           ...process,
           label: process.Operation,
@@ -134,11 +134,12 @@ export default function ProductionScheduleCreation({
       
         // Check if the selected item's Operation exists in arr
         const allOperations = arr.map((proc) => proc.Operation);
-        
+
         const hasValidOperation = filteredItems2.every(item =>
           allOperations.includes(item.Operation)
         );
-      
+
+
         if (!hasValidOperation) {
           toast.warning("Operation is not matching", {
             position: toast.POSITION.TOP_CENTER,
@@ -156,7 +157,8 @@ export default function ProductionScheduleCreation({
       
           // Check if the selected item's mtrl_code exists in materialArr
           // const allMtrlCodes = materialArr.map((mtrl) => mtrl === mtrl.Mtrl_Code);
-      
+
+
           const allMtrlCodes = materialArr.map((mtrl) => mtrl.Mtrl_Code);
 
           const hasValidMtrlCode = filteredItems2.every((item) => {
@@ -164,14 +166,16 @@ export default function ProductionScheduleCreation({
             // console.log("all Mtrl_Code in item:", item.Mtrl_Code);
             return allMtrlCodes.includes(item.Mtrl_Code);
           });
-          
-            if (!hasValidMtrlCode) {
+
+          if (!hasValidMtrlCode) {
+
+          if (!hasValidMtrlCode) {
             toast.warning("Material Code is not matching", {
               position: toast.POSITION.TOP_CENTER,
             });
             return; // Exit if material code does not match
           }
-      
+
           postRequest(
             endpoints.CreateProductionSchedule,
             {
@@ -179,8 +183,8 @@ export default function ProductionScheduleCreation({
               scheduleType: scheduleType,
               selectedItems: filteredItems2,
               scheduleOption: scheduleOption,
-              filteredItems:filteredItems
-              
+              filteredItems: filteredItems
+
             },
             (response) => {
               if (response.message === "Draft Schedule Created") {
@@ -202,10 +206,11 @@ export default function ProductionScheduleCreation({
               }
             }
           );
+        }
         });
       })
 
-     
+
 
       // postRequest(
       //   endpoints.CreateProductionSchedule,
@@ -215,7 +220,8 @@ export default function ProductionScheduleCreation({
       //     selectedItems: filteredItems2,
       //     scheduleOption: scheduleOption,
       //     filteredItems:filteredItems
-          
+
+
       //   },
       //   (response) => {
       //     if (response.message === "Draft Schedule Created") {
@@ -250,7 +256,42 @@ export default function ProductionScheduleCreation({
     setLastSlctedRow(null);
     setSelectedRow(null);
   };
-    console.log("After sch selectedSrl:", selectedSrl);
+
+  // copy Dxf Button Click
+  const fnCopyDxf = async () => {
+    // console.log("OrderData: ",OrderData);
+    // console.log("selectedSrl :",selectedSrl);
+    // console.log("OrdrDetailsData :",OrdrDetailsData);
+    // console.log("selectedItems :",selectedItems);
+   // console.log(LastSlctedRow);
+//    alert("fnCopyDxf")
+    let custcd = OrderData.Cust_Code;
+    let custpath = process.env.REACT_APP_SERVER_CUST_PATH;
+    let custdwgname = selectedItems[0].DwgName
+    
+    let orderno = OrderData.Order_No;
+
+    let srcfolder = custpath+'\\'+custcd;
+    let destfolder= process.env.REACT_APP_SERVER_FILES+'\\'+ orderno;
+
+    await postRequest(endpoints.orderCopyDxf, {srcfolder,destfolder,custdwgname}, (copydata) => {
+  //    console.log("Order copy Dxf : ",copydata.message);
+      alert(copydata.status);
+    })
+  }
+
+  // Check Dxf Button Click
+  const fnCheckDxf = async () => {
+ //   alert("fnCheckDxf");
+  //  console.log("Order No :", OrderData.Order_No)
+    let orderno = OrderData.Order_No;
+    await postRequest(endpoints.checkDxf,{orderno},(checkdata)=>{
+ //     console.log("check dxf: ",checkdata);
+
+    })
+  }
+
+  console.log("After sch selectedSrl:", selectedSrl);
   //   console.log("After clearing2:", selectedRows);
   //   console.log("After clearing2:", selectedItems);
 
@@ -317,193 +358,194 @@ export default function ProductionScheduleCreation({
   };
 
   //open Folder
-  const openFolder = () => {};
+  const openFolder = () => { };
 
   return (
     <>
-      <div className="">
+      <div className="my-3">
         <div className="row">
-          <div className="col-md-2 col-sm-12">
-            <button
-              className="button-style"
-              onClick={onClickSuspendOrder}
-              disabled={
-                OrderData?.Order_Status === "Closed" ||
-                OrderData?.Order_Status === "Cancelled" ||
-                OrderData?.Order_Status === "Dispatched" ||
-                OrderData?.Order_Status === "ShortClosed" ||
-                OrderData?.Order_Status === "Created" ||
-                OrderData?.Order_Status === "Recorded" ||
-                OrderData?.Order_Status === "Packed" ||
-                OrderData?.Order_Status === "Produced"
-              }
-            >
-              Suspended Order
-            </button>
+          <div className="col-md-12 d-flex align-items-center flex-wrap">
+            <div className="me-3 mb-2">
+              <button
+                className="button-style"
+                onClick={onClickSuspendOrder}
+                disabled={
+                  OrderData?.Order_Status === "Closed" ||
+                  OrderData?.Order_Status === "Cancelled" ||
+                  OrderData?.Order_Status === "Dispatched" ||
+                  OrderData?.Order_Status === "ShortClosed" ||
+                  OrderData?.Order_Status === "Created" ||
+                  OrderData?.Order_Status === "Recorded" ||
+                  OrderData?.Order_Status === "Packed" ||
+                  OrderData?.Order_Status === "Produced"
+                }
+              >
+                Suspended Order
+              </button>
+            </div>
 
-            <button
-              className="button-style"
-              onClick={onClickCancel}
-              disabled={
-                OrderData?.Order_Status === "Closed" ||
-                OrderData?.Order_Status === "Cancelled" ||
-                OrderData?.Order_Status === "Dispatched" ||
-                OrderData?.Order_Status === "Suspended" ||
-                OrderData?.Order_Status === "Recorded" ||
-                OrderData?.Order_Status === "Packed" ||
-                OrderData?.Order_Status === "Produced" ||
-                OrderData?.Order_Status === "ShortClosed"
-              }
-            >
-              Cancel Order
-            </button>
+            <div className="me-3 mb-2">
+              <button
+                className="button-style"
+                onClick={onClickCancel}
+                disabled={
+                  OrderData?.Order_Status === "Closed" ||
+                  OrderData?.Order_Status === "Cancelled" ||
+                  OrderData?.Order_Status === "Dispatched" ||
+                  OrderData?.Order_Status === "Suspended" ||
+                  OrderData?.Order_Status === "Recorded" ||
+                  OrderData?.Order_Status === "Packed" ||
+                  OrderData?.Order_Status === "Produced" ||
+                  OrderData?.Order_Status === "ShortClosed"
+                }
+              >
+                Cancel Order
+              </button>
+            </div>
 
-            <button
-              className="button-style"
-              onClick={onClickShortClose}
-              disabled={
-                OrderData?.Order_Status === "Closed" ||
-                OrderData?.Order_Status === "Cancelled" ||
-                OrderData?.Order_Status === "Dispatched" ||
-                OrderData?.Order_Status === "Suspended" ||
-                OrderData?.Order_Status === "Recorded" ||
-                OrderData?.Order_Status === "Packed" ||
-                OrderData?.Order_Status === "Produced" ||
-                OrderData?.Order_Status === "Created"
-              }
-            >
-              Short Close
-            </button>
-          </div>
+            <div className="me-3 mb-2">
+              <button
+                className="button-style"
+                onClick={onClickShortClose}
+                disabled={
+                  OrderData?.Order_Status === "Closed" ||
+                  OrderData?.Order_Status === "Cancelled" ||
+                  OrderData?.Order_Status === "Dispatched" ||
+                  OrderData?.Order_Status === "Suspended" ||
+                  OrderData?.Order_Status === "Recorded" ||
+                  OrderData?.Order_Status === "Packed" ||
+                  OrderData?.Order_Status === "Produced" ||
+                  OrderData?.Order_Status === "Created"
+                }
+              >
+                Short Close
+              </button>
+            </div>
 
-          <div className="col-md-4 col-sm-12">
-            <label className="form-label">Schedule Type</label>
-
-            <div className="row">
-              <div className="col-md-6 col-sm-12">
-                <div className="row">
-                  <div
-                    className="col-md-2 col-sm-12"
-                    style={{ marginLeft: "1px" }}
+            <div className="me-3 mb-2 d-flex flex-column">
+              <label className="form-label">Schedule Type</label>
+              <div className="d-flex justify-content-center align-items-center">
+                <div
+                  className="form-check me-3 d-flex align-items-center"
+                  style={{ gap: "5px" }}
+                >
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="scheduleType"
+                    value="Sales"
+                    onChange={handleScheduleTypeChange}
+                    style={{ verticalAlign: "middle" }}
+                  />
+                  <label
+                    className="form-check-label mb-2"
+                    style={{ lineHeight: "1.2" }}
                   >
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="scheduleType"
-                      value="Sales"
-                      onChange={handleScheduleTypeChange}
-                    />
-                  </div>
-                  <div
-                    className="col-md-2 col-sm-12"
-                    style={{ marginTop: "-8px" }}
-                  >
-                    <label className="form-label">Sales</label>
-                  </div>
+                    Sales
+                  </label>
                 </div>
-              </div>
-              <div className="col-md-6 col-sm-12">
-                <div className="d-flex" style={{ marginLeft: "13px" }}>
-                  <div className="col-md-2 col-sm-12">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="scheduleType"
-                      checked={scheduleType === "Job Work"}
-                      value="Job Work"
-                      onChange={handleScheduleTypeChange}
-                    />
-                  </div>
-                  <div
-                    className="col-md-2 col-sm-12"
-                    style={{ marginTop: "-8px" }}
+                <div
+                  className="form-check d-flex align-items-center"
+                  style={{ gap: "5px" }}
+                >
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="scheduleType"
+                    checked={scheduleType === "Job Work"}
+                    value="Job Work"
+                    onChange={handleScheduleTypeChange}
+                    style={{ verticalAlign: "middle" }}
+                  />
+                  <label
+                    className="form-check-label mb-2"
+                    style={{ lineHeight: "1.2" }}
                   >
-                    <label className="form-label label-space">Job Work</label>
-                  </div>
+                    Job Work
+                  </label>
                 </div>
               </div>
             </div>
 
-            <label className="form-label">Schedule Option</label>
-
-            <div className="row">
-              <div className="col-md-6 col-sm-12">
-                <div className="row">
-                  <div className="col-md-2 col-sm-12">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="scheduleOption"
-                      value="Full Order"
-                      checked={scheduleOption === "Full Order"}
-                      onChange={handleScheduleOptionChange}
-                    />
-                  </div>
-                  <div
-                    className="col-md-2 col-sm-12"
-                    style={{ marginTop: "-8px" }}
+            <div className="me-3 mb-2 d-flex flex-column">
+              <label className="form-label">Schedule Option</label>
+              <div className="d-flex justify-content-center align-items-center">
+                <div
+                  className="form-check me-3 d-flex align-items-center"
+                  style={{ gap: "5px" }}
+                >
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="scheduleOption"
+                    value="Full Order"
+                    checked={scheduleOption === "Full Order"}
+                    onChange={handleScheduleOptionChange}
+                    style={{ verticalAlign: "middle" }}
+                  />
+                  <label
+                    className="form-check-label mb-2"
+                    style={{ lineHeight: "1.2" }}
                   >
-                    <label
-                      className="form-label"
-                      style={{ whiteSpace: "nowrap" }}
-                    >
-                      Full Order
-                    </label>
-                  </div>
+                    Full Order
+                  </label>
                 </div>
-              </div>
-              <div className="col-md-6 col-sm-12">
-                <div className="row">
-                  <div className="col-md-2 col-sm-12">
-                    <input
-                      type="radio"
-                      class="form-check-input"
-                      name="scheduleOption"
-                      value="Partial Order"
-                      onChange={handleScheduleOptionChange}
-                    />
-                  </div>
-                  <div
-                    className="col-md-2 col-sm-12"
-                    style={{ marginTop: "-8px" }}
+                <div
+                  className="form-check d-flex align-items-center"
+                  style={{ gap: "5px" }}
+                >
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="scheduleOption"
+                    value="Partial Order"
+                    onChange={handleScheduleOptionChange}
+                    style={{ verticalAlign: "middle" }}
+                  />
+                  <label
+                    className="form-check-label mb-2"
+                    style={{ lineHeight: "1.2" }}
                   >
-                    <label className="form-label label-space">
-                      Partial Order
-                    </label>
-                  </div>
+                    Partial Order
+                  </label>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="col-md-2 col-sm-12">
-            <button className="button-style " onClick={onClickRefreshStatus}>
-              Refresh Status
-            </button>
 
-            <button className="button-style" onClick={handleClearFilters}>
-              Clear Filter
-            </button>
+            <div className="me-3 mb-2">
+              <button className="button-style" onClick={onClickRefreshStatus}>
+                Refresh Status
+              </button>
+            </div>
 
-            <button
-              className="button-style"
-              onClick={createSchedule}
-              disabled={
-                OrderData?.Order_Status === "Closed" ||
-                OrderData?.Order_Status === "Cancelled" ||
-                OrderData?.Order_Status === "Dispatched" ||
-                OrderData?.Order_Status === "Suspended" ||
-                OrderData?.Order_Status === "Packed" ||
-                OrderData?.Order_Status === "Produced" ||
-                OrderData?.Order_Status === "Created" ||
-                OrderData?.Order_Status === "ShortClosed"
-              }
-            >
-              Create Schedule
-            </button>
+            <div className="me-3 mb-2">
+              <button className="button-style" onClick={handleClearFilters}>
+                Clear Filter
+              </button>
+            </div>
+
+            <div className="mb-2">
+              <button
+                className="button-style"
+                onClick={createSchedule}
+                disabled={
+                  OrderData?.Order_Status === "Closed" ||
+                  OrderData?.Order_Status === "Cancelled" ||
+                  OrderData?.Order_Status === "Dispatched" ||
+                  OrderData?.Order_Status === "Suspended" ||
+                  OrderData?.Order_Status === "Packed" ||
+                  OrderData?.Order_Status === "Produced" ||
+                  OrderData?.Order_Status === "Created" ||
+                  OrderData?.Order_Status === "ShortClosed"
+                }
+              >
+                Create Schedule
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="col-md-12 row">
+        <div className="col-md-12 row mt-3">
           <div className="col-md-1"></div>
 
           <div className="col-md-6">
@@ -513,14 +555,14 @@ export default function ProductionScheduleCreation({
                   Open Folder
                 </button>
               </div> */}
-              {/* 
+
               <div className="col-md-4 mt-3 col-sm-12">
-                <button className="button-style">Check DXF</button>
+                <button className="button-style" onClick={fnCheckDxf}>Check DXF</button>
               </div>
 
               <div className="col-md-4 mt-3 col-sm-12">
-                <button className="button-style">Copy DXF</button>
-              </div> */}
+                <button className="button-style" onClick={ fnCopyDxf }>Copy DXF</button>
+              </div>
             </div>
           </div>
 
