@@ -56,6 +56,8 @@ export default function ProductionScheduleCreation({
 
   //Onclick Create Schedule
   const createSchedule = () => {
+    console.log("enetring into create schedule",selectedItems.length);
+    
     if (selectedItems.length === 0 && scheduleOption === "Partial Order") {
       toast.warning("Select Parts to add to Schedule", {
         position: toast.POSITION.TOP_CENTER,
@@ -167,14 +169,16 @@ export default function ProductionScheduleCreation({
             return allMtrlCodes.includes(item.Mtrl_Code);
           });
 
-          if (!hasValidMtrlCode) {
+          // if (!hasValidMtrlCode) {
 
           if (!hasValidMtrlCode) {
             toast.warning("Material Code is not matching", {
               position: toast.POSITION.TOP_CENTER,
             });
+
             return; // Exit if material code does not match
           }
+// console.log(" endpoints.CreateProductionSchedule,");
 
           postRequest(
             endpoints.CreateProductionSchedule,
@@ -206,7 +210,7 @@ export default function ProductionScheduleCreation({
               }
             }
           );
-        }
+        // }
         });
     
       })
@@ -423,9 +427,9 @@ export default function ProductionScheduleCreation({
               </button>
             </div>
 
-            <div className="me-3 mb-2 d-flex flex-column">
+            {/* <div className="me-3 mb-2 d-flex flex-row">
               <label className="form-label">Schedule Type</label>
-              <div className="d-flex justify-content-center align-items-center">
+              <div className="d-flex justify-content-center align-items-center" >
                 <div
                   className="form-check me-3 d-flex align-items-center"
                   style={{ gap: "5px" }}
@@ -468,7 +472,7 @@ export default function ProductionScheduleCreation({
               </div>
             </div>
 
-            <div className="me-3 mb-2 d-flex flex-column">
+            <div className="me-5 mt-5 mb-2 d-flex flex-row">
               <label className="form-label">Schedule Option</label>
               <div className="d-flex justify-content-center align-items-center">
                 <div
@@ -511,9 +515,68 @@ export default function ProductionScheduleCreation({
                   </label>
                 </div>
               </div>
-            </div>
+            </div> */}
 
-            <div className="me-3 mb-2">
+<div className="d-flex flex-column">
+  {/* Schedule Type */}
+  <div className="mb-3 d-flex align-items-center" style={{ gap: "15px",marginLeft:"50px" }}>
+    <label className="form-label mb-0">Schedule Type</label>
+    <div className="d-flex align-items-center" style={{ gap: "15px" }}>
+      <div className="form-check d-flex align-items-center" style={{ gap: "5px" ,marginLeft:"12px"}}>
+        <input
+          className="form-check-input mt-3"
+          type="radio"
+          name="scheduleType"
+          value="Sales"
+          onChange={handleScheduleTypeChange}
+        />
+        <label className="form-check-label">Sales</label>
+      </div>
+      <div className="form-check d-flex align-items-center" style={{ gap: "5px" ,marginLeft:"30px"}}>
+        <input
+          className="form-check-input mt-3"
+          type="radio"
+          name="scheduleType"
+          value="Job Work"
+          checked={scheduleType === "Job Work"}
+          onChange={handleScheduleTypeChange}
+        />
+        <label className="form-check-label">Job Work</label>
+      </div>
+    </div>
+  </div>
+
+  {/* Schedule Option */}
+  <div className="d-flex align-items-center" style={{ gap: "15px", marginLeft:"50px" }}>
+    <label className="form-label mb-0">Schedule Option</label>
+    <div className="d-flex align-items-center" style={{ gap: "15px" }}>
+      <div className="form-check d-flex align-items-center" style={{ gap: "5px" }}>
+        <input
+          className="form-check-input mt-3"
+          type="radio"
+          name="scheduleOption"
+          value="Full Order"
+          checked={scheduleOption === "Full Order"}
+          onChange={handleScheduleOptionChange}
+        />
+        <label className="form-check-label">Full Order</label>
+      </div>
+      <div className="form-check d-flex align-items-center" style={{ gap: "5px" }}>
+        <input
+          className="form-check-input mt-3"
+          type="radio"
+          name="scheduleOption"
+          value="Partial Order"
+          onChange={handleScheduleOptionChange}
+        />
+        <label className="form-check-label">Partial Order</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+            <div className="me-3 mb-2" style={{marginLeft:"70px"}}>
               <button className="button-style" onClick={onClickRefreshStatus}>
                 Refresh Status
               </button>

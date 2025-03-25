@@ -130,16 +130,18 @@ export default function OrderDetails(props) {
   const [strtolerance, setStrTolerance] = useState("");
   const [gradeid, setGradeID] = useState("");
   const [strmtrlcode, setStrMtrlCode] = useState("");
-  const [material, setMaterial] = useState("");
+  //25032025
+  const [materia, setMaterial] = useState("");
   const [DwgName, setDwgName] = useState("");
   const [quantity, setQuantity] = useState(1.0);
   const [jwRate, setJwRate] = useState(0.0);
   const [materialRate, setMaterialRate] = useState(0.0);
   const [unitPrice, setUnitPrice] = useState(0.0);
   const [Operation, setOperation] = useState("");
-  const [thickness, setThickness] = useState("");
-  const [specificwt, setSpecificWt] = useState(0);
-  const [grade, setGrade] = useState("");
+  //25032025
+  const [thicknes, setThickness] = useState("");
+  const [specificw, setSpecificWt] = useState(0);
+  const [grad, setGrade] = useState("");
   const [HasBOM, setHasBOM] = useState(0);
   const [Dwg, setDwg] = useState(0);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -273,7 +275,7 @@ export default function OrderDetails(props) {
         JwCost: jwRate,
         mtrlcost: materialRate,
         strmtrlcode: strmtrlcode,
-        material: material,
+        material: materia,
         Operation: Operation,
 
         NewSrlFormData: NewSrlFormData,
@@ -455,6 +457,8 @@ export default function OrderDetails(props) {
       selectedOptions.length > 0 ? selectedOptions[0]?.Mtrl_Code : " ";
     setStrMtrlCode(selectedValue);
   };
+  console.log("strmtrlcode1",strmtrlcode);
+  
   const handleMtrlCodeTypeaheadChange = (selectedOptions) => {
     // setSelectedItems(selectedOptions);
     if (selectedOptions.length > 0) {
@@ -464,6 +468,7 @@ export default function OrderDetails(props) {
       selectedOptions.length > 0 ? selectedOptions[0]?.Mtrl_Code : " ";
     setStrMtrlCode(selectedValue);
   };
+  console.log("strmtrlcode2",strmtrlcode);
 
   const handleInputChange = (input) => {
     setLastSlctedRow((prevSelectedItem) => ({
@@ -479,30 +484,32 @@ export default function OrderDetails(props) {
       ...NewSrlFormData,
       Material: e.target.value,
     });
+    // console.log("endpoints.getmtrldetsbymtrlcode");
+    // postRequest(
+      
+    //   endpoints.getmtrldetsbymtrlcode,
+    //   { MtrlCode: e.target.value },
+    //   (mtrldata) => {
+    //     console.log("endpoints.getmtrldetsbymtrlcode ", mtrldata);
+    //     if (mtrldata.length > 0) {
+    //       setThickness(mtrldata[0]["Thickness"]);
+    //       setGradeID(mtrldata[0]["MtrlGradeID"]);
+    //       setMaterial(mtrldata[0]["Mtrl_Type"]);
+    //       setGrade(mtrldata[0]["Grade"]);
+    //       setSpecificWt(mtrldata[0]["Specific_Wt"]);
 
-    postRequest(
-      // endpoints.getmtrldetsbymtrlcode,
-      endpoints.getmtrldetsbymtrlcode,
-      { MtrlCode: e.target.value },
-      (mtrldata) => {
-        if (mtrldata.length > 0) {
-          setThickness(mtrldata[0]["Thickness"]);
-          setGradeID(mtrldata[0]["MtrlGradeID"]);
-          setMaterial(mtrldata[0]["Mtrl_Type"]);
-          setGrade(mtrldata[0]["Grade"]);
-          setSpecificWt(mtrldata[0]["Specific_Wt"]);
-
-          // locCalc(
-          //   window.dxffile,
-          //   mtrldata[0]["Mtrl_Type"],
-          //   mtrldata[0]["Grade"],
-          //   mtrldata[0]["Thickness"],
-          //   (output) => {}
-          // );
-        }
-      }
-    );
+    //       // locCalc(
+    //       //   window.dxffile,
+    //       //   mtrldata[0]["Mtrl_Type"],
+    //       //   mtrldata[0]["Grade"],
+    //       //   mtrldata[0]["Thickness"],
+    //       //   (output) => {}
+    //       // );
+    //     }
+    //   }
+    // );
   };
+  console.log("strmtrlcode3",strmtrlcode);
   const selectProc = async (e) => {
     e.preventDefault();
     setOperation(e.target.value);
@@ -1069,6 +1076,9 @@ export default function OrderDetails(props) {
 
   // Insert order details flag 1,2,3
   const PostOrderDetails = async (flag, imprtDwgObj) => {
+    console.log("entering post order details");
+    
+    console.log("OrderDetails.jsx - imprtDwgObj ", imprtDwgObj);
     // setisLoading(true);
     let requestData = {};
 
@@ -1136,7 +1146,7 @@ export default function OrderDetails(props) {
         // UnitPrice: unitPrice,
         UnitPrice: parseFloat(jwRate) + parseFloat(materialRate),
         strmtrlcode: strmtrlcode,
-        material: material,
+        material: materia,
         Operation: Operation,
         NewSrlFormData: NewSrlFormData,
         tolerance: "Standard(+/-0.1mm)- 100 Microns",
@@ -1150,6 +1160,12 @@ export default function OrderDetails(props) {
     }
     //Suresh sir - 20/01/2025
     else if (flag === 2) {
+      let thickness;
+      let material;
+      let grade;
+      let specificwt;
+     console.log(" entring into the flag 2");
+     
       // console.log("Cutting : ", imprtDwgObj.dblCuttingRate);
       // console.log("Piercing : ", imprtDwgObj.dblPierceRate);
       // console.log("FileName 1 : " + imprtDwgObj.dgfiles.files[0].name);
@@ -1158,18 +1174,25 @@ export default function OrderDetails(props) {
 
       let impDwgFileData = [];
       let dwgnamefiles = imprtDwgObj.dgfiles.files;
+console.log("strmtrlcode===4",imprtDwgObj.strmtrlcode);
 
       await postRequest(
         endpoints.getmtrldetsbymtrlcode,
-        { MtrlCode: strmtrlcode },
+        { MtrlCode: imprtDwgObj.strmtrlcode },
         async (mtrldata1) => {
+          
           if (mtrldata1.length > 0) {
-            // console.log("MtrlData : ", mtrldata1);
+             console.log("1175  - MtrlData : ", mtrldata1);
             setThickness(mtrldata1[0]["Thickness"]);
             setGradeID(mtrldata1[0]["MtrlGradeID"]);
             setMaterial(mtrldata1[0]["Mtrl_Type"]);
             setGrade(mtrldata1[0]["Grade"]);
             setSpecificWt(mtrldata1[0]["Specific_Wt"]);
+            material = mtrldata1[0]["Mtrl_Type"];
+            grade = mtrldata1[0]["Grade"];
+            thickness = mtrldata1[0]["Thickness"];
+            specificwt = mtrldata1[0]["Specific_Wt"];
+
 
             let thck = mtrldata1[0]["Thickness"];
             let spwt = mtrldata1[0]["Specific_Wt"];
@@ -1186,12 +1209,13 @@ export default function OrderDetails(props) {
       await dxfupload(dwgnamefiles, destPath, (res) => {
         // console.log(res);
       });
-
+      // CHECKING 24032025 
       for (let i = 0; i < dwgnamefiles.length; i++) {
-        // console.log(
-        //   "material, grade, thickness ",
-        //   material + " " + grade + " " + thickness
-        // );
+        console.log(
+          "material, grade, thickness ",
+          material + " " + grade + " " + thickness
+        );
+
         await locCalc(dwgnamefiles[i], material, grade, thickness, (output) => {
           impDwgFileData = [
             ...impDwgFileData,
@@ -1269,7 +1293,7 @@ export default function OrderDetails(props) {
         mtrlcost: BomArry[0]?.MtrlCost,
         UnitPrice: parseFloat(jwRate) + parseFloat(materialRate),
         strmtrlcode: BomArry[0]?.Material,
-        material: material,
+        material: materia,
         // material: BomArry[0]?.Material,
         // Operation: Operation,
         Operation: BomArry[0]?.Operation,
@@ -1313,20 +1337,21 @@ export default function OrderDetails(props) {
     );
   };
 
-  const PostSrlData = () => {};
+  const PostSrlData = () => { };
+  console.log("PostSrlData - material : ", materia);
   //SURESH SIR CODE REALATED TO DXF
   let locCalc = async (drwfile, material, grade, thickness, cb) => {
-    console.log("123",drwfile, material, grade, thickness, cb);
-    
+    // console.log("123",drwfile, material, grade, thickness, cb);
+
     const formData = new FormData();
     // console.log("formData",formData);
-    
+
     //  window.dxffiles.forEach(async (dfile) => {
     formData.append("file", drwfile); //files[i]);
     formData.append("thickness", thickness);
-    formData.append("specficWeight", specificwt); // resp[0].Specific_Wt);
+    formData.append("specficWeight", specificw); // resp[0].Specific_Wt);
 
-    // console.log("Sending to Service");
+    console.log("Sending to Service");
     // const getCalcReq = await fetch('http://127.0.0.1:21341/getCalc', {
     const getCalcReq = await fetch("http://localhost:21341/getCalc", {
       //const getCalcReq = await fetch(process.env.GETCALC_API, {
@@ -1336,6 +1361,9 @@ export default function OrderDetails(props) {
       },
       body: formData,
     });
+
+    console.log("getCalcReq", getCalcReq);
+
     const res = await getCalcReq.json();
     setLengthOfCut(res.data.lengthOfCut);
     setNoofPierces(res.data.noOfPierces);

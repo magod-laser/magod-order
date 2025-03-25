@@ -48,7 +48,7 @@ materialRouter.get("/getmtrllocation", async (req, res, next) => {
 materialRouter.post(`/getmtrldetsbymtrlcode`, async (req, res, next) => {
 	// console.log("getmtrldetsbymtrlcode : " + req.body.MtrlCode);
 	try {
-		//    console.log(req.body.mtrlcode);
+	    console.log("getmtrldetsbymtrlcode - Material Code : ",req.body.MtrlCode);
 		misQueryMod(
 			`Select mtl.*,mg.Grade, mg.Specific_Wt from magodmis.mtrl_data mtl  
                     inner join magodmis.mtrlgrades mg on mg.MtrlGradeID = mtl.MtrlGradeID

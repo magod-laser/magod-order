@@ -289,6 +289,10 @@ export default function ScheduleCreationForm(props) {
     for (let i = 0; i < files.length; i++) {
       let drwfname = files[i];
 
+      // await postRequest(endpoints.getmtrldetsbymtrlcode,{materialRate},(mtrldataforloc) => {
+
+      // })
+
       locCalc(drwfname, material, grade, thickness, (output) => {
         let olddata = Object.entries(orderdetailsdata).map(([key, value]) => ({
           key,
@@ -1968,7 +1972,7 @@ export default function ScheduleCreationForm(props) {
 
   useEffect(() => {
     setFilteredData(OrdrDetailsData);
-    
+
   }, [OrdrDetailsData]);
 
   useEffect(() => {

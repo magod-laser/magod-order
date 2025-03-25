@@ -539,10 +539,12 @@ function ImportDwgModal(props) {
 
   // Update handlers to track values
   const handleMtrlChange = (selected) => {
+	console.log("selected",selected);
+	
     if (selected && selected.length > 0) {
       const selectedMtrl = selected[0].Mtrl_Code;
       setFormValues(prev => ({ ...prev, strmtrlcode: selectedMtrl }));
-      selectMtrl(selectedMtrl); // Call the parent handler with the material code
+     //  selectMtrl(selectedMtrl); // Call the parent handler with the material code
     } else {
       setFormValues(prev => ({ ...prev, strmtrlcode: '' }));
       selectMtrl(''); // Clear the material code in parent component
@@ -598,7 +600,7 @@ function ImportDwgModal(props) {
   // Load saved values when modal opens
   useEffect(() => {
     if (importdwgmdlshow) {
-      const savedValues = JSON.parse(localStorage.getItem('importDwgModalValues') || '{}');
+      const savedValues = JSON.parse(sessionStorage.getItem('importDwgModalValues') || '{}');
       console.log("Loading saved values:", savedValues);
       
       if (savedValues) {
@@ -616,14 +618,17 @@ function ImportDwgModal(props) {
 
   // Save values when modal closes
   const handleModalClose = () => {
-    console.log("Saving values:", formValues);
-    localStorage.setItem('importDwgModalValues', JSON.stringify(formValues));
+   
+    // console.log("Saving values:", formValues);
+    sessionStorage.setItem('importDwgModalValues', JSON.stringify(formValues));
     handleCloseImportDwgmdl();
   };
 
   //20012025
   const PostOrderDwgData = async (e) => {
+
     e.preventDefault();
+	console.log("enetring the save function");
     // console.log("PostOrderDwgData");
     let dwgfiles = [];
     dwgfiles = e.target.elements.impDwgFiles;
@@ -647,11 +652,15 @@ function ImportDwgModal(props) {
       dgfiles: dwgfiles,
     };
 
-    console.log("imprtdwgobjtemp", imprtdwgobjtemp);
+  
 
     setImprtDwgObj(imprtdwgobjtemp);
+	console.log("imprtdwgobjtemp", imprtdwgobjtemp);
+	console.log("exiting the save function");
+	
     PostOrderDetails(2, imprtdwgobjtemp);
     setImportDwgmdlShow(false);
+	
   };
 
   return (
@@ -693,7 +702,7 @@ function ImportDwgModal(props) {
                             labelKey="Mtrl_Code"
                             name="impDwgMaterial"
                             onChange={handleMtrlChange}
-                            clearButton
+                            // clearButton
                             backspaceRemoves={true}
                             selected={formValues.strmtrlcode ? [{ Mtrl_Code: formValues.strmtrlcode }] : []}
                             options={mtrldata}
