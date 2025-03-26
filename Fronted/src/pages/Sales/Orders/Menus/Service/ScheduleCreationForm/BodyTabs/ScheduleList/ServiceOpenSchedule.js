@@ -479,6 +479,19 @@ function ServiceOpenSchedule() {
       }
     });
 
+    let hasQtyZeroQty = false;
+
+    newState.forEach((row) => {
+      if (row.QtyScheduled === "0" || row.QtyScheduled === 0) {
+        hasQtyZeroQty = true;
+      }
+    });
+
+    if (hasQtyZeroQty) {
+      alert("Check Qty to Schedule. Make sure Qty to Schedule is correct");
+      return;
+    }
+
     // Show alert if any row has an invalid quantity
 
     // Show confirmation popup if any row has QtyToSchedule === 0

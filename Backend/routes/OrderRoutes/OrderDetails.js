@@ -178,8 +178,8 @@ OrderDetailsRouter.post(`/insertnewsrldata`, async (req, res, next) => {
 
                 const orderNo = req.body.requestData.imprtDwgData.OrderNo;
                 const newOrderSrl = j + 1; // req.body.requestData.imprtDwgData.newOrderSrl;
-                console.log("newOrderSrl",newOrderSrl);
-                
+                console.log("newOrderSrl", newOrderSrl);
+
                 const custcode = req.body.requestData.imprtDwgData.custcode;
                 const dwgName =
                   req.body.requestData.imprtDwgData.impDwgFileData[i].file;
@@ -264,7 +264,7 @@ OrderDetailsRouter.post(`/insertnewsrldata`, async (req, res, next) => {
                     if (err) {
                       logger.error(err);
                     } else {
-                       console.log("srldata...123", srldata);
+                      console.log("srldata...123", srldata);
                       ressrldata.push(srldata);
                       //res.send(srldata);
                     }
@@ -586,6 +586,7 @@ OrderDetailsRouter.post(`/getQtnList`, async (req, res, next) => {
 
   console.log(req.body);
   let QtnFormat = req.body.QtnFormat;
+  console.log("QtnFormat", QtnFormat);
 
   try {
     qtnQueryMod(
@@ -625,28 +626,67 @@ OrderDetailsRouter.post(`/getQtnList`, async (req, res, next) => {
   }
 });
 
-OrderDetailsRouter.post(`/getQtnDataByQtnID`, async (req, res, next) => {
-  // console.log("req.body", req.body);
+// OrderDetailsRouter.post(`/getQtnDataByQtnID`, async (req, res, next) => {
+//   console.log("req.body", req.body);
+//   try {
+//     qtnQueryMod(
+//       `SELECT
+//             *
+//         FROM
+//             magodqtn.qtn_itemslist
+//         WHERE
+//             magodqtn.qtn_itemslist.QtnId = '${req.body.qtnId}'
+//         ORDER BY magodqtn.qtn_itemslist.ID DESC`,
+//       (err, qtnItemList) => {
+//         if (err) {
+//           res.status(500).send("Internal Server Error");
+//         } else {
+//           // console.log("qtnItemList", qtnItemList);
+//           res.send({
+//             qtnItemList: qtnItemList,
+//           });
+//         }
+//       }
+//     );
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+OrderDetailsRouter.post("/getQtnDataByQtnID", async (req, res, next) => {
   try {
-    qtnQueryMod(
-      `SELECT 
-            *
-        FROM
-            magodqtn.qtn_itemslist
-        WHERE
-            magodqtn.qtn_itemslist.QtnId = '${req.body.qtnId}'
-        ORDER BY magodqtn.qtn_itemslist.ID DESC`,
-      (err, qtnItemList) => {
-        if (err) {
-          res.status(500).send("Internal Server Error");
-        } else {
-          // console.log("qtnItemList", qtnItemList);
-          res.send({
-            qtnItemList: qtnItemList,
-          });
-        }
+    const { qtnId, QtnFormat } = req.body;
+
+    console.log("req.body", req.body);
+
+    let query = "";
+
+    if (QtnFormat === "Service") {
+      query = `
+        SELECT *
+        FROM magodqtn.qtn_itemslist
+        WHERE magodqtn.qtn_itemslist.QtnId = '${qtnId}'
+        ORDER BY magodqtn.qtn_itemslist.ID DESC
+      `;
+    } else if (QtnFormat === "Profile") {
+      query = `
+        SELECT *
+        FROM magodqtn.qtn_profiledetails
+        WHERE magodqtn.qtn_profiledetails.QtnId = '${qtnId}'
+        ORDER BY magodqtn.qtn_profiledetails.ProfileId DESC
+      `;
+    } else {
+      return res.status(400).send({ error: "Invalid QtnType" });
+    }
+
+    qtnQueryMod(query, (err, qtnItemList) => {
+      if (err) {
+        res.status(500).send("Internal Server Error");
+      } else {
+        console.log("qtnItemList", qtnItemList);
+        res.send({ qtnItemList: qtnItemList });
       }
-    );
+    });
   } catch (error) {
     next(error);
   }
@@ -756,100 +796,233 @@ OrderDetailsRouter.post(
 //     res.send({ result: true });
 //   }
 // );
+// OrderDetailsRouter.post(
+//   `/postDetailsDataInImportQtn`,
+//   async (req, res, next) => {
+//     console.log("Entering into postDetailsDataInImportQtn");
+
+//     try {
+//       let totalNewOrderValue = 0; // Accumulator for new order value
+//       let orderNo = null; // Store order number to update `order_list`
+
+//       const insertPromises = req.body.detailsData.map((element) => {
+//         return new Promise((resolve, reject) => {
+//           // Set orderNo for later use
+//           if (!orderNo) orderNo = element.Order_No;
+
+//           // Insert into order_details
+//           const insertQuery = `
+//             INSERT INTO magodmis.order_details
+//             (Order_No, Order_Srl, Cust_Code, DwgName, Mtrl_Code, MProcess,
+//             Mtrl_Source, Qty_Ordered, InspLevel, PackingLevel, UnitPrice,
+//             UnitWt, Order_Status, JWCost, MtrlCost, Operation, tolerance)
+//             VALUES
+//             ('${element.Order_No}', '${element.Order_Srl}', '${
+//             element.Cust_Code
+//           }',
+//             '${element.DwgName || ""}', '${element.Mtrl_Code || ""}',
+//             '${element.MProcess || ""}', '${element.Mtrl_Source || ""}',
+//             '${parseInt(element.Qty_Ordered || 0)}', '${
+//             element.InspLevel || "Insp1"
+//           }',
+//             '${element.PackingLevel || "Pkng1"}', '${parseFloat(
+//             element.UnitPrice || 0
+//           ).toFixed(2)}',
+//             '${parseFloat(element.UnitWt || 0).toFixed(3)}', '${
+//             element.Order_Status || "Received"
+//           }',
+//             '${parseFloat(element.JWCost || 0).toFixed(2)}', '${parseFloat(
+//             element.MtrlCost || 0
+//           ).toFixed(2)}',
+//             '${element.Operation || ""}', '${element.tolerance || ""}')`;
+
+//           misQueryMod(insertQuery, (err) => {
+//             if (err) {
+//               reject(err);
+//             } else {
+//               // Accumulate new order value
+//               const newRowValue =
+//                 parseInt(element.Qty_Ordered) *
+//                 (parseFloat(element.JWCost) + parseFloat(element.MtrlCost));
+
+//               totalNewOrderValue += newRowValue; // Add to accumulator
+//               resolve();
+//             }
+//           });
+//         });
+//       });
+
+//       // Wait for all rows to be inserted
+//       await Promise.all(insertPromises);
+
+//       // Now update ordervalue in order_list once
+//       if (!orderNo) {
+//         return res.status(400).send("No valid Order_No found in request data.");
+//       }
+
+//       const fetchOrderValueQuery = `SELECT ordervalue FROM magodmis.order_list WHERE order_no = '${orderNo}'`;
+
+//       misQueryMod(fetchOrderValueQuery, (err, result) => {
+//         if (err) {
+//           console.error(err);
+//           return res.status(500).send("Error fetching current order value.");
+//         }
+
+//         if (result.length === 0) {
+//           return res.status(404).send("Order not found.");
+//         }
+
+//         const currentOrderValue = result[0].ordervalue || 0;
+//         const updatedOrderValue = currentOrderValue + totalNewOrderValue;
+
+//         console.log("Total new order value:", totalNewOrderValue);
+//         console.log("Updated order value:", updatedOrderValue);
+
+//         const updateQuery = `
+//           UPDATE magodmis.order_list
+//           SET ordervalue = ${updatedOrderValue}
+//           WHERE order_no = '${orderNo}'`;
+
+//         misQueryMod(updateQuery, (updateErr) => {
+//           if (updateErr) {
+//             console.error(updateErr);
+//             return res.status(500).send("Error updating order value.");
+//           }
+
+//           res.send({ result: true, updatedOrderValue });
+//         });
+//       });
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
+
+//26-03-2025
 OrderDetailsRouter.post(
   `/postDetailsDataInImportQtn`,
   async (req, res, next) => {
     console.log("Entering into postDetailsDataInImportQtn");
 
     try {
-      let totalNewOrderValue = 0; // Accumulator for new order value
-      let orderNo = null; // Store order number to update `order_list`
+      let totalNewOrderValue = 0;
+      let totalOldOrderValue = 0;
+      let orderNo = null;
 
-      const insertPromises = req.body.detailsData.map((element) => {
-        return new Promise((resolve, reject) => {
-          // Set orderNo for later use
-          if (!orderNo) orderNo = element.Order_No;
+      // Fetch existing rows before inserting new ones
+      const existingOrderNos = req.body.detailsData
+        .map((el) => `'${el.Order_No}'`)
+        .join(",");
 
-          // Insert into order_details
-          const insertQuery = `
-            INSERT INTO magodmis.order_details 
-            (Order_No, Order_Srl, Cust_Code, DwgName, Mtrl_Code, MProcess, 
-            Mtrl_Source, Qty_Ordered, InspLevel, PackingLevel, UnitPrice, 
-            UnitWt, Order_Status, JWCost, MtrlCost, Operation, tolerance) 
-            VALUES 
-            ('${element.Order_No}', '${element.Order_Srl}', '${
-            element.Cust_Code
-          }', 
-            '${element.DwgName || ""}', '${element.Mtrl_Code || ""}', 
-            '${element.MProcess || ""}', '${element.Mtrl_Source || ""}', 
-            '${parseInt(element.Qty_Ordered || 0)}', '${
-            element.InspLevel || "Insp1"
-          }', 
-            '${element.PackingLevel || "Pkng1"}', '${parseFloat(
-            element.UnitPrice || 0
-          ).toFixed(2)}', 
-            '${parseFloat(element.UnitWt || 0).toFixed(3)}', '${
-            element.Order_Status || "Received"
-          }', 
-            '${parseFloat(element.JWCost || 0).toFixed(2)}', '${parseFloat(
-            element.MtrlCost || 0
-          ).toFixed(2)}', 
-            '${element.Operation || ""}', '${element.tolerance || ""}')`;
-
-          misQueryMod(insertQuery, (err) => {
-            if (err) {
-              reject(err);
-            } else {
-              // Accumulate new order value
-              const newRowValue =
-                parseInt(element.Qty_Ordered) *
-                (parseFloat(element.JWCost) + parseFloat(element.MtrlCost));
-
-              totalNewOrderValue += newRowValue; // Add to accumulator
-              resolve();
-            }
-          });
-        });
-      });
-
-      // Wait for all rows to be inserted
-      await Promise.all(insertPromises);
-
-      // Now update ordervalue in order_list once
-      if (!orderNo) {
+      if (!existingOrderNos) {
         return res.status(400).send("No valid Order_No found in request data.");
       }
 
-      const fetchOrderValueQuery = `SELECT ordervalue FROM magodmis.order_list WHERE order_no = '${orderNo}'`;
+      const fetchOldOrderQuery = `
+        SELECT Order_No, Qty_Ordered, JWCost, MtrlCost 
+        FROM magodmis.order_details 
+        WHERE Order_No IN (${existingOrderNos})`;
 
-      misQueryMod(fetchOrderValueQuery, (err, result) => {
+      misQueryMod(fetchOldOrderQuery, async (err, oldData) => {
         if (err) {
           console.error(err);
-          return res.status(500).send("Error fetching current order value.");
+          return res.status(500).send("Error fetching existing order details.");
         }
 
-        if (result.length === 0) {
-          return res.status(404).send("Order not found.");
-        }
+        // Calculate total old order value
+        oldData.forEach((row) => {
+          const oldQty = parseInt(row.Qty_Ordered) || 0;
+          const oldJWCost = parseFloat(row.JWCost) || 0;
+          const oldMtrlCost = parseFloat(row.MtrlCost) || 0;
+          totalOldOrderValue += oldQty * (oldJWCost + oldMtrlCost);
+        });
 
-        const currentOrderValue = result[0].ordervalue || 0;
-        const updatedOrderValue = currentOrderValue + totalNewOrderValue;
+        console.log("Total old order value:", totalOldOrderValue);
 
-        console.log("Total new order value:", totalNewOrderValue);
-        console.log("Updated order value:", updatedOrderValue);
+        // Insert new rows and calculate new order value
+        const insertPromises = req.body.detailsData.map((element) => {
+          return new Promise((resolve, reject) => {
+            if (!orderNo) orderNo = element.Order_No;
 
-        const updateQuery = `
-          UPDATE magodmis.order_list 
-          SET ordervalue = ${updatedOrderValue} 
+            const insertQuery = `
+              INSERT INTO magodmis.order_details 
+              (Order_No, Order_Srl, Cust_Code, DwgName, Mtrl_Code, MProcess, 
+              Mtrl_Source, Qty_Ordered, InspLevel, PackingLevel, UnitPrice, 
+              UnitWt, Order_Status, JWCost, MtrlCost, Operation, tolerance) 
+              VALUES 
+              ('${element.Order_No}', '${element.Order_Srl}', '${
+              element.Cust_Code
+            }', 
+              '${element.DwgName || ""}', '${element.Mtrl_Code || ""}', 
+              '${element.MProcess || ""}', '${element.Mtrl_Source || ""}', 
+              '${parseInt(element.Qty_Ordered || 0)}', '${
+              element.InspLevel || "Insp1"
+            }', 
+              '${element.PackingLevel || "Pkng1"}', '${parseFloat(
+              element.UnitPrice || 0
+            ).toFixed(2)}', 
+              '${parseFloat(element.UnitWt || 0).toFixed(3)}', '${
+              element.Order_Status || "Received"
+            }', 
+              '${parseFloat(element.JWCost || 0).toFixed(2)}', '${parseFloat(
+              element.MtrlCost || 0
+            ).toFixed(2)}', 
+              '${element.Operation || ""}', '${element.tolerance || ""}')`;
+
+            misQueryMod(insertQuery, (err) => {
+              if (err) {
+                reject(err);
+              } else {
+                // Accumulate new order value
+                const newRowValue =
+                  parseInt(element.Qty_Ordered) *
+                  (parseFloat(element.JWCost) + parseFloat(element.MtrlCost));
+
+                totalNewOrderValue += newRowValue;
+                resolve();
+              }
+            });
+          });
+        });
+
+        await Promise.all(insertPromises);
+
+        // Fetch current order value from order_list
+        const fetchOrderValueQuery = `
+          SELECT ordervalue FROM magodmis.order_list 
           WHERE order_no = '${orderNo}'`;
 
-        misQueryMod(updateQuery, (updateErr) => {
-          if (updateErr) {
-            console.error(updateErr);
-            return res.status(500).send("Error updating order value.");
+        misQueryMod(fetchOrderValueQuery, (err, result) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).send("Error fetching current order value.");
           }
 
-          res.send({ result: true, updatedOrderValue });
+          if (result.length === 0) {
+            return res.status(404).send("Order not found.");
+          }
+
+          const currentOrderValue = parseFloat(result[0].ordervalue) || 0;
+          const updatedOrderValue =
+            currentOrderValue - totalOldOrderValue + totalNewOrderValue;
+
+          console.log("Total new order value:", totalNewOrderValue);
+          console.log("Updated order value:", updatedOrderValue);
+
+          // Update ordervalue in order_list
+          const updateQuery = `
+            UPDATE magodmis.order_list 
+            SET ordervalue = ${totalNewOrderValue} 
+            WHERE order_no = '${orderNo}'`;
+
+          misQueryMod(updateQuery, (updateErr) => {
+            if (updateErr) {
+              console.error(updateErr);
+              return res.status(500).send("Error updating order value.");
+            }
+
+            res.send({ result: true, updatedOrderValue });
+          });
         });
       });
     } catch (error) {
@@ -954,6 +1127,120 @@ OrderDetailsRouter.post(
 //     }
 //   }
 // );
+// OrderDetailsRouter.post(
+//   `/postDetailsDataInImportExcel`,
+//   async (req, res, next) => {
+//     console.log("Entering Into postDetailsDataInImportExcel");
+//     console.log("req.body", req.body);
+
+//     try {
+//       const db = require("../../helpers/dbconn"); // Import DB connection
+
+//       let totalNewOrderValue = 0; // Accumulator for new order value
+
+//       const insertPromises = req.body.detailsData.map((element) => {
+//         return new Promise((resolve, reject) => {
+//           // Check if Order_No exists in order_list
+//           const checkQuery = `SELECT Order_No FROM magodmis.order_list WHERE Order_No = '${element.Order_No}'`;
+
+//           misQueryMod(checkQuery, (err, results) => {
+//             if (err) {
+//               reject(err);
+//             } else if (results.length === 0) {
+//               reject(
+//                 new Error(
+//                   `Order_No ${element.Order_No} not found in order_list`
+//                 )
+//               );
+//             } else {
+//               // Insert into order_details
+//               const insertQuery = `
+//                 INSERT INTO magodmis.order_details (Order_No, Order_Srl, Cust_Code, DwgName, Mtrl_Code, MProcess, Mtrl_Source, Qty_Ordered, InspLevel, PackingLevel, UnitPrice, UnitWt, Order_Status, JWCost, MtrlCost, Operation, tolerance)
+//                 VALUES ('${element.Order_No}', '${element.Order_Srl}', '${
+//                 element.Cust_Code
+//               }',
+//                         '${element.DwgName || ""}', '${
+//                 element.Mtrl_Code || ""
+//               }', '${element.MProcess || ""}',
+//                         '${element.Mtrl_Source || ""}', '${parseInt(
+//                 element.Qty_Ordered || 0
+//               )}',
+//                         '${element.InspLevel || "Insp1"}', '${
+//                 element.PackingLevel || "Pkng1"
+//               }',
+//                         '${parseFloat(element.UnitPrice || 0).toFixed(
+//                           2
+//                         )}', '${parseFloat(element.UnitWt || 0).toFixed(3)}',
+//                         '${element.Order_Status || "Received"}', '${parseFloat(
+//                 element.JWCost || 0
+//               ).toFixed(2)}',
+//                         '${parseFloat(element.MtrlCost || 0).toFixed(2)}', '${
+//                 element.Operation || ""
+//               }',
+//                         '${element.tolerance || ""}')`;
+
+//               misQueryMod(insertQuery, (insertErr) => {
+//                 if (insertErr) {
+//                   reject(insertErr);
+//                 } else {
+//                   // Accumulate new order value
+//                   const newRowValue =
+//                     parseInt(element.Qty_Ordered) *
+//                     (parseFloat(element.JWCost) + parseFloat(element.MtrlCost));
+
+//                   totalNewOrderValue += newRowValue; // Add to accumulator
+//                   resolve();
+//                 }
+//               });
+//             }
+//           });
+//         });
+//       });
+
+//       // Wait for all rows to be inserted
+//       await Promise.all(insertPromises);
+
+//       // Now update ordervalue in order_list once
+//       const orderNo = req.body.detailsData[0].Order_No; // Assuming all rows have same Order_No
+//       const fetchOrderValueQuery = `SELECT ordervalue FROM magodmis.order_list WHERE order_no = '${orderNo}'`;
+
+//       misQueryMod(fetchOrderValueQuery, (err, result) => {
+//         if (err) {
+//           console.error(err);
+//           return res.status(500).send("Error fetching current order value.");
+//         }
+
+//         if (result.length === 0) {
+//           return res.status(404).send("Order not found.");
+//         }
+
+//         const currentOrderValue = result[0].ordervalue || 0;
+//         const updatedOrderValue = currentOrderValue + totalNewOrderValue;
+
+//         console.log("Total new order value:", totalNewOrderValue);
+//         console.log("Updated order value:", updatedOrderValue);
+
+//         const updateQuery = `
+//           UPDATE magodmis.order_list
+//           SET ordervalue = ${updatedOrderValue}
+//           WHERE order_no = '${orderNo}'`;
+
+//         misQueryMod(updateQuery, (updateErr) => {
+//           if (updateErr) {
+//             console.error(updateErr);
+//             return res.status(500).send("Error updating order value.");
+//           }
+
+//           res.send({ result: true, updatedOrderValue });
+//         });
+//       });
+//     } catch (error) {
+//       console.error("Error inserting order details:", error);
+//       res.status(500).send({ error: error.message });
+//     }
+//   }
+// );
+//26-03-2025
 OrderDetailsRouter.post(
   `/postDetailsDataInImportExcel`,
   async (req, res, next) => {
@@ -963,102 +1250,140 @@ OrderDetailsRouter.post(
     try {
       const db = require("../../helpers/dbconn"); // Import DB connection
 
-      let totalNewOrderValue = 0; // Accumulator for new order value
+      let totalNewOrderValue = 0;
+      let totalOldOrderValue = 0;
 
-      const insertPromises = req.body.detailsData.map((element) => {
-        return new Promise((resolve, reject) => {
-          // Check if Order_No exists in order_list
-          const checkQuery = `SELECT Order_No FROM magodmis.order_list WHERE Order_No = '${element.Order_No}'`;
+      // Get unique order numbers from request data
+      const orderNos = [
+        ...new Set(req.body.detailsData.map((el) => `'${el.Order_No}'`)),
+      ].join(",");
 
-          misQueryMod(checkQuery, (err, results) => {
-            if (err) {
-              reject(err);
-            } else if (results.length === 0) {
-              reject(
-                new Error(
-                  `Order_No ${element.Order_No} not found in order_list`
-                )
-              );
-            } else {
-              // Insert into order_details
-              const insertQuery = `
-                INSERT INTO magodmis.order_details (Order_No, Order_Srl, Cust_Code, DwgName, Mtrl_Code, MProcess, Mtrl_Source, Qty_Ordered, InspLevel, PackingLevel, UnitPrice, UnitWt, Order_Status, JWCost, MtrlCost, Operation, tolerance)
-                VALUES ('${element.Order_No}', '${element.Order_Srl}', '${
-                element.Cust_Code
-              }', 
-                        '${element.DwgName || ""}', '${
-                element.Mtrl_Code || ""
-              }', '${element.MProcess || ""}', 
-                        '${element.Mtrl_Source || ""}', '${parseInt(
-                element.Qty_Ordered || 0
-              )}', 
-                        '${element.InspLevel || "Insp1"}', '${
-                element.PackingLevel || "Pkng1"
-              }', 
-                        '${parseFloat(element.UnitPrice || 0).toFixed(
-                          2
-                        )}', '${parseFloat(element.UnitWt || 0).toFixed(3)}', 
-                        '${element.Order_Status || "Received"}', '${parseFloat(
-                element.JWCost || 0
-              ).toFixed(2)}', 
-                        '${parseFloat(element.MtrlCost || 0).toFixed(2)}', '${
-                element.Operation || ""
-              }', 
-                        '${element.tolerance || ""}')`;
+      if (!orderNos) {
+        return res.status(400).send("No valid Order_No found in request data.");
+      }
 
-              misQueryMod(insertQuery, (insertErr) => {
-                if (insertErr) {
-                  reject(insertErr);
-                } else {
-                  // Accumulate new order value
-                  const newRowValue =
-                    parseInt(element.Qty_Ordered) *
-                    (parseFloat(element.JWCost) + parseFloat(element.MtrlCost));
+      // Fetch old order values before inserting new data
+      const fetchOldOrderQuery = `
+        SELECT Order_No, Qty_Ordered, JWCost, MtrlCost 
+        FROM magodmis.order_details 
+        WHERE Order_No IN (${orderNos})`;
 
-                  totalNewOrderValue += newRowValue; // Add to accumulator
-                  resolve();
-                }
-              });
-            }
-          });
-        });
-      });
-
-      // Wait for all rows to be inserted
-      await Promise.all(insertPromises);
-
-      // Now update ordervalue in order_list once
-      const orderNo = req.body.detailsData[0].Order_No; // Assuming all rows have same Order_No
-      const fetchOrderValueQuery = `SELECT ordervalue FROM magodmis.order_list WHERE order_no = '${orderNo}'`;
-
-      misQueryMod(fetchOrderValueQuery, (err, result) => {
+      misQueryMod(fetchOldOrderQuery, async (err, oldData) => {
         if (err) {
           console.error(err);
-          return res.status(500).send("Error fetching current order value.");
+          return res.status(500).send("Error fetching existing order details.");
         }
 
-        if (result.length === 0) {
-          return res.status(404).send("Order not found.");
-        }
+        // Calculate total old order value
+        oldData.forEach((row) => {
+          const oldQty = parseInt(row.Qty_Ordered) || 0;
+          const oldJWCost = parseFloat(row.JWCost) || 0;
+          const oldMtrlCost = parseFloat(row.MtrlCost) || 0;
+          totalOldOrderValue += oldQty * (oldJWCost + oldMtrlCost);
+        });
 
-        const currentOrderValue = result[0].ordervalue || 0;
-        const updatedOrderValue = currentOrderValue + totalNewOrderValue;
+        console.log("Total old order value:", totalOldOrderValue);
 
-        console.log("Total new order value:", totalNewOrderValue);
-        console.log("Updated order value:", updatedOrderValue);
+        // Insert new rows and calculate new order value
+        const insertPromises = req.body.detailsData.map((element) => {
+          return new Promise((resolve, reject) => {
+            // Check if Order_No exists in order_list
+            const checkQuery = `SELECT Order_No FROM magodmis.order_list WHERE Order_No = '${element.Order_No}'`;
 
-        const updateQuery = `
-          UPDATE magodmis.order_list 
-          SET ordervalue = ${updatedOrderValue} 
+            misQueryMod(checkQuery, (err, results) => {
+              if (err) {
+                reject(err);
+              } else if (results.length === 0) {
+                reject(
+                  new Error(
+                    `Order_No ${element.Order_No} not found in order_list`
+                  )
+                );
+              } else {
+                // Insert into order_details
+                const insertQuery = `
+                  INSERT INTO magodmis.order_details (Order_No, Order_Srl, Cust_Code, DwgName, Mtrl_Code, MProcess, Mtrl_Source, Qty_Ordered, InspLevel, PackingLevel, UnitPrice, UnitWt, Order_Status, JWCost, MtrlCost, Operation, tolerance)
+                  VALUES ('${element.Order_No}', '${element.Order_Srl}', '${
+                  element.Cust_Code
+                }', 
+                          '${element.DwgName || ""}', '${
+                  element.Mtrl_Code || ""
+                }', '${element.MProcess || ""}', 
+                          '${element.Mtrl_Source || ""}', '${parseInt(
+                  element.Qty_Ordered || 0
+                )}', 
+                          '${element.InspLevel || "Insp1"}', '${
+                  element.PackingLevel || "Pkng1"
+                }', 
+                          '${parseFloat(element.UnitPrice || 0).toFixed(
+                            2
+                          )}', '${parseFloat(element.UnitWt || 0).toFixed(3)}', 
+                          '${
+                            element.Order_Status || "Received"
+                          }', '${parseFloat(element.JWCost || 0).toFixed(2)}', 
+                          '${parseFloat(element.MtrlCost || 0).toFixed(2)}', '${
+                  element.Operation || ""
+                }', 
+                          '${element.tolerance || ""}')`;
+
+                misQueryMod(insertQuery, (insertErr) => {
+                  if (insertErr) {
+                    reject(insertErr);
+                  } else {
+                    // Accumulate new order value
+                    const newRowValue =
+                      parseInt(element.Qty_Ordered) *
+                      (parseFloat(element.JWCost) +
+                        parseFloat(element.MtrlCost));
+
+                    totalNewOrderValue += newRowValue; // Add to accumulator
+                    resolve();
+                  }
+                });
+              }
+            });
+          });
+        });
+
+        await Promise.all(insertPromises);
+
+        // Now update ordervalue in order_list once
+        const orderNo = req.body.detailsData[0].Order_No; // Assuming all rows have same Order_No
+        const fetchOrderValueQuery = `
+          SELECT ordervalue FROM magodmis.order_list 
           WHERE order_no = '${orderNo}'`;
 
-        misQueryMod(updateQuery, (updateErr) => {
-          if (updateErr) {
-            console.error(updateErr);
-            return res.status(500).send("Error updating order value.");
+        misQueryMod(fetchOrderValueQuery, (err, result) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).send("Error fetching current order value.");
           }
 
-          res.send({ result: true, updatedOrderValue });
+          if (result.length === 0) {
+            return res.status(404).send("Order not found.");
+          }
+
+          const currentOrderValue = parseFloat(result[0].ordervalue) || 0;
+          const updatedOrderValue =
+            currentOrderValue - totalOldOrderValue + totalNewOrderValue;
+
+          console.log("Total new order value:", totalNewOrderValue);
+          console.log("Updated order value:", updatedOrderValue);
+
+          // Update ordervalue in order_list
+          const updateQuery = `
+            UPDATE magodmis.order_list 
+            SET ordervalue = ${totalNewOrderValue} 
+            WHERE order_no = '${orderNo}'`;
+
+          misQueryMod(updateQuery, (updateErr) => {
+            if (updateErr) {
+              console.error(updateErr);
+              return res.status(500).send("Error updating order value.");
+            }
+
+            res.send({ result: true, updatedOrderValue });
+          });
         });
       });
     } catch (error) {
@@ -1164,6 +1489,122 @@ OrderDetailsRouter.post(
 //   }
 // );
 
+// OrderDetailsRouter.post(
+//   `/postDetailsDataInImportOldOrder`,
+//   async (req, res, next) => {
+//     console.log("Entering into postDetailsDataInImportOldOrder");
+//     console.log("req.body", req.body);
+
+//     try {
+//       let totalNewOrderValue = 0; // Accumulator for new order value
+//       let orderNo = null; // Store order number to update `order_list`
+
+//       const insertPromises = req.body.detailsData.map((element) => {
+//         return new Promise((resolve, reject) => {
+//           // Convert Delivery_Date to MySQL DATETIME format if it exists
+//           const deliveryDate = element.Delivery_Date
+//             ? new Date(element.Delivery_Date)
+//                 .toISOString()
+//                 .slice(0, 19)
+//                 .replace("T", " ")
+//             : null;
+
+//           // Set orderNo for later use
+//           if (!orderNo) orderNo = element.Order_No;
+
+//           // Insert into order_details
+//           const insertQuery = `
+//             INSERT INTO magodmis.order_details
+//             (Order_No, Order_Srl, Cust_Code, DwgName, Mtrl_Code, MProcess, Mtrl_Source,
+//             Qty_Ordered, QtyScheduled, InspLevel, PackingLevel, UnitPrice, UnitWt, Order_Status,
+//             JWCost, MtrlCost, Operation, tolerance, Delivery_Date)
+//             VALUES
+//             ('${element.Order_No}', '${element.Order_Srl}', '${
+//             element.Cust_Code
+//           }', '${element.DwgName || ""}',
+//             '${element.Mtrl_Code || ""}', '${element.MProcess || ""}', '${
+//             element.Mtrl_Source || ""
+//           }',
+//             '${parseInt(element.Qty_Ordered || 0)}', '${parseInt(
+//             element.QtyScheduled || 0
+//           )}',
+//             '${element.InspLevel || "Insp1"}', '${
+//             element.PackingLevel || "Pkng1"
+//           }',
+//             '${parseFloat(element.UnitPrice || 0).toFixed(2)}', '${parseFloat(
+//             element.UnitWt || 0
+//           ).toFixed(3)}',
+//             '${element.Order_Status || "Received"}', '${parseFloat(
+//             element.JWCost || 0
+//           ).toFixed(2)}',
+//             '${parseFloat(element.MtrlCost || 0).toFixed(2)}', '${
+//             element.Operation || ""
+//           }', '${element.tolerance || ""}',
+//             ${deliveryDate ? `'${deliveryDate}'` : "NULL"})`;
+
+//           misQueryMod(insertQuery, (err) => {
+//             if (err) {
+//               reject(err);
+//             } else {
+//               // Accumulate new order value
+//               const newRowValue =
+//                 parseInt(element.Qty_Ordered) *
+//                 (parseFloat(element.JWCost) + parseFloat(element.MtrlCost));
+
+//               totalNewOrderValue += newRowValue; // Add to accumulator
+//               resolve();
+//             }
+//           });
+//         });
+//       });
+
+//       // Wait for all rows to be inserted
+//       await Promise.all(insertPromises);
+
+//       // Now update ordervalue in order_list once
+//       if (!orderNo) {
+//         return res.status(400).send("No valid Order_No found in request data.");
+//       }
+
+//       const fetchOrderValueQuery = `SELECT ordervalue FROM magodmis.order_list WHERE order_no = '${orderNo}'`;
+
+//       misQueryMod(fetchOrderValueQuery, (err, result) => {
+//         if (err) {
+//           console.error(err);
+//           return res.status(500).send("Error fetching current order value.");
+//         }
+
+//         if (result.length === 0) {
+//           return res.status(404).send("Order not found.");
+//         }
+
+//         const currentOrderValue = result[0].ordervalue || 0;
+//         const updatedOrderValue = currentOrderValue + totalNewOrderValue;
+
+//         console.log("Total new order value:", totalNewOrderValue);
+//         console.log("Updated order value:", updatedOrderValue);
+
+//         const updateQuery = `
+//           UPDATE magodmis.order_list
+//           SET ordervalue = ${totalNewOrderValue}
+//           WHERE order_no = '${orderNo}'`;
+
+//         misQueryMod(updateQuery, (updateErr) => {
+//           if (updateErr) {
+//             console.error(updateErr);
+//             return res.status(500).send("Error updating order value.");
+//           }
+
+//           res.send({ result: true, updatedOrderValue });
+//         });
+//       });
+//     } catch (error) {
+//       next(error); // Handle errors properly
+//     }
+//   }
+// );
+
+//26-03-2025
 OrderDetailsRouter.post(
   `/postDetailsDataInImportOldOrder`,
   async (req, res, next) => {
@@ -1171,12 +1612,11 @@ OrderDetailsRouter.post(
     console.log("req.body", req.body);
 
     try {
-      let totalNewOrderValue = 0; // Accumulator for new order value
-      let orderNo = null; // Store order number to update `order_list`
+      let totalNewOrderValue = 0;
+      let orderNo = null;
 
       const insertPromises = req.body.detailsData.map((element) => {
         return new Promise((resolve, reject) => {
-          // Convert Delivery_Date to MySQL DATETIME format if it exists
           const deliveryDate = element.Delivery_Date
             ? new Date(element.Delivery_Date)
                 .toISOString()
@@ -1184,10 +1624,8 @@ OrderDetailsRouter.post(
                 .replace("T", " ")
             : null;
 
-          // Set orderNo for later use
           if (!orderNo) orderNo = element.Order_No;
 
-          // Insert into order_details
           const insertQuery = `
             INSERT INTO magodmis.order_details 
             (Order_No, Order_Srl, Cust_Code, DwgName, Mtrl_Code, MProcess, Mtrl_Source, 
@@ -1226,26 +1664,25 @@ OrderDetailsRouter.post(
                 parseInt(element.Qty_Ordered) *
                 (parseFloat(element.JWCost) + parseFloat(element.MtrlCost));
 
-              totalNewOrderValue += newRowValue; // Add to accumulator
+              totalNewOrderValue += newRowValue;
               resolve();
             }
           });
         });
       });
 
-      // Wait for all rows to be inserted
       await Promise.all(insertPromises);
 
-      // Now update ordervalue in order_list once
       if (!orderNo) {
         return res.status(400).send("No valid Order_No found in request data.");
       }
 
-      const fetchOrderValueQuery = `SELECT ordervalue FROM magodmis.order_list WHERE order_no = '${orderNo}'`;
+      // Fetch current order value from order_list
+      const fetchOrderValueQuery = `SELECT OrderValue FROM magodmis.order_list WHERE Order_No = '${orderNo}'`;
 
       misQueryMod(fetchOrderValueQuery, (err, result) => {
         if (err) {
-          console.error(err);
+          console.error("Error fetching current order value:", err);
           return res.status(500).send("Error fetching current order value.");
         }
 
@@ -1253,20 +1690,21 @@ OrderDetailsRouter.post(
           return res.status(404).send("Order not found.");
         }
 
-        const currentOrderValue = result[0].ordervalue || 0;
+        const currentOrderValue = parseFloat(result[0].OrderValue) || 0;
         const updatedOrderValue = currentOrderValue + totalNewOrderValue;
 
-        console.log("Total new order value:", totalNewOrderValue);
-        console.log("Updated order value:", updatedOrderValue);
+        console.log("Current Order Value:", currentOrderValue);
+        console.log("Total New Order Value:", totalNewOrderValue);
+        console.log("Updated Order Value:", updatedOrderValue);
 
         const updateQuery = `
           UPDATE magodmis.order_list 
-          SET ordervalue = ${updatedOrderValue} 
-          WHERE order_no = '${orderNo}'`;
+          SET OrderValue = ${totalNewOrderValue} 
+          WHERE Order_No = '${orderNo}'`;
 
         misQueryMod(updateQuery, (updateErr) => {
           if (updateErr) {
-            console.error(updateErr);
+            console.error("Error updating order value:", updateErr);
             return res.status(500).send("Error updating order value.");
           }
 
@@ -1274,7 +1712,7 @@ OrderDetailsRouter.post(
         });
       });
     } catch (error) {
-      next(error); // Handle errors properly
+      next(error);
     }
   }
 );
@@ -1476,6 +1914,113 @@ OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
 //     next(error);
 //   }
 // });
+// OrderDetailsRouter.post("/ordertablevaluesupdate", async (req, res, next) => {
+//   console.log("ordertablevaluesupdate");
+
+//   if (
+//     !Array.isArray(req.body.updatedRows) ||
+//     req.body.updatedRows.length === 0
+//   ) {
+//     console.log("updatedRows is empty or not an array");
+//     return res.status(400).send("Invalid updatedRows data.");
+//   }
+
+//   const orderNo = req.body.orderNo;
+//   console.log("orderNo:", orderNo);
+
+//   try {
+//     let updateQueries = [];
+
+//     // Prepare update queries for all rows
+//     req.body.updatedRows.forEach((row) => {
+//       const { Qty_Ordered, MtrlCost, JWCost, Order_Srl } = row;
+//       const qtyOrdered = parseInt(Qty_Ordered) || 0;
+//       const materialRate = parseFloat(MtrlCost) || 0.0;
+//       const jwRate = parseFloat(JWCost) || 0.0;
+//       const UnitPrice = jwRate + materialRate || 0.0;
+
+//       console.log(
+//         `Processing Order_Srl: ${Order_Srl}, Qty_Ordered: ${qtyOrdered}`
+//       );
+
+//       const updateQuery = `
+//         UPDATE magodmis.order_details
+//         SET
+//           Qty_Ordered = CASE WHEN ${qtyOrdered} IS NOT NULL THEN ${qtyOrdered} ELSE Qty_Ordered END,
+//           JWCost = CASE WHEN ${jwRate} IS NOT NULL THEN ${jwRate} ELSE JWCost END,
+//           MtrlCost = CASE WHEN ${materialRate} IS NOT NULL THEN ${materialRate} ELSE MtrlCost END,
+//              UnitPrice = CASE WHEN ${UnitPrice} IS NOT NULL THEN ${UnitPrice} ELSE UnitPrice END
+//         WHERE Order_No = '${orderNo}' AND Order_Srl = '${Order_Srl}';
+//       `;
+//       updateQueries.push(updateQuery);
+//     });
+
+//     // Execute all update queries
+//     const updatePromises = updateQueries.map(
+//       (query) =>
+//         new Promise((resolve, reject) => {
+//           misQueryMod(query, (err, result) => {
+//             if (err) reject(err);
+//             else resolve(result);
+//           });
+//         })
+//     );
+
+//     // Execute all updates in parallel
+//     await Promise.all(updatePromises);
+//     console.log("All rows updated successfully");
+
+//     // Fetch the current order value
+//     misQueryMod(
+//       `SELECT ordervalue FROM magodmis.order_list WHERE order_no = '${orderNo}'`,
+//       (err, result) => {
+//         if (err) {
+//           logger.error(err);
+//           return res.status(500).send("Error fetching current order value.");
+//         }
+
+//         if (result.length === 0) {
+//           return res.status(404).send("Order not found.");
+//         }
+
+//         const currentOrderValue = result[0].ordervalue;
+//         let newOrderValue = 0;
+
+//         // Calculate total order value
+//         req.body.updatedRows.forEach((row) => {
+//           const qtyOrdered = parseInt(row.Qty_Ordered) || 0;
+//           const materialRate = parseFloat(row.MtrlCost) || 0.0;
+//           const jwRate = parseFloat(row.JWCost) || 0.0;
+//           newOrderValue += qtyOrdered * (jwRate + materialRate);
+//         });
+
+//         const updatedOrderValue = (currentOrderValue || 0) + newOrderValue;
+
+//         // Update the total order value
+//         misQueryMod(
+//           `UPDATE magodmis.order_list
+//            SET ordervalue = ${updatedOrderValue}
+//            WHERE order_no = '${orderNo}'`,
+//           (err, updateResult) => {
+//             if (err) {
+//               logger.error(err);
+//               return res.status(500).send("Error updating order value.");
+//             }
+//             res.send({
+//               success: true,
+//               message: "Rows updated successfully",
+//               updateResult,
+//             });
+//           }
+//         );
+//       }
+//     );
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+// 26-03-2025
 OrderDetailsRouter.post("/ordertablevaluesupdate", async (req, res, next) => {
   console.log("ordertablevaluesupdate");
 
@@ -1508,10 +2053,10 @@ OrderDetailsRouter.post("/ordertablevaluesupdate", async (req, res, next) => {
       const updateQuery = `
         UPDATE magodmis.order_details
         SET
-          Qty_Ordered = CASE WHEN ${qtyOrdered} IS NOT NULL THEN ${qtyOrdered} ELSE Qty_Ordered END,
-          JWCost = CASE WHEN ${jwRate} IS NOT NULL THEN ${jwRate} ELSE JWCost END,
-          MtrlCost = CASE WHEN ${materialRate} IS NOT NULL THEN ${materialRate} ELSE MtrlCost END,
-             UnitPrice = CASE WHEN ${UnitPrice} IS NOT NULL THEN ${UnitPrice} ELSE UnitPrice END
+          Qty_Ordered = ${qtyOrdered},
+          JWCost = ${jwRate},
+          MtrlCost = ${materialRate},
+          UnitPrice = ${UnitPrice}
         WHERE Order_No = '${orderNo}' AND Order_Srl = '${Order_Srl}';
       `;
       updateQueries.push(updateQuery);
@@ -1528,59 +2073,56 @@ OrderDetailsRouter.post("/ordertablevaluesupdate", async (req, res, next) => {
         })
     );
 
-    // Execute all updates in parallel
+    // Wait for all updates to complete
     await Promise.all(updatePromises);
     console.log("All rows updated successfully");
 
-    // Fetch the current order value
-    misQueryMod(
-      `SELECT ordervalue FROM magodmis.order_list WHERE order_no = '${orderNo}'`,
-      (err, result) => {
-        if (err) {
-          logger.error(err);
-          return res.status(500).send("Error fetching current order value.");
-        }
+    // Fetch the total recalculated order value from order_details
+    const fetchTotalOrderValueQuery = `
+      SELECT SUM(Qty_Ordered * (JWCost + MtrlCost)) AS totalOrderValue 
+      FROM magodmis.order_details 
+      WHERE Order_No = '${orderNo}'
+    `;
 
-        if (result.length === 0) {
-          return res.status(404).send("Order not found.");
-        }
-
-        const currentOrderValue = result[0].ordervalue;
-        let newOrderValue = 0;
-
-        // Calculate total order value
-        req.body.updatedRows.forEach((row) => {
-          const qtyOrdered = parseInt(row.Qty_Ordered) || 0;
-          const materialRate = parseFloat(row.MtrlCost) || 0.0;
-          const jwRate = parseFloat(row.JWCost) || 0.0;
-          newOrderValue += qtyOrdered * (jwRate + materialRate);
-        });
-
-        const updatedOrderValue = (currentOrderValue || 0) + newOrderValue;
-
-        // Update the total order value
-        misQueryMod(
-          `UPDATE magodmis.order_list
-           SET ordervalue = ${updatedOrderValue}
-           WHERE order_no = '${orderNo}'`,
-          (err, updateResult) => {
-            if (err) {
-              logger.error(err);
-              return res.status(500).send("Error updating order value.");
-            }
-            res.send({
-              success: true,
-              message: "Rows updated successfully",
-              updateResult,
-            });
-          }
-        );
+    misQueryMod(fetchTotalOrderValueQuery, (err, result) => {
+      if (err) {
+        console.error("Error fetching total order value:", err);
+        return res.status(500).send("Error fetching total order value.");
       }
-    );
+
+      if (result.length === 0) {
+        return res.status(404).send("Order details not found.");
+      }
+
+      const totalOrderValue = parseFloat(result[0].totalOrderValue) || 0;
+
+      console.log("Updated Total Order Value:", totalOrderValue);
+
+      // Update the ordervalue in order_list
+      const updateOrderListQuery = `
+        UPDATE magodmis.order_list
+        SET ordervalue = ${totalOrderValue}
+        WHERE Order_No = '${orderNo}'
+      `;
+
+      misQueryMod(updateOrderListQuery, (updateErr) => {
+        if (updateErr) {
+          console.error("Error updating order value in order_list:", updateErr);
+          return res.status(500).send("Error updating order value.");
+        }
+
+        res.send({
+          success: true,
+          message: "Rows updated successfully and order value recalculated",
+          updatedOrderValue: totalOrderValue,
+        });
+      });
+    });
   } catch (error) {
     next(error);
   }
 });
+
 
 // OrderDetailsRouter.post("/singleChangeUpdate", async (req, res, next) => {
 //   // console.log("enter into singleChangeUpdate -- shravan");

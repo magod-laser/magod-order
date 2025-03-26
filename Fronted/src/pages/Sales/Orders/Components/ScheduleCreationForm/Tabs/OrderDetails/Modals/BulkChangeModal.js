@@ -621,7 +621,7 @@ function BulkChangeModal(props) {
 
             <button
               className="button-style"
-              style={{ backgroundColor: "gray" }}
+              // style={{ backgroundColor: "gray" }}
               variant="secondary"
               onClick={() => handleClosesetBulkChnangMdl()}
             >

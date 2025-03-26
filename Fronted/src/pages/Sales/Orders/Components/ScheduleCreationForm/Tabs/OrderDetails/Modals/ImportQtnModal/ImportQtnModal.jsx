@@ -14,6 +14,8 @@ export default function ImportExcelModal(props) {
   const [selectedQtn, setSelectedQtn] = useState({});
   const [filteredQtnListData, setFilteredQtnListData] = useState([]);
 
+  let QtnFormatt = props?.OrderData?.Type;
+
   const closeModal = () => {
     props.setImportQtnMdl(false);
     setSelectedQtn({});
@@ -39,7 +41,7 @@ export default function ImportExcelModal(props) {
         }
       );
     }
-  }, [props.OrderData?.Type]); 
+  }, [props.OrderData?.Type]);
 
   useEffect(() => {
     postRequest(
@@ -62,8 +64,10 @@ export default function ImportExcelModal(props) {
     setFilteredQtnListData([]);
     postRequest(
       endpoints.getQtnDataByQtnID,
-      { qtnId: qtnId },
+      { qtnId: qtnId, QtnFormat: props?.OrderData?.Type },
       (qtnItemData) => {
+        console.log("qtnItemData.qtnItemList", qtnItemData.qtnItemList);
+
         setFilteredQtnListData(qtnItemData.qtnItemList);
         if (qtnItemData.qtnItemList.length === 0) {
           toast.warning("No data found for the Selected Quotation");
@@ -83,27 +87,53 @@ export default function ImportExcelModal(props) {
           Order_No: props.OrderData.Order_No,
           Order_Srl: i + 1,
           Cust_Code: props.OrderData.Cust_Code,
-          DwgName: element.Name,
+          // DwgName: element.Name,
+          DwgName: QtnFormatt === "Service" ? element.Name : element.Dwg_Name,
           Mtrl_Code: element.Material,
           MProcess: "Process 1",
           Mtrl_Source: selectedQtn.QtnType === "Sales" ? "Magod" : "Customer",
-          Qty_Ordered: element.Quantity,
+          // Qty_Ordered: element.Quantity,
+          Qty_Ordered:
+            QtnFormatt === "Service" ? element.Quantity : element.Qty,
           InspLevel: "Insp1",
           PackingLevel: "Pkng1",
-          UnitPrice: (
-            parseFloat(element.BasePrice) - parseFloat(element.DiscountAmount)
-          ).toFixed(2),
+          // UnitPrice: (
+          //   parseFloat(element.BasePrice) - parseFloat(element.DiscountAmount)
+          // ).toFixed(2),
+          UnitPrice:
+            QtnFormatt === "Service"
+              ? (
+                  parseFloat(element.BasePrice) -
+                  parseFloat(element.DiscountAmount)
+                ).toFixed(2)
+              : (
+                  parseFloat(element.Unit_JobWork_Cost) +
+                  parseFloat(element.Unit_Material_cost)
+                ).toFixed(2),
           UnitWt: parseFloat(0).toFixed(2),
           Order_Status: "Received",
-          JWCost: (
-            parseFloat(element.BasePrice) - parseFloat(element.DiscountAmount)
-          ).toFixed(2),
-          MtrlCost: parseFloat(0).toFixed(2),
+          // JWCost: (
+          //   parseFloat(element.BasePrice) - parseFloat(element.DiscountAmount)
+          // ).toFixed(2),
+
+          JWCost:
+            QtnFormatt === "Service"
+              ? (
+                  parseFloat(element.BasePrice) -
+                  parseFloat(element.DiscountAmount)
+                ).toFixed(2)
+              : parseFloat(element.Unit_JobWork_Cost),
+          // MtrlCost: parseFloat(0).toFixed(2),
+          MtrlCost:
+            QtnFormatt === "Service"
+              ? parseFloat(0).toFixed(2)
+              : parseFloat(element.Unit_Material_cost),
           Operation: element.Operation,
           tolerance: "Standard(+/-0.1mm)- 100 Microns",
         };
         arr.push(dataArranged);
       }
+      console.log("arr", arr);
 
       postRequest(
         endpoints.postDetailsDataInImportQtn,
@@ -152,7 +182,10 @@ export default function ImportExcelModal(props) {
           <div className="p-1"></div>
           <div className="row">
             <div className="col-md-12">
-              <IQMTable filteredQtnListData={filteredQtnListData} />
+              <IQMTable
+                filteredQtnListData={filteredQtnListData}
+                QtnFormatt={QtnFormatt}
+              />
             </div>
           </div>
         </Modal.Body>
@@ -163,7 +196,7 @@ export default function ImportExcelModal(props) {
 
           <button
             className="button-style m-0"
-            style={{ background: "rgb(173, 173, 173)" }}
+            // style={{ background: "rgb(173, 173, 173)" }}
             onClick={closeModal}
           >
             Exit
