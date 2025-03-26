@@ -959,18 +959,18 @@ export default function OrderDetails(props) {
     }
   };
   let [selectedDwg, setSelectedDwg] = useState("");
-  let [dwgopen, setDwgOpen] = useState(false);
+  // let [dwgopen, setDwgOpen] = useState(false);
   const funcEditDXF = async () => {
-    if (dwgopen) {
-      setDwgOpen(false);
-      return alert("Selected DXF File is kept Open below");
-    }
+    // if (dwgopen) {
+    //   setDwgOpen(false);
+    //   return alert("Selected DXF File is kept Open below");
+    // }
     if (selectedDwg !== "" || selectedDwg != null) {
       // console.log(selectedDwg);
       let srcpath = `\\Wo\\` + OrderNo + "\\DXF";
       postRequest(endpoints.getOrdDxf, { selectedDwg, srcpath }, (respfile) => {
         filetoService(window.respfile);
-        setDwgOpen(true);
+     //   setDwgOpen(true);
       });
     }
     // }
