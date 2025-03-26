@@ -71,7 +71,13 @@ export default function SolidStateLaserTable({ formData, setFormData }) {
               <td>
                 <input
                   className="mb-1"
-                  type="number"
+                  // type="number"
+                  type={row.desc === "Pulse shape No" ? "text" : "number"}
+                  placeholder={
+                    row.desc === "Pulse shape No"
+                      ? "Please enter Pulse shape No"
+                      : ""
+                  }
                   min={0}
                   onKeyDown={blockInvalidChar}
                   style={{ borderRadius: "4px", border: "none" }}

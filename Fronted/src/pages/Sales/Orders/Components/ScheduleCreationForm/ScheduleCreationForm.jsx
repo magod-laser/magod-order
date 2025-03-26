@@ -289,6 +289,10 @@ export default function ScheduleCreationForm(props) {
     for (let i = 0; i < files.length; i++) {
       let drwfname = files[i];
 
+      // await postRequest(endpoints.getmtrldetsbymtrlcode,{materialRate},(mtrldataforloc) => {
+
+      // })
+
       locCalc(drwfname, material, grade, thickness, (output) => {
         let olddata = Object.entries(orderdetailsdata).map(([key, value]) => ({
           key,
@@ -880,64 +884,64 @@ export default function ScheduleCreationForm(props) {
     // console.log("selectedSrl", selectedSrl);
     // console.log("ordrDetailsChange", ordrDetailsChange);
 
-    // postRequest(
-    //   endpoints.singleChangeUpdate,
-    //   {
-    //     OrderNo: Orderno,
-    //     custcode: props.OrderCustData?.Cust_Code,
-    //     DwgName: ordrDetailsChange.DwgName,
-    //     MtrlSrc: ordrDetailsChange.MtrlSrc,
-    //     quantity: ordrDetailsChange.quantity,
-    //     OrderSrl: selectedSrl,
-    //     JwCost: ordrDetailsChange.jwRate,
-    //     mtrlcost: ordrDetailsChange.materialRate,
+    postRequest(
+      endpoints.singleChangeUpdate,
+      {
+        OrderNo: Orderno,
+        custcode: props.OrderCustData?.Cust_Code,
+        DwgName: ordrDetailsChange.DwgName,
+        MtrlSrc: ordrDetailsChange.MtrlSrc,
+        quantity: ordrDetailsChange.quantity,
+        OrderSrl: selectedSrl,
+        JwCost: ordrDetailsChange.jwRate,
+        mtrlcost: ordrDetailsChange.materialRate,
 
-    //     unitPrice:
-    //       parseFloat(ordrDetailsChange.jwRate) +
-    //       parseFloat(ordrDetailsChange.materialRate),
-    //     Operation: ordrDetailsChange.Operation,
-    //     InspLvl: ordrDetailsChange.InspLvl,
-    //     PkngLvl: ordrDetailsChange.PkngLvl,
-    //     strmtrlcode: LastSlctedRow?.Mtrl_Code,
-    //   },
-    //   async (singleChngData) => {
-    //     if (singleChngData.affectedRows != 0) {
-    //       toast.success("Updated successfully");
-    //       fetchData();
-    //       // setSelectedRow(null);
-    //       // setSelectedRows([]);
-    //       // setSelectedRowItems([]);
-    //       // setSelectedItems([]);
-    //       // setLastSlctedRow([]);
-    //       // setSelectedSrl([]);
-    //     } else {
-    //       toast.warning("Serial not updated check once");
-    //     }
-    //   }
-    // );
-    const postRequest = async (url, data) => {
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-          return { success: true, data: result };
+        unitPrice:
+          parseFloat(ordrDetailsChange.jwRate) +
+          parseFloat(ordrDetailsChange.materialRate),
+        Operation: ordrDetailsChange.Operation,
+        InspLvl: ordrDetailsChange.InspLvl,
+        PkngLvl: ordrDetailsChange.PkngLvl,
+        strmtrlcode: LastSlctedRow?.Mtrl_Code,
+      },
+      async (singleChngData) => {
+        if (singleChngData.affectedRows != 0) {
+          toast.success("Updated successfully");
+          fetchData();
+          // setSelectedRow(null);
+          // setSelectedRows([]);
+          // setSelectedRowItems([]);
+          // setSelectedItems([]);
+          // setLastSlctedRow([]);
+          // setSelectedSrl([]);
         } else {
-          console.error("Error in postRequest:", result);
-          return { success: false, error: result };
+          toast.warning("Serial not updated check once");
         }
-      } catch (error) {
-        console.error("Network error in postRequest:", error);
-        return { success: false, error };
       }
-    };
+    );
+    // const postRequest = async (url, data) => {
+    //   try {
+    //     const response = await fetch(url, {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify(data),
+    //     });
+
+    //     const result = await response.json();
+
+    //     if (response.ok) {
+    //       return { success: true, data: result };
+    //     } else {
+    //       console.error("Error in postRequest:", result);
+    //       return { success: false, error: result };
+    //     }
+    //   } catch (error) {
+    //     console.error("Network error in postRequest:", error);
+    //     return { success: false, error };
+    //   }
+    // };
 
     // window.location.reload();
   };
@@ -1968,6 +1972,7 @@ export default function ScheduleCreationForm(props) {
 
   useEffect(() => {
     setFilteredData(OrdrDetailsData);
+
   }, [OrdrDetailsData]);
 
   useEffect(() => {
