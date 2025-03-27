@@ -813,6 +813,19 @@ export default function ScheduleCreationForm(props) {
 
   const handleJWMR = (index, field, value) => {
     console.log("value is", value);
+    console.log("field",field);
+    
+    if (field === "Qty_Ordered") {
+      // Allow only whole numbers (no decimals, no text)
+      if (!/^\d*$/.test(value)) {
+        return;
+      }
+    } else {
+      // Allow only positive numbers (including decimals)
+      if (!/^\d*\.?\d*$/.test(value)) {
+        return;
+      }
+    }
     if (value < 0) {
       toast.error("Please Enter a Positive Number", {
         position: toast.POSITION.TOP_CENTER,
@@ -1308,7 +1321,10 @@ export default function ScheduleCreationForm(props) {
     selectItem(OrdrDetailsItem);
     // if (imprtDwgObj.material === "") {
 
-    let srcpath = `\\Wo\\` + Orderno + "\\DXF\\";
+    // let srcpath = `\\Wo\\` + Orderno + "\\DXF\\";
+    let srcpath = `\\Wo\\` + (orderNUmber || Orderno ) + "\\DXF\\";
+    console.log("srcpath",srcpath);
+    
 
     let filename = OrdrDetailsItem.DwgName;
     if (orderDrawings[window.Buffer.from(filename, "base64")]) {
@@ -1392,7 +1408,8 @@ export default function ScheduleCreationForm(props) {
     });
 
     if (props.Type === "Profile") {
-      let srcpath = `\\Wo\\` + Orderno + "\\DXF\\";
+      // let srcpath = `\\Wo\\` + Orderno + "\\DXF\\";
+      let srcpath = `\\Wo\\` + (orderNUmber || Orderno )  + "\\DXF\\";
 
       let filename = OrdrDetailsItem.DwgName;
 
@@ -1637,7 +1654,8 @@ export default function ScheduleCreationForm(props) {
 
     // DXF File Handling (if applicable)
     if (props.Type === "Profile") {
-      let srcpath = `\\Wo\\` + Orderno + "\\DXF\\";
+      // let srcpath = `\\Wo\\` + Orderno + "\\DXF\\";
+      let srcpath = `\\Wo\\` + (orderNUmber || Orderno ) + "\\DXF\\";
       let filename = rowData.DwgName;
 
       if (orderDrawings[window.Buffer.from(filename, "base64")]) {
@@ -1815,7 +1833,8 @@ export default function ScheduleCreationForm(props) {
       setSelectedSrl(selectedOrderSrl);
 
       if (props.Type === "Profile") {
-        let srcpath = `\\Wo\\` + Orderno + "\\DXF\\";
+        // let srcpath = `\\Wo\\` + Orderno + "\\DXF\\";
+        let srcpath = `\\Wo\\` + (orderNUmber || Orderno )  + "\\DXF\\";
 
         let filename = rowData.DwgName;
         if (orderDrawings[window.Buffer.from(filename, "base64")]) {

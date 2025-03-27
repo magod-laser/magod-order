@@ -192,9 +192,10 @@ export default function ProductionScheduleCreation({
             },
             (response) => {
               if (response.message === "Draft Schedule Created") {
-                toast.success(response.message, {
-                  position: toast.POSITION.TOP_CENTER,
-                });
+                // toast.success(response.message, {
+                //   position: toast.POSITION.TOP_CENTER,
+                // });
+                alert ("Draft Schedule Created")
                 postRequest(
                   endpoints.getScheduleListData,
                   { Order_No: OrderData.Order_No },

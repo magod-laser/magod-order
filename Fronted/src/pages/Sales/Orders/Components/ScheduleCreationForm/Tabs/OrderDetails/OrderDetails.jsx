@@ -1190,6 +1190,8 @@ console.log("strmtrlcode===4",imprtDwgObj.strmtrlcode);
             setSpecificWt(mtrldata1[0]["Specific_Wt"]);
             material = mtrldata1[0]["Mtrl_Type"];
             grade = mtrldata1[0]["Grade"];
+            console.log("===thickeness",mtrldata1[0]["Thickness"]);
+            
             thickness = mtrldata1[0]["Thickness"];
             specificwt = mtrldata1[0]["Specific_Wt"];
 
