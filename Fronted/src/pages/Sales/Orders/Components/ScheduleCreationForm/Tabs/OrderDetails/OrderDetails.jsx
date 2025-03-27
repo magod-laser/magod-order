@@ -959,18 +959,18 @@ export default function OrderDetails(props) {
     }
   };
   let [selectedDwg, setSelectedDwg] = useState("");
-  let [dwgopen, setDwgOpen] = useState(false);
+  // let [dwgopen, setDwgOpen] = useState(false);
   const funcEditDXF = async () => {
-    if (dwgopen) {
-      setDwgOpen(false);
-      return alert("Selected DXF File is kept Open below");
-    }
+    // if (dwgopen) {
+    //   setDwgOpen(false);
+    //   return alert("Selected DXF File is kept Open below");
+    // }
     if (selectedDwg !== "" || selectedDwg != null) {
       // console.log(selectedDwg);
       let srcpath = `\\Wo\\` + OrderNo + "\\DXF";
       postRequest(endpoints.getOrdDxf, { selectedDwg, srcpath }, (respfile) => {
         filetoService(window.respfile);
-        setDwgOpen(true);
+     //   setDwgOpen(true);
       });
     }
     // }
@@ -1190,6 +1190,8 @@ console.log("strmtrlcode===4",imprtDwgObj.strmtrlcode);
             setSpecificWt(mtrldata1[0]["Specific_Wt"]);
             material = mtrldata1[0]["Mtrl_Type"];
             grade = mtrldata1[0]["Grade"];
+            console.log("===thickeness",mtrldata1[0]["Thickness"]);
+            
             thickness = mtrldata1[0]["Thickness"];
             specificwt = mtrldata1[0]["Specific_Wt"];
 
