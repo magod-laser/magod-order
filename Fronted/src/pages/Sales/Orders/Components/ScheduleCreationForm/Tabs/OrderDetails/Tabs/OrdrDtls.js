@@ -77,7 +77,6 @@ function OrdrDtls(props) {
   } = props;
 
   console.log("selectedRow", selectedRow);
-  
 
   const [materialCode, setMaterialCode] = useState(
     selectedItems[0]?.Mtrl_Code || ""
@@ -102,9 +101,9 @@ function OrdrDtls(props) {
     // Your other logic if needed
   };
 
-  useEffect (()=>{
+  useEffect(() => {
     deleteRowsBySrl();
-  },[])
+  }, []);
   return (
     <div>
       <AddNewSrlModal
@@ -484,11 +483,12 @@ function OrdrDtls(props) {
                     // props.OrderData?.Order_Type === "Scheduled" ||
                     // LastSlctedRow?.Mtrl_Source === "Customer" ||
                     // OrderData?.Order_Status === "Recorded"
-                    LastSlctedRow?.Mtrl_Source === "Customer" ||
-                    (props.OrderData?.Order_Type === "Scheduled" &&
-                      props.OrderData?.Order_Status === "Recorded") ||
-                    (props.OrderData?.Order_Type === "Complete" &&
-                      props.OrderData?.Order_Status === "Recorded")
+                    // LastSlctedRow?.Mtrl_Source === "Customer" ||
+                    // (props.OrderData?.Order_Type === "Scheduled" &&
+                    //   props.OrderData?.Order_Status === "Recorded") ||
+                    // (props.OrderData?.Order_Type === "Complete" &&
+                    //   props.OrderData?.Order_Status === "Recorded")
+                    LastSlctedRow?.Mtrl_Source === "Customer"
                   }
                 />
 

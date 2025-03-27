@@ -7,6 +7,7 @@ import { endpoints } from "../../../../../../api/constants";
 import { getRequest, postRequest } from "../../../../../../api/apiinstance";
 import AlertModal from "../../../../Menus/Service/Components/Alert";
 import { ToastContainer, toast } from "react-toastify";
+import OkayModal from "../../../../../../components/OkayModal";
 
 export default function ProductionScheduleCreation({
   OrderData,
@@ -38,6 +39,8 @@ export default function ProductionScheduleCreation({
       }
     );
   };
+  const [smShow, setSmShow] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   useEffect(() => {
     if (OrderData && scheduleType) {
@@ -46,7 +49,7 @@ export default function ProductionScheduleCreation({
   }, [OrderData, scheduleType]);
 
   // console.log("OrderData",OrderData);
-  
+
   //onclick Refresh Status
   const onClickRefreshStatus = () => {
     toast.success("Status Updated", {
@@ -56,8 +59,8 @@ export default function ProductionScheduleCreation({
 
   //Onclick Create Schedule
   const createSchedule = () => {
-    console.log("enetring into create schedule",selectedItems.length);
-    
+    console.log("enetring into create schedule", selectedItems.length);
+
     if (selectedItems.length === 0 && scheduleOption === "Partial Order") {
       toast.warning("Select Parts to add to Schedule", {
         position: toast.POSITION.TOP_CENTER,
@@ -131,16 +134,15 @@ export default function ProductionScheduleCreation({
           ...process,
           label: process.Operation,
         }));
-      
+
         // console.log("arr...", arr);
-      
+
         // Check if the selected item's Operation exists in arr
         const allOperations = arr.map((proc) => proc.Operation);
 
-        const hasValidOperation = filteredItems2.every(item =>
+        const hasValidOperation = filteredItems2.every((item) =>
           allOperations.includes(item.Operation)
         );
-
 
         if (!hasValidOperation) {
           toast.warning("Operation is not matching", {
@@ -153,13 +155,12 @@ export default function ProductionScheduleCreation({
             ...material,
             label: material.Mtrl_Code,
           }));
-      
+
           // console.log("all Material List: ", materialArr);
           // console.log("all Material Codes: ", materialArr.map(mtrl => mtrl.Mtrl_Code));
-      
+
           // Check if the selected item's mtrl_code exists in materialArr
           // const allMtrlCodes = materialArr.map((mtrl) => mtrl === mtrl.Mtrl_Code);
-
 
           const allMtrlCodes = materialArr.map((mtrl) => mtrl.Mtrl_Code);
 
@@ -178,7 +179,7 @@ export default function ProductionScheduleCreation({
 
             return; // Exit if material code does not match
           }
-// console.log(" endpoints.CreateProductionSchedule,");
+          // console.log(" endpoints.CreateProductionSchedule,");
 
           postRequest(
             endpoints.CreateProductionSchedule,
@@ -187,14 +188,17 @@ export default function ProductionScheduleCreation({
               scheduleType: scheduleType,
               selectedItems: filteredItems2,
               scheduleOption: scheduleOption,
-              filteredItems: filteredItems
-
+              filteredItems: filteredItems,
             },
             (response) => {
               if (response.message === "Draft Schedule Created") {
-                toast.success(response.message, {
-                  position: toast.POSITION.TOP_CENTER,
-                });
+                // toast.success(response.message, {
+                //   position: toast.POSITION.TOP_CENTER,
+                // });
+                setModalMessage(response.message);
+                setSmShow(true);
+                // alert("Draft Schedule Created");
+                // setSmShow;
                 postRequest(
                   endpoints.getScheduleListData,
                   { Order_No: OrderData.Order_No },
@@ -204,18 +208,17 @@ export default function ProductionScheduleCreation({
                   }
                 );
               } else {
-                toast.warning(response.message, {
-                  position: toast.POSITION.TOP_CENTER,
-                });
+                setModalMessage(response.message); // Show error message in modal
+                setSmShow(true);
+                // toast.warning(response.message, {
+                //   position: toast.POSITION.TOP_CENTER,
+                // });
               }
             }
           );
-        // }
+          // }
         });
-    
-      })
-
-
+      });
 
       // postRequest(
       //   endpoints.CreateProductionSchedule,
@@ -225,7 +228,6 @@ export default function ProductionScheduleCreation({
       //     selectedItems: filteredItems2,
       //     scheduleOption: scheduleOption,
       //     filteredItems:filteredItems
-
 
       //   },
       //   (response) => {
@@ -268,33 +270,36 @@ export default function ProductionScheduleCreation({
     // console.log("selectedSrl :",selectedSrl);
     // console.log("OrdrDetailsData :",OrdrDetailsData);
     // console.log("selectedItems :",selectedItems);
-   // console.log(LastSlctedRow);
-//    alert("fnCopyDxf")
+    // console.log(LastSlctedRow);
+    //    alert("fnCopyDxf")
     let custcd = OrderData.Cust_Code;
     let custpath = process.env.REACT_APP_SERVER_CUST_PATH;
-    let custdwgname = selectedItems[0].DwgName
-    
+    let custdwgname = selectedItems[0].DwgName;
+
     let orderno = OrderData.Order_No;
 
-    let srcfolder = custpath+'\\'+custcd;
-    let destfolder= process.env.REACT_APP_SERVER_FILES+'\\'+ orderno;
+    let srcfolder = custpath + "\\" + custcd;
+    let destfolder = process.env.REACT_APP_SERVER_FILES + "\\" + orderno;
 
-    await postRequest(endpoints.orderCopyDxf, {srcfolder,destfolder,custdwgname}, (copydata) => {
-  //    console.log("Order copy Dxf : ",copydata.message);
-      alert(copydata.status);
-    })
-  }
+    await postRequest(
+      endpoints.orderCopyDxf,
+      { srcfolder, destfolder, custdwgname },
+      (copydata) => {
+        //    console.log("Order copy Dxf : ",copydata.message);
+        alert(copydata.status);
+      }
+    );
+  };
 
   // Check Dxf Button Click
   const fnCheckDxf = async () => {
- //   alert("fnCheckDxf");
-  //  console.log("Order No :", OrderData.Order_No)
+    //   alert("fnCheckDxf");
+    //  console.log("Order No :", OrderData.Order_No)
     let orderno = OrderData.Order_No;
-    await postRequest(endpoints.checkDxf,{orderno},(checkdata)=>{
- //     console.log("check dxf: ",checkdata);
-
-    })
-  }
+    await postRequest(endpoints.checkDxf, { orderno }, (checkdata) => {
+      //     console.log("check dxf: ",checkdata);
+    });
+  };
 
   console.log("After sch selectedSrl:", selectedSrl);
   //   console.log("After clearing2:", selectedRows);
@@ -363,7 +368,7 @@ export default function ProductionScheduleCreation({
   };
 
   //open Folder
-  const openFolder = () => { };
+  const openFolder = () => {};
 
   return (
     <>
@@ -517,66 +522,89 @@ export default function ProductionScheduleCreation({
               </div>
             </div> */}
 
-<div className="d-flex flex-column">
-  {/* Schedule Type */}
-  <div className="mb-3 d-flex align-items-center" style={{ gap: "15px",marginLeft:"50px" }}>
-    <label className="form-label mb-0">Schedule Type</label>
-    <div className="d-flex align-items-center" style={{ gap: "15px" }}>
-      <div className="form-check d-flex align-items-center" style={{ gap: "5px" ,marginLeft:"12px"}}>
-        <input
-          className="form-check-input mt-3"
-          type="radio"
-          name="scheduleType"
-          value="Sales"
-          onChange={handleScheduleTypeChange}
-        />
-        <label className="form-check-label">Sales</label>
-      </div>
-      <div className="form-check d-flex align-items-center" style={{ gap: "5px" ,marginLeft:"30px"}}>
-        <input
-          className="form-check-input mt-3"
-          type="radio"
-          name="scheduleType"
-          value="Job Work"
-          checked={scheduleType === "Job Work"}
-          onChange={handleScheduleTypeChange}
-        />
-        <label className="form-check-label">Job Work</label>
-      </div>
-    </div>
-  </div>
+            <div className="d-flex flex-column">
+              {/* Schedule Type */}
+              <div
+                className="mb-3 d-flex align-items-center"
+                style={{ gap: "15px", marginLeft: "50px" }}
+              >
+                <label className="form-label mb-0">Schedule Type</label>
+                <div
+                  className="d-flex align-items-center"
+                  style={{ gap: "15px" }}
+                >
+                  <div
+                    className="form-check d-flex align-items-center"
+                    style={{ gap: "5px", marginLeft: "12px" }}
+                  >
+                    <input
+                      className="form-check-input mt-3"
+                      type="radio"
+                      name="scheduleType"
+                      value="Sales"
+                      onChange={handleScheduleTypeChange}
+                    />
+                    <label className="form-check-label">Sales</label>
+                  </div>
+                  <div
+                    className="form-check d-flex align-items-center"
+                    style={{ gap: "5px", marginLeft: "30px" }}
+                  >
+                    <input
+                      className="form-check-input mt-3"
+                      type="radio"
+                      name="scheduleType"
+                      value="Job Work"
+                      checked={scheduleType === "Job Work"}
+                      onChange={handleScheduleTypeChange}
+                    />
+                    <label className="form-check-label">Job Work</label>
+                  </div>
+                </div>
+              </div>
 
-  {/* Schedule Option */}
-  <div className="d-flex align-items-center" style={{ gap: "15px", marginLeft:"50px" }}>
-    <label className="form-label mb-0">Schedule Option</label>
-    <div className="d-flex align-items-center" style={{ gap: "15px" }}>
-      <div className="form-check d-flex align-items-center" style={{ gap: "5px" }}>
-        <input
-          className="form-check-input mt-3"
-          type="radio"
-          name="scheduleOption"
-          value="Full Order"
-          checked={scheduleOption === "Full Order"}
-          onChange={handleScheduleOptionChange}
-        />
-        <label className="form-check-label">Full Order</label>
-      </div>
-      <div className="form-check d-flex align-items-center" style={{ gap: "5px" }}>
-        <input
-          className="form-check-input mt-3"
-          type="radio"
-          name="scheduleOption"
-          value="Partial Order"
-          onChange={handleScheduleOptionChange}
-        />
-        <label className="form-check-label">Partial Order</label>
-      </div>
-    </div>
-  </div>
-</div>
+              {/* Schedule Option */}
+              <div
+                className="d-flex align-items-center"
+                style={{ gap: "15px", marginLeft: "50px" }}
+              >
+                <label className="form-label mb-0">Schedule Option</label>
+                <div
+                  className="d-flex align-items-center"
+                  style={{ gap: "15px" }}
+                >
+                  <div
+                    className="form-check d-flex align-items-center"
+                    style={{ gap: "5px" }}
+                  >
+                    <input
+                      className="form-check-input mt-3"
+                      type="radio"
+                      name="scheduleOption"
+                      value="Full Order"
+                      checked={scheduleOption === "Full Order"}
+                      onChange={handleScheduleOptionChange}
+                    />
+                    <label className="form-check-label">Full Order</label>
+                  </div>
+                  <div
+                    className="form-check d-flex align-items-center"
+                    style={{ gap: "5px" }}
+                  >
+                    <input
+                      className="form-check-input mt-3"
+                      type="radio"
+                      name="scheduleOption"
+                      value="Partial Order"
+                      onChange={handleScheduleOptionChange}
+                    />
+                    <label className="form-check-label">Partial Order</label>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-
-            <div className="me-3 mb-2" style={{marginLeft:"70px"}}>
+            <div className="me-3 mb-2" style={{ marginLeft: "70px" }}>
               <button className="button-style" onClick={onClickRefreshStatus}>
                 Refresh Status
               </button>
@@ -609,25 +637,32 @@ export default function ProductionScheduleCreation({
           </div>
         </div>
 
-        <div className=" row mt-3 " >
+        <div className=" row mt-3 ">
           {/* <div className="col-md-1"></div> */}
 
           {/* <div className="col-md-6 justify-content-center"> */}
-            {/* <div className="row"> */}
-              {/* <div className="col-md-4 mt-3 col-sm-12">
+          {/* <div className="row"> */}
+          {/* <div className="col-md-4 mt-3 col-sm-12">
                 <button className="button-style" onClick={openFolder}>
                   Open Folder
                 </button>
               </div> */}
 
-              <div className="col-md-1 mt-3 col-sm-12" style={{marginLeft:"420px"}}>
-                <button className="button-style" onClick={fnCheckDxf}>Check DXF</button>
-              </div>
+          <div
+            className="col-md-1 mt-3 col-sm-12"
+            style={{ marginLeft: "420px" }}
+          >
+            <button className="button-style" onClick={fnCheckDxf}>
+              Check DXF
+            </button>
+          </div>
 
-              <div className="col-md-1 mt-3 col-sm-12">
-                <button className="button-style" onClick={ fnCopyDxf }>Copy DXF</button>
-              </div>
-            {/* </div> */}
+          <div className="col-md-1 mt-3 col-sm-12">
+            <button className="button-style" onClick={fnCopyDxf}>
+              Copy DXF
+            </button>
+          </div>
+          {/* </div> */}
           {/* </div> */}
 
           {/* <div className="col-md-5"></div> */}
@@ -644,6 +679,7 @@ export default function ProductionScheduleCreation({
         firstbuttontext="Yes"
         secondbuttontext="No"
       />
+      <OkayModal smShow={smShow} setSmShow={setSmShow} message={modalMessage} />
     </>
   );
 }

@@ -998,7 +998,7 @@ export default function ScheduleCreationForm(props) {
   // Alert Modals
   const [alertModal, setAlertModal] = useState(false);
   const [registerOrder, setRegisterOrder] = useState(false);
-// veeranna 
+  // veeranna
   const fetchData = async () => {
     try {
       const orderData = await postRequest(
@@ -1972,7 +1972,6 @@ export default function ScheduleCreationForm(props) {
 
   useEffect(() => {
     setFilteredData(OrdrDetailsData);
-
   }, [OrdrDetailsData]);
 
   useEffect(() => {

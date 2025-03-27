@@ -431,29 +431,24 @@ function OrdrTable(props) {
 
   //adjustable table
 
-  const [columnWidths, setColumnWidths] = useState({}); // Store column widths
-
-  // Handle column resizing
-  const handleResize = (index, event, { size }) => {
-    setColumnWidths((prev) => ({
-      ...prev,
-      [index]: size.width,
-    }));
-  };
-
-  // Define column headers with resizable handles
   const columns = [
     { key: "select", label: "Select", resizable: false },
+    { key: "slNo", label: "Sl No", resizable: false },
     { key: "DwgName", label: "Drawing/Part Name", resizable: true },
-    ...(props.OrderData?.Type === "Profile"
+    ...(OrderData?.Type === "Profile"
       ? [{ key: "dwgExists", label: "Dwg Exists", resizable: false }]
       : []),
     { key: "Mtrl_Code", label: "Material", resizable: true },
     { key: "Operation", label: "Operation", resizable: true },
     { key: "Mtrl_Source", label: "Source", resizable: true },
-    { key: "Qty_Ordered", label: "Qty Ordered", resizable: true },
-    { key: "JWCost", label: "JW Cost", resizable: true },
-    { key: "MtrlCost", label: "Mtrl Cost", resizable: true },
+    {
+      key: "Qty_Ordered",
+      label: "Qty Ordered",
+      resizable: true,
+      editable: true,
+    },
+    { key: "JWCost", label: "JW Cost", resizable: true, editable: true },
+    { key: "MtrlCost", label: "Mtrl Cost", resizable: true, editable: true },
     { key: "UnitPrice", label: "Unit Rate", resizable: true },
     { key: "LOC", label: "LOC", resizable: true },
     { key: "Holes", label: "Pierces", resizable: true },
@@ -463,6 +458,44 @@ function OrdrTable(props) {
     { key: "Total", label: "Total", resizable: true },
   ];
 
+  const defaultColumnWidths = {
+    select: 60,
+    SrlNo: 60,
+    DwgName: 200,
+    dwgExists: 100,
+    Mtrl_Code: 100,
+    Operation: 120,
+    Mtrl_Source: 100,
+    Qty_Ordered: 70,
+    JWCost: 70,
+    MtrlCost: 70,
+    UnitPrice: 70,
+    LOC: 70,
+    Holes: 70,
+    InspLevel: 100,
+    PackingLevel: 100,
+    tolerance: 90,
+    Total: 80,
+  };
+  // const [columnWidths, setColumnWidths] = useState(
+  //   columns.reduce((acc, col) => ({ ...acc, [col.key]: 120 }), {})
+  // );
+  const [columnWidths, setColumnWidths] = useState(
+    columns.reduce(
+      (acc, col) => ({
+        ...acc,
+        [col.key]: defaultColumnWidths[col.key] || 100,
+      }),
+      {}
+    )
+  );
+
+  const handleResize = (key, event, { size }) => {
+    setColumnWidths((prev) => ({
+      ...prev,
+      [key]: size.width,
+    }));
+  };
   return (
     <div style={{ overflow: "auto", height: "350px" }}>
       <Table bordered hover className="table-data border">
@@ -476,26 +509,34 @@ function OrdrTable(props) {
           }}
         >
           <tr>
-            <th style={{ whiteSpace: "nowrap" }}>Select</th>
-            {/* <th style={{ whiteSpace: "nowrap" }}>Order_SRL</th> */}
-            <th onClick={() => requestSort("DwgName")}>Drawing/Part Name</th>
-            {props.OrderData?.Type === "Profile" ? (
-              <th style={{ whiteSpace: "nowrap" }}>Dwg Exists</th>
-            ) : null}{" "}
-            <th onClick={() => requestSort("Mtrl_Code")}>Material</th>
-            <th onClick={() => requestSort("Operation")}>Operation</th>
-            <th onClick={() => requestSort("Mtrl_Source")}>Source</th>
-            <th onClick={() => requestSort("Qty_Ordered")}>Qty Ordered</th>
-            <th onClick={() => requestSort("JWCost")}>JW Cost</th>
-            <th onClick={() => requestSort("MtrlCost")}>Mtrl Cost</th>
-            <th onClick={() => requestSort("UnitPrice")}>Unit Rate</th>
-            <th onClick={() => requestSort("LOC")}>LOC</th>
-            <th onClick={() => requestSort("Holes")}>Pierces</th>
-            <th onClick={() => requestSort("InspLevel")}>Insp Level</th>
-            <th onClick={() => requestSort("PackingLevel")}>Packing Level</th>
-            <th onClick={() => requestSort("tolerance")}>Tolerance</th>
-            {/* <th onClick={() => requestSort("LOC")}>LOC</th> */}
-            <th onClick={() => requestSort("Total")}>Total</th>
+            {columns.map(({ key, label, resizable }) => (
+              <th key={key} style={{ whiteSpace: "nowrap" }}>
+                {resizable ? (
+                  <ResizableBox
+                    width={columnWidths[key]}
+                    height={30}
+                    axis="x"
+                    resizeHandles={["e"]}
+                    onResizeStop={(e, data) => handleResize(key, e, data)}
+                  >
+                    <span
+                      onClick={() => requestSort && requestSort(key)}
+                      style={{
+                        display: "inline-block",
+                        width: "100%",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {label}
+                    </span>
+                  </ResizableBox>
+                ) : (
+                  <span onClick={() => requestSort && requestSort(key)}>
+                    {label}
+                  </span>
+                )}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -564,15 +605,33 @@ function OrdrTable(props) {
                     onClick={(e) => e.stopPropagation()} // Prevent triggering row click
                   />
                 </td>
+                <td>{OrdrDetailsItem.Order_Srl}</td>
                 {/* <td>
                   <Form.Check type="checkbox" id={`select-checkbox-${i}`} />
                 </td> */}
 
                 {/* <td>{OrdrDetailsItem.Order_Srl}</td> */}
-                <td>{OrdrDetailsItem.DwgName}</td>
+                {/* <td>{OrdrDetailsItem.Order_Srl}</td> */}
+                <td
+                  className="dwg-name"
+                  style={{ width: columnWidths.DwgName }}
+                >
+                  {OrdrDetailsItem.DwgName}
+                </td>
                 {props.OrderData?.Type === "Profile" ? (
                   <td>
-                    <Form.Check type="checkbox" id="selected" defaultChecked />
+                    <Form.Check
+                      style={{
+                        textAlign: "center",
+                        paddingLeft: "10px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                      type="checkbox"
+                      id="selected"
+                      defaultChecked
+                    />
                   </td>
                 ) : null}
                 <td>{OrdrDetailsItem.Mtrl_Code}</td>
@@ -585,6 +644,12 @@ function OrdrTable(props) {
                     style={{
                       backgroundColor: "transparent",
                       border: "none",
+
+                      textAlign: "end",
+                      paddingLeft: "10px",
+                      // display: "flex",
+                      justifyContent: "end",
+                      alignItems: "end",
                     }}
                     value={OrdrDetailsItem.Qty_Ordered}
                     // onChange={(e) =>
@@ -605,6 +670,11 @@ function OrdrTable(props) {
                     style={{
                       backgroundColor: "transparent",
                       border: "none",
+                      textAlign: "end",
+                      paddingLeft: "10px",
+                      // display: "flex",
+                      justifyContent: "end",
+                      alignItems: "end",
                     }}
                     value={OrdrDetailsItem.JWCost}
                     // onChange={(e) => handleJWMR(i, "JWCost", e.target.value)}
@@ -620,6 +690,11 @@ function OrdrTable(props) {
                     style={{
                       backgroundColor: "transparent",
                       border: "none",
+                      textAlign: "end",
+                      paddingLeft: "10px",
+                      // display: "flex",
+                      justifyContent: "end",
+                      alignItems: "end",
                     }}
                     value={OrdrDetailsItem.MtrlCost}
                     // onChange={(e) => handleJWMR(i, "MtrlCost", e.target.value)}
@@ -628,7 +703,17 @@ function OrdrTable(props) {
                     }}
                   />
                 </td>
-                <td>
+                <td
+                  style={{
+                    backgroundColor: "transparent",
+                    border: "none",
+                    textAlign: "end",
+                    paddingLeft: "10px",
+                    // display: "flex",
+                    justifyContent: "end",
+                    alignItems: "end",
+                  }}
+                >
                   {/* <input value={OrdrDetailsItem.UnitPrice} /> */}
                   {/* {OrdrDetailsItem.UnitPrice} */}
                   {/* {parseFloat(parseFloat(OrdrDetailsItem.MtrlCost) +
@@ -646,20 +731,30 @@ function OrdrTable(props) {
                 <td>{OrdrDetailsItem.tolerance}</td>
 
                 {/* <td>
-                  {" "}
-                  <input value={OrdrDetailsItem.JWCost} />{" "}
-                </td> */}
+                                    {" "}
+                                    <input value={OrdrDetailsItem.JWCost} />{" "}
+                                </td> */}
 
                 {/* <td>
-                  <input value={OrdrDetailsItem.MtrlCost} />
-                </td> */}
+                                    <input value={OrdrDetailsItem.MtrlCost} />
+                                </td> */}
 
                 {/* <td> */}
                 {/* <input value={OrdrDetailsItem.Qty_Ordered} /> */}
                 {/* {OrdrDetailsItem.Qty_Ordered} */}
                 {/* </td> */}
 
-                <td>
+                <td
+                  style={{
+                    backgroundColor: "transparent",
+                    border: "none",
+                    textAlign: "end",
+                    paddingLeft: "10px",
+                    // display: "flex",
+                    justifyContent: "end",
+                    alignItems: "end",
+                  }}
+                >
                   {parseFloat(
                     OrdrDetailsItem.UnitPrice * OrdrDetailsItem.Qty_Ordered
                   ).toFixed(2)}

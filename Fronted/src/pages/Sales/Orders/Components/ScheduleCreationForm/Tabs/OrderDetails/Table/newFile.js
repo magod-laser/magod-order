@@ -646,13 +646,13 @@ function OrdrTable(props) {
                 <td>{OrdrDetailsItem.tolerance}</td>
 
                 {/* <td>
-                  {" "}
-                  <input value={OrdrDetailsItem.JWCost} />{" "}
-                </td> */}
+									{" "}
+									<input value={OrdrDetailsItem.JWCost} />{" "}
+								</td> */}
 
                 {/* <td>
-                  <input value={OrdrDetailsItem.MtrlCost} />
-                </td> */}
+									<input value={OrdrDetailsItem.MtrlCost} />
+								</td> */}
 
                 {/* <td> */}
                 {/* <input value={OrdrDetailsItem.Qty_Ordered} /> */}
