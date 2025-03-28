@@ -115,8 +115,9 @@ const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
                 <th onClick={() => requestSort("Operation")}>Operation</th>
                 <th onClick={() => requestSort("Mtrl_Source")}>Source</th>
                 <th onClick={() => requestSort("Order_No")}>Order No</th>
-                <th onClick={() => requestSort("UnitPrice")}>Unit Price</th>
-                <th onClick={() => requestSort("MtrlCost")}>Material Price</th>
+                {/* <th onClick={() => requestSort("UnitPrice")}>Unit Price</th> */}
+                <th onClick={() => requestSort("UnitPrice")}>JW Cost</th>
+                <th onClick={() => requestSort("MtrlCost")}>Material Cost</th>
               </tr>
             </thead>
 
