@@ -542,7 +542,10 @@ function ServiceOpenSchedule() {
     //   return;
     // }
 
-    // console.log("123==",scheduleDetailsRow, formdata, newState,  OrdrDetailsData);
+    console.log("scheduleDetailsRow",scheduleDetailsRow);
+    console.log("OrdrDetailsData", OrdrDetailsData);
+    console.log("newState", newState);
+    console.log("formdata", formdata);
 
     postRequest(
       endpoints.onClickScheduled,

@@ -83,13 +83,17 @@ export default function ImportExcelModal(props) {
       for (let i = 0; i < filteredQtnListData?.length; i++) {
         const element = filteredQtnListData[i];
 
+        console.log("2703-element", element);
+        
+
         let dataArranged = {
           Order_No: props.OrderData.Order_No,
           Order_Srl: i + 1,
           Cust_Code: props.OrderData.Cust_Code,
           // DwgName: element.Name,
           DwgName: QtnFormatt === "Service" ? element.Name : element.Dwg_Name,
-          Mtrl_Code: element.Material,
+          // Mtrl_Code: element.Material,
+          Mtrl_Code: element.mtrl_code,
           MProcess: "Process 1",
           Mtrl_Source: selectedQtn.QtnType === "Sales" ? "Magod" : "Customer",
           // Qty_Ordered: element.Quantity,

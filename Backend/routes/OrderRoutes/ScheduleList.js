@@ -4,7 +4,7 @@ const ScheduleListRouter = require("express").Router();
 var createError = require("http-errors");
 var axios = require("axios");
 const { logger } = require("../../helpers/logger");
-
+const { createFolder } = require("../../helpers/folderhelper");
 const {
   misQueryMod,
   setupQuery,
@@ -660,8 +660,12 @@ ScheduleListRouter.post(`/onClickCancel`, async (req, res, next) => {
 });
 
 ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
-  console.log("req.body.formdata", req.body.formdata);
-
+  console.log("req.body.formdata1", req.body.formdata);
+  console.log("req.body.formdata2", req.body.scheduleDetailsRow);
+  console.log("req.body.formdata3", req.body.OrdrDetailsData);
+  console.log("req.body.formdata4", req.body.newState);
+  // let OrderSch =
+  // await createFolder("Order", ordno, "");
   try {
     let querySalesOverdue = `SELECT count(d.DC_Inv_No) AS SalesOverdueCount 
                              FROM magodmis.draft_dc_inv_register d
@@ -914,8 +918,11 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                                                     acc,
                                                                     row
                                                                   ) => {
-                                                                    console.log("==row",row);
-                                                                    
+                                                                    console.log(
+                                                                      "28032025row",
+                                                                      row
+                                                                    );
+
                                                                     // Create a key for grouping based on Mtrl_Code, MProcess, and Operation
                                                                     const key = `${row.Mtrl_Code}_${row.MProcess}_${row.Operation}`;
 
@@ -1111,8 +1118,11 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                                                     existingTaskData.length >
                                                                     0
                                                                   ) {
-                                                                    console.log("1803row.TaskNo",row.TaskNo);
-                                                                    
+                                                                    console.log(
+                                                                      "1803row.TaskNo",
+                                                                      row.TaskNo
+                                                                    );
+
                                                                     // Entry exists, so update it
                                                                     let updateNcTaskListQuery = `UPDATE magodmis.nc_task_list
                                                                                              SET TaskNo='${row.TaskNo}', NoOfDwgs='${noOfDwgs}', TotalParts='${totalParts}', 
@@ -1997,7 +2007,7 @@ ScheduleListRouter.post(`/createProfileOrder`, async (req, res, next) => {
 // Print PDF ScheduleList
 ScheduleListRouter.post(`/PrintPdf`, async (req, res, next) => {
   console.log("===", req.body.formdata[0].ScheduleId);
-  
+
   try {
     let query = `SELECT * FROM magodmis.orderscheduledetails where ScheduleId='${req.body.formdata[0].ScheduleId}';`;
 

@@ -1018,7 +1018,9 @@ const ServicePDF = ({ formdata, PDFData }) => {
                           </View>
                           <View style={styles.InstructionData}>
                             <Text style={styles.globalfontwithbold}>
-                              {formdata[0].Special_Instructions}
+                              {formdata[0].Special_Instructions === "null"
+                                ? ""
+                                : formdata[0].Special_Instructions}
                             </Text>
                           </View>
                         </View>
@@ -1132,58 +1134,61 @@ const ServicePDF = ({ formdata, PDFData }) => {
                     </View>
                   </View>
 
-                  
+                  <View
+                    key={index}
+                    style={[
+                      styles.tableDataView,
+                      { borderBottom: "1px solid black" },
+                    ]}
+                  >
+                    {item.otherdetails.map((detail, subIndex) => (
+                      <View
+                        key={subIndex}
+                        style={[
+                          styles.row,
+                          { borderBottom: "1px solid black", paddingBottom: 5 },
+                        ]}
+                      >
+                        <View style={styles.srldata}>
+                          <Text style={styles.tabletext}>{serialNumber++}</Text>
+                        </View>
 
-<View
-  key={index}
-  style={[
-    styles.tableDataView,
-    { borderBottom: "1px solid black" },
-  ]}
->
-  {item.otherdetails.map((detail, subIndex) => (
-    <View
-      key={subIndex}
-      style={[
-        styles.row,
-        { borderBottom: "1px solid black", paddingBottom: 5 },
-      ]}
-    >
-      <View style={styles.srldata}>
-        <Text style={styles.tabletext}>{serialNumber++}</Text>
-      </View>
+                        <View style={styles.drawingnamedata}>
+                          <Text style={styles.tabletext}>{detail.DwgName}</Text>
+                        </View>
 
-      <View style={styles.drawingnamedata}>
-        <Text style={styles.tabletext}>{detail.DwgName}</Text>
-      </View>
+                        <View style={styles.Inspectiondata}>
+                          <Text style={styles.tabletext}>
+                            {detail.InspLevel}
+                          </Text>
+                        </View>
 
-      <View style={styles.Inspectiondata}>
-        <Text style={styles.tabletext}>{detail.InspLevel}</Text>
-      </View>
+                        <View style={styles.Packingdata}>
+                          <Text style={styles.tabletext}>
+                            {detail.PackingLevel}
+                          </Text>
+                        </View>
 
-      <View style={styles.Packingdata}>
-        <Text style={styles.tabletext}>{detail.PackingLevel}</Text>
-      </View>
+                        <View style={styles.Scheduleddata}>
+                          <Text style={styles.tabletext}>
+                            {detail.QtyScheduled}
+                          </Text>
+                        </View>
 
-      <View style={styles.Scheduleddata}>
-        <Text style={styles.tabletext}>{detail.QtyScheduled}</Text>
-      </View>
+                        <View style={styles.Produceddata}>
+                          <Text style={styles.tabletext}></Text>
+                        </View>
 
-      <View style={styles.Produceddata}>
-        <Text style={styles.tabletext}></Text>
-      </View>
+                        <View style={styles.Delivereddata}>
+                          <Text style={styles.tabletext}></Text>
+                        </View>
 
-      <View style={styles.Delivereddata}>
-        <Text style={styles.tabletext}></Text>
-      </View>
-
-      <View style={styles.scheduleNotabledata}>
-        <Text style={styles.tabletext}></Text>
-      </View>
-    </View>
-  ))}
-</View>
-
+                        <View style={styles.scheduleNotabledata}>
+                          <Text style={styles.tabletext}></Text>
+                        </View>
+                      </View>
+                    ))}
+                  </View>
                 </>
               ))}
 
