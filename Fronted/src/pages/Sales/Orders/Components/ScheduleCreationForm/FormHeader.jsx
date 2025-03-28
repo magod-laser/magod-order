@@ -97,7 +97,7 @@ export default function FormHeader(props) {
 
   const handleClick = async () => {
     let docNo = props.OrderData.Order_No;
-    
+
     let Doctype = "Order";
     let mspath = process.env.REACT_APP_SERVER_FILES;
     let mpath = `${mspath}\\${docNo}\\DXF\\`;
@@ -146,13 +146,14 @@ export default function FormHeader(props) {
 
     // Create a link element
     const element = document.createElement("a");
-
+    //29-03-25
     if (getRightmostCharactersAfterDot(filenm.name) !== "dxf") {
       alert("File Selected: " + getRightmostCharactersAfterDot(filenm.name));
       element.download = filenm.name + ".dxf"; // file.name;
     } else {
       element.download = filenm.name; // file.name;
     }
+    // /////
     // Create a URL for the Blob and set it as the href attribute
     element.href = URL.createObjectURL(file);
     // Append the link to the body
@@ -247,14 +248,14 @@ export default function FormHeader(props) {
           <button
             className="button-style"
             onClick={() => {
-              
-              
-    if (props.saveJWMRChanges) {
-      props.saveJWMRChanges();
-    }
-    else{
-      updateOrdrData();
-    }
+
+
+              if (props.saveJWMRChanges) {
+                props.saveJWMRChanges();
+              }
+              else {
+                updateOrdrData();
+              }
 
             }}
           // onClick={props.openModal}

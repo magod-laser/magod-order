@@ -874,7 +874,8 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                                         error:
                                                           "Internal Server Error",
                                                       });
-                                                  } else {
+                                                  }
+                                                   else {
                                                     /////Create Task
                                                     let selectScheduleDetailsQuery = `SELECT * FROM magodmis.orderscheduledetails WHERE ScheduleId='${req.body.formdata[0].ScheduleId}'`;
 
@@ -895,12 +896,15 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                                               error:
                                                                 "Internal Server Error",
                                                             });
-                                                        } else {
+                                                        } 
+                                                        else {
                                                           const taskCounters =
                                                             {};
                                                           let taskNumber = 1;
 
                                                           // Modify the grouping logic based on req.body.Type
+                                                                console.log("==req.body.Type", req.body.Type);
+                                                                    console.log("==scheduleDetails",scheduleDetails);
 
                                                           const groupedTasks =
                                                             req.body.Type ===
@@ -910,6 +914,8 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                                                     acc,
                                                                     row
                                                                   ) => {
+                                                                    console.log("==row",row);
+                                                                    
                                                                     // Create a key for grouping based on Mtrl_Code, MProcess, and Operation
                                                                     const key = `${row.Mtrl_Code}_${row.MProcess}_${row.Operation}`;
 
@@ -1216,6 +1222,9 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                                       }
                                                     );
                                                   }
+                                                  // groupedTasks
+                                                  console.log("groupedTasks",groupedTasks);
+                                                  
                                                 }
                                               );
                                             }
@@ -1370,6 +1379,9 @@ ScheduleListRouter.post(`/scheduleAfterLogin`, async (req, res, next) => {
                                 req.body.Type === "Profile"
                                   ? scheduleDetails.reduce((acc, row) => {
                                       // Create a key for grouping based on Mtrl_Code, MProcess, and Operation
+
+                                      console.log("====row",row);
+                                      
                                       const key = `${row.Mtrl_Code}_${row.MProcess}_${row.Operation}`;
 
                                       // Initialize the task counter for this unique key if not already present
@@ -1420,6 +1432,7 @@ ScheduleListRouter.post(`/scheduleAfterLogin`, async (req, res, next) => {
                                   });
                                 });
                               };
+
 
                               // Function to process a single task (for a group of rows with the same TaskNo)
                               const processTask = async (taskGroup) => {
@@ -1562,8 +1575,13 @@ ScheduleListRouter.post(`/scheduleAfterLogin`, async (req, res, next) => {
                                 message: "Scheduled",
                               });
                             }
+
+                            
+                      
                           }
+                          
                         );
+                        // console.log("groupedTasks",groupedTasks);
                       }
                     });
                   }

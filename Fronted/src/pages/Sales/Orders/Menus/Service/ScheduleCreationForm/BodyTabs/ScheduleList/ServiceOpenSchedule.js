@@ -15,6 +15,7 @@ import ScheduleLogin from "./ScheduleLogin";
 import axios from "axios";
 import moment from "moment";
 import * as XLSX from "xlsx";
+import OkayModal from "../../../../../../../components/OkayModal";
 // import { useNavigation } from "../../../../../../../../../src/context/NavigationContext";
 
 function ServiceOpenSchedule() {
@@ -31,6 +32,8 @@ function ServiceOpenSchedule() {
   // Set initial state of newState to DwgNameList
   const [newState, setNewState] = useState(DwgNameList);
   const [scheduleDetailsRow, setScheduleDetailsRow] = useState({});
+  const [smShow, setSmShow] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   useEffect(() => {
     postRequest(
@@ -488,7 +491,9 @@ function ServiceOpenSchedule() {
     });
 
     if (hasQtyZeroQty) {
-      alert("Check Qty to Schedule. Make sure Qty to Schedule is correct");
+      setModalMessage("Check Qty to Schedule. Make sure Qty to Schedule is correct");
+      setSmShow(true);
+      // alert("Check Qty to Schedule. Make sure Qty to Schedule is correct");
       return;
     }
 
@@ -505,15 +510,21 @@ function ServiceOpenSchedule() {
         setNewState(newState1);
         console.log("==newState", newState1);
 
-        alert("Rows Deleted");
+        // alert("Rows Deleted");
+        setModalMessage("Rows Deleted");
+      setSmShow(true);
         return;
       } else {
-        alert("Not Scheduled");
+        // alert("Not Scheduled");
+        setModalMessage("Not Scheduled");
+        setSmShow(true);
       }
     }
     if (hasInvalidQty) {
-      alert("Check Qty to Schedule. Make sure Qty to Schedule is correct");
-      alert("Not Scheduled");
+      // alert("Check Qty to Schedule. Make sure Qty to Schedule is correct");
+      // alert("Not Scheduled");
+      setModalMessage("Check Qty to Schedule. Make sure Qty to Schedule is correct,Not Scheduled");
+      setSmShow(true);
       return;
     }
 
@@ -538,9 +549,11 @@ function ServiceOpenSchedule() {
       { scheduleDetailsRow, formdata, newState, Type, OrdrDetailsData },
       (response) => {
         if (response.message === "Scheduled") {
-          toast.success(response.message, {
-            position: toast.POSITION.TOP_CENTER,
-          });
+          setModalMessage(response.message);
+        setSmShow(true);
+          // toast.success(response.message, {
+          //   position: toast.POSITION.TOP_CENTER,
+          // });
           // Introducing a delay of 1000 milliseconds (1 second)
           setTimeout(() => {
             postRequest(
@@ -600,9 +613,11 @@ function ServiceOpenSchedule() {
   //Onclick of Yes for Zero Quantity(Delete Dwg)
   const onclickYes = () => {
     setDeleteAskModal(false);
-    toast.warning("Deleted Sucessfully", {
-      position: toast.POSITION.TOP_CENTER,
-    });
+    setModalMessage("Deleted Sucessfully");
+    setSmShow(true);
+    // toast.warning("Deleted Sucessfully", {
+    //   position: toast.POSITION.TOP_CENTER,
+    // });
   };
 
   //OnClick NCProgram
@@ -740,6 +755,9 @@ function ServiceOpenSchedule() {
   //handle change of table To schedule inputfield
   const handleSchedulelist = (index, field, value) => {
     console.log("value is", value);
+    if (!/^\d*$/.test(value)) {
+      return;
+    }
     if (value < 0) {
       toast.error("Please Enter a Positive Number", {
         position: toast.POSITION.TOP_CENTER,
@@ -2227,6 +2245,7 @@ function ServiceOpenSchedule() {
         setNewState={setNewState}
         OrdrDetailsData={OrdrDetailsData}
       />
+      <OkayModal smShow={smShow} setSmShow={setSmShow} message={modalMessage} />
     </div>
   );
 }
