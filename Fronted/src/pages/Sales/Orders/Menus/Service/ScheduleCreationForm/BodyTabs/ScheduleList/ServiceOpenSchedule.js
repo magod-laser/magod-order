@@ -132,6 +132,9 @@ function ServiceOpenSchedule() {
   const [PNAndInvRegisterData, setPNAndInvRegisterData] = useState([]);
   const [PNAndInvDetailsData, setPNAndInvDetailsData] = useState([]);
 
+
+  console.log("DwgNameList", DwgNameList);
+  
   useEffect(() => {
     if (DwgNameList.length === 0) return; // Ensure DwgNameList is not empty
     postRequest(
@@ -155,6 +158,32 @@ function ServiceOpenSchedule() {
       }
     );
   }, [DwgNameList[0]]);
+
+
+    useEffect(() => {
+      if (DwgNameList.length === 0) return; // Ensure DwgNameList is not empty
+      postRequest(
+        endpoints.getScheduleListgetFormDetails,
+        {
+          Cust_Code: DwgNameList[0]?.Cust_Code,
+          ScheduleId: scheduleId,
+        },
+        (response) => {
+          console.log("formdata In Api-2:", response);
+
+          setFormdata(response);
+          postRequest(
+            endpoints.getAllPNAndInvRegisterbyOrderNo,
+            { Order_No: response[0]?.Order_No },
+            (PNAndInvData) => {
+              setPNAndInvRegisterData(PNAndInvData.registerData);
+              setPNAndInvDetailsData(PNAndInvData.detailsData);
+            }
+          );
+        }
+      );
+    }, []);
+
 
   //get Sales Contact
   const [ProgramEngineer, setProgramEngineer] = useState([]);
@@ -491,7 +520,9 @@ function ServiceOpenSchedule() {
     });
 
     if (hasQtyZeroQty) {
-      setModalMessage("Check Qty to Schedule. Make sure Qty to Schedule is correct");
+      setModalMessage(
+        "Check Qty to Schedule. Make sure Qty to Schedule is correct"
+      );
       setSmShow(true);
       // alert("Check Qty to Schedule. Make sure Qty to Schedule is correct");
       return;
@@ -512,7 +543,7 @@ function ServiceOpenSchedule() {
 
         // alert("Rows Deleted");
         setModalMessage("Rows Deleted");
-      setSmShow(true);
+        setSmShow(true);
         return;
       } else {
         // alert("Not Scheduled");
@@ -523,7 +554,9 @@ function ServiceOpenSchedule() {
     if (hasInvalidQty) {
       // alert("Check Qty to Schedule. Make sure Qty to Schedule is correct");
       // alert("Not Scheduled");
-      setModalMessage("Check Qty to Schedule. Make sure Qty to Schedule is correct,Not Scheduled");
+      setModalMessage(
+        "Check Qty to Schedule. Make sure Qty to Schedule is correct,Not Scheduled"
+      );
       setSmShow(true);
       return;
     }
@@ -542,7 +575,7 @@ function ServiceOpenSchedule() {
     //   return;
     // }
 
-    console.log("scheduleDetailsRow",scheduleDetailsRow);
+    console.log("scheduleDetailsRow", scheduleDetailsRow);
     console.log("OrdrDetailsData", OrdrDetailsData);
     console.log("newState", newState);
     console.log("formdata", formdata);
@@ -553,7 +586,7 @@ function ServiceOpenSchedule() {
       (response) => {
         if (response.message === "Scheduled") {
           setModalMessage(response.message);
-        setSmShow(true);
+          setSmShow(true);
           // toast.success(response.message, {
           //   position: toast.POSITION.TOP_CENTER,
           // });
@@ -598,6 +631,8 @@ function ServiceOpenSchedule() {
     );
   };
 
+  console.log("formdat===",formdata);
+  
   const [scheduleLogin, setScheduleLogin] = useState(false);
   //onClick of yes Payment ALert Modal
   const onClickScheduleYes = () => {
