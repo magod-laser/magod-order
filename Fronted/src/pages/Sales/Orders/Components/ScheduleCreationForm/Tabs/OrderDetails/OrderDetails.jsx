@@ -283,7 +283,8 @@ export default function OrderDetails(props) {
       (InsertedNewSrlData) => {
         if (InsertedNewSrlData.affectedRows != 0) {
           fetchData();
-          toast.success("Added serial successfully");
+          alert("Added serial successfully");
+          // toast.success("Added serial successfully");
           handleCloseImportDwg();
         } else {
           toast.warning("Serial not added check once");
@@ -403,7 +404,8 @@ export default function OrderDetails(props) {
       },
       (blkChngData) => {
         if (blkChngData.affectedRows !== 0) {
-          toast.success("Updated successfully");
+          // toast.success("Updated successfully");
+          alert("Updated successfully");
           fetchData();
           handleClosesetBulkChnangMdl();
         } else {
@@ -442,7 +444,8 @@ export default function OrderDetails(props) {
       (singleChngData) => {
         ////// //console.log(" blkChngData", blkChngData);
         if (singleChngData.affectedRows != 0) {
-          toast.success("Updated successfully");
+         alert("Updated successfully");
+          // toast.success("Updated successfully");
           fetchData();
         } else {
           toast.warning("Serial not updated check once");
@@ -726,7 +729,8 @@ export default function OrderDetails(props) {
 
         // if (deleteData.flag > 0) {
         if (deleteData.success === true) {
-          toast.success("Serial Deleted successfully");
+          // toast.success("Serial Deleted successfully");
+         alert("Serial Deleted successfully");
           fetchData();
           window.location.reload();
 
@@ -767,7 +771,8 @@ export default function OrderDetails(props) {
       (deleteData) => {
         if (deleteData.flag > 0) {
           setOrdrDetailsData([]);
-          toast.success("Serial Deleted sucessfully");
+          alert("Serial Deleted sucessfully");
+          // toast.success("Serial Deleted sucessfully");
           setConfirmationModalOpen(false);
 
           if (buttonClicked === "Import Qtn") {
@@ -1025,7 +1030,8 @@ export default function OrderDetails(props) {
                   let destPath = `\\Wo\\` + OrderNo + "\\DXF";
                   await dxfupload([newdxf], destPath, (res) => {
                     if (res.status === "success") {
-                      toast.success("DXF file updated successfully");
+                      alert("DXF file updated successfully");
+                      // toast.success("DXF file updated successfully");
                     }
                   });
                 }
@@ -1320,7 +1326,8 @@ console.log("strmtrlcode===4",imprtDwgObj.strmtrlcode);
       (InsertedNewSrlData) => {
         if (InsertedNewSrlData.affectedRows != 0) {
           setisLoading(false);
-          toast.success("Added serial successfully");
+          // toast.success("Added serial successfully");
+          alert("Added serial successfully");
 
           setSelectedPartId([]);
           //   handleCloseImportDwg;

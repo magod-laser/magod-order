@@ -238,9 +238,10 @@ function ServiceOpenSchedule() {
     postRequest(endpoints.onClickShortClose, { newState }, (response) => {
       // console.log("response is",response);
       if (response.message === "Success") {
-        toast.success(response.message, {
-          position: toast.POSITION.TOP_CENTER,
-        });
+        // toast.success(response.message, {
+        //   position: toast.POSITION.TOP_CENTER,
+        // });
+        alert(response.message)
       } else
         toast.warning(response.message, {
           position: toast.POSITION.TOP_CENTER,
@@ -308,9 +309,10 @@ function ServiceOpenSchedule() {
           changedEngineer: changedEngineer,
         },
         (response) => {
-          toast.success("Saved", {
-            position: toast.POSITION.TOP_CENTER,
-          });
+          // toast.success("Saved", {
+          //   position: toast.POSITION.TOP_CENTER,
+          // });
+          alert("Saved")
           postRequest(
             endpoints.getScheduleListgetFormDetails,
             {
@@ -335,9 +337,10 @@ function ServiceOpenSchedule() {
           newState,
         },
         (response) => {
-          toast.success("Success", {
-            position: toast.POSITION.TOP_CENTER,
-          });
+          // toast.success("Success", {
+          //   position: toast.POSITION.TOP_CENTER,
+          // });
+          alert("Success")
           postRequest(
             endpoints.getScheduleListgetFormDetails,
             {
@@ -363,9 +366,10 @@ function ServiceOpenSchedule() {
             }
           );
         } else {
-          toast.success("Suspended", {
-            position: toast.POSITION.TOP_CENTER,
-          });
+          // toast.success("Suspended", {
+          //   position: toast.POSITION.TOP_CENTER,
+          // });
+          alert("Suspended")
           postRequest(
             endpoints.getScheduleListgetFormDetails,
             {
@@ -422,9 +426,10 @@ function ServiceOpenSchedule() {
           position: toast.POSITION.TOP_CENTER,
         });
       } else if (response?.message === "Schedules cancelled successfully") {
-        toast.success("Schedules cancelled successfully", {
-          position: toast.POSITION.TOP_CENTER,
-        });
+        // toast.success("Schedules cancelled successfully", {
+        //   position: toast.POSITION.TOP_CENTER,
+        // });
+        alert("Schedules cancelled successfully")
 
         // Fetch updated schedule details
         const formDataResponse = await postRequest(
@@ -557,6 +562,7 @@ function ServiceOpenSchedule() {
           // toast.success(response.message, {
           //   position: toast.POSITION.TOP_CENTER,
           // });
+          alert(response.message)
           // Introducing a delay of 1000 milliseconds (1 second)
           setTimeout(() => {
             postRequest(
@@ -686,9 +692,10 @@ function ServiceOpenSchedule() {
   const [fixturedata, setFixtureData] = useState([]);
   const onClickYesFixtureOrder = () => {
     postRequest(endpoints.onClickFixtureOrder, { formdata }, (response) => {
-      toast.success("Order Created", {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      // toast.success("Order Created", {
+      //   position: toast.POSITION.TOP_CENTER,
+      // });
+      alert("Order Created");
       setFixtureData(response);
       setFixtureOrder1(false);
       navigate("/Orders/Profile/ScheduleCreationForm", {
@@ -715,9 +722,10 @@ function ServiceOpenSchedule() {
   const [profileOrders, setProfileOrders] = useState([]);
   const onClickYesProfileOrders = () => {
     postRequest(endpoints.onClickProfileOrder, { formdata }, (response) => {
-      toast.success("Order Created", {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      // toast.success("Order Created", {
+      //   position: toast.POSITION.TOP_CENTER,
+      // });
+      alert("Order Created")
       setProfileOrders(response);
       setProfileOrder1(false);
       navigate("/Orders/Profile/ScheduleCreationForm", {

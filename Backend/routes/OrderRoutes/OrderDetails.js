@@ -10,6 +10,8 @@ const {
 } = require("../../helpers/dbconn");
 const { logger } = require("../../helpers/logger");
 const moment = require("moment");
+const path = require('path');
+const fs = require('fs');
 
 OrderDetailsRouter.post(`/insertnewsrldata`, async (req, res, next) => {
   // console.log("entering into insertnewsrldata...");
@@ -325,7 +327,7 @@ ORDER BY UniqueData.UniqueColumn DESC`,
         }
       }
     );
-  } catch (error) {}
+  } catch (error) { }
 });
 
 OrderDetailsRouter.post(`/getfindoldpartdata`, async (req, res, next) => {
@@ -473,7 +475,7 @@ OrderDetailsRouter.post(`/loadStockPosition`, async (req, res, next) => {
         }
       }
     );
-  } catch (error) {}
+  } catch (error) { }
 });
 OrderDetailsRouter.post(`/LoadArrival`, async (req, res, next) => {
   // try {
@@ -559,7 +561,7 @@ OrderDetailsRouter.post(`/LoadArrival`, async (req, res, next) => {
         }
       }
     );
-  } catch (error) {}
+  } catch (error) { }
 });
 
 OrderDetailsRouter.post(`/LoadArrival2`, async (req, res, next) => {
@@ -578,7 +580,7 @@ OrderDetailsRouter.post(`/LoadArrival2`, async (req, res, next) => {
         }
       }
     );
-  } catch (error) {}
+  } catch (error) { }
 });
 
 OrderDetailsRouter.post(`/getQtnList`, async (req, res, next) => {
@@ -950,23 +952,20 @@ OrderDetailsRouter.post(
               Mtrl_Source, Qty_Ordered, InspLevel, PackingLevel, UnitPrice, 
               UnitWt, Order_Status, JWCost, MtrlCost, Operation, tolerance) 
               VALUES 
-              ('${element.Order_No}', '${element.Order_Srl}', '${
-              element.Cust_Code
-            }', 
+              ('${element.Order_No}', '${element.Order_Srl}', '${element.Cust_Code
+              }', 
               '${element.DwgName || ""}', '${element.Mtrl_Code || ""}', 
               '${element.MProcess || ""}', '${element.Mtrl_Source || ""}', 
-              '${parseInt(element.Qty_Ordered || 0)}', '${
-              element.InspLevel || "Insp1"
-            }', 
+              '${parseInt(element.Qty_Ordered || 0)}', '${element.InspLevel || "Insp1"
+              }', 
               '${element.PackingLevel || "Pkng1"}', '${parseFloat(
-              element.UnitPrice || 0
-            ).toFixed(2)}', 
-              '${parseFloat(element.UnitWt || 0).toFixed(3)}', '${
-              element.Order_Status || "Received"
-            }', 
+                element.UnitPrice || 0
+              ).toFixed(2)}', 
+              '${parseFloat(element.UnitWt || 0).toFixed(3)}', '${element.Order_Status || "Received"
+              }', 
               '${parseFloat(element.JWCost || 0).toFixed(2)}', '${parseFloat(
-              element.MtrlCost || 0
-            ).toFixed(2)}', 
+                element.MtrlCost || 0
+              ).toFixed(2)}', 
               '${element.Operation || ""}', '${element.tolerance || ""}')`;
 
             misQueryMod(insertQuery, (err) => {
@@ -1303,27 +1302,22 @@ OrderDetailsRouter.post(
                 // Insert into order_details
                 const insertQuery = `
                   INSERT INTO magodmis.order_details (Order_No, Order_Srl, Cust_Code, DwgName, Mtrl_Code, MProcess, Mtrl_Source, Qty_Ordered, InspLevel, PackingLevel, UnitPrice, UnitWt, Order_Status, JWCost, MtrlCost, Operation, tolerance)
-                  VALUES ('${element.Order_No}', '${element.Order_Srl}', '${
-                  element.Cust_Code
-                }', 
-                          '${element.DwgName || ""}', '${
-                  element.Mtrl_Code || ""
-                }', '${element.MProcess || ""}', 
+                  VALUES ('${element.Order_No}', '${element.Order_Srl}', '${element.Cust_Code
+                  }', 
+                          '${element.DwgName || ""}', '${element.Mtrl_Code || ""
+                  }', '${element.MProcess || ""}', 
                           '${element.Mtrl_Source || ""}', '${parseInt(
-                  element.Qty_Ordered || 0
-                )}', 
-                          '${element.InspLevel || "Insp1"}', '${
-                  element.PackingLevel || "Pkng1"
-                }', 
+                    element.Qty_Ordered || 0
+                  )}', 
+                          '${element.InspLevel || "Insp1"}', '${element.PackingLevel || "Pkng1"
+                  }', 
                           '${parseFloat(element.UnitPrice || 0).toFixed(
-                            2
-                          )}', '${parseFloat(element.UnitWt || 0).toFixed(3)}', 
-                          '${
-                            element.Order_Status || "Received"
-                          }', '${parseFloat(element.JWCost || 0).toFixed(2)}', 
-                          '${parseFloat(element.MtrlCost || 0).toFixed(2)}', '${
-                  element.Operation || ""
-                }', 
+                    2
+                  )}', '${parseFloat(element.UnitWt || 0).toFixed(3)}', 
+                          '${element.Order_Status || "Received"
+                  }', '${parseFloat(element.JWCost || 0).toFixed(2)}', 
+                          '${parseFloat(element.MtrlCost || 0).toFixed(2)}', '${element.Operation || ""
+                  }', 
                           '${element.tolerance || ""}')`;
 
                 misQueryMod(insertQuery, (insertErr) => {
@@ -1619,9 +1613,9 @@ OrderDetailsRouter.post(
         return new Promise((resolve, reject) => {
           const deliveryDate = element.Delivery_Date
             ? new Date(element.Delivery_Date)
-                .toISOString()
-                .slice(0, 19)
-                .replace("T", " ")
+              .toISOString()
+              .slice(0, 19)
+              .replace("T", " ")
             : null;
 
           if (!orderNo) orderNo = element.Order_No;
@@ -1632,27 +1626,23 @@ OrderDetailsRouter.post(
             Qty_Ordered, QtyScheduled, InspLevel, PackingLevel, UnitPrice, UnitWt, Order_Status, 
             JWCost, MtrlCost, Operation, tolerance, Delivery_Date) 
             VALUES 
-            ('${element.Order_No}', '${element.Order_Srl}', '${
-            element.Cust_Code
-          }', '${element.DwgName || ""}', 
-            '${element.Mtrl_Code || ""}', '${element.MProcess || ""}', '${
-            element.Mtrl_Source || ""
-          }', 
+            ('${element.Order_No}', '${element.Order_Srl}', '${element.Cust_Code
+            }', '${element.DwgName || ""}', 
+            '${element.Mtrl_Code || ""}', '${element.MProcess || ""}', '${element.Mtrl_Source || ""
+            }', 
             '${parseInt(element.Qty_Ordered || 0)}', '${parseInt(
-            element.QtyScheduled || 0
-          )}', 
-            '${element.InspLevel || "Insp1"}', '${
-            element.PackingLevel || "Pkng1"
-          }', 
+              element.QtyScheduled || 0
+            )}', 
+            '${element.InspLevel || "Insp1"}', '${element.PackingLevel || "Pkng1"
+            }', 
             '${parseFloat(element.UnitPrice || 0).toFixed(2)}', '${parseFloat(
-            element.UnitWt || 0
-          ).toFixed(3)}', 
+              element.UnitWt || 0
+            ).toFixed(3)}', 
             '${element.Order_Status || "Received"}', '${parseFloat(
-            element.JWCost || 0
-          ).toFixed(2)}', 
-            '${parseFloat(element.MtrlCost || 0).toFixed(2)}', '${
-            element.Operation || ""
-          }', '${element.tolerance || ""}', 
+              element.JWCost || 0
+            ).toFixed(2)}', 
+            '${parseFloat(element.MtrlCost || 0).toFixed(2)}', '${element.Operation || ""
+            }', '${element.tolerance || ""}', 
             ${deliveryDate ? `'${deliveryDate}'` : "NULL"})`;
 
           misQueryMod(insertQuery, (err) => {
@@ -2401,6 +2391,19 @@ OrderDetailsRouter.post(`/postDeleteDetailsBySrl`, async (req, res, next) => {
     }
 
     for (const item of selectedItems) {
+      console.log("Delete item ", item);
+
+      const filePath = path.join(process.env.FILE_SERVER_PATH,'\\Wo\\',item.Order_No,'\\dxf\\',item.DwgName);
+      //const filePath = path.join(__dirname, 'folder', req.query.filename);
+
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error(err);
+       //   return res.status(500).send('File deletion failed');
+        }
+
+      });
+
       await misQueryMod(
         `DELETE FROM magodmis.order_details WHERE Order_No = ? AND Order_Srl = ?`,
         [Order_No, item.Order_Srl]
@@ -2421,8 +2424,8 @@ OrderDetailsRouter.post(`/postDeleteDetailsBySrl`, async (req, res, next) => {
         return (
           total +
           (row.Qty_Ordered ?? 0) *
-            ((parseFloat(row.JWCost) ?? 0.0) +
-              (parseFloat(row.MtrlCost) ?? 0.0))
+          ((parseFloat(row.JWCost) ?? 0.0) +
+            (parseFloat(row.MtrlCost) ?? 0.0))
         );
       }, 0);
     }

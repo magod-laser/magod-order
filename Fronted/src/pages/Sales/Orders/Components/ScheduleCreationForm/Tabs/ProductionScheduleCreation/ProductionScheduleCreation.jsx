@@ -68,13 +68,6 @@ export default function ProductionScheduleCreation({
     } else {
       let filteredItems;
 
-      // console.log(
-      //   "scheduleOption is",
-      //   scheduleOption,
-      //   "scheduleType is",
-      //   scheduleType
-      // );
-
       if (scheduleType === "Job Work") {
         if (scheduleOption === "Full Order") {
           filteredItems = OrdrDetailsData.filter(
@@ -293,11 +286,17 @@ export default function ProductionScheduleCreation({
 
   // Check Dxf Button Click
   const fnCheckDxf = async () => {
-    //   alert("fnCheckDxf");
+      alert("fnCheckDxf");
     //  console.log("Order No :", OrderData.Order_No)
     let orderno = OrderData.Order_No;
     await postRequest(endpoints.checkDxf, { orderno }, (checkdata) => {
       //     console.log("check dxf: ",checkdata);
+      if (checkdata.message === 'Present') {
+      alert("Dxf Files are Present");
+      } else {
+        alert("Dxf Files Not Present..");
+      }
+
     });
   };
 

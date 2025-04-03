@@ -7,13 +7,15 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { ToastContainer, toast, useToastContainer } from "react-toastify";
 import { useOrderContext } from "../../../../context/OrderContext";
 import AlertModal from "./Components/Alert";
+import OkayModal from "../../../components/OkayModal";
 
 const { getRequest, postRequest } = require("../../../api/apiinstance");
 const { endpoints } = require("../../../api/constants");
 
 function NewOrder(props) {
   // const [searchParams] = useSearchParams();
-
+  const [smShow, setSmShow] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   let navigate = useNavigate();
   let { orders, setOrderState } = useOrderContext() || {};
   let [orderno, setOrderno] = useState("");
@@ -44,7 +46,7 @@ function NewOrder(props) {
   let [formquotationNo, setFormQuotationNo] = useState("");
   let [purchaseorder, setPurchaseorder] = useState("");
   const [isChecked, setChecked] = useState(false);
-  const [SmShow, setSmShow] = useState(false);
+  // const [SmShow, setSmShow] = useState(false);
   // let Oformat = searchParams.get("OrdType");
 
   // Alert Modals
@@ -317,7 +319,10 @@ function NewOrder(props) {
 
         setIsGenerating(true); // Disable button immediately
 
-        toast.success("Order Created with " + Ordno, { autoClose: 2100 });
+        // toast.success("Order Created with " + Ordno, { autoClose: 2100 });
+        alert("Order Created with " + Ordno, { autoClose: 2100 })
+        // setModalMessage("Order Created with " + Ordno, { autoClose: 2100 });
+        // setSmShow(true);
         setTimeout(() => {
           if (Ordno != null) {
             if (props.Type === "Profile") {
@@ -383,7 +388,7 @@ function NewOrder(props) {
   //   setFormTransportCharges(true);
   // };
   const handleSaveButtonClick = () => {
-    setSmShow(true);
+    // setSmShow(true);
   };
 
   // Ref for the select element
@@ -1029,6 +1034,7 @@ function NewOrder(props) {
           firstbuttontext="Ok"
         />
       </Form>
+      <OkayModal smShow={smShow} setSmShow={setSmShow} message={modalMessage} />
       {/* <AlertModal
         show={alertModal}
         onHide={(e) => setAlertModal(e)}

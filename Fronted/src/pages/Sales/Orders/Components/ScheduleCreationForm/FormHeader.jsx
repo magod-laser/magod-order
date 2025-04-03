@@ -137,7 +137,8 @@ export default function FormHeader(props) {
     await postRequest(endpoints.CheckDwgFileStatus, { docno: props.OrderData.Order_No, uploadfiles: filenm.name }, (res) => {
       console.log(res);
       if (res.status === "Locked") {
-        toast.error("File is Locked by another User", { position: toast.POSITION.TOP_CENTER, autoClose: 2000 });
+        //toast.error("File is Locked by another User", { position: toast.POSITION.TOP_CENTER, autoClose: 1200 });
+        alert("File is Locked by another User");
         return;
       }
     });
@@ -166,31 +167,78 @@ export default function FormHeader(props) {
 
   }
 
+  // const handleDownload = async () => {
+  //   alert("Clicked on Order dxf download");
+  //   if (selectedFile) {
+  //     console.log("selectedFile : ", selectedFile);
+  //     const link = document.createElement('a');
+  //     link.href = selectedFile.url; // Assuming the file object has a 'url' field
+  //     link.download = selectedFile.name; // Use the file name for download
+  //     console.log(selectedFile.name);
+  //     link.click();
+  //     let flocked = true;
+  //     let docno = props.OrderData.Order_No;
+
+  //     await postRequest(endpoints.updateUploadFiles, { docno, uploadfiles: selectedFile.name, flocked }, (res) => {
+  //       console.log(res);
+  //       if (res.status === "Updated") {
+  //         //toast.success("File Uploaded Successfully");
+  //         setFUploadClose(true);
+  //         sethandleUploadMdl(false);
+  //       }
+  //     });
+
+  //     sethandleUploadMdl(false);
+  //   }
+
+
+  // };
+
   const handleDownload = async () => {
-    alert("Clicked on Order dxf download");
+   // alert("Clicked on Order dxf download");
     if (selectedFile) {
-      const link = document.createElement('a');
-      link.href = selectedFile.url; // Assuming the file object has a 'url' field
-      link.download = selectedFile.name; // Use the file name for download
-      console.log(selectedFile.name);
-      link.click();
-      let flocked = true;
-      let docno = props.OrderData.Order_No;
+      try {
+        // Create a Blob from the file content
+        const blob = new Blob([selectedFile.fcontent], { type: 'application/octet-stream' });
 
-      await postRequest(endpoints.updateUploadFiles, { docno, uploadfiles: selectedFile.name, flocked }, (res) => {
-        console.log(res);
-        if (res.status === "Updated") {
-          //toast.success("File Uploaded Successfully");
-          setFUploadClose(true);
-          sethandleUploadMdl(false);
-        }
-      });
+        // Create a URL for the Blob
+        const url = window.URL.createObjectURL(blob);
 
-      sethandleUploadMdl(false);
+        // Create an anchor tag to trigger the download
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = selectedFile.name; // File name for the downloaded file
+
+        // Append the link to the document and simulate a click
+        document.body.appendChild(link);
+        link.click();
+
+        // Cleanup: Remove the link and revoke the Blob URL to free memory
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        // Update server with the file download info
+        let flocked = true;
+        let docno = props.OrderData.Order_No;
+
+        await postRequest(endpoints.updateUploadFiles, { docno, uploadfiles: selectedFile.name, flocked }, (res) => {
+          console.log(res);
+          if (res.status === "Updated") {
+            setFUploadClose(true);
+            sethandleUploadMdl(false);
+          }
+        });
+
+        sethandleUploadMdl(false);
+      } catch (error) {
+        console.error("Error during file download", error);
+      //  alert("An error occurred while saving the file to the local drive.");
+      }
+    } else {
+      alert("No file selected!");
     }
-
-
   };
+
 
   const handleUpload = () => {
     alert("Clicked on Order dxf upload");

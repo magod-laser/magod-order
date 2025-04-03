@@ -217,7 +217,7 @@ fileRouter.post("/checkdxf", async (req, res, next) => {
 
 		//res.send(dxfFiles);
 		if (dxfFiles.length > 0) {
-			res.send({message:"Preent"});
+			res.send({message:"Present"});
 		} else {
 			res.send({message:"Not Present"});
 		}

@@ -881,9 +881,10 @@ export default function ScheduleCreationForm(props) {
     );
 
     if (orderDetailsResponse.success) {
-      toast.success("Order details updated successfully", {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      // toast.success("Order details updated successfully", {
+      //   position: toast.POSITION.TOP_CENTER,
+      // });
+      alert("Order details updated successfully")
 
       setEditedData({}); // Clear stored changes
     } else {
@@ -919,7 +920,8 @@ export default function ScheduleCreationForm(props) {
       },
       async (singleChngData) => {
         if (singleChngData.affectedRows != 0) {
-          toast.success("Updated successfully");
+          // toast.success("Updated successfully");
+         alert("Updated successfully");
           fetchData();
           // setSelectedRow(null);
           // setSelectedRows([]);
@@ -1267,7 +1269,8 @@ export default function ScheduleCreationForm(props) {
       { Order_No: orderNo, Order_Status: "Recorded" },
       (registerOrderData) => {
         setOrderData({ ...OrderData, Order_Status: "Recorded" });
-        toast.success("Order Registered Successfully");
+        // toast.success("Order Registered Successfully");
+        alert("Order Registered Successfully");
         closeRegisterOrder();
       }
     );
@@ -1275,7 +1278,8 @@ export default function ScheduleCreationForm(props) {
   };
   // Save Button
   const handleSaveBtn = () => {
-    toast.success("Order Saved Successfully");
+    // toast.success("Order Saved Successfully");
+   alert("Order Saved Successfully");
   };
 
   //ROW SEECTION FOR PROFILE

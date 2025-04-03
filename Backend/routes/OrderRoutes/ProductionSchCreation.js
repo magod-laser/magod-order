@@ -118,7 +118,9 @@ for (let i = 0; i < req.body.selectedItems.length; i++) {
               console.log("Error fetching QtyToSchedule:", err);
               // Handle error if needed
             } else {
+              
               if (resultQty.length > 0) {
+// 30-03-25 To Update the Order Details Dwg Field with 1. This field should be 0 till user clicks on Create Schedule Button
                 const QtyToSchedule = resultQty[0].QtyToSchedule;
                 // Now you have QtyToSchedule, use it in inserquery2
                 let inserquery2 = `INSERT INTO magodmis.orderscheduledetails(ScheduleId, OrderDetailID, Order_No,

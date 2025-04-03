@@ -242,6 +242,8 @@ export const endpoints = {
   getPrepSchedulesData: `${API}/order/getprepareschedulesdata`,
   getCombSchedulelistData: `${API}/order/getcmbschedulelistdata`,
   AllotAndTaskCombinedSchedule: `${API}/order/allotandtaskcombinedschedule`,
+  updateUploadFiles: `${API}/order/updateuploadfiles`,
+  CheckDwgFileStatus: `${API}/order/checkdwgfilestatus`,
 
   InsertCombinedSchedule: `${API}/order/insertcombinedschedule`,
 

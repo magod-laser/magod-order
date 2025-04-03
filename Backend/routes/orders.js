@@ -530,4 +530,45 @@ ordersRouter.post("/registerOrder", async (req, res, next) => {
     next(error);
   }
 });
+
+ordersRouter.post("/updateuploadfiles", async (req,res, next) => {
+  try {
+    console.log(req.body);
+    let docno = req.body.docno;
+    let uploadfile = req.body.dwgfiles;
+    let locked = req.body.flocked;
+    console.log(docno);
+    console.log(uploadfile);
+
+    await misQueryMod(`update magodmis.orderscheduledetails set File_Locked='${locked == true ? 1 : 0}', Locked_on=Current_TimeStamp 
+      where Order_No='${docno}' And DwgName='${uploadfile}'`, (err, data) => {
+        if (err) console.log(err);
+        res.send({ status: "Updated" });
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+ordersRouter.post("/checkdwgfilestatus", async (req, res, next)=> {
+  try {
+    let dwgname = req.body.uploadfiles;
+    let schid = req.body.docno;
+    console.log(dwgname);
+    console.log(schid);
+    misQueryMod(`SELECT * FROM magodmis.orderscheduledetails where DwgName='${dwgname}' AND order_No='${schid}'`, (err, data) => {
+        if (err) console.log(err);
+        console.log(data);
+        if (data[0].File_Locked > 0) {
+            res.send({ status: "Locked" });
+        } else {
+            res.send({ status: "Unlocked" });
+        }
+        // res.send(data)
+    });
+  } catch (error) {
+    next(error);
+  }
+})
+
 module.exports = ordersRouter;

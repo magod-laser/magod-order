@@ -1,7 +1,10 @@
 import React from "react";
 import { Form } from "react-bootstrap";
+import OkayModal from "../../../../components/OkayModal";
 
 export default function NewOrder() {
+    const [smShow, setSmShow] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
   return (
     <div>
       <div className="col-md-12">
@@ -396,6 +399,8 @@ export default function NewOrder() {
           </div>
         </div>
       </Form>
+      <OkayModal smShow={smShow} setSmShow={setSmShow} message={modalMessage} />
     </div>
+    
   );
 }
