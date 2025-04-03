@@ -1569,9 +1569,9 @@ function ServiceOpenSchedule() {
             onClick={OnclickPdfOpen}
             className="button-style "
             disabled={
-              formdata[0]?.Schedule_Status === "Dispatched" ||
+              // formdata[0]?.Schedule_Status === "Dispatched" ||
               formdata[0]?.Schedule_Status === "Cancelled" ||
-              formdata[0]?.Schedule_Status === "Closed" ||
+              // formdata[0]?.Schedule_Status === "Closed" ||
               formdata[0]?.Schedule_Status === "ShortClosed" ||
               formdata[0]?.Schedule_Status === "Suspended" ||
               formdata[0]?.Schedule_Status === "Ready" ||
