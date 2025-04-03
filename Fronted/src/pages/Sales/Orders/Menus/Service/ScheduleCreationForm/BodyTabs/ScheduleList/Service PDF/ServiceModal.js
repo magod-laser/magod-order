@@ -19,6 +19,8 @@ import axios, { Axios } from "axios";
 import { apipoints } from "../../../../../../../../api/isoForms/pdf";
 import { toast } from "react-toastify";
 import { baseURL } from "../../../../../../../../../api/baseUrl";
+import { endpoints } from "../../../../../../../../api/constants";
+import { postRequest } from "../../../../../../../../api/apiinstance";
 
 export default function ServiceModal({
   setServiceOpen,
@@ -30,10 +32,31 @@ export default function ServiceModal({
   // console.log("in Print Modal",selectedWeek)
 
   console.log("formdata", formdata);
-  console.log("formdata", formdata[0]?.OrdSchNo);
-  console.log("formdata", formdata[0]?.Order_No);
+  console.log("OrdSchNo", formdata[0]?.OrdSchNo);
+  console.log("ScheduleId", formdata[0]?.ScheduleId);
+  console.log("Order_No", formdata[0]?.Order_No);
 
-  let OrderNo  = formdata[0]?.Order_No;;
+  let SchId = formdata[0]?.ScheduleId;
+
+  useEffect(() => {
+    console.log(formdata[0]?.ScheduleId);
+  }, [formdata[0]?.ScheduleId]);
+
+  console.log("SchId", SchId);
+  const [Tabledata, setTabledata] = useState([]);
+  useEffect(() => {
+    console.log("SchId", SchId);
+    postRequest(
+      endpoints.pdfdata,
+      { ScheduleId: formdata[0]?.ScheduleId },
+      (response) => {
+        console.log("Schedul response is", response);
+        setTabledata(response);
+      }
+    );
+  }, [formdata[0]?.ScheduleId]);
+
+  let OrderNo = formdata[0]?.Order_No;
 
   const [fullscreen, setFullscreen] = useState(true);
 
@@ -43,6 +66,8 @@ export default function ServiceModal({
     axios
       .get(apipoints.getPDFData)
       .then((response) => {
+        console.log("getPDFData===", response.data[0]);
+
         setPDFData(response.data[0]);
       })
       .catch((error) => {
@@ -52,75 +77,79 @@ export default function ServiceModal({
 
   console.log("PDFData is", PDFData);
   //save to server
-
   const savePdfToServer = async () => {
     try {
-      // const adjustment = "ProdSchedule"; // Replace with the desired adjustment name
-     const adjustment = "Schedule_" + formdata[0]?.OrdSchNo;// Replace with the desired adjustment name
+      const adjustment = "Schedule_" + formdata[0]?.OrdSchNo;
 
-      // Step 1: Set the adjustment name on the server
       await axios.post(`${baseURL}/PDF/set-adjustment-name`, {
         adjustment,
         WO: "WO",
         OrderNo: OrderNo,
         SchNo: formdata[0]?.OrdSchNo,
       });
-
-      // Step 2: Generate the PDF as a Blob
       const blob = await pdf(
-        <ServicePDF formdata={formdata} PDFData={PDFData} />
+        <ServicePDF
+          formdata={formdata}
+          PDFData={PDFData}
+          Tabledata={Tabledata}
+          setTabledat={setTabledata}
+        />
       ).toBlob();
 
-      console.log("Blob size:", blob.size);
-      if (blob.size === 0) {
-        console.error("Generated PDF blob is empty!");
-      }
+      console.log("blob", blob);
 
-      // Step 3: Create a File object for the PDF
       const file = new File([blob], "GeneratedPDF.pdf", {
         type: "application/pdf",
       });
+      console.log("file", file);
 
-      console.log("File type:", file.type);
-      console.log("File size:", file.size);
-      if (file.size === 0) {
-        console.error("The file is empty or corrupted!");
-      }
-
-      // Step 4: Create FormData and append the file
       const formData = new FormData();
-      formData.append("file", file);
 
-      // Step 5: Send the PDF file to the server
+      formData.append("file", file);
+      // formData.append("OrderNo", OrderNo);
+
       const response = await axios.post(`${baseURL}/PDF/save-pdf`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (response.status === 200) {
         toast.success("PDF saved successfully!");
-      } else {
-        toast.error("Failed to save PDF. Please try again.");
       }
     } catch (error) {
       console.error("Error saving PDF to server:", error);
-      toast.error("An error occurred while saving the PDF.");
     }
   };
+
+  useEffect(() => {
+    if (serviceOpen) {
+      const timeout = setTimeout(() => {
+        savePdfToServer();
+      }, 3000); // Adjust delay if needed
+
+      return () => clearTimeout(timeout); // Cleanup timeout on unmount
+    }
+  }, [serviceOpen]);
   return (
     <div>
       <Modal
         show={serviceOpen}
         fullscreen={fullscreen}
-        onHide={() => setServiceOpen(false)}
+        // onHide={() => setServiceOpen(false)}
+        onHide={() => {
+          // savePdfToServer(); // Call the function before closing the modal
+          setServiceOpen(false);
+        }}
       >
         <Modal.Header closeButton>
-          <Modal.Title style={{
+          <Modal.Title
+            style={{
               // fontSize: "12px",
               display: "flex",
               justifyContent: "space-between",
               width: "100%",
               alignItems: "center",
-            }}>
+            }}
+          >
             {Type}{" "}
             <button
               className="button-style"
@@ -135,7 +164,12 @@ export default function ServiceModal({
         <Modal.Body>
           <Fragment>
             <PDFViewer width="1200" height="600" filename="somename.pdf">
-              <ServicePDF formdata={formdata} PDFData={PDFData} />
+              <ServicePDF
+                formdata={formdata}
+                PDFData={PDFData}
+                Tabledata={Tabledata}
+                setTabledat={setTabledata}
+              />
             </PDFViewer>
           </Fragment>
         </Modal.Body>
