@@ -1068,9 +1068,11 @@ export default function ScheduleCreationForm(props) {
             // Order_No:  orderData.orderData[0].Order_No,
           }
         );
+        console.log("oldOrderData",oldOrderData);
+        
         setOldOrderListData(oldOrderData?.orderListData);
         setOldOrderDetailsData(oldOrderData?.orderDetailsData);
-      } else {
+             } else {
         // console.error("Invalid orderData or custData");
       }
 

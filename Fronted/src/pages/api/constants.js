@@ -78,6 +78,7 @@ export const endpoints = {
   checkDxf: `${API}/file/checkdxf`,
   orderCopyDxf:`${API}/file/ordcopydxf`,
   getOrdDxf: `${API}/file/orddxf`,
+  checkdxffilesimportoldorder: `${API}/file/checkdxffilesimportoldorder`,
   getStates: `${API}/states/allstates`,
   getStateCode: `${API}/states/getstatecode`,
   getStateName: `${API}/states/getstatename`,
@@ -383,6 +384,7 @@ export const endpoints = {
   getQtnList: `${API}/orderDetails/getQtnList`,
   getQtnDataByQtnID: `${API}/orderDetails/getQtnDataByQtnID`,
   getOldOrderByCustCodeAndOrderNo: `${API}/orderDetails/getOldOrderByCustCodeAndOrderNo`,
+ 
   postDeleteDetailsByOrderNo: `${API}/orderDetails/postDeleteDetailsByOrderNo`,
   postDetailsDataInImportQtn: `${API}/orderDetails/postDetailsDataInImportQtn`,
 

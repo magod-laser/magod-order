@@ -57,7 +57,7 @@ fileRouter.get("/orddxf", async (req, res, next) => {
 		}
 		const path = require('path');
 		let basefolder = process.env.FILE_SERVER_PATH;
-		 const filePath = path.join(basefolder, srcPath, dxfName);
+		const filePath = path.join(basefolder, srcPath, dxfName);
 		//let filePath = basefolder + srcPath + dxfName;
 		/////////////////////////////////////////////
 		// let content = "";
@@ -217,9 +217,9 @@ fileRouter.post("/checkdxf", async (req, res, next) => {
 
 		//res.send(dxfFiles);
 		if (dxfFiles.length > 0) {
-			res.send({message:"Present"});
+			res.send({ message: "Present" });
 		} else {
-			res.send({message:"Not Present"});
+			res.send({ message: "Not Present" });
 		}
 
 	} catch (error) {
@@ -270,21 +270,21 @@ fileRouter.post("/copydxf", async (req, res, next) => {
 // Order Copy Dxf File
 fileRouter.post("/ordcopydxf", async (req, res, next) => {
 	console.log(" Ord Copy Dxf ");
-	console.log("custdwgname : ",req.body.custdwgname);
+	console.log("custdwgname : ", req.body.custdwgname);
 	try {
 		let files = req.body.custdwgname;
-		let sourcefld = path.join(req.body.srcfolder,'\\',files);
-		let destinationfld = path.join(req.body.destfolder,'\\',files);
-	//	console.log(basefolder + destination);
+		let sourcefld = path.join(req.body.srcfolder, '\\', files);
+		let destinationfld = path.join(req.body.destfolder, '\\', files);
+		//	console.log(basefolder + destination);
 		//let srcfolder = "uploads\\" + files;
 		//let destdir = basefolder + destination;
 		//let destfolder = path.join(destdir, files);
-	//	console.log(srcfolder);
-	//	console.log(destfolder);
+		//	console.log(srcfolder);
+		//	console.log(destfolder);
 		fsSync.copyFile(sourcefld, destinationfld, (err) => {
 			if (err) {
 				console.error("Customer Drawing folder does not exist. Error during file copy:", err);
-				res.send({status: "Customer Drawing folder does not exist. Create it and update in Cust Information"});
+				res.send({ status: "Customer Drawing folder does not exist. Create it and update in Cust Information" });
 			} else {
 				console.log("File copied successfully");
 				res.send({ status: "success" });
@@ -491,6 +491,102 @@ fileRouter.post('/getfolderfilenames', async (req, res) => {
 		//       next(error);
 	}
 });
+
+
+ // Function to execute database queries
+ const queryDatabase = (query) => {
+	return new Promise((resolve, reject) => {
+	  misQueryMod(query, (err, results) => {
+		if (err) {
+		  return reject(err);
+		}
+		resolve(results);
+	  });
+	});
+  };
+// checking the import old order dxf files
+
+fileRouter.post(`/checkdxffilesimportoldorder`, async (req, res, next) => {
+	console.log("checking the import old order dxf files");
+	console.log("request", req.body);
+
+	let Old_Order_No = req.body.Old_Order_No;
+	let New_Order_No = req.body.New_Order_No
+	let srcfilepth = path.join(process.env.FILE_SERVER_PATH,"//Wo//",Old_Order_No,'//DXF//');
+	let dstfilepth = path.join(process.env.FILE_SERVER_PATH,"//Wo//",New_Order_No,'//DXF//');
+	console.log("srcfilepth: ",srcfilepth)
+	console.log("dstfilepth: ",dstfilepth)
+	try {
+
+		const sourceFolder = srcfilepth;
+		const destinationFolder = dstfilepth;
+
+		fsSync.readdir(sourceFolder, (err, files) => {
+			if (err) {
+				return console.error('Error reading source folder:', err);
+			}
+
+			// Filter out .dxf files
+			const dxfFiles = files.filter(file => path.extname(file).toLowerCase() === '.dxf');
+
+			// Copy each .dxf file to the destination folder
+			dxfFiles.forEach(file => {
+				const sourceFilePath = path.join(sourceFolder, file);
+				const destinationFilePath = path.join(destinationFolder, file);
+
+				fsSync.copyFile(sourceFilePath, destinationFilePath, err => {
+					if (err) {
+						console.error(`Error copying ${file}:`, err);
+					} else {
+						console.log(`${file} copied successfully to ${destinationFolder}`);
+						// Suresh 04-04-25
+						// send the message to frontend and then update the order details table - Dwg field with 1 for the DWgName = ${file}
+						 // Update TaskNo and NcTaskId for each row in the task group
+						 console.log("New_Order_No:", New_Order_No);
+						console.log("file", file);
+						// const fileName = path.basename(file); // this gets 'part1.dwg'
+						const fileName = path.basename(file).trim(); // Clean file name
+
+
+						console.log("fileName",fileName);
+						
+
+						//  let updateDwgQuery = `UPDATE magodmis.order_details 
+						//  SET Dwg=1
+						//  WHERE Order_No='${New_Order_No}' And DwgName='${fileName}'`;
+   						// 	// console.log("updateDwgQuery",updateDwgQuery);
+						// 	   misQueryMod(updateDwgQuery,(err, results) => {
+
+						// 		if(err){
+						// 			console.log("==",err.message);
+									
+						// 		}
+						// 		console.log("==",results);
+								
+						// 	   });
+   
+						let updateDwgQuery = `UPDATE magodmis.order_details SET Dwg = 1 WHERE Order_No = ? AND DwgName = ?`;
+					
+					misQueryMod(updateDwgQuery, [New_Order_No, fileName], (err, results) => {
+						if (err) {
+							console.error("Error executing update query:", err.message);
+						} else {
+							console.log("Query ran. Affected rows:", results.affectedRows);
+						}
+					});
+					
+
+
+					}
+				});
+			});
+		});
+	} catch (error) {
+		next(error);
+	}
+
+
+})
 
 
 module.exports = fileRouter;

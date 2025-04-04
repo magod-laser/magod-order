@@ -497,6 +497,10 @@ function OrdrTable(props) {
       [key]: size.width,
     }));
   };
+
+
+  console.log("OrdrDetailsData",OrdrDetailsData);
+  
   return (
     <div style={{ overflow: "auto", height: "350px" }}>
       <Table bordered hover className="table-data border">
@@ -620,6 +624,7 @@ function OrdrTable(props) {
                   {OrdrDetailsItem.DwgName}
                 </td>
                 {props.OrderData?.Type === "Profile" ? (
+
                   <td>
                     <Form.Check
                       style={{
@@ -631,7 +636,16 @@ function OrdrTable(props) {
                       }}
                       type="checkbox"
                       id="selected"
-                      defaultChecked
+                      checked={!!OrdrDetailsItem.Dwg} // Convert value to boolean
+                      readOnly // Prevent manual change
+
+
+    //                   type="checkbox"
+    //                   id="selected"
+    //                   checked={OrdrDetailsItem.Dwg ? 1 : 0} // If DwgName exists, check the box
+    // readOnly // Prevent manual change
+    //                   // defaultChecked
+                      
                     />
                   </td>
                 ) : null}
