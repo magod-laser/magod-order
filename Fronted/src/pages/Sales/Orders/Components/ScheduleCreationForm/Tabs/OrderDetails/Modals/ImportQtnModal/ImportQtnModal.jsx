@@ -143,6 +143,9 @@ export default function ImportExcelModal(props) {
         endpoints.postDetailsDataInImportQtn,
         {
           detailsData: arr,
+          QtnNo :selectedQtn?.QtnNo,
+          New_Order_No : props?.OrderData?.Order_No
+
         },
         (detailsDataInImportAtn) => {
           // console.log("detailsDataInImportAtn", detailsDataInImportAtn);
@@ -161,6 +164,11 @@ export default function ImportExcelModal(props) {
     }
   }
 
+
+  console.log("==setSelectedQtn",selectedQtn?.QtnNo
+    );
+  console.log("==props?.OrderData?",props?.OrderData?.Order_No);
+  
   return (
     <>
       <Modal

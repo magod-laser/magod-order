@@ -44,6 +44,7 @@ export default function ImportOldOrderModal(props) {
     }
 
     console.log("selectedOldOrder:", selectedOldOrder);
+    console.log("props.oldOrderDetailsData:", props.oldOrderDetailsData);
 
     // Filtering the old order details
     const newArray = props.oldOrderDetailsData?.filter(
@@ -96,7 +97,8 @@ export default function ImportOldOrderModal(props) {
     // API CALL TO INSERT DATA
     postRequest(
       endpoints.postDetailsDataInImportOldOrder,
-      { detailsData: arr },
+      { detailsData: arr, Old_Order_No:selectedOldOrder.Order_No,
+        New_Order_No:props.OrderData.Order_No  },
       (response) => {
         if (response.result) {
           props.setOrdrDetailsData(arr);
@@ -113,10 +115,21 @@ export default function ImportOldOrderModal(props) {
   function loadOldOrderValidations() {
     if (selectedOldOrder.Order_No) {
       setConfirmModalOpen(true);
+      const checkingdxffilesimportoldorder = postRequest(endpoints.checkdxffilesimportoldorder,{
+        Old_Order_No:selectedOldOrder.Order_No,
+        New_Order_No:props.OrderData.Order_No  })
+        console.log("checkingdxffilesimportoldorder",checkingdxffilesimportoldorder);
     } else {
       toast.warning("Please select the order to import");
     }
   }
+
+  // useEffect(()=>{
+    // const checkingdxffilesimportoldorder = postRequest(endpoints.checkdxffilesimportoldorder,{
+    //   Old_Order_No:selectedOldOrder.Order_No,
+    //   New_Order_No:props.OrderData.Order_No  })
+    //   console.log("checkingdxffilesimportoldorder",checkingdxffilesimportoldorder);
+  // },[selectedOldOrder.Order_No])
 
   return (
     <>
