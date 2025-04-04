@@ -543,6 +543,7 @@ export default function IETable(props) {
                       val.operationError
                     )
                   }
+                  disabled={val.Source !== "Magod"} // Disable if Source is not "Magod"
                 />
               </td>
               <td>
