@@ -372,7 +372,8 @@ function OrdrTable(props) {
 
   const getRowBackgroundColor = (order) => {
     if (order.Qty_Ordered === 0) return "lavender";
-    else if (props.OrderData?.Order_Status === "Recorded") return "lightblue";
+    else if (props.OrderData?.Order_Status === "Recorded" && order.QtyScheduled=== 0 )
+      return "lightblue";
     else if (order.QtyDelivered >= order.Qty_Ordered) return "lightgreen";
     else if (order.QtyDelivered > 0 && order.QtyPacked >= order.Qty_Ordered)
       return "orange";
@@ -433,11 +434,11 @@ function OrdrTable(props) {
   //adjustable table
 
   const columns = [
-    { key: "select", label: "Select", resizable: false },
-    { key: "slNo", label: "Sl No", resizable: false },
+    { key: "select", label: "Select", resizable: true },
+    { key: "slNo", label: "Sl No", resizable: true },
     { key: "DwgName", label: "Drawing/Part Name", resizable: true },
     ...(OrderData?.Type === "Profile"
-      ? [{ key: "dwgExists", label: "Dwg Exists", resizable: false }]
+      ? [{ key: "dwgExists", label: "Dwg Exists", resizable: true }]
       : []),
     { key: "Mtrl_Code", label: "Material", resizable: true },
     { key: "Operation", label: "Operation", resizable: true },
