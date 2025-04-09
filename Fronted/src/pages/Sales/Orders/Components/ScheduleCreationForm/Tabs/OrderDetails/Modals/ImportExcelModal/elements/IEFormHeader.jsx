@@ -43,7 +43,7 @@ export default function IEFormHeader(props) {
         const sheet = workbook.Sheets[sheetName];
         const parsedData = XLSX.utils.sheet_to_json(sheet);
         console.log("parsedData", parsedData);
-        
+
         if (
           parsedData.length > 0 &&
           !(
@@ -202,16 +202,21 @@ export default function IEFormHeader(props) {
 
             // Validate based on Source type
             if (parsedData[0].Source === "Customer") {
-              if (parsedData[0].JW_Cost === 0) {
+              if (parsedData[0].JW_Cost === 0 || parsedData[0].JW_Cost === 0.00 || parsedData[0].JW_Cost === "0.00") {
                 isValid = false;
                 errors.push("JW_Cost should not be 0 for Customer");
+              } else if (parsedData[0].Mtrl_Cost !== 0 || parsedData[0].Mtrl_Cost !== 0.00 || parsedData[0].Mtrl_Cost !== "0.00") {
+                isValid = false;
+                errors.push("Mtrl_Cost should be 0 for Customer");
               }
             } else if (parsedData[0].Source === "Magod") {
-              if (parsedData[0].JW_Cost === 0) {
+              if (parsedData[0].JW_Cost === 0 || parsedData[0].JW_Cost === 0.00 || parsedData[0].JW_Cost === "0.00"
+
+              ) {
                 isValid = false;
                 errors.push("JW_Cost should not be 0 for Magod");
               }
-              if (parsedData[0].Mtrl_Cost === 0) {
+              if (parsedData[0].Mtrl_Cost === 0 || parsedData[0].Mtrl_Cost === 0.00 || parsedData[0].Mtrl_Cost === "0.00") {
                 isValid = false;
                 errors.push("Mtrl_Cost should not be 0 for Magod");
               }
@@ -280,9 +285,10 @@ export default function IEFormHeader(props) {
             toast.error(
               `Template error: Missing fields - ${missingFields.join(", ")}`
             );
+            console.log("Missing Fields:", missingFields);
+
             props.setImportedExcelData([]);
           }
-
         } else {
           toast.warning("Excel file has no data to import");
           props.setImportedExcelData([]);

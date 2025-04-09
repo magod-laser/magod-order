@@ -223,7 +223,7 @@ OrderDetailsRouter.post(`/insertnewsrldata`, async (req, res, next) => {
                     req.body.requestData.imprtDwgData.impDwgFileData[i]
                       .unitPrice
                   ) || 0.0;
-                  const dwg = dwgName ? 1 : 0;
+                const dwg = dwgName ? 1 : 0;
                 // const dwg = req.body.requestData.imprtDwgData.dwg || 0;
                 const tolerance = req.body.requestData.imprtDwgData.tolerance;
                 const thickness = req.body.requestData.imprtDwgData.Thickness;
@@ -736,13 +736,28 @@ OrderDetailsRouter.post(
 );
 
 
-
-
 OrderDetailsRouter.post(
   `/postDeleteDetailsByOrderNo`,
   async (req, res, next) => {
     // console.log("req.body", req.body.Order_No);
     try {
+      // Suresh 08-04-25
+      let filespath = path.join(process.env.FILE_SERVER_PATH, "/WO//", req.body.Order_No, "//DXF//"); //, deletedwgsinfolder[i].DwgName);
+      fsSync.readdir(filespath, (err, files) => {
+        if (err) {
+          return res.status(500).send("Failed to read directory");
+        }
+        files.forEach((file) => {
+          const fpath = path.join(filespath, file);
+          console.log("fpath : ",fpath);
+          fsAsync.unlink(fpath, (err) => {
+            if (err) {
+              console.log(`Error deleting file ${file} : `, err);
+            }
+          })
+        })
+      })
+      // Suresh 
       misQueryMod(
         `DELETE FROM magodmis.order_details WHERE (Order_No = '${req.body.Order_No}')`,
         (err, deleteOrderData) => {
@@ -754,6 +769,7 @@ OrderDetailsRouter.post(
           }
         }
       );
+
     } catch (error) {
       next(error);
     }
@@ -909,7 +925,7 @@ const getMonthName = (monthNumber) => {
   const date = new Date(2020, monthNumber - 1); // months are 0-indexed (0 = January, 1 = February, etc.)
   return date.toLocaleString('default', { month: 'long' }); // returns the full month name
 };
- // For month 01, it will return "January"
+// For month 01, it will return "January"
 // console.log(monthName);
 
 //26-03-2025
@@ -917,25 +933,25 @@ OrderDetailsRouter.post(
   `/postDetailsDataInImportQtn`,
   async (req, res, next) => {
     console.log("Entering into postDetailsDataInImportQtn");
- 
+
     QtnNo = req.body.QtnNo,
-    New_Order_No = req.body.New_Order_No;
+      New_Order_No = req.body.New_Order_No;
 
     let qtnmonth = QtnNo.split('/');
     const monthName = getMonthName(qtnmonth[1]);
-    console.log("monthName ",monthName)
-   // let mth = qtnmonth[1];
+    console.log("monthName ", monthName)
+    // let mth = qtnmonth[1];
     //console.log("month ", mth);
-   // let month = new Date(Date.now()).toLocaleString('en-US', { month: 'long' });
-    let Qtnfolder = QtnNo.replaceAll('/','_');
+    // let month = new Date(Date.now()).toLocaleString('en-US', { month: 'long' });
+    let Qtnfolder = QtnNo.replaceAll('/', '_');
 
-    let srcfilepth = path.join(process.env.FILE_SERVER_PATH,"//QtnDwg//",monthName,Qtnfolder);
-    let dstfilepth = path.join(process.env.FILE_SERVER_PATH,"//Wo//",New_Order_No,'//DXF//');
+    let srcfilepth = path.join(process.env.FILE_SERVER_PATH, "//QtnDwg//", monthName, Qtnfolder);
+    let dstfilepth = path.join(process.env.FILE_SERVER_PATH, "//Wo//", New_Order_No, '//DXF//');
 
-    console.log("QtnNo",QtnNo);
-    console.log("f",Qtnfolder);
-    console.log("New_Order_No",New_Order_No);
-    
+    console.log("QtnNo", QtnNo);
+    console.log("f", Qtnfolder);
+    console.log("New_Order_No", New_Order_No);
+
 
     try {
       let totalNewOrderValue = 0;
@@ -1011,54 +1027,54 @@ OrderDetailsRouter.post(
                 totalNewOrderValue += newRowValue;
                 resolve();
 
-                 //---------
-              const sourceFolder = srcfilepth;
-              const destinationFolder = dstfilepth;
-          
-              fsSync.readdir(sourceFolder, (err, files) => {
-                if (err) {
-                  return console.error('Error reading source folder:', err);
-                }
-          
-                // Filter out .dxf files
-                const dxfFiles = files.filter(file => path.extname(file).toLowerCase() === '.dxf');
-          
-                // Copy each .dxf file to the destination folder
-                dxfFiles.forEach(file => {
-                  const sourceFilePath = path.join(sourceFolder, file);
-                  const destinationFilePath = path.join(destinationFolder, file);
-          
-                  fsSync.copyFile(sourceFilePath, destinationFilePath, err => {
-                    if (err) {
-                      console.error(`Error copying ${file}:`, err);
-                    } else {
-                      console.log(`${file} copied successfully to ${destinationFolder}`);
-                      // Suresh 04-04-25
-                      // send the message to frontend and then update the order details table - Dwg field with 1 for the DWgName = ${file}
-                     
-                      console.log("New_Order_No:", New_Order_No);
-                      console.log("file", file);
-          
-                      // const fileName = path.basename(file); 
-                      const fileName = path.basename(file).trim(); 
-                      console.log("fileName",fileName);
-                                  
-                   let updateDwgQuery = `UPDATE magodmis.order_details SET Dwg = 1 WHERE Order_No = ? AND DwgName = ?`;
-                    
-                    misQueryMod(updateDwgQuery, [New_Order_No, fileName], (err, results) => {
+                //---------
+                const sourceFolder = srcfilepth;
+                const destinationFolder = dstfilepth;
+
+                fsSync.readdir(sourceFolder, (err, files) => {
+                  if (err) {
+                    return console.error('Error reading source folder:', err);
+                  }
+
+                  // Filter out .dxf files
+                  const dxfFiles = files.filter(file => path.extname(file).toLowerCase() === '.dxf');
+
+                  // Copy each .dxf file to the destination folder
+                  dxfFiles.forEach(file => {
+                    const sourceFilePath = path.join(sourceFolder, file);
+                    const destinationFilePath = path.join(destinationFolder, file);
+
+                    fsSync.copyFile(sourceFilePath, destinationFilePath, err => {
                       if (err) {
-                        console.error("Error executing update query:", err.message);
+                        console.error(`Error copying ${file}:`, err);
                       } else {
-                        console.log("Query ran. Affected rows:", results.affectedRows);
+                        console.log(`${file} copied successfully to ${destinationFolder}`);
+                        // Suresh 04-04-25
+                        // send the message to frontend and then update the order details table - Dwg field with 1 for the DWgName = ${file}
+
+                        console.log("New_Order_No:", New_Order_No);
+                        console.log("file", file);
+
+                        // const fileName = path.basename(file); 
+                        const fileName = path.basename(file).trim();
+                        console.log("fileName", fileName);
+
+                        let updateDwgQuery = `UPDATE magodmis.order_details SET Dwg = 1 WHERE Order_No = ? AND DwgName = ?`;
+
+                        misQueryMod(updateDwgQuery, [New_Order_No, fileName], (err, results) => {
+                          if (err) {
+                            console.error("Error executing update query:", err.message);
+                          } else {
+                            console.log("Query ran. Affected rows:", results.affectedRows);
+                          }
+                        });
+
+
+
                       }
                     });
-                    
-          
-          
-                    }
                   });
                 });
-              });
               }
             });
           });
@@ -1687,10 +1703,10 @@ OrderDetailsRouter.post(`/checkdxffilesimportoldorder`, async (req, res, next) =
 
   let Old_Order_No = req.body.Old_Order_No;
   let New_Order_No = req.body.New_Order_No
-  let srcfilepth = path.join(process.env.FILE_SERVER_PATH,"//Wo//",Old_Order_No,'//DXF//');
-  let dstfilepth = path.join(process.env.FILE_SERVER_PATH,"//Wo//",New_Order_No,'//DXF//');
-  console.log("srcfilepth: ",srcfilepth)
-  console.log("dstfilepth: ",dstfilepth)
+  let srcfilepth = path.join(process.env.FILE_SERVER_PATH, "//Wo//", Old_Order_No, '//DXF//');
+  let dstfilepth = path.join(process.env.FILE_SERVER_PATH, "//Wo//", New_Order_No, '//DXF//');
+  console.log("srcfilepth: ", srcfilepth)
+  console.log("dstfilepth: ", dstfilepth)
   try {
 
     const sourceFolder = srcfilepth;
@@ -1716,41 +1732,41 @@ OrderDetailsRouter.post(`/checkdxffilesimportoldorder`, async (req, res, next) =
             console.log(`${file} copied successfully to ${destinationFolder}`);
             // Suresh 04-04-25
             // send the message to frontend and then update the order details table - Dwg field with 1 for the DWgName = ${file}
-             // Update TaskNo and NcTaskId for each row in the task group
-             console.log("New_Order_No:", New_Order_No);
+            // Update TaskNo and NcTaskId for each row in the task group
+            console.log("New_Order_No:", New_Order_No);
             console.log("file", file);
 
             // const fileName = path.basename(file); // this gets 'part1.dwg'
             const fileName = path.basename(file).trim(); // Clean file name
 
 
-            console.log("fileName",fileName);
-            
+            console.log("fileName", fileName);
+
 
             //  let updateDwgQuery = `UPDATE magodmis.order_details 
             //  SET Dwg=1
             //  WHERE Order_No='${New_Order_No}' And DwgName='${fileName}'`;
-              // 	// console.log("updateDwgQuery",updateDwgQuery);
+            // 	// console.log("updateDwgQuery",updateDwgQuery);
             // 	   misQueryMod(updateDwgQuery,(err, results) => {
 
             // 		if(err){
             // 			console.log("==",err.message);
-                  
+
             // 		}
             // 		console.log("==",results);
-                
+
             // 	   });
-   
+
             let updateDwgQuery = `UPDATE magodmis.order_details SET Dwg = 1 WHERE Order_No = ? AND DwgName = ?`;
-          
-          misQueryMod(updateDwgQuery, [New_Order_No, fileName], (err, results) => {
-            if (err) {
-              console.error("Error executing update query:", err.message);
-            } else {
-              console.log("Query ran. Affected rows:", results.affectedRows);
-            }
-          });
-          
+
+            misQueryMod(updateDwgQuery, [New_Order_No, fileName], (err, results) => {
+              if (err) {
+                console.error("Error executing update query:", err.message);
+              } else {
+                console.log("Query ran. Affected rows:", results.affectedRows);
+              }
+            });
+
 
 
           }
@@ -1773,8 +1789,8 @@ OrderDetailsRouter.post(
 
     let Old_Order_No = req.body.Old_Order_No;
     let New_Order_No = req.body.New_Order_No;
-    let srcfilepth = path.join(process.env.FILE_SERVER_PATH,"//Wo//",Old_Order_No,'//DXF//');
-    let dstfilepth = path.join(process.env.FILE_SERVER_PATH,"//Wo//",New_Order_No,'//DXF//');
+    let srcfilepth = path.join(process.env.FILE_SERVER_PATH, "//Wo//", Old_Order_No, '//DXF//');
+    let dstfilepth = path.join(process.env.FILE_SERVER_PATH, "//Wo//", New_Order_No, '//DXF//');
 
     try {
       let totalNewOrderValue = 0;
@@ -1831,20 +1847,20 @@ OrderDetailsRouter.post(
               //---------
               const sourceFolder = srcfilepth;
               const destinationFolder = dstfilepth;
-          
+
               fsSync.readdir(sourceFolder, (err, files) => {
                 if (err) {
                   return console.error('Error reading source folder:', err);
                 }
-          
+
                 // Filter out .dxf files
                 const dxfFiles = files.filter(file => path.extname(file).toLowerCase() === '.dxf');
-          
+
                 // Copy each .dxf file to the destination folder
                 dxfFiles.forEach(file => {
                   const sourceFilePath = path.join(sourceFolder, file);
                   const destinationFilePath = path.join(destinationFolder, file);
-          
+
                   fsSync.copyFile(sourceFilePath, destinationFilePath, err => {
                     if (err) {
                       console.error(`Error copying ${file}:`, err);
@@ -1852,26 +1868,26 @@ OrderDetailsRouter.post(
                       console.log(`${file} copied successfully to ${destinationFolder}`);
                       // Suresh 04-04-25
                       // send the message to frontend and then update the order details table - Dwg field with 1 for the DWgName = ${file}
-                     
+
                       console.log("New_Order_No:", New_Order_No);
                       console.log("file", file);
-          
+
                       // const fileName = path.basename(file); 
-                      const fileName = path.basename(file).trim(); 
-                      console.log("fileName",fileName);
-                                  
-                   let updateDwgQuery = `UPDATE magodmis.order_details SET Dwg = 1 WHERE Order_No = ? AND DwgName = ?`;
-                    
-                    misQueryMod(updateDwgQuery, [New_Order_No, fileName], (err, results) => {
-                      if (err) {
-                        console.error("Error executing update query:", err.message);
-                      } else {
-                        console.log("Query ran. Affected rows:", results.affectedRows);
-                      }
-                    });
-                    
-          
-          
+                      const fileName = path.basename(file).trim();
+                      console.log("fileName", fileName);
+
+                      let updateDwgQuery = `UPDATE magodmis.order_details SET Dwg = 1 WHERE Order_No = ? AND DwgName = ?`;
+
+                      misQueryMod(updateDwgQuery, [New_Order_No, fileName], (err, results) => {
+                        if (err) {
+                          console.error("Error executing update query:", err.message);
+                        } else {
+                          console.log("Query ran. Affected rows:", results.affectedRows);
+                        }
+                      });
+
+
+
                     }
                   });
                 });
@@ -2613,13 +2629,13 @@ OrderDetailsRouter.post(`/postDeleteDetailsBySrl`, async (req, res, next) => {
     for (const item of selectedItems) {
       console.log("Delete item ", item);
 
-      const filePath = path.join(process.env.FILE_SERVER_PATH,'\\Wo\\',item.Order_No,'\\dxf\\',item.DwgName);
+      const filePath = path.join(process.env.FILE_SERVER_PATH, '\\Wo\\', item.Order_No, '\\dxf\\', item.DwgName);
       //const filePath = path.join(__dirname, 'folder', req.query.filename);
 
       fs.unlink(filePath, (err) => {
         if (err) {
           console.error(err);
-       //   return res.status(500).send('File deletion failed');
+          //   return res.status(500).send('File deletion failed');
         }
 
       });

@@ -93,7 +93,7 @@ export default function ImportExcelModal(props) {
           // DwgName: element.Name,
           DwgName: QtnFormatt === "Service" ? element.Name : element.Dwg_Name,
           // Mtrl_Code: element.Material,
-          Mtrl_Code: element.mtrl_code,
+          Mtrl_Code:  QtnFormatt === "Service" ? element.Material : element.mtrl_code,
           MProcess: "Process 1",
           Mtrl_Source: selectedQtn.QtnType === "Sales" ? "Magod" : "Customer",
           // Qty_Ordered: element.Quantity,
