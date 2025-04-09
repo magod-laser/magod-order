@@ -1851,24 +1851,24 @@ console.log("strmtrlcode===4",imprtDwgObj.strmtrlcode);
                       >
                         <tr>
                           <td colspan="2">
-                            <label>
-                              Drawing : {LastSlctedRow.DwgName ?? "No Drawing"}
+                            <label><h6>
+                              Drawing : {LastSlctedRow.DwgName ?? "No Drawing"}</h6>
                             </label>
                           </td>
                           <td colspan="2">
-                            <label>Process: {LastSlctedRow.Operation}</label>
+                            <label><h6>Process: {LastSlctedRow.Operation}</h6></label>
                           </td>
                         </tr>
                         <tr>
                           <td style={{ width: "25%" }}>
-                            <label>Material : {LastSlctedRow.Mtrl_Code}</label>
+                            <label><h6>Mtrl Grade : {LastSlctedRow.Mtrl_Code}</h6></label>
                           </td>
                           <td style={{ width: "25%" }}>
-                            <label>Thickness : {LastSlctedRow.Thickness}</label>
+                            <label><h6>Mtrl Source : {LastSlctedRow.Mtrl_Source}</h6></label>
                           </td>
                           <td style={{ width: "25%" }}>
-                            <label>
-                              Quantity : {LastSlctedRow.Qty_Ordered}
+                            <label><h6>
+                              Quantity : {LastSlctedRow.Qty_Ordered}</h6>
                             </label>
                           </td>
                           <td style={{ width: "25%" }}>

@@ -202,7 +202,7 @@ export default function IEFormHeader(props) {
 
             // Validate based on Source type
             if (parsedData[0].Source === "Customer") {
-              if (parsedData[0].JW_Cost === 0) {
+              if (parsedData[0].JW_Cost === 0 || parsedData[0].JW_Cost === 0.00 || parsedData[0].JW_Cost === "0.00") {
                 isValid = false;
                 errors.push("JW_Cost should not be 0 for Customer");
               } 
@@ -211,11 +211,13 @@ export default function IEFormHeader(props) {
               //   errors.push("Mtrl_Cost should be 0 for Customer");
               // }
             } else if (parsedData[0].Source === "Magod") {
-              if (parsedData[0].JW_Cost === 0) {
+              if (parsedData[0].JW_Cost === 0 || parsedData[0].JW_Cost === 0.00 || parsedData[0].JW_Cost === "0.00"
+
+              ) {
                 isValid = false;
                 errors.push("JW_Cost should not be 0 for Magod");
               }
-              if (parsedData[0].Mtrl_Cost === 0) {
+              if (parsedData[0].Mtrl_Cost === 0 || parsedData[0].Mtrl_Cost === 0.00 || parsedData[0].Mtrl_Cost === "0.00") {
                 isValid = false;
                 errors.push("Mtrl_Cost should not be 0 for Magod");
               }

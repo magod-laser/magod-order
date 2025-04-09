@@ -519,16 +519,33 @@ export default function IETable(props) {
                   value={val.JW_Cost}
                   name="JW_Cost"
                   style={{ background: "transparent", border: "none" }}
-                  onChange={(e) =>
+                  // onChange={(e) =>
+                  //   handleChange(
+                  //     key,
+                  //     e.target.name,
+                  //     e.target.value,
+                  //     val.materialError,
+                  //     val.sourceError,
+                  //     val.operationError
+                  //   )
+                  // }
+                  onChange={(e) => {
+                    const newValue = parseFloat(e.target.value);
+
+                    if (newValue < 1) {
+                      toast.error("JW Cost must be greater than 0");
+                      return;
+                    }
+
                     handleChange(
                       key,
                       e.target.name,
-                      e.target.value,
+                      newValue,
                       val.materialError,
                       val.sourceError,
                       val.operationError
-                    )
-                  }
+                    );
+                  }}
                 />
               </td>
               <td>

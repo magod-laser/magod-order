@@ -559,7 +559,7 @@ ordersRouter.post("/checkdwgfilestatus", async (req, res, next)=> {
     misQueryMod(`SELECT * FROM magodmis.orderscheduledetails where DwgName='${dwgname}' AND order_No='${schid}'`, (err, data) => {
         if (err) console.log(err);
         console.log(data);
-        if (data[0].File_Locked > 0) {
+        if (data[0]?.File_Locked > 0) {
             res.send({ status: "Locked" });
         } else {
             res.send({ status: "Unlocked" });

@@ -537,6 +537,10 @@ function ImportDwgModal(props) {
     dblPierceRate: ''
   });
 
+  const [strprocess, setProcess] = useState("");
+  const [mtrsrc, setMtrSrc] = useState("");
+  const [torler, setToler] = useState("");
+
   // Update handlers to track values
   const handleMtrlChange = (selected) => {
 	console.log("selected",selected);
@@ -552,16 +556,20 @@ function ImportDwgModal(props) {
   };
 
   const handleProcChange = (e) => {
+    console.log(e.target.value);
+    setProcess(e.target.value);
     setFormValues(prev => ({ ...prev, stroperation: e.target.value }));
     selectProc(e);
   };
 
   const handleSourceChange = (e) => {
+    setMtrSrc(e.target.value);
     setFormValues(prev => ({ ...prev, strsource: e.target.value }));
     selectMtrlSrc(e);
   };
 
   const handleToleranceChange = (e) => {
+    setToler(e.target.value);
     setFormValues(prev => ({ ...prev, strtolerance: e.target.value }));
     selectTolerance(e);
   };
