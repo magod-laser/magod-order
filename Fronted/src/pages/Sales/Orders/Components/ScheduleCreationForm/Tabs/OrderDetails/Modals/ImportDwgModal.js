@@ -585,17 +585,19 @@ function ImportDwgModal(props) {
   };
 
   const handleQuantityChange = (e) => {
-	
-    // setFormValues(prev => ({ ...prev, quantity: e.target.value }));
-    // setQuantity(e.target.value);
-	const value = e.target.value;
-
-	// Allow only positive whole numbers
-	if (/^\d*$/.test(value)) {
-	  setFormValues((prev) => ({ ...prev, quantity: value }));
-	  setQuantity(value);
-	}
+    const value = e.target.value.trim();
+  
+    // Check if the input is a positive integer (no decimals, no negatives, not zero)
+    if (/^\d+$/.test(value) && parseInt(value, 10) > 0) {
+      setFormValues((prev) => ({ ...prev, quantity: value }));
+      setQuantity(value);
+    } else {
+      // Optionally clear the value or keep previous valid value
+      setFormValues((prev) => ({ ...prev, quantity: "" }));
+      setQuantity("");
+    }
   };
+  
 
   const handleCuttingRateChange = (e) => {
     setFormValues(prev => ({ ...prev, dblCuttingRate: e.target.value }));
