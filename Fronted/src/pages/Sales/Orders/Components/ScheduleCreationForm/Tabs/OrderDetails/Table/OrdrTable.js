@@ -619,7 +619,8 @@ function OrdrTable(props) {
                     onClick={(e) => e.stopPropagation()} // Prevent triggering row click
                   />
                 </td>
-                <td>{OrdrDetailsItem.Order_Srl}</td>
+                <td>{i + 1}</td>
+                 {/* <td>{OrdrDetailsItem.Order_Srl}</td> */}
                 {/* <td>
                   <Form.Check type="checkbox" id={`select-checkbox-${i}`} />
                 </td> */}

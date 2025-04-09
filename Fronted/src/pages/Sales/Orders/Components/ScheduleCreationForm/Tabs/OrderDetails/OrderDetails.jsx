@@ -714,40 +714,186 @@ export default function OrderDetails(props) {
   //   setisLoading(false);
   // }
 
-  function deleteRowsBySrl() {
-    // setRefresh(prev => !prev); // Toggle refresh
 
+// commented after refactoring the function on 4 april 2025 : Bodheesh
+
+  // function deleteRowsBySrl() {
+  //   // setRefresh(prev => !prev); // Toggle refresh
+
+  //   postRequest(
+  //     endpoints.postDeleteDetailsBySrl,
+  //     {
+  //       Order_No: props.OrderData.Order_No,
+  //       selectedSrl: selectedSrl,
+  //       selectedItems: selectedItems,
+  //     },
+  //     (deleteData) => {
+  //       // console.log("deleteData", deleteData);
+
+  //       // if (deleteData.flag > 0) {
+  //       if (deleteData.success === true) {
+  //         // toast.success("Serial Deleted successfully");
+  //         toast.success("Serial Deleted successfully");
+          
+  //         // After successful deletion, re-index the serial numbers in the frontend
+  //         postRequest(
+  //           endpoints.getOrdDetailsData,
+  //           { Order_No: props.OrderData.Order_No },
+  //           (updatedData) => {
+  //             if (updatedData && updatedData.length > 0) {
+  //               console.log("updated data found:", updatedData)
+  //               // Sort the data by existing Order_Srl to maintain relative order
+  //               const sortedData = [...updatedData].sort((a, b) => a.Order_Srl - b.Order_Srl);
+  //               console.log("sorted data logged in::", sortedData)
+                
+  //               // Re-index the serial numbers starting from 1
+  //               const reIndexedData = sortedData.map((item, idx) => ({
+  //                 ...item,
+  //                 Order_Srl: idx + 1
+  //               }));
+
+  //               console.log("reIndexedData", reIndexedData)
+                
+  //               // Update the state with the re-indexed data
+  //               setOrdrDetailsData(reIndexedData);
+                
+  //               // Update the database with the re-indexed serial numbers
+  //               const updatePromises = reIndexedData.map((item) => {
+  //                 return new Promise((resolve, reject) => {
+  //                   postRequest(
+  //                     endpoints.ordertablevaluesupdate,
+  //                     {
+  //                       Order_No: props.OrderData.Order_No,
+  //                       Order_Srl: item.Order_Srl,
+  //                       OrderDetailID: item.OrderDetailID,
+  //                       field: "Order_Srl",
+  //                       value: item.Order_Srl
+  //                     },
+  //                     (updateResult) => {
+  //                       resolve(updateResult);
+  //                     }
+  //                   );
+  //                 });
+  //               });
+                
+  //               // After all updates are done
+  //               Promise.all(updatePromises)
+  //                 .then(() => {
+  //                   console.log("All serial numbers updated in database");
+  //                   // Clear selections
+  //                   clearSelections();
+  //                   setLastSlctedRow(null);
+  //                   setordrDetailsChange([]);
+  //                 })
+  //                 .catch((error) => {
+  //                   console.error("Error updating serial numbers in database:", error);
+  //                   // Even if database update fails, keep the UI updated
+  //                   clearSelections();
+  //                   setLastSlctedRow(null);
+  //                   setordrDetailsChange([]);
+  //                 });
+  //             } else {
+  //               // If no data is returned, just refresh the data without page reload
+  //               fetchData();
+  //             }
+  //           }
+  //         );
+  //       } else {
+  //         toast.warning("Not Deleted, Please Check Once");
+  //       }
+  //     }
+  //   );
+  // }
+
+  // Refactored deleteRowsBySrl function to improve readability and maintainability
+  // Bug fixed No:159, 163 
+  function deleteRowsBySrl() {
+    // Avoid unnecessary state updates
+    const orderNo = props.OrderData.Order_No;
+    
+    // Step 1: Request to delete the serial numbers
     postRequest(
       endpoints.postDeleteDetailsBySrl,
       {
-        Order_No: props.OrderData.Order_No,
+        Order_No: orderNo,
         selectedSrl: selectedSrl,
         selectedItems: selectedItems,
       },
       (deleteData) => {
-        // console.log("deleteData", deleteData);
-
-        // if (deleteData.flag > 0) {
+        // Step 2: Handle success and failure scenarios for the delete request
         if (deleteData.success === true) {
-          // toast.success("Serial Deleted successfully");
-         alert("Serial Deleted successfully");
-          fetchData();
-          window.location.reload();
-
-          // Clear selections
-          clearSelections();
-          setLastSlctedRow(null);
-          setordrDetailsChange([]);
-
-          // console.log("Deleted successfully");
-          // window.location.reload();
-          // setRefreshKey((prev) => prev + 1);
+          toast.success("Serial Deleted successfully");
+  
+          // Step 3: Fetch updated data and update UI
+          postRequest(
+            endpoints.getOrdDetailsData,
+            { Order_No: orderNo },
+            (updatedData) => {
+              if (updatedData && updatedData.length > 0) {
+                console.log("Updated data found:", updatedData);
+  
+                // Step 4: Sort the data based on Order_Srl to maintain relative order
+                const sortedData = updatedData.sort((a, b) => a.Order_Srl - b.Order_Srl);
+                const reIndexedData = sortedData.map((item, idx) => ({
+                  ...item,
+                  Order_Srl: idx + 1
+                }));
+  
+                console.log("Re-indexed data:", reIndexedData);
+  
+                // Step 5: Update the state and database in parallel
+                // Update state with new order details
+                setOrdrDetailsData(reIndexedData);
+  
+                // Step 6: Batch update the serial numbers in the database
+                updateSerialNumbersInDatabase(reIndexedData, orderNo);
+              } else {
+                // Handle the edge case: If no updated data is found, refresh the data
+                fetchData();
+              }
+            }
+          );
         } else {
           toast.warning("Not Deleted, Please Check Once");
         }
       }
     );
   }
+  
+  // Batch update serial numbers in the database
+  function updateSerialNumbersInDatabase(reIndexedData, orderNo) {
+    const updatePromises = reIndexedData.map((item) =>
+      postRequest(
+        endpoints.ordertablevaluesupdate,
+        {
+          Order_No: orderNo,
+          Order_Srl: item.Order_Srl,
+          OrderDetailID: item.OrderDetailID,
+          field: "Order_Srl",
+          value: item.Order_Srl,
+        },
+        (updateResult) => updateResult
+      )
+    );
+  
+    // Handle all updates
+    Promise.all(updatePromises)
+      .then(() => {
+        console.log("All serial numbers updated in the database");
+        // Clear selections and reset the state
+        clearSelections();
+        setLastSlctedRow(null);
+        setordrDetailsChange([]);
+      })
+      .catch((error) => {
+        console.error("Error updating serial numbers:", error);
+        // In case of failure, still update UI with the latest data
+        clearSelections();
+        setLastSlctedRow(null);
+        setordrDetailsChange([]);
+      });
+  }
+  
 
   useEffect(() => {
     deleteRowsBySrl();
