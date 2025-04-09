@@ -557,7 +557,7 @@ ScheduleListRouter.post(`/taskOnclick`, async (req, res, next) => {
 // });
 
 ScheduleListRouter.post(`/onClickCancel`, async (req, res, next) => {
-  // console.log("Received request for onClickCancel");
+  console.log("Received request for onClickCancel");
   // console.log("Request Body:", JSON.stringify(req.body, null, 2));
 
   try {
@@ -617,39 +617,68 @@ ScheduleListRouter.post(`/onClickCancel`, async (req, res, next) => {
         } else {
           console.log("Proceeding with cancellation...");
 
-          const updateQuery1 = `UPDATE magodmis.orderscheduledetails o SET o.QtyScheduled=0 WHERE o.SchDetailsID=${resultQuery.SchDetailsID};`;
-          const updateQuery2 = `UPDATE order_details o SET o.QtyScheduled=o.QtyScheduled-${resultQuery.QtyScheduled} WHERE o.OrderDetailID=${resultQuery.OrderDetailID};`;
-          const updateQuery3 = `UPDATE orderschedule SET Schedule_Status='Cancelled' WHERE ScheduleId=${req.body.newState[0].ScheduleId};`;
-          const deleteQuery = `DELETE n, t FROM magodmis.nc_task_list AS n JOIN magodmis.task_partslist AS t ON t.NcTaskId = n.NcTaskId 
-                               WHERE n.ScheduleID = '${req.body.newState[0].ScheduleId}';`;
+          // const updateQuery1 = `UPDATE magodmis.orderscheduledetails o SET o.QtyScheduled=0 WHERE o.SchDetailsID=${resultQuery.SchDetailsID};`;
+          // const updateQuery2 = `UPDATE order_details o SET o.QtyScheduled=o.QtyScheduled-${resultQuery.QtyScheduled} WHERE o.OrderDetailID=${resultQuery.OrderDetailID};`;
+          // const updateQuery3 = `UPDATE orderschedule SET Schedule_Status='Cancelled' WHERE ScheduleId=${req.body.newState[0].ScheduleId};`;
+          // const deleteQuery = `DELETE n, t FROM magodmis.nc_task_list AS n JOIN magodmis.task_partslist AS t ON t.NcTaskId = n.NcTaskId 
+          //                      WHERE n.ScheduleID = '${req.body.newState[0].ScheduleId}';`;
 
-          misQueryMod(updateQuery1, (err, result1) => {
-            if (err)
-              return res.status(500).json({ error: "Internal Server Error" });
 
-            misQueryMod(updateQuery2, (err, result2) => {
-              if (err)
-                return res.status(500).json({ error: "Internal Server Error" });
+          // veeranna 08042025
+          const updateQueries = [];
 
-              misQueryMod(updateQuery3, (err, result3) => {
-                if (err)
-                  return res
-                    .status(500)
-                    .json({ error: "Internal Server Error" });
+req.body.newState.forEach((item) => {
+  const updateQuery1 = `UPDATE magodmis.orderscheduledetails o SET o.QtyScheduled=0 WHERE o.SchDetailsID=${item.SchDetailsID};`;
+  const updateQuery2 = `UPDATE order_details o SET o.QtyScheduled=o.QtyScheduled-${item.QtyScheduled} WHERE o.OrderDetailID=${item.OrderDetailID};`;
+  const updateQuery3 = `UPDATE orderschedule SET Schedule_Status='Cancelled' WHERE ScheduleId=${item.ScheduleId};`;
+  const deleteQuery = `DELETE n, t FROM magodmis.nc_task_list AS n 
+                       JOIN magodmis.task_partslist AS t ON t.NcTaskId = n.NcTaskId 
+                       WHERE n.ScheduleID = '${item.ScheduleId}';`;
 
-                misQueryMod(deleteQuery, (err, result4) => {
-                  if (err)
-                    return res
-                      .status(500)
-                      .json({ error: "Internal Server Error" });
+  updateQueries.push(updateQuery1, updateQuery2, updateQuery3, deleteQuery);
+});
 
-                  return res
+// Now you can execute them, e.g., with a single DB query if supported:
+const finalQuery = updateQueries.join('\n');
+
+misQueryMod(finalQuery, (err, results) => {
+  if (err) {
+    console.error('Error executing queries:', err);
+    return res.status(500).send('Update failed');
+  }
+  // res.send('All updates applied successfully');
+   return res
                     .status(200)
                     .json({ message: "Schedules cancelled successfully" });
-                });
-              });
-            });
-          });
+});
+
+          // misQueryMod(updateQuery1, (err, result1) => {
+          //   if (err)
+          //     return res.status(500).json({ error: "Internal Server Error" });
+
+          //   misQueryMod(updateQuery2, (err, result2) => {
+          //     if (err)
+          //       return res.status(500).json({ error: "Internal Server Error" });
+
+          //     misQueryMod(updateQuery3, (err, result3) => {
+          //       if (err)
+          //         return res
+          //           .status(500)
+          //           .json({ error: "Internal Server Error" });
+
+          //       misQueryMod(deleteQuery, (err, result4) => {
+          //         if (err)
+          //           return res
+          //             .status(500)
+          //             .json({ error: "Internal Server Error" });
+
+          //         return res
+          //           .status(200)
+          //           .json({ message: "Schedules cancelled successfully" });
+          //       });
+          //     });
+          //   });
+          // });
         }
       }
     });

@@ -132,9 +132,8 @@ function ServiceOpenSchedule() {
   const [PNAndInvRegisterData, setPNAndInvRegisterData] = useState([]);
   const [PNAndInvDetailsData, setPNAndInvDetailsData] = useState([]);
 
-
   console.log("DwgNameList", DwgNameList);
-  
+
   useEffect(() => {
     if (DwgNameList.length === 0) return; // Ensure DwgNameList is not empty
     postRequest(
@@ -159,31 +158,29 @@ function ServiceOpenSchedule() {
     );
   }, [DwgNameList[0]]);
 
+  useEffect(() => {
+    if (DwgNameList.length === 0) return; // Ensure DwgNameList is not empty
+    postRequest(
+      endpoints.getScheduleListgetFormDetails,
+      {
+        Cust_Code: DwgNameList[0]?.Cust_Code,
+        ScheduleId: scheduleId,
+      },
+      (response) => {
+        console.log("formdata In Api-2:", response);
 
-    useEffect(() => {
-      if (DwgNameList.length === 0) return; // Ensure DwgNameList is not empty
-      postRequest(
-        endpoints.getScheduleListgetFormDetails,
-        {
-          Cust_Code: DwgNameList[0]?.Cust_Code,
-          ScheduleId: scheduleId,
-        },
-        (response) => {
-          console.log("formdata In Api-2:", response);
-
-          setFormdata(response);
-          postRequest(
-            endpoints.getAllPNAndInvRegisterbyOrderNo,
-            { Order_No: response[0]?.Order_No },
-            (PNAndInvData) => {
-              setPNAndInvRegisterData(PNAndInvData.registerData);
-              setPNAndInvDetailsData(PNAndInvData.detailsData);
-            }
-          );
-        }
-      );
-    }, []);
-
+        setFormdata(response);
+        postRequest(
+          endpoints.getAllPNAndInvRegisterbyOrderNo,
+          { Order_No: response[0]?.Order_No },
+          (PNAndInvData) => {
+            setPNAndInvRegisterData(PNAndInvData.registerData);
+            setPNAndInvDetailsData(PNAndInvData.detailsData);
+          }
+        );
+      }
+    );
+  }, []);
 
   //get Sales Contact
   const [ProgramEngineer, setProgramEngineer] = useState([]);
@@ -270,7 +267,7 @@ function ServiceOpenSchedule() {
         // toast.success(response.message, {
         //   position: toast.POSITION.TOP_CENTER,
         // });
-        alert(response.message)
+        alert(response.message);
       } else
         toast.warning(response.message, {
           position: toast.POSITION.TOP_CENTER,
@@ -341,7 +338,7 @@ function ServiceOpenSchedule() {
           // toast.success("Saved", {
           //   position: toast.POSITION.TOP_CENTER,
           // });
-          alert("Saved")
+          alert("Saved");
           postRequest(
             endpoints.getScheduleListgetFormDetails,
             {
@@ -369,7 +366,7 @@ function ServiceOpenSchedule() {
           // toast.success("Success", {
           //   position: toast.POSITION.TOP_CENTER,
           // });
-          alert("Success")
+          alert("Success");
           postRequest(
             endpoints.getScheduleListgetFormDetails,
             {
@@ -398,7 +395,7 @@ function ServiceOpenSchedule() {
           // toast.success("Suspended", {
           //   position: toast.POSITION.TOP_CENTER,
           // });
-          alert("Suspended")
+          alert("Suspended");
           postRequest(
             endpoints.getScheduleListgetFormDetails,
             {
@@ -458,7 +455,7 @@ function ServiceOpenSchedule() {
         // toast.success("Schedules cancelled successfully", {
         //   position: toast.POSITION.TOP_CENTER,
         // });
-        alert("Schedules cancelled successfully")
+        alert("Schedules cancelled successfully");
 
         // Fetch updated schedule details
         const formDataResponse = await postRequest(
@@ -505,12 +502,63 @@ function ServiceOpenSchedule() {
     // // if( newState[0].QtyToSchedule < newState[0].QtyScheduled){
     let hasInvalidQty = false;
     let hasZeroQty = false;
+    let hasZeroScheduled = false;
     let newState1;
+
+    //  const rowsWithZero = newState.filter(
+    //    (item) => Number(item.QtyScheduled) === 0
+    //  );
+
+    //  if (rowsWithZero.length > 0) {
+    //    if (
+    //      window.confirm(
+    //        "Some rows have Qty Scheduled = 0. Do you want to delete them?"
+    //      )
+    //    ) {
+    //      const filteredState = newState.filter(
+    //        (item) => Number(item.QtyScheduled) !== 0
+    //      );
+    //      setNewState(filteredState);
+    //      setModalMessage("Rows with Qty Scheduled = 0 deleted");
+    //      setSmShow(true);
+    //    } else {
+    //      setModalMessage("Some items are not scheduled due to Qty = 0");
+    //      setSmShow(true);
+    //    }
+    //    return
+    //  }
+
+    const rowsWithZero = newState.filter(
+      (item) => Number(item.QtyScheduled) === 0
+    );
+    const rowsToSchedule = newState.filter(
+      (item) => Number(item.QtyScheduled) !== 0
+    );
+
+    if (rowsWithZero.length > 0) {
+      if (
+        window.confirm(
+          "Some rows have Qty Scheduled = 0. Do you want to delete them?"
+        )
+      ) {
+        setNewState(rowsToSchedule);
+        setModalMessage("Rows with Qty Scheduled = 0 deleted");
+        setSmShow(true);
+      } else {
+        setModalMessage("Some items are not scheduled due to Qty = 0");
+        setSmShow(true);
+      }
+      return;
+    }
 
     newState.forEach((row) => {
       if (row.QtyToSchedule === 0) {
         hasZeroQty = true;
       }
+      if (row.QtyScheduled === 0) {
+        hasZeroScheduled = true;
+      }
+
       if (row.QtyScheduled > row.QtyToSchedule) {
         hasInvalidQty = true;
       }
@@ -521,17 +569,18 @@ function ServiceOpenSchedule() {
     newState.forEach((row) => {
       if (row.QtyScheduled === "0" || row.QtyScheduled === 0) {
         hasQtyZeroQty = true;
+        // hasZeroQty = true;
       }
     });
 
-    if (hasQtyZeroQty) {
-      setModalMessage(
-        "Check Qty to Schedule. Make sure Qty to Schedule is correct"
-      );
-      setSmShow(true);
-      // alert("Check Qty to Schedule. Make sure Qty to Schedule is correct");
-      return;
-    }
+    // if (hasQtyZeroQty) {
+    //   setModalMessage(
+    //     "Check Qty to Schedule. Make sure Qty to Schedule is correct"
+    //   );
+    //   setSmShow(true);
+    //   // alert("Check Qty to Schedule. Make sure Qty to Schedule is correct");
+    //   return;
+    // }
 
     // Show alert if any row has an invalid quantity
 
@@ -554,6 +603,27 @@ function ServiceOpenSchedule() {
         // alert("Not Scheduled");
         setModalMessage("Not Scheduled");
         setSmShow(true);
+      }
+    }
+
+    //----
+    if (hasZeroScheduled) {
+      if (
+        window.confirm(
+          "Some rows have Qty Scheduled as 0. Do you want to delete them?"
+        )
+      ) {
+        const newState2 = newState.filter((row) => row.QtyScheduled !== 0);
+        setNewState(newState2);
+        console.log("==newState", newState2);
+
+        setModalMessage("Rows with Qty Scheduled = 0 deleted");
+        setSmShow(true);
+        return;
+      } else {
+        setModalMessage("Not Scheduled");
+        setSmShow(true);
+        return;
       }
     }
     if (hasInvalidQty) {
@@ -595,7 +665,7 @@ function ServiceOpenSchedule() {
           // toast.success(response.message, {
           //   position: toast.POSITION.TOP_CENTER,
           // });
-          alert(response.message)
+          alert(response.message);
           // Introducing a delay of 1000 milliseconds (1 second)
           setTimeout(() => {
             postRequest(
@@ -637,8 +707,8 @@ function ServiceOpenSchedule() {
     );
   };
 
-  console.log("formdat===",formdata);
-  
+  console.log("formdat===", formdata);
+
   const [scheduleLogin, setScheduleLogin] = useState(false);
   //onClick of yes Payment ALert Modal
   const onClickScheduleYes = () => {
@@ -760,7 +830,7 @@ function ServiceOpenSchedule() {
       // toast.success("Order Created", {
       //   position: toast.POSITION.TOP_CENTER,
       // });
-      alert("Order Created")
+      alert("Order Created");
       setProfileOrders(response);
       setProfileOrder1(false);
       navigate("/Orders/Profile/ScheduleCreationForm", {
@@ -1686,13 +1756,41 @@ function ServiceOpenSchedule() {
                               border: "none",
                             }}
                             value={item.QtyScheduled}
-                            onChange={(e) =>
-                              handleSchedulelist(
-                                key,
-                                "QtyScheduled",
-                                e.target.value
-                              )
-                            }
+                            onChange={(e) => {
+                              const value = Number(e.target.value);
+                              handleSchedulelist(key, "QtyScheduled", value);
+                            }}
+                            // onChange={(e) =>
+                            //   handleSchedulelist(
+                            //     key,
+                            //     "QtyScheduled",
+                            //     e.target.value
+                            //   )
+                            // }
+                            // onChange={(e) => {
+                            //   const value = Number(e.target.value);
+                            //   if (value === 0) {
+                            //     if (
+                            //       window.confirm(
+                            //         "You entered Qty Scheduled as 0. Do you want to delete this row?"
+                            //       )
+                            //     ) {
+                            //       const filteredState = newState.filter(
+                            //         (_, i) => i !== key
+                            //       );
+                            //       setNewState(filteredState);
+                            //       setModalMessage(
+                            //         "Row with Qty Scheduled = 0 deleted"
+                            //       );
+                            //       setSmShow(true);
+                            //     } else {
+                            //       setModalMessage("Not Scheduled");
+                            //       setSmShow(true);
+                            //     }
+                            //   } else {
+                            //     handleSchedulelist(key, "QtyScheduled", value);
+                            //   }
+                            // }}
                           />
                         </td>
                         <td>{item.QtyProgrammed}</td>

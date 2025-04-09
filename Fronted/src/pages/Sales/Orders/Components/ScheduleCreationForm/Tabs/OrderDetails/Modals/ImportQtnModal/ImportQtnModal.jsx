@@ -84,7 +84,6 @@ export default function ImportExcelModal(props) {
         const element = filteredQtnListData[i];
 
         console.log("2703-element", element);
-        
 
         let dataArranged = {
           Order_No: props.OrderData.Order_No,
@@ -93,7 +92,8 @@ export default function ImportExcelModal(props) {
           // DwgName: element.Name,
           DwgName: QtnFormatt === "Service" ? element.Name : element.Dwg_Name,
           // Mtrl_Code: element.Material,
-          Mtrl_Code: element.mtrl_code,
+          Mtrl_Code:
+            QtnFormatt === "Service" ? element.Material : element.mtrl_code,
           MProcess: "Process 1",
           Mtrl_Source: selectedQtn.QtnType === "Sales" ? "Magod" : "Customer",
           // Qty_Ordered: element.Quantity,
@@ -143,9 +143,8 @@ export default function ImportExcelModal(props) {
         endpoints.postDetailsDataInImportQtn,
         {
           detailsData: arr,
-          QtnNo :selectedQtn?.QtnNo,
-          New_Order_No : props?.OrderData?.Order_No
-
+          QtnNo: selectedQtn?.QtnNo,
+          New_Order_No: props?.OrderData?.Order_No,
         },
         (detailsDataInImportAtn) => {
           // console.log("detailsDataInImportAtn", detailsDataInImportAtn);
@@ -164,11 +163,9 @@ export default function ImportExcelModal(props) {
     }
   }
 
+  console.log("==setSelectedQtn", selectedQtn?.QtnNo);
+  console.log("==props?.OrderData?", props?.OrderData?.Order_No);
 
-  console.log("==setSelectedQtn",selectedQtn?.QtnNo
-    );
-  console.log("==props?.OrderData?",props?.OrderData?.Order_No);
-  
   return (
     <>
       <Modal

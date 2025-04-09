@@ -14,6 +14,7 @@ export default function SecondTable(props) {
       }
       setSortConfig({ key, direction });
       };
+    console.log("props.DwgNameList", props.DwgNameList);
     
       const sortedData = () => {
       const dataCopy = [...props.DwgNameList];

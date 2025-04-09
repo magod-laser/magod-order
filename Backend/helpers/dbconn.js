@@ -17,59 +17,60 @@ const dbDatabase5 = process.env.DB_DATABASE_5; //magod_sales
 const dbDatabase6 = process.env.DB_DATABASE_6; //magod_mtrl
 
 var misConn = mysql.createConnection({
-	host: dbHost,
-	user: dbUser,
-	port: dbPort,
-	password: dbPassword,
-	database: dbDatabase1,
+  host: dbHost,
+  user: dbUser,
+  port: dbPort,
+  password: dbPassword,
+  database: dbDatabase1,
+  multipleStatements: true,
 });
 
 var setupConn = mysql.createConnection({
-	host: dbHost,
-	user: dbUser,
-	port: dbPort,
-	password: dbPassword,
-	database: dbDatabase2,
+  host: dbHost,
+  user: dbUser,
+  port: dbPort,
+  password: dbPassword,
+  database: dbDatabase2,
 });
 
 var qtnConn = mysql.createConnection({
-	host: dbHost,
-	user: dbUser,
-	port: dbPort,
-	password: dbPassword,
-	database: dbDatabase3,
+  host: dbHost,
+  user: dbUser,
+  port: dbPort,
+  password: dbPassword,
+  database: dbDatabase3,
 });
 
 var mchConn = mysql.createConnection({
-	host: dbHost,
-	user: dbUser,
-	port: dbPort,
-	password: dbPassword,
-	database: dbDatabase4,
+  host: dbHost,
+  user: dbUser,
+  port: dbPort,
+  password: dbPassword,
+  database: dbDatabase4,
 });
 
 var slsConn = mysql.createConnection({
-	host: dbHost,
-	user: dbUser,
-	port: dbPort,
-	password: dbPassword,
-	database: dbDatabase5,
+  host: dbHost,
+  user: dbUser,
+  port: dbPort,
+  password: dbPassword,
+  database: dbDatabase5,
 });
 
 var mtrlConn = mysql.createConnection({
-	host: dbHost,
-	user: dbUser,
-	port: dbPort,
-	password: dbPassword,
-	database: dbDatabase6,
+  host: dbHost,
+  user: dbUser,
+  port: dbPort,
+  password: dbPassword,
+  database: dbDatabase6,
 });
 
 let misQuery = async (q, callback) => {
-	misConn.connect();
-	misConn.query(q, (err, res, fields) => {
-		if (err) throw err;
-		callback(res);
-	});
+  misConn.connect();
+  misConn.query(q, (err, res, fields) => {
+    if (err) throw err;
+    callback(res);
+  });
 };
 
 // let misQueryMod = async (q, callback) => {
@@ -119,24 +120,24 @@ let misQuery = async (q, callback) => {
 // 	}
 // };
 const misQueryMod = (query, params = []) => {
-	return new Promise((resolve, reject) => {
-	  misConn.query(query, params, (err, results) => {
-		if (err) {
-		  reject(err);
-		} else {
-		  resolve(results);
-		}
-	  });
-	});
-  };
-  
+  return new Promise((resolve, reject) => {
+    misConn.query(query, params, (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+};
+
 let mchQueryMod1 = async (m) => {
-	try {
-		const [rows, fields] = await mchConn.promise().query(m);
-		return rows;
-	} catch (error) {
-		throw error;
-	}
+  try {
+    const [rows, fields] = await mchConn.promise().query(m);
+    return rows;
+  } catch (error) {
+    throw error;
+  }
 };
 
 // const misQueryMod = async (q, values) => {
@@ -152,73 +153,73 @@ let mchQueryMod1 = async (m) => {
 // };
 
 let mtrlQueryMod = async (m, callback) => {
-	mtrlConn.connect();
-	mtrlConn.query(m, (err, res, fields) => {
-		if (err) callback(err, null);
-		else callback(null, res);
-	});
+  mtrlConn.connect();
+  mtrlConn.query(m, (err, res, fields) => {
+    if (err) callback(err, null);
+    else callback(null, res);
+  });
 };
 
 let setupQuery = (q, callback) => {
-	setupConn.connect();
-	setupConn.query(q, (err, res, fields) => {
-		if (err) throw err;
-		callback(res);
-	});
+  setupConn.connect();
+  setupConn.query(q, (err, res, fields) => {
+    if (err) throw err;
+    callback(res);
+  });
 };
 
 let setupQueryMod = async (q, callback) => {
-	setupConn.connect();
-	setupConn.query(q, (err, res, fields) => {
-		if (err) callback(err, null);
-		else callback(null, res);
-	});
+  setupConn.connect();
+  setupConn.query(q, (err, res, fields) => {
+    if (err) callback(err, null);
+    else callback(null, res);
+  });
 };
 
 let qtnQuery = (q, callback) => {
-	// console.log(q);
-	qtnConn.connect();
-	qtnConn.query(q, (err, res, fields) => {
-		if (err) throw err;
-		callback(res);
-		// return res[0].solution;
-	});
+  // console.log(q);
+  qtnConn.connect();
+  qtnConn.query(q, (err, res, fields) => {
+    if (err) throw err;
+    callback(res);
+    // return res[0].solution;
+  });
 };
 
 let qtnQueryMod = (q, callback) => {
-	// console.log(q);
-	qtnConn.connect();
-	qtnConn.query(q, (err, res, fields) => {
-		if (err) callback(err, null);
-		else callback(null, res);
-		// return res[0].solution;
-	});
+  // console.log(q);
+  qtnConn.connect();
+  qtnConn.query(q, (err, res, fields) => {
+    if (err) callback(err, null);
+    else callback(null, res);
+    // return res[0].solution;
+  });
 };
 
 let qtnQueryModv2 = (q, values, callback) => {
-	// console.log(q);
-	qtnConn.connect();
-	qtnConn.query(q, values, (err, res, fields) => {
-		if (err) callback(err, null);
-		else callback(null, res);
-		// return res[0].solution;
-	});
+  // console.log(q);
+  qtnConn.connect();
+  qtnConn.query(q, values, (err, res, fields) => {
+    if (err) callback(err, null);
+    else callback(null, res);
+    // return res[0].solution;
+  });
 };
 
 let slsQueryMod = (s, callback) => {
-	slsConn.connect();
-	slsConn.query(s, (err, res, fields) => {
-		if (err) callback(err, null);
-		else callback(null, res);
-	});
+  slsConn.connect();
+  slsConn.query(s, (err, res, fields) => {
+    if (err) callback(err, null);
+    else callback(null, res);
+  });
 };
 
 let mchQueryMod = (m, callback) => {
-	mchConn.connect();
-	mchConn.query(m, (err, res, fields) => {
-		if (err) callback(err, null);
-		else callback(null, res);
-	});
+  mchConn.connect();
+  mchConn.query(m, (err, res, fields) => {
+    if (err) callback(err, null);
+    else callback(null, res);
+  });
 };
 
 // let mchQueryMod1 = async (m) => {
@@ -231,15 +232,15 @@ let mchQueryMod = (m, callback) => {
 // };
 
 module.exports = {
-	misQuery,
-	setupQuery,
-	qtnQuery,
-	misQueryMod,
-	qtnQueryMod,
-	qtnQueryModv2,
-	slsQueryMod,
-	mchQueryMod,
-	mtrlQueryMod,
-	setupQueryMod,
-	mchQueryMod1,
+  misQuery,
+  setupQuery,
+  qtnQuery,
+  misQueryMod,
+  qtnQueryMod,
+  qtnQueryModv2,
+  slsQueryMod,
+  mchQueryMod,
+  mtrlQueryMod,
+  setupQueryMod,
+  mchQueryMod1,
 };

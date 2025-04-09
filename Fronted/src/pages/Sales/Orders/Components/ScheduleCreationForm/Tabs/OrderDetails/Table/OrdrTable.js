@@ -372,7 +372,10 @@ function OrdrTable(props) {
 
   const getRowBackgroundColor = (order) => {
     if (order.Qty_Ordered === 0) return "lavender";
-    else if (props.OrderData?.Order_Status === "Recorded" && order.QtyScheduled=== 0 )
+    else if (
+      props.OrderData?.Order_Status === "Recorded" &&
+      order.QtyScheduled === 0
+    )
       return "lightblue";
     else if (order.QtyDelivered >= order.Qty_Ordered) return "lightgreen";
     else if (order.QtyDelivered > 0 && order.QtyPacked >= order.Qty_Ordered)
@@ -452,8 +455,14 @@ function OrdrTable(props) {
     { key: "JWCost", label: "JW Cost", resizable: true, editable: true },
     { key: "MtrlCost", label: "Mtrl Cost", resizable: true, editable: true },
     { key: "UnitPrice", label: "Unit Rate", resizable: true },
-    { key: "LOC", label: "LOC", resizable: true },
-    { key: "Holes", label: "Pierces", resizable: true },
+    // { key: "LOC", label: "LOC", resizable: true },
+    // { key: "Holes", label: "Pierces", resizable: true },
+    ...(OrderData?.Type === "Profile"
+      ? [{ key: "LOC", label: "LOC", resizable: true }]
+      : []),
+    ...(OrderData?.Type === "Profile"
+      ? [{ key: "Holes", label: "Pierces", resizable: true }]
+      : []),
     { key: "InspLevel", label: "Insp Level", resizable: true },
     { key: "PackingLevel", label: "Packing Level", resizable: true },
     { key: "tolerance", label: "Tolerance", resizable: true },
@@ -499,9 +508,8 @@ function OrdrTable(props) {
     }));
   };
 
+  console.log("OrdrDetailsData", OrdrDetailsData);
 
-  console.log("OrdrDetailsData",OrdrDetailsData);
-  
   return (
     <div style={{ overflow: "auto", height: "350px" }}>
       <Table bordered hover className="table-data border">
@@ -615,7 +623,6 @@ function OrdrTable(props) {
                 {/* <td>
                   <Form.Check type="checkbox" id={`select-checkbox-${i}`} />
                 </td> */}
-
                 {/* <td>{OrdrDetailsItem.Order_Srl}</td> */}
                 {/* <td>{OrdrDetailsItem.Order_Srl}</td> */}
                 <td
@@ -625,7 +632,6 @@ function OrdrTable(props) {
                   {OrdrDetailsItem.DwgName}
                 </td>
                 {props.OrderData?.Type === "Profile" ? (
-
                   <td>
                     <Form.Check
                       style={{
@@ -640,17 +646,20 @@ function OrdrTable(props) {
                       checked={!!OrdrDetailsItem.Dwg} // Convert value to boolean
                       readOnly // Prevent manual change
 
-
-    //                   type="checkbox"
-    //                   id="selected"
-    //                   checked={OrdrDetailsItem.Dwg ? 1 : 0} // If DwgName exists, check the box
-    // readOnly // Prevent manual change
-    //                   // defaultChecked
-                      
+                      //                   type="checkbox"
+                      //                   id="selected"
+                      //                   checked={OrdrDetailsItem.Dwg ? 1 : 0} // If DwgName exists, check the box
+                      // readOnly // Prevent manual change
+                      //                   // defaultChecked
                     />
                   </td>
                 ) : null}
-                <td>{OrdrDetailsItem.Mtrl_Code}</td>
+                {/* <td>{OrdrDetailsItem.Mtrl_Code}</td> */}
+                <td>
+                  {OrdrDetailsItem.Type === "Service"
+                    ? OrdrDetailsItem.Material
+                    : OrdrDetailsItem.Mtrl_Code}
+                </td>
                 <td>{OrdrDetailsItem.Operation}</td>
                 <td>{OrdrDetailsItem.Mtrl_Source}</td>
                 <td>
@@ -739,27 +748,28 @@ function OrdrTable(props) {
                     parseFloat(OrdrDetailsItem.JWCost)
                   ).toFixed(2)}
                 </td>
-                <td>{OrdrDetailsItem.LOC}</td>
-                <td>{OrdrDetailsItem.Holes}</td>
+                {/* {/* <td>{OrdrDetailsItem.LOC}</td> */}
+                {props.OrderData?.Type === "Profile" ? (
+                  <td>{OrdrDetailsItem.LOC}</td>
+                ) : null}
+                {/* <td>{OrdrDetailsItem.Holes}</td> } */}
+                {props.OrderData?.Type === "Profile" ? (
+                  <td>{OrdrDetailsItem.Holes}</td>
+                ) : null}
                 <td>{OrdrDetailsItem.InspLevel}</td>
                 <td>{OrdrDetailsItem.PackingLevel}</td>
-
                 <td>{OrdrDetailsItem.tolerance}</td>
-
                 {/* <td>
                                     {" "}
                                     <input value={OrdrDetailsItem.JWCost} />{" "}
                                 </td> */}
-
                 {/* <td>
                                     <input value={OrdrDetailsItem.MtrlCost} />
                                 </td> */}
-
                 {/* <td> */}
                 {/* <input value={OrdrDetailsItem.Qty_Ordered} /> */}
                 {/* {OrdrDetailsItem.Qty_Ordered} */}
                 {/* </td> */}
-
                 <td
                   style={{
                     backgroundColor: "transparent",

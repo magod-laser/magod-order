@@ -974,6 +974,8 @@ OrderDetailsRouter.post(
 
         // Insert new rows and calculate new order value
         const insertPromises = req.body.detailsData.map((element) => {
+          console.log("====element",element);
+          
           return new Promise((resolve, reject) => {
             if (!orderNo) orderNo = element.Order_No;
 
@@ -985,7 +987,7 @@ OrderDetailsRouter.post(
               VALUES 
               ('${element.Order_No}', '${element.Order_Srl}', '${element.Cust_Code
               }', 
-              '${element.DwgName || ""}', '${element.Mtrl_Code || ""}', 
+              '${element.DwgName || ""}', '${element.Mtrl_Code || element.Material || ""}', 
               '${element.MProcess || ""}', '${element.Mtrl_Source || ""}', 
               '${parseInt(element.Qty_Ordered || 0)}', '${element.InspLevel || "Insp1"
               }', 

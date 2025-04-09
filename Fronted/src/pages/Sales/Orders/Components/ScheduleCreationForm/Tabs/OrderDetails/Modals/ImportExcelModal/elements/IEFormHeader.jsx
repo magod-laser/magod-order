@@ -205,10 +205,11 @@ export default function IEFormHeader(props) {
               if (parsedData[0].JW_Cost === 0) {
                 isValid = false;
                 errors.push("JW_Cost should not be 0 for Customer");
-              } else if (parsedData[0].Mtrl_Cost !== 0) {
-                isValid = false;
-                errors.push("Mtrl_Cost should be 0 for Customer");
-              }
+              } 
+              // else if (parsedData[0].Mtrl_Cost !== 0) {
+              //   isValid = false;
+              //   errors.push("Mtrl_Cost should be 0 for Customer");
+              // }
             } else if (parsedData[0].Source === "Magod") {
               if (parsedData[0].JW_Cost === 0) {
                 isValid = false;
@@ -452,6 +453,19 @@ export default function IEFormHeader(props) {
             ).length > 0
           }
           onClick={(e) => {
+            // Check for JWCost === 0
+
+            console.log("Check for JWCost === 0", props.importedExcelData);
+            
+            const jwCostZero = props.importedExcelData.some(
+              (item) => item.JW_Cost === "0" || item.JW_Cost === 0
+            );
+console.log("jwCostZero", jwCostZero);
+
+            if (jwCostZero) {
+              alert("JW Cost cannot be 0. Please correct the data.");
+              return;
+            }
             setButtonClickedFor("Load to Order");
             setConfirmModalOpen(true);
           }}

@@ -287,6 +287,7 @@
 import React, { useEffect } from "react";
 import { Table } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
+import { toast } from "react-toastify";
 
 export default function IETable(props) {
   // Ensure Order_Srl is mapped
@@ -308,6 +309,9 @@ export default function IETable(props) {
     sourceError,
     operationError
   ) => {
+    //  if (val.JW_Cost < 1) {
+    //    toast.warning("Value should be greater than 0");
+    //  }
     let updatedData = props.importedExcelData.map((item, index) =>
       index === key
         ? {
@@ -320,6 +324,7 @@ export default function IETable(props) {
           }
         : item
     );
+
     props.setImportedExcelData(updatedData);
   };
 
@@ -543,7 +548,7 @@ export default function IETable(props) {
                       val.operationError
                     )
                   }
-                  disabled={val.Source !== "Magod"} // Disable if Source is not "Magod"
+                  // disabled={val.Source !== "Magod"} // Disable if Source is not "Magod"
                 />
               </td>
               <td>
