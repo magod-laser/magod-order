@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   page: {
     fontSize: 11,
     flexDirection: "column",
-    marginTop: 30,
+    marginTop: 40,
     marginBottom: 50,
     paddingBottom: 50,
   },
@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
   mainsidetableview: {
     width: "850px",
     marginLeft: "30px",
-    marginTop: "20px",
+    marginTop: "100px",
   },
   datawithboldline: {
     fontFamily: "Helvetica-Bold",
@@ -795,6 +795,7 @@ const ServicePDF = ({ formdata, PDFData, Tabledata, setTabledata }) => {
         size="A4"
         // style={[styles.page, pageIndex === 0 ? styles.firstPage : null]}
         orientation="landscape"
+        style={styles.page}
       >
         <View style={styles.codestyle}>
           <Text style={styles.code}>F 32 Rev 3</Text>
@@ -818,6 +819,7 @@ const ServicePDF = ({ formdata, PDFData, Tabledata, setTabledata }) => {
                   alignItems: "center",
                   width: "100%",
                   marginLeft: "-50px",
+                  marginBottom: "40px"
                 }}
               >
                 <Text style={[styles.title1, { textDecoration: "underline" }]}>
