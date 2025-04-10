@@ -669,6 +669,13 @@ const styles = StyleSheet.create({
   pospan: {
     marginLeft: "3px",
   },
+  footerPage: {
+    fontSize: 11,
+    flexDirection: "column",
+    marginTop: 40,
+    marginBottom: 50,
+    paddingBottom: 50,
+  },
 
   // *********************
   title1: {
@@ -796,7 +803,7 @@ const ServicePDF = ({ formdata, PDFData, Tabledata, setTabledata }) => {
         size="A4"
         // style={[styles.page, pageIndex === 0 ? styles.firstPage : null]}
         orientation="landscape"
-        style={styles.page}
+        style={styles.footerPage}
       >
         <View style={styles.codestyle}>
           <Text style={styles.code}>F 32 Rev 3</Text>
