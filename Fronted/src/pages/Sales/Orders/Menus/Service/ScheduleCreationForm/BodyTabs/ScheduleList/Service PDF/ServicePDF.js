@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   page: {
     fontSize: 11,
     flexDirection: "column",
-    marginTop: 40,
+    marginTop: 0,
     marginBottom: 50,
     paddingBottom: 50,
   },
@@ -328,10 +328,11 @@ const styles = StyleSheet.create({
     width: "790px",
     marginLeft: "30px",
   },
-  mainsidetableview: {
-    width: "850px",
+   mainsidetableview: {
+    width: "100%",
+    paddingHorizontal: 30,
     marginLeft: "30px",
-    marginTop: "100px",
+    marginTop: '30px',
   },
   datawithboldline: {
     fontFamily: "Helvetica-Bold",
