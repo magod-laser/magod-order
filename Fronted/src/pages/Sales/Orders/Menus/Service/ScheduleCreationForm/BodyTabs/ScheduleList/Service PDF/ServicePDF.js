@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   page: {
     fontSize: 11,
     flexDirection: "column",
-    marginTop: 30,
+    marginTop: 0,
     marginBottom: 50,
     paddingBottom: 50,
   },
@@ -328,10 +328,11 @@ const styles = StyleSheet.create({
     width: "790px",
     marginLeft: "30px",
   },
-  mainsidetableview: {
-    width: "850px",
+   mainsidetableview: {
+    width: "100%",
+    paddingHorizontal: 30,
     marginLeft: "30px",
-    marginTop: "20px",
+    marginTop: '30px',
   },
   datawithboldline: {
     fontFamily: "Helvetica-Bold",
@@ -668,6 +669,13 @@ const styles = StyleSheet.create({
   pospan: {
     marginLeft: "3px",
   },
+  footerPage: {
+    fontSize: 11,
+    flexDirection: "column",
+    marginTop: 40,
+    marginBottom: 50,
+    paddingBottom: 50,
+  },
 
   // *********************
   title1: {
@@ -795,6 +803,7 @@ const ServicePDF = ({ formdata, PDFData, Tabledata, setTabledata }) => {
         size="A4"
         // style={[styles.page, pageIndex === 0 ? styles.firstPage : null]}
         orientation="landscape"
+        style={styles.footerPage}
       >
         <View style={styles.codestyle}>
           <Text style={styles.code}>F 32 Rev 3</Text>
@@ -818,6 +827,7 @@ const ServicePDF = ({ formdata, PDFData, Tabledata, setTabledata }) => {
                   alignItems: "center",
                   width: "100%",
                   marginLeft: "-50px",
+                  marginBottom: "40px"
                 }}
               >
                 <Text style={[styles.title1, { textDecoration: "underline" }]}>

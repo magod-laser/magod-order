@@ -518,7 +518,11 @@ export default function IETable(props) {
                   min="0"
                   value={val.JW_Cost}
                   name="JW_Cost"
-                  style={{ background: "transparent", border: "none" }}
+                  style={{
+                    background: "rgb(255, 255, 204)", // Set background color to yellow
+                    border: "none",
+                    borderRadius: "5px",
+                  }}
                   // onChange={(e) =>
                   //   handleChange(
                   //     key,
@@ -554,7 +558,14 @@ export default function IETable(props) {
                   min="0"
                   value={val.Mtrl_Cost}
                   name="Mtrl_Cost"
-                  style={{ background: "transparent", border: "none" }}
+                  style={{
+                    background:
+                      val.Source === "Magod"
+                        ? "rgb(204, 255, 204)"
+                        : "transparent", // Green if Source is "Magod", otherwise transparent
+                    border: "none",
+                    borderRadius: "5px",
+                  }}
                   onChange={(e) =>
                     handleChange(
                       key,
