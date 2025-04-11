@@ -76,7 +76,7 @@ export const endpoints = {
   getDwgFiles: `${API}/file/getfolderfilenames`,
   dxfCopy: `${API}/file/copydxf`,
   checkDxf: `${API}/file/checkdxf`,
-  orderCopyDxf:`${API}/file/ordcopydxf`,
+  orderCopyDxf: `${API}/file/ordcopydxf`,
   getOrdDxf: `${API}/file/orddxf`,
   checkdxffilesimportoldorder: `${API}/file/checkdxffilesimportoldorder`,
   getStates: `${API}/states/allstates`,
@@ -362,6 +362,7 @@ export const endpoints = {
   onClickSave: `${API}/ScheduleList/save`,
   onClickSuspend: `${API}/ScheduleList/suspendButton`,
   onClickCancel: `${API}/ScheduleList/onClickCancel`,
+  deleteZeroScheduledRows: `${API}/ScheduleList/deleteZeroScheduledRows`,
   onClickScheduled: `${API}/ScheduleList/ScheduleButton`,
   getSalesContact: `${API}/ScheduleList/getSalesContact`,
   onClickTask: `${API}/ScheduleList/taskOnclick`,
@@ -384,7 +385,7 @@ export const endpoints = {
   getQtnList: `${API}/orderDetails/getQtnList`,
   getQtnDataByQtnID: `${API}/orderDetails/getQtnDataByQtnID`,
   getOldOrderByCustCodeAndOrderNo: `${API}/orderDetails/getOldOrderByCustCodeAndOrderNo`,
- 
+
   postDeleteDetailsByOrderNo: `${API}/orderDetails/postDeleteDetailsByOrderNo`,
   postDetailsDataInImportQtn: `${API}/orderDetails/postDetailsDataInImportQtn`,
 

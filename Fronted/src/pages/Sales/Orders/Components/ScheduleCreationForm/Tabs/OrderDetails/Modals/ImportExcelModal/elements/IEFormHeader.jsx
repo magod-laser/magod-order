@@ -202,22 +202,32 @@ export default function IEFormHeader(props) {
 
             // Validate based on Source type
             if (parsedData[0].Source === "Customer") {
-              if (parsedData[0].JW_Cost === 0 || parsedData[0].JW_Cost === 0.00 || parsedData[0].JW_Cost === "0.00") {
+              if (
+                parsedData[0].JW_Cost === 0 ||
+                parsedData[0].JW_Cost === 0.0 ||
+                parsedData[0].JW_Cost === "0.00"
+              ) {
                 isValid = false;
                 errors.push("JW_Cost should not be 0 for Customer");
-              } 
+              }
               // else if (parsedData[0].Mtrl_Cost !== 0) {
               //   isValid = false;
               //   errors.push("Mtrl_Cost should be 0 for Customer");
               // }
             } else if (parsedData[0].Source === "Magod") {
-              if (parsedData[0].JW_Cost === 0 || parsedData[0].JW_Cost === 0.00 || parsedData[0].JW_Cost === "0.00"
-
+              if (
+                parsedData[0].JW_Cost === 0 ||
+                parsedData[0].JW_Cost === 0.0 ||
+                parsedData[0].JW_Cost === "0.00"
               ) {
                 isValid = false;
                 errors.push("JW_Cost should not be 0 for Magod");
               }
-              if (parsedData[0].Mtrl_Cost === 0 || parsedData[0].Mtrl_Cost === 0.00 || parsedData[0].Mtrl_Cost === "0.00") {
+              if (
+                parsedData[0].Mtrl_Cost === 0 ||
+                parsedData[0].Mtrl_Cost === 0.0 ||
+                parsedData[0].Mtrl_Cost === "0.00"
+              ) {
                 isValid = false;
                 errors.push("Mtrl_Cost should not be 0 for Magod");
               }
@@ -376,6 +386,51 @@ export default function IEFormHeader(props) {
     }
   };
 
+  const [orderTotal, setOrderTotal] = useState(0.0);
+  const CompareAndUpdatePara = (e) => {
+    setOrderTotal(props.orderTotal);
+  };
+  const [excelData, setExcelData] = useState();
+
+  const checkMatching = () => {
+    const updatedData = excelData.map((row) => {
+      const isMatching =
+        row.JWCost_Old === row.JWCost &&
+        row.Mtrl_Code_Old &&
+        row.Mtrl_Code === row.Mtrl_Code_Old &&
+        row.Operation_Old &&
+        row.Operation === row.Operation_Old;
+
+      return { ...row, Matching: isMatching };
+    });
+
+    setExcelData(updatedData);
+  };
+
+  const handleUpdatePara = () => {
+    if (
+      window.confirm(
+        "Do you wish to update Material, Operation, and Rates from Stored Data?"
+      )
+    ) {
+      const updatedData = excelData.map((row) => {
+        if (!row.Matching) {
+          return {
+            ...row,
+            JWCost: row.JWCost_Old,
+            Operation: row.Operation_Old,
+            Mtrl_Code: row.Mtrl_Code_Old,
+            MtrlCost: row.MtrlCost_Old,
+            Matching: true, // reset after updating
+          };
+        }
+        return row;
+      });
+
+      setExcelData(updatedData);
+    }
+  };
+
   // console.log("orderDEtailsData",OrdrDetailsData);
 
   // console.log(
@@ -424,14 +479,21 @@ export default function IEFormHeader(props) {
 
           <label className="form-label label-space">Order Total</label>
 
-          <input disabled value={props.orderTotal} className="in-field" />
+          {/* <input disabled value={props.orderTotal} className="in-field" /> */}
+          <input disabled value={orderTotal} className="in-field" />
         </div>
       </div>
       {/* <div className="row">
        
       </div> */}
       <div className="d-flex justify-content-center">
-        {/* <button className="button-style m-1">Update Para</button> */}
+        <button
+          className="button-style m-1"
+          // onClick={handleUpdatePara}
+          onClick={CompareAndUpdatePara}
+        >
+          Update Para
+        </button>
         <button
           className="button-style m-1"
           style={{ width: "auto" }}
@@ -444,7 +506,13 @@ export default function IEFormHeader(props) {
         </button>
         {/* <button className="button-style m-1">Set Operation</button> */}
         {/* <button className="button-style m-1">Load Excel</button> */}
-        {/* <button className="button-style m-1">Compare</button> */}
+        <button
+          className="button-style m-1"
+          // onClick={checkMatching}
+          onClick={CompareAndUpdatePara}
+        >
+          Compare
+        </button>
         <button
           className="button-style m-1"
           disabled={
@@ -458,11 +526,11 @@ export default function IEFormHeader(props) {
             // Check for JWCost === 0
 
             console.log("Check for JWCost === 0", props.importedExcelData);
-            
+
             const jwCostZero = props.importedExcelData.some(
               (item) => item.JW_Cost === "0" || item.JW_Cost === 0
             );
-console.log("jwCostZero", jwCostZero);
+            console.log("jwCostZero", jwCostZero);
 
             if (jwCostZero) {
               alert("JW Cost cannot be 0. Please correct the data.");

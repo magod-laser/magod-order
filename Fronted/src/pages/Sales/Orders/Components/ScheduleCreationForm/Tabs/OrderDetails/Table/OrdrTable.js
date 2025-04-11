@@ -510,6 +510,18 @@ function OrdrTable(props) {
 
   console.log("OrdrDetailsData", OrdrDetailsData);
 
+
+  //  const [data, setData] = useState(["Row 1", "Row 2", "Row 3", "Row 4"]);
+   const [currentIndex, setCurrentIndex] = useState(0);
+
+   const goToFirst = () => setCurrentIndex(0);
+   const goToPrevious = () => setCurrentIndex((prev) => Math.max(prev - 1, 0));
+   const goToNext = () =>
+     setCurrentIndex((prev) => Math.min(prev + 1, filteredData.length - 1));
+   const goToLast = () => setCurrentIndex(filteredData.length - 1);
+ 
+
+
   return (
     <div style={{ overflow: "auto", height: "350px" }}>
       <Table bordered hover className="table-data border">
@@ -554,6 +566,15 @@ function OrdrTable(props) {
           </tr>
         </thead>
         <tbody>
+          {/* <tr
+            key={index}
+            style={{
+              backgroundColor: index === currentIndex ? "lightblue" : "white",
+            }}
+          >
+            <td>{item}</td>
+          </tr> */}
+
           {/* style={{ textAlign: "center" }} */}
           {sortedData()?.map((OrdrDetailsItem, i) => {
             const backgroundColor = getRowBackgroundColor(OrdrDetailsItem);
@@ -790,6 +811,18 @@ function OrdrTable(props) {
           })}
         </tbody>
       </Table>
+
+      <div>
+        <button onClick={goToFirst}>First</button>
+        <button onClick={goToPrevious}>Previous</button>
+        <span>
+          {filteredData.length > 0
+            ? ` ${currentIndex + 1} of ${filteredData.length}`
+            : "No data available"}
+        </span>
+        <button onClick={goToNext}>Next</button>
+        <button onClick={goToLast}>Last</button>
+      </div>
     </div>
   );
 }
