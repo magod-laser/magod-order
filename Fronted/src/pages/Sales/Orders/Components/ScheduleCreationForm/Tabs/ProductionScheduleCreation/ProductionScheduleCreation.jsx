@@ -172,14 +172,65 @@ export default function ProductionScheduleCreation({
 
             return; // Exit if material code does not match
           }
-          // console.log(" endpoints.CreateProductionSchedule,");
+
+          // checking dxf existence before draft sch creation 
+          // console.log("OrderData...",OrderData);
+          // console.log("OrdrDetailsData...",OrdrDetailsData);
+          
+          // postRequest(
+          //   endpoints.checkmultiDxf,
+          //   {orderno: OrderData.Order_No,Dwgname: OrdrDetailsData.DwgName },(response) => {
+          //     if (response.message === 'Present') {
+          //         //DWG Exists = checked
+          //     }
+          //     else if (response.message === 'Not Present'){
+          //          //Dwg Exists = unchecked
+          //          toast.warning("dxf are not present for the selected dwg names")
+          //     }
+
+          //   });
+
+
+
+
+          console.log("filteredItems2",filteredItems2);
+// checking dwg existence 
+const dwgZeroItems = filteredItems2.filter((item) => Number(item.Dwg) === 0);
+const dwgOneItems = filteredItems2.filter((item) => Number(item.Dwg) === 1);
+
+console.log("dwgZeroItems",dwgZeroItems);
+console.log("dwgOneItems",dwgOneItems);
+
+
+// If any have dwg === 0, show their DWG names in a warning
+if (dwgZeroItems.length > 0) {
+  const dwgNames = dwgZeroItems.map((item) => item.DwgName).join(", ");
+  alert(`Dxf not present for: ${dwgNames}`,)
+  // toast.warning(`Dxf not present for: ${dwgNames}`, {
+  //   position: toast.POSITION.TOP_CENTER,
+  // });
+}
+
+// If no valid dwg === 1 items, stop here
+if (dwgOneItems.length === 0) {
+  toast.warning("No valid items with Dxf to schedule", {
+    position: toast.POSITION.TOP_CENTER,
+  });
+  return;
+}
+
+
+
+
+
 
           postRequest(
             endpoints.CreateProductionSchedule,
             {
               OrderData,
               scheduleType: scheduleType,
-              selectedItems: filteredItems2,
+              // selectedItems: filteredItems2,
+              selectedItems: dwgOneItems,
               scheduleOption: scheduleOption,
               filteredItems: filteredItems,
             },
@@ -245,7 +296,7 @@ export default function ProductionScheduleCreation({
       // );
     }
     // Clear selectedSrl after API call is complete
-    clearAllSelections();
+    // clearAllSelections();
     // window.location.reload();
   };
   const clearAllSelections = () => {

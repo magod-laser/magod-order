@@ -228,6 +228,61 @@ fileRouter.post("/checkdxf", async (req, res, next) => {
 	}
 });
 
+
+// fileRouter.post("/checkmultidxf", async (req, res, next) => {
+// 	try {
+// 		const docno = req.body.orderno;
+// 		const dname = req.body.Dwgname;
+// 		let basefolder = process.env.FILE_SERVER_PATH + "\\Wo\\" + docno + "\\DXF\\";
+// 		console.log("Base Folder Path:", basefolder);
+
+// 		const files = await fsAsync.readdir(basefolder);
+// 		const dxfFiles = files; //.filter((file) => path.extname(file).toLowerCase() === ".dxf");
+
+
+// 			dname.forEach((dwg, idx) => {
+// 				let found = false;
+			  
+// 				for (let i = 0; i < dxfFiles.length; i++) {
+// 				  if (dxfFiles[i].name === dwg) {
+// 					found = true;
+// 					break;
+// 				  }
+// 				}
+			  
+// 				if (found) {
+// 				  console.log(`${dwg} is present`);
+// 				} else {
+// 				  console.log(`${dwg} is not present`);
+// 				}
+// 			  });
+			  
+// 			const filePath = directoryPath + file.name;
+// 			const content = fsSync.readFileSync(filePath, 'utf8'); // Read the file content
+// 			// console.log(`Content of ${file.name}:`);
+// 			//  console.log(content);
+// 			filedetails = [...filedetails, { name: file.name, fcontent: content, size: (file.size / 1024).toFixed(2) + ' KB' }];
+// 		});
+
+// 		for each dname.map((dwg,idx) => {
+		
+
+// 		}
+// 	}
+// 		//res.send(dxfFiles);
+// 		if (dxfFiles.length > 0) {
+// 			res.send({ message: "Present" });
+// 		} else {
+// 			res.send({ message: "Not Present" });
+// 		}
+
+// 	} catch (error) {
+// 		console.error("Error:", error);
+// 		res.status(500).send("An error occurred");
+// 	}
+// });
+
+
 fileRouter.post("/copydxf", async (req, res, next) => {
 	console.log(" Copy Dxf ");
 	console.log(req.body.Dwg);

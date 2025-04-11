@@ -76,6 +76,7 @@ export const endpoints = {
   getDwgFiles: `${API}/file/getfolderfilenames`,
   dxfCopy: `${API}/file/copydxf`,
   checkDxf: `${API}/file/checkdxf`,
+  checkmultiDxf: `${API}/file/checkmultidxf`,
   orderCopyDxf:`${API}/file/ordcopydxf`,
   getOrdDxf: `${API}/file/orddxf`,
   checkdxffilesimportoldorder: `${API}/file/checkdxffilesimportoldorder`,
@@ -387,6 +388,7 @@ export const endpoints = {
  
   postDeleteDetailsByOrderNo: `${API}/orderDetails/postDeleteDetailsByOrderNo`,
   postDetailsDataInImportQtn: `${API}/orderDetails/postDetailsDataInImportQtn`,
+  
 
   // IMPORT EXCEL
   postDetailsDataInImportExcel: `${API}/orderDetails/postDetailsDataInImportExcel`,
