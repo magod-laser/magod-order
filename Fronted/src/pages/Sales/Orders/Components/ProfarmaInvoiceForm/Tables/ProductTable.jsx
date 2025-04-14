@@ -26,6 +26,7 @@ export default function ProductTable(props) {
                     type="number"
                     value={val.Qty}
                     min="1"
+                    step="1" // Prevent decimals
                     style={{
                       width: "100%",
                       background: "transparent",
@@ -38,9 +39,15 @@ export default function ProductTable(props) {
                         : ""
                     }
                     onChange={(e) => {
-                      props.changeQTY(key, e.target.value || 0);
+                      const inputValue = e.target.value;
+
+                      // Allow only whole positive integers >= 1
+                      if (/^[1-9]\d*$/.test(inputValue) || inputValue === "") {
+                        props.changeQTY(key, inputValue);
+                      }
                     }}
                   />
+
                   {/* {val.Qty} */}
                 </td>
                 <td>{parseFloat(val.Unit_Rate).toFixed(2)}</td>
