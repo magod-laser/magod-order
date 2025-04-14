@@ -284,7 +284,7 @@
 
 // 10022025 1343pm
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { toast } from "react-toastify";
@@ -329,6 +329,50 @@ export default function IETable(props) {
   };
 
   console.log("err-0", props?.importedExcelData);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+
+  // sorting function for table headings of the table
+  const requestSort = (key) => {
+    console.log("entering into the request sort");
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedData = () => {
+    const dataCopy = [...props?.importedExcelData];
+
+    if (sortConfig.key) {
+      dataCopy.sort((a, b) => {
+        let valueA = a[sortConfig.key];
+        let valueB = b[sortConfig.key];
+
+
+;
+        // Convert only for the "intiger" columns
+        if (
+          sortConfig.key === "Order_Qty" ||
+          sortConfig.key === "JW_Cost" ||
+          sortConfig.key === "Mtrl_Cost"
+          
+        ) {
+          valueA = parseFloat(valueA);
+          valueB = parseFloat(valueB);
+        }
+
+        if (valueA < valueB) {
+          return sortConfig.direction === "asc" ? -1 : 1;
+        }
+        if (valueA > valueB) {
+          return sortConfig.direction === "asc" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return dataCopy;
+  };
 
   return (
     <div style={{ overflow: "auto", height: " 500px" }}>

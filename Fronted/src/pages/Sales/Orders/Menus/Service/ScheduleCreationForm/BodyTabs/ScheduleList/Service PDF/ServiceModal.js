@@ -46,15 +46,24 @@ export default function ServiceModal({
   const [Tabledata, setTabledata] = useState([]);
   useEffect(() => {
     console.log("SchId", SchId);
+    console.log("formdata[0]?.ScheduleId", formdata[0]?.ScheduleId);
     postRequest(
       endpoints.pdfdata,
-      { ScheduleId: formdata[0]?.ScheduleId },
+      // { ScheduleId: formdata[0]?.ScheduleId },
+      { ScheduleId: SchId },
       (response) => {
         console.log("Schedul response is", response);
         setTabledata(response);
       }
     );
-  }, [formdata[0]?.ScheduleId]);
+    // }, [formdata[0]?.ScheduleId]);
+  }, [SchId, formdata[0]?.ScheduleId]);
+
+
+ 
+  
+
+
 
   let OrderNo = formdata[0]?.Order_No;
 

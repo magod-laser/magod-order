@@ -760,7 +760,9 @@ const TableHeader = () => (
 );
 
 const ServicePDF = ({ formdata, PDFData, Tabledata, setTabledata }) => {
-  console.log("formdata", formdata[0]?.OrdSchNo);
+  console.log("formdata-1", formdata[0]?.OrdSchNo);
+  console.log("formdata-2", formdata, PDFData, Tabledata);
+ 
 
   // const [Tabledata, setTabledata] = useState([]);
   const [index, setIndex] = useState(0);
