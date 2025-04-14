@@ -2624,12 +2624,16 @@ OrderDetailsRouter.post(`/postDeleteDetailsBySrl`, async (req, res, next) => {
   try {
     const { Order_No, selectedItems } = req.body;
 
+    // console.log("postDeleteDetailsBySrl reqq",req.body.selectedSrl);
+    
+
     if (!selectedItems || selectedItems.length === 0) {
       return res.status(400).json({ error: "No selected items provided" });
     }
 
     for (const item of selectedItems) {
-      console.log("Delete item ", item);
+      // console.log("Delete item ", item);
+      console.log("Delete item ", item.OrderDetailId);
 
       const filePath = path.join(process.env.FILE_SERVER_PATH, '\\Wo\\', item.Order_No, '\\dxf\\', item.DwgName);
       //const filePath = path.join(__dirname, 'folder', req.query.filename);
@@ -2643,10 +2647,13 @@ OrderDetailsRouter.post(`/postDeleteDetailsBySrl`, async (req, res, next) => {
       });
 
       await misQueryMod(
-        `DELETE FROM magodmis.order_details WHERE Order_No = ? AND Order_Srl = ?`,
-        [Order_No, item.Order_Srl]
+        // `DELETE FROM magodmis.order_details WHERE Order_No = ? AND Order_Srl = ?`,
+        `DELETE FROM magodmis.order_details WHERE Order_No = ? AND OrderDetailId = ?`,
+        [Order_No, item.OrderDetailId]
+        // [Order_No, item.Order_Srl]
       );
-      console.log(`Deleted Order_Srl: ${item.Order_Srl}`);
+      // console.log(`Deleted Order_Srl: ${item.Order_Srl}`);
+      console.log(`Deleted OrderDetailId: ${item.OrderDetailId}`);
     }
 
     const orderDetails = await misQueryMod(

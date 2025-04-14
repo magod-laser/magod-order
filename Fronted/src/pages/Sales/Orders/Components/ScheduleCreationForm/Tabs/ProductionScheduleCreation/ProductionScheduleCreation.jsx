@@ -48,7 +48,14 @@ export default function ProductionScheduleCreation({
     }
   }, [OrderData, scheduleType]);
 
-  // console.log("OrderData",OrderData);
+  useEffect(() => {
+    setSelectedRows([]);
+    setSelectedRowItems([]);
+    setSelectedItems([]);
+    setSelectedSrl([]);
+    setLastSlctedRow(null);
+    setSelectedRow(null);
+  }, [scheduleType]);
 
   //onclick Refresh Status
   const onClickRefreshStatus = () => {
@@ -73,6 +80,10 @@ export default function ProductionScheduleCreation({
           filteredItems = OrdrDetailsData.filter(
             (item) => item.Mtrl_Source === "Customer"
           );
+          // Automatically select these items
+          setSelectedItems(filteredItems);
+          setSelectedRows(filteredItems);
+          setSelectedRowItems(filteredItems);
         } else if (scheduleOption === "Partial Order") {
           filteredItems = selectedItems.filter(
             (item) => item.Mtrl_Source === "Customer"
@@ -83,6 +94,10 @@ export default function ProductionScheduleCreation({
           filteredItems = OrdrDetailsData.filter(
             (item) => item.Mtrl_Source === "Magod"
           );
+          // Automatically select these items
+          setSelectedItems(filteredItems);
+          setSelectedRows(filteredItems);
+          setSelectedRowItems(filteredItems);
         } else if (scheduleOption === "Partial Order") {
           filteredItems = selectedItems.filter(
             (item) => item.Mtrl_Source === "Magod"
@@ -245,7 +260,7 @@ export default function ProductionScheduleCreation({
       // );
     }
     // Clear selectedSrl after API call is complete
-    clearAllSelections();
+    // clearAllSelections();
     // window.location.reload();
   };
   const clearAllSelections = () => {
@@ -286,17 +301,16 @@ export default function ProductionScheduleCreation({
 
   // Check Dxf Button Click
   const fnCheckDxf = async () => {
-      alert("fnCheckDxf");
+    alert("fnCheckDxf");
     //  console.log("Order No :", OrderData.Order_No)
     let orderno = OrderData.Order_No;
     await postRequest(endpoints.checkDxf, { orderno }, (checkdata) => {
       //     console.log("check dxf: ",checkdata);
-      if (checkdata.message === 'Present') {
-      alert("Dxf Files are Present");
+      if (checkdata.message === "Present") {
+        alert("Dxf Files are Present");
       } else {
         alert("Dxf Files Not Present..");
       }
-
     });
   };
 
