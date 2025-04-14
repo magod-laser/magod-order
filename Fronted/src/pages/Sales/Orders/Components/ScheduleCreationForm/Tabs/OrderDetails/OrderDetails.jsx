@@ -78,7 +78,15 @@ export default function OrderDetails(props) {
     setSortConfig,
     sortedData,
     OrdrDetailsItem,
-  } = props;
+
+    // hande arrow keys 
+     currentIndex ,
+    setCurrentIndex ,
+    goToFirst , 
+     goToPrevious ,
+    goToNext ,
+     goToLast 
+    } = props;
 
   const [groupBoxAddSrlVisible, setGroupBoxAddSrlVisible] = useState(true);
 
@@ -1978,6 +1986,13 @@ console.log("strmtrlcode===4",imprtDwgObj.strmtrlcode);
               setSortConfig={setSortConfig}
               sortedData={sortedData}
               LastSlctedRow={LastSlctedRow}
+              // handle arrow keys
+              currentIndex={currentIndex}
+              setCurrentIndex={setCurrentIndex}
+              goToFirst={goToFirst}
+              goToPrevious={goToPrevious}
+              goToNext={goToNext}
+              goToLast={goToLast}
             />
           </div>
           <div className="col-md-6">
@@ -1997,24 +2012,33 @@ console.log("strmtrlcode===4",imprtDwgObj.strmtrlcode);
                       >
                         <tr>
                           <td colspan="2">
-                            <label><h6>
-                              Drawing : {LastSlctedRow.DwgName ?? "No Drawing"}</h6>
+                            <label>
+                              <h6>
+                                Drawing :{" "}
+                                {LastSlctedRow.DwgName ?? "No Drawing"}
+                              </h6>
                             </label>
                           </td>
                           <td colspan="2">
-                            <label><h6>Process: {LastSlctedRow.Operation}</h6></label>
+                            <label>
+                              <h6>Process: {LastSlctedRow.Operation}</h6>
+                            </label>
                           </td>
                         </tr>
                         <tr>
                           <td style={{ width: "25%" }}>
-                            <label><h6>Mtrl Grade : {LastSlctedRow.Mtrl_Code}</h6></label>
+                            <label>
+                              <h6>Mtrl Grade : {LastSlctedRow.Mtrl_Code}</h6>
+                            </label>
                           </td>
                           <td style={{ width: "25%" }}>
-                            <label><h6>Mtrl Source : {LastSlctedRow.Mtrl_Source}</h6></label>
+                            <label>
+                              <h6>Mtrl Source : {LastSlctedRow.Mtrl_Source}</h6>
+                            </label>
                           </td>
                           <td style={{ width: "25%" }}>
-                            <label><h6>
-                              Quantity : {LastSlctedRow.Qty_Ordered}</h6>
+                            <label>
+                              <h6>Quantity : {LastSlctedRow.Qty_Ordered}</h6>
                             </label>
                           </td>
                           <td style={{ width: "25%" }}>
