@@ -245,6 +245,13 @@ const styles = StyleSheet.create({
     margin: "5px 0px 0px 0px",
     marginLeft: "2%",
   },
+  PoNodata: {
+    width: "75%",
+    // paddingBottom: "3px",
+    margin: "5px 2px 0px 0px",
+    marginLeft: "2%",
+    paddingRight: '2px'
+  },
   DeliverDate: {
     width: "49%",
     paddingBottom: "3px",
@@ -826,7 +833,7 @@ const ServicePDF = ({ formdata, PDFData, Tabledata, setTabledata }) => {
                   justifyContent: "center",
                   alignItems: "center",
                   width: "100%",
-                  marginLeft: "-50px",
+                  marginLeft: "-60px",
                   marginBottom: "40px"
                 }}
               >
@@ -883,7 +890,7 @@ const ServicePDF = ({ formdata, PDFData, Tabledata, setTabledata }) => {
                       <Text>:</Text>
                     </View>
                     {/* <View style={styles.POnodata}> */}
-                    <View style={styles.ScheduleDatedata}>
+                    <View style={styles.PoNodata}>
                       <Text style={styles.globalfontwithbold}>
                         &nbsp;&nbsp;
                         {formdata[0].PO}
@@ -908,7 +915,7 @@ const ServicePDF = ({ formdata, PDFData, Tabledata, setTabledata }) => {
                       <Text>:</Text>
                     </View>
                     {/* <View style={styles.SalesContactData}> */}
-                    <View style={styles.ScheduleDatedata}>
+                    <View style={styles.PoNodata}>
                       <Text style={styles.globalfontwithbold}>
                         &nbsp;&nbsp;
                         {formdata[0].SalesContact}
@@ -1130,6 +1137,14 @@ const ServicePDF = ({ formdata, PDFData, Tabledata, setTabledata }) => {
                       >
                         <Text>Production Approved and Scheduled By</Text>
                       </View>
+
+                      <View style={styles.footer}>
+              <View style={{ marginTop: "40px" }}>
+                <Text style={styles.globalfontwithbold}>
+                  {formdata[0].SalesContact}
+                </Text>
+              </View>
+            </View>
                     </View>
 
                     <View style={{ width: "220px", marginLeft: "30px" }}>
@@ -1440,13 +1455,7 @@ const ServicePDF = ({ formdata, PDFData, Tabledata, setTabledata }) => {
               </View>
             </View>
 
-            <View style={styles.footer}>
-              <View style={{ marginLeft: "40px" }}>
-                <Text style={styles.globalfontwithbold}>
-                  {formdata[0].SalesContact}
-                </Text>
-              </View>
-            </View>
+            
           </View>
         </View>
       </Page>

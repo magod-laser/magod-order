@@ -270,7 +270,7 @@ export default function PrintProfarmaInvoice(props) {
 											{props.PDFData.RegisteredName}
 										</Text>
 										<Text
-											style={{ ...style.fontBold, fontSize: headerFontSize }}>
+											style={{ ...style.fontBold, fontSize: headerFontSize, marginTop: "5px" }}>
 											GST: {props.PDFData.GST_No} CIN: {props.PDFData.CIN_No}
 										</Text>
 										<Text style={{ fontSize: headerFontSize }}>
@@ -544,7 +544,7 @@ export default function PrintProfarmaInvoice(props) {
 												{/* amount */}
 
 												<View style={{ ...style.globalPadding, width: "10%" }}>
-													<Text>Amount</Text>
+													<Text>Total</Text>
 												</View>
 											</View>
 											{/* table content */}
@@ -717,7 +717,7 @@ export default function PrintProfarmaInvoice(props) {
 																		...style.footerTaxRowPadding,
 																		borderRight: "1px",
 																	}}>
-																	<Text>Taxable</Text>
+																	<Text>Taxable Amount</Text>
 																</View>
 																<View
 																	style={{
