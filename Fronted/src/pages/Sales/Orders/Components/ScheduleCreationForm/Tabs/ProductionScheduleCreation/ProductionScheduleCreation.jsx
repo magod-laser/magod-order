@@ -189,12 +189,10 @@ export default function ProductionScheduleCreation({
           //     }
 
           //   });
+console.log("OrderData",OrderData.Type);
 
-
-
-
-          console.log("filteredItems2",filteredItems2);
-// checking dwg existence 
+          if (OrderData.Type === "Profile") {
+            // checking dwg existence 
 const dwgZeroItems = filteredItems2.filter((item) => Number(item.Dwg) === 0);
 const dwgOneItems = filteredItems2.filter((item) => Number(item.Dwg) === 1);
 
@@ -218,19 +216,19 @@ if (dwgOneItems.length === 0) {
   });
   return;
 }
+  
+          }
 
 
 
-
-
-
-          postRequest(
+          console.log("filteredItems2",filteredItems2);
+        postRequest(
             endpoints.CreateProductionSchedule,
             {
               OrderData,
               scheduleType: scheduleType,
-              // selectedItems: filteredItems2,
-              selectedItems: dwgOneItems,
+              selectedItems: filteredItems2,
+              // selectedItems: dwgOneItems,
               scheduleOption: scheduleOption,
               filteredItems: filteredItems,
             },

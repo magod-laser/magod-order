@@ -390,7 +390,7 @@ ProfarmaInvFormRouter.post(
                                 console.log("updated running no");
                                 res.send({
                                   flag: true,
-                                  message: "Proforma Invoice Created",
+                                  message: "Profarma Invoice Created",
                                 });
                               }
                             }

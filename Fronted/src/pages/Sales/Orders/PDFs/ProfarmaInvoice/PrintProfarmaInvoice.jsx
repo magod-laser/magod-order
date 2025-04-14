@@ -263,7 +263,7 @@ export default function PrintProfarmaInvoice(props) {
 													...style.fontBold,
 													fontSize: "11px",
 												}}>
-												PROFORMA INVOICE
+												PROFARMA INVOICE
 											</Text>
 										</View>
 										<Text style={{ ...style.fontBold, fontSize: "11px" }}>
@@ -368,7 +368,7 @@ export default function PrintProfarmaInvoice(props) {
 													</Text>
 												</View>
 											</View>
-											{/* Proforma Proforma Invoice Type */}
+											{/* Proforma PROFARMA INVOICE Type */}
 											<View
 												style={{
 													borderBottom: "1px",
@@ -382,7 +382,7 @@ export default function PrintProfarmaInvoice(props) {
 														...style.globalPadding,
 													}}>
 													<Text style={{ ...style.fontBold }}>
-														Proforma Invoice Type
+														Profarma Invoice Type
 													</Text>
 												</View>
 												<View style={{ width: "75%", ...style.globalPadding }}>
@@ -403,7 +403,7 @@ export default function PrintProfarmaInvoice(props) {
 														...style.globalPadding,
 													}}>
 													<Text style={{ ...style.fontBold }}>
-														Proforma Invoice No
+														Profarma Invoice No
 													</Text>
 												</View>
 												<View
@@ -423,7 +423,7 @@ export default function PrintProfarmaInvoice(props) {
 														...style.globalPadding,
 													}}>
 													<Text style={{ ...style.fontBold }}>
-														Proforma Invoice Date
+														Profarma Invoice Date
 													</Text>
 												</View>
 												<View style={{ width: "25%", ...style.globalPadding }}>
@@ -473,7 +473,7 @@ export default function PrintProfarmaInvoice(props) {
 											}}>
 											<Text
 												style={{ ...style.fontBold, fontSize: headerFontSize }}>
-												Proforma Invoice Item Details
+												Profarma Invoice Item Details
 											</Text>
 										</View>
 
@@ -544,7 +544,8 @@ export default function PrintProfarmaInvoice(props) {
 												{/* amount */}
 
 												<View style={{ ...style.globalPadding, width: "10%" }}>
-													<Text>Amount</Text>
+													{/* <Text>Amount</Text> */}
+													<Text>Total</Text>
 												</View>
 											</View>
 											{/* table content */}

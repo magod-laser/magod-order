@@ -514,9 +514,16 @@ function OrdrDtls(props) {
                   // onChangeCallback={setUnitPrice}
                   // onChange={handleChange}
                   // value={ordrDetailsChange.unitPrice}
+                  // value={
+                  //   parseFloat(ordrDetailsChange.jwRate) +
+                  //   parseFloat(ordrDetailsChange.materialRate)
+                  // }
                   value={
-                    parseFloat(ordrDetailsChange.jwRate) +
-                    parseFloat(ordrDetailsChange.materialRate)
+                    LastSlctedRow?.Mtrl_Source === "Customer"
+                      ? parseFloat(ordrDetailsChange.jwRate)
+                      : LastSlctedRow?.Mtrl_Source === "Magod"
+                      ? parseFloat(ordrDetailsChange.jwRate) + parseFloat(ordrDetailsChange.materialRate)
+                      : 0
                   }
                   disabled
                 />

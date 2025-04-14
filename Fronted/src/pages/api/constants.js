@@ -363,6 +363,7 @@ export const endpoints = {
   onClickSave: `${API}/ScheduleList/save`,
   onClickSuspend: `${API}/ScheduleList/suspendButton`,
   onClickCancel: `${API}/ScheduleList/onClickCancel`,
+  deleteZeroScheduledRows: `${API}/ScheduleList/deleteZeroScheduledRows`,
   onClickScheduled: `${API}/ScheduleList/ScheduleButton`,
   getSalesContact: `${API}/ScheduleList/getSalesContact`,
   onClickTask: `${API}/ScheduleList/taskOnclick`,
@@ -385,7 +386,7 @@ export const endpoints = {
   getQtnList: `${API}/orderDetails/getQtnList`,
   getQtnDataByQtnID: `${API}/orderDetails/getQtnDataByQtnID`,
   getOldOrderByCustCodeAndOrderNo: `${API}/orderDetails/getOldOrderByCustCodeAndOrderNo`,
- 
+
   postDeleteDetailsByOrderNo: `${API}/orderDetails/postDeleteDetailsByOrderNo`,
   postDetailsDataInImportQtn: `${API}/orderDetails/postDetailsDataInImportQtn`,
   

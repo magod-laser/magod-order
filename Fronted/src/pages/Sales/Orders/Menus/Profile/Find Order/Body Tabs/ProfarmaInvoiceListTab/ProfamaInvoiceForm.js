@@ -8,12 +8,12 @@ export default function ProfomaInvoiceForm() {
 		<div>
 			<div className="row">
 				<div className="col-md-12">
-					<h4 className="title">Proforma Invoice Form</h4>
+					<h4 className="title">Profarma Invoice Form</h4>
 				</div>
 			</div>
 			<div className="row mt-2">
 				<div className="col-md-4 sm-12 ">
-					<label className="form-label">Proforma Invoice Type</label>
+					<label className="form-label">Profarma Invoice Type</label>
 					<input type="text" />
 				</div>
 				<div className="col-md-4 sm-12">
@@ -28,7 +28,7 @@ export default function ProfomaInvoiceForm() {
 
 			<div className="row">
 				<div className="col-md-4 sm-12 ">
-					<label className="form-label">Proforma Invoice No</label>
+					<label className="form-label">Profarma Invoice No</label>
 					<input type="text" />
 				</div>
 				<div className="col-md-4 sm-12">

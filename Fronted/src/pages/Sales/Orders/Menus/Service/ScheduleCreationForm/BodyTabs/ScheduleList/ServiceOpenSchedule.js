@@ -494,159 +494,207 @@ function ServiceOpenSchedule() {
   const [delelteAskModal, setDeleteAskModal] = useState(false);
   const [deleteResponse, setDeleteResponse] = useState("");
 
-  const onClickScheduled = () => {
+  const onClickScheduledd = () => {
     console.log("newState", newState);
     console.log("Scheduled", newState[0].QtyScheduled); // 800
     console.log("To Schedule", newState[0].QtyToSchedule); //100
 
-    // // if( newState[0].QtyToSchedule < newState[0].QtyScheduled){
-    let hasInvalidQty = false;
-    let hasZeroQty = false;
-    let hasZeroScheduled = false;
-    let newState1;
+    // // // if( newState[0].QtyToSchedule < newState[0].QtyScheduled){
+    // let hasInvalidQty = false;
+    // let hasZeroQty = false;
+    // let hasZeroScheduled = false;
+    // let newState1;
 
-    //  const rowsWithZero = newState.filter(
-    //    (item) => Number(item.QtyScheduled) === 0
-    //  );
+    // const rowsWithZero = newState.filter(
+    //   (item) => Number(item.QtyScheduled) === 0
+    // );
 
-    //  if (rowsWithZero.length > 0) {
-    //    if (
-    //      window.confirm(
-    //        "Some rows have Qty Scheduled = 0. Do you want to delete them?"
-    //      )
-    //    ) {
-    //      const filteredState = newState.filter(
-    //        (item) => Number(item.QtyScheduled) !== 0
-    //      );
-    //      setNewState(filteredState);
-    //      setModalMessage("Rows with Qty Scheduled = 0 deleted");
-    //      setSmShow(true);
-    //    } else {
-    //      setModalMessage("Some items are not scheduled due to Qty = 0");
-    //      setSmShow(true);
-    //    }
-    //    return
-    //  }
+    // if (rowsWithZero.length > 0) {
+    //   if (
+    //     window.confirm(
+    //       "Some rows have Qty Scheduled = 0. Do you want to delete them?"
+    //     )
+    //   ) {
+    //     const filteredState = newState.filter(
+    //       (item) => Number(item.QtyScheduled) !== 0
+    //     );
+    //     setNewState(filteredState);
+    //     setModalMessage("Rows with Qty Scheduled = 0 deleted");
+    //     setSmShow(true);
+    //   } else {
+    //     setModalMessage("Some items are not scheduled due to Qty = 0");
+    //     setSmShow(true);
+    //   }
+    //   // return;
+    // }
 
-    const rowsWithZero = newState.filter(
-      (item) => Number(item.QtyScheduled) === 0
-    );
-    const rowsToSchedule = newState.filter(
-      (item) => Number(item.QtyScheduled) !== 0
-    );
+    // // const rowsWithZero = newState.filter(
+    // //   (item) => Number(item.QtyScheduled) === 0
+    // // );
+    // // const rowsToSchedule = newState.filter(
+    // //   (item) => Number(item.QtyScheduled) !== 0
+    // // );
 
-    if (rowsWithZero.length > 0) {
-      if (
-        window.confirm(
-          "Some rows have Qty Scheduled = 0. Do you want to delete them?"
-        )
-      ) {
-        setNewState(rowsToSchedule);
-        setModalMessage("Rows with Qty Scheduled = 0 deleted");
-        setSmShow(true);
-      } else {
-        setModalMessage("Some items are not scheduled due to Qty = 0");
-        setSmShow(true);
-      }
-      return;
-    }
+    // // if (rowsWithZero.length > 0) {
+    // //   if (
+    // //     window.confirm(
+    // //       "Some rows have Qty Scheduled = 0. Do you want to delete them?"
+    // //     )
+    // //   ) {
+    // //     // setNewState(rowsToSchedule);
+    // //     setModalMessage("Rows with Qty Scheduled = 0 deleted");
+    // //     setSmShow(true);
+    // //   } else {
+    // //     setModalMessage("Some items are not scheduled due to Qty = 0");
+    // //     setSmShow(true);
+    // //   }
+    // //   return;
+    // // }
 
-    newState.forEach((row) => {
-      if (row.QtyToSchedule === 0) {
-        hasZeroQty = true;
-      }
-      if (row.QtyScheduled === 0) {
-        hasZeroScheduled = true;
-      }
+    // newState.forEach((row) => {
+    //   if (row.QtyToSchedule === 0) {
+    //     hasZeroQty = true;
+    //   }
+    //   if (row.QtyScheduled === 0) {
+    //     hasZeroScheduled = true;
+    //   }
 
-      if (row.QtyScheduled > row.QtyToSchedule) {
-        hasInvalidQty = true;
-      }
-    });
+    //   if (row.QtyScheduled > row.QtyToSchedule) {
+    //     hasInvalidQty = true;
+    //   }
+    // });
 
-    let hasQtyZeroQty = false;
+    // let hasQtyZeroQty = false;
 
-    newState.forEach((row) => {
-      if (row.QtyScheduled === "0" || row.QtyScheduled === 0) {
-        hasQtyZeroQty = true;
-        // hasZeroQty = true;
-      }
-    });
+    // newState.forEach((row) => {
+    //   if (row.QtyScheduled === "0" || row.QtyScheduled === 0) {
+    //     hasQtyZeroQty = true;
+    //     // hasZeroQty = true;
+    //   }
+    // });
 
-    // if (hasQtyZeroQty) {
+    // // if (hasQtyZeroQty) {
+    // //   setModalMessage(
+    // //     "Check Qty to Schedule. Make sure Qty to Schedule is correct"
+    // //   );
+    // //   setSmShow(true);
+    // //   // alert("Check Qty to Schedule. Make sure Qty to Schedule is correct");
+    // //   return;
+    // // }
+
+    // // Show alert if any row has an invalid quantity
+
+    // // Show confirmation popup if any row has QtyToSchedule === 0
+    // if (hasZeroQty) {
+    //   if (
+    //     window.confirm(
+    //       "Some rows have Qty to Schedule as 0. Do you want to delete them?"
+    //     )
+    //   ) {
+    //     newState1 = newState.filter((row) => row.QtyToSchedule !== 0);
+    //     setNewState(newState1);
+    //     console.log("==newState", newState1);
+
+    //     // alert("Rows Deleted");
+    //     setModalMessage("Rows Deleted");
+    //     setSmShow(true);
+    //     return;
+    //   } else {
+    //     // alert("Not Scheduled");
+    //     setModalMessage("Not Scheduled");
+    //     setSmShow(true);
+    //   }
+    // }
+
+    // //----
+    // if (hasZeroScheduled) {
+    //   if (
+    //     window.confirm(
+    //       "Some rows have Qty Scheduled as 0. Do you want to delete them?"
+    //     )
+    //   ) {
+    //     const newState2 = newState.filter((row) => row.QtyScheduled !== 0);
+    //     // setNewState(newState2);
+    //     console.log("==newState", newState2);
+
+    //     setModalMessage("Rows with Qty Scheduled = 0 deleted");
+    //     setSmShow(true);
+    //     // return;
+    //   } else {
+    //     setModalMessage("Not Scheduled");
+    //     setSmShow(true);
+    //     // return;
+    //   }
+    // }
+    // if (hasInvalidQty) {
+    //   // alert("Check Qty to Schedule. Make sure Qty to Schedule is correct");
+    //   // alert("Not Scheduled");
     //   setModalMessage(
-    //     "Check Qty to Schedule. Make sure Qty to Schedule is correct"
+    //     "Check Qty to Schedule. Make sure Qty to Schedule is correct,Not Scheduled"
     //   );
     //   setSmShow(true);
-    //   // alert("Check Qty to Schedule. Make sure Qty to Schedule is correct");
     //   return;
     // }
 
-    // Show alert if any row has an invalid quantity
+    // // if( newState[0].QtyToSchedule < newState[0].QtyScheduled){
+    // // if (newState[0].QtyScheduled > newState[0].QtyToSchedule) {
+    // //   alert("Check Qty to Schedule. Make sure Qty to Schedule is correct");
+    // //   // toast.warning("Check Qty to Schedule. Make sure Qty to Schedule is correct", {
+    // //   // position: toast.POSITION.TOP_CENTER,
+    // //   // }
+    // //   // );
+    // //   // toast.error("Not Scheduled", {
+    // //   //   position: toast.POSITION.TOP_CENTER,
+    // //   // });
+    // //   alert("Not Scheduled");
+    // //   return;
+    // // }
 
-    // Show confirmation popup if any row has QtyToSchedule === 0
-    if (hasZeroQty) {
-      if (
-        window.confirm(
-          "Some rows have Qty to Schedule as 0. Do you want to delete them?"
-        )
-      ) {
-        newState1 = newState.filter((row) => row.QtyToSchedule !== 0);
-        setNewState(newState1);
-        console.log("==newState", newState1);
+    // let hasInvalidQty = false;
+    // let hasZeroScheduled = false;
 
-        // alert("Rows Deleted");
-        setModalMessage("Rows Deleted");
-        setSmShow(true);
-        return;
-      } else {
-        // alert("Not Scheduled");
-        setModalMessage("Not Scheduled");
-        setSmShow(true);
-      }
-    }
+    // //  rows with QtyScheduled = 0
+    // const rowsWithZeroScheduled = newState.filter(
+    //   (item) => Number(item.QtyScheduled) === 0
+    // );
 
-    //----
-    if (hasZeroScheduled) {
-      if (
-        window.confirm(
-          "Some rows have Qty Scheduled as 0. Do you want to delete them?"
-        )
-      ) {
-        const newState2 = newState.filter((row) => row.QtyScheduled !== 0);
-        setNewState(newState2);
-        console.log("==newState", newState2);
+    // if (rowsWithZeroScheduled.length > 0) {
+    //   if (
+    //     window.confirm(
+    //       "Some rows have Qty Scheduled = 0. Do you want to delete them?"
+    //     )
+    //   ) {
+    //     const filteredState = newState.filter(
+    //       (item) => Number(item.QtyScheduled) !== 0
+    //     );
+    //     setNewState(filteredState);
+    //     setModalMessage("Rows with Qty Scheduled = 0 deleted");
+    //     setSmShow(true);
+    //     // return;
+    //   } else {
+    //     setModalMessage(
+    //       "Some items are not scheduled due to Qty Scheduled = 0"
+    //     );
+    //     setSmShow(true);
+    //   }
+    // }
 
-        setModalMessage("Rows with Qty Scheduled = 0 deleted");
-        setSmShow(true);
-        return;
-      } else {
-        setModalMessage("Not Scheduled");
-        setSmShow(true);
-        return;
-      }
-    }
-    if (hasInvalidQty) {
-      // alert("Check Qty to Schedule. Make sure Qty to Schedule is correct");
-      // alert("Not Scheduled");
-      setModalMessage(
-        "Check Qty to Schedule. Make sure Qty to Schedule is correct,Not Scheduled"
-      );
-      setSmShow(true);
-      return;
-    }
+    // // Check for invalid scheduled quantities
+    // newState.forEach((row) => {
+    //   if (row.QtyScheduled > row.QtyToSchedule) {
+    //     hasInvalidQty = true;
+    //   }
+    //   if (row.QtyScheduled === 0) {
+    //     hasZeroScheduled = true;
+    //   }
+    // });
 
-    // if( newState[0].QtyToSchedule < newState[0].QtyScheduled){
-    // if (newState[0].QtyScheduled > newState[0].QtyToSchedule) {
-    //   alert("Check Qty to Schedule. Make sure Qty to Schedule is correct");
-    //   // toast.warning("Check Qty to Schedule. Make sure Qty to Schedule is correct", {
-    //   // position: toast.POSITION.TOP_CENTER,
-    //   // }
-    //   // );
-    //   // toast.error("Not Scheduled", {
-    //   //   position: toast.POSITION.TOP_CENTER,
-    //   // });
-    //   alert("Not Scheduled");
+    // // Show warning if QtyScheduled > QtyToSchedule
+    // if (hasInvalidQty) {
+    //   setModalMessage(
+    //     "Check Qty to Schedule. Make sure Qty to Schedule is correct. Not Scheduled"
+    //   );
+    //   setSmShow(true);
     //   return;
     // }
 
@@ -671,6 +719,8 @@ function ServiceOpenSchedule() {
             postRequest(
               endpoints.ShiftDetails,
               { ScheduleId: DwgNameList[0].ScheduleId },
+              // { ScheduleId: newState[0]?.ScheduleId },
+              // { SchDetailsID: newState[0]?.SchDetailsID },
               (response) => {
                 setNewState(response);
               }
@@ -706,6 +756,134 @@ function ServiceOpenSchedule() {
       }
     );
   };
+// veeranna 09042025
+
+const onClickScheduled = async () => {
+  console.log("newState", newState);
+
+  // Step 1: Identify rows with QtyScheduled = 0
+  const zeroScheduledRows = newState.filter(
+    (item) => Number(item.QtyScheduled) === 0
+  );
+
+  if (zeroScheduledRows.length > 0) {
+    const confirmDelete = window.confirm(
+      "Some rows have Qty Scheduled = 0. Do you want to delete them?"
+    );
+
+    if (confirmDelete) {
+      try {
+        // Step 2: Collect valid IDs for deletion (filter out null/undefined)
+        const deleteIds = zeroScheduledRows
+          .map((row) => row.SchDetailsID) // or 'id' if your key is named 'id'
+          .filter((id) => id !== null && id !== undefined);
+
+        console.log("IDs to delete:", deleteIds);
+
+        if (deleteIds.length > 0) {
+          await postRequest(
+            endpoints.deleteZeroScheduledRows, // Make sure this hits your backend
+            { ids: deleteIds },
+            () => {} // You can handle success message here
+          );
+        }
+
+        // Step 3: Remove deleted rows from local state
+        const updatedState = newState.filter(
+          (item) => Number(item.QtyScheduled) !== 0
+        );
+        setNewState(updatedState);
+
+        setModalMessage("Rows with Qty Scheduled = 0 deleted");
+        setSmShow(true);
+
+        // Step 4: Continue with scheduling using updated data
+        return proceedWithScheduling(updatedState);
+      } catch (err) {
+        console.error("Error deleting rows from DB", err);
+        setModalMessage("Failed to delete rows from DB");
+        setSmShow(true);
+        return;
+      }
+    } else {
+      setModalMessage("Some items are not scheduled due to Qty = 0");
+      setSmShow(true);
+      return;
+    }
+  }
+
+  // Step 5: Validate QtyScheduled ≤ QtyToSchedule
+  const hasInvalidQty = newState.some(
+    (row) => Number(row.QtyScheduled) > Number(row.QtyToSchedule)
+  );
+
+  if (hasInvalidQty) {
+    setModalMessage(
+      "Check Qty to Schedule. Make sure Qty to Schedule is correct. Not Scheduled"
+    );
+    setSmShow(true);
+    return;
+  }
+
+  // Step 6: Proceed with scheduling
+  proceedWithScheduling(newState);
+};
+
+
+const proceedWithScheduling = (validRows) => {
+  console.log("Proceeding with scheduling");
+
+  postRequest(
+    endpoints.onClickScheduled,
+    {
+      scheduleDetailsRow,
+      formdata,
+      newState: validRows,
+      Type,
+      OrdrDetailsData,
+    },
+    (response) => {
+      if (response.message === "Scheduled") {
+        setModalMessage(response.message);
+        setSmShow(true);
+        alert(response.message);
+
+        setTimeout(() => {
+          postRequest(
+            endpoints.ShiftDetails,
+            { ScheduleId: DwgNameList[0].ScheduleId },
+            (response) => setNewState(response)
+          );
+
+          postRequest(
+            endpoints.getScheduleListTaskandMaterial,
+            { ScheduleId: formdata[0]?.ScheduleId },
+            (response) => setTaskMaterialData(response)
+          );
+        }, 3000);
+      } else if (
+        response.message.startsWith("Cannot Schedule Zero Quantity For")
+      ) {
+        setDeleteAskModal(true);
+        setDeleteResponse(response.message);
+      } else {
+        setOpenScheduleModal(true);
+        setResponseSchedule(response.message);
+      }
+
+      // Always fetch latest formdata
+      postRequest(
+        endpoints.getScheduleListgetFormDetails,
+        {
+          Cust_Code: DwgNameList[0]?.Cust_Code,
+          ScheduleId: DwgNameList[0]?.ScheduleId,
+        },
+        (response) => setFormdata(response)
+      );
+    }
+  );
+};
+
 
   console.log("formdat===", formdata);
 
@@ -1731,7 +1909,10 @@ function ServiceOpenSchedule() {
 
                 <tbody className="tablebody table-space">
                   {newState.map((item, key) => {
+                    
                     return (
+                      
+                     
                       <tr
                         onClick={() => onClickofScheduleDtails(item, key)}
                         className={
@@ -1829,6 +2010,75 @@ function ServiceOpenSchedule() {
                       </tr>
                     );
                   })}
+                  {/* {newState.map((item, key) => {
+                    return item.QtyScheduled > 0 ? (
+                      <tr
+                        key={key}
+                        onClick={() => onClickofScheduleDtails(item, key)}
+                        className={
+                          key === scheduleDetailsRow?.index
+                            ? "selcted-row-clr"
+                            : ""
+                        }
+                      >
+                        <td>{key + 1}</td>
+                        <td>{item.DwgName}</td>
+                        <td>{item.Mtrl_Code}</td>
+                        <td>{item.Mtrl_Source}</td>
+                        <td>{item.Operation}</td>
+
+                        {formdata[0]?.Schedule_Status === "Created" ? (
+                          <td>{item.QtyToSchedule}</td>
+                        ) : null}
+
+                        <td>
+                          <input
+                            className="table-cell-editor"
+                            style={{
+                              backgroundColor: "transparent",
+                              border: "none",
+                            }}
+                            value={item.QtyScheduled}
+                            onChange={(e) => {
+                              const value = Number(e.target.value);
+                              handleSchedulelist(key, "QtyScheduled", value);
+                            }}
+                          />
+                        </td>
+                        <td>{item.QtyProgrammed}</td>
+                        <td>{item.QtyProduced}</td>
+                        <td>{item.QtyCleared}</td>
+                        <td>{item.QtyPacked}</td>
+                        <td>{item.QtyDelivered}</td>
+                        <td>
+                          <input
+                            className="table-cell-editor"
+                            style={{
+                              backgroundColor: "transparent",
+                              border: "none",
+                            }}
+                            value={item.JWCost}
+                            onChange={(e) =>
+                              handleJWMR(key, "JWCost", e.target.value)
+                            }
+                          />
+                        </td>
+                        <td>
+                          <input
+                            className="table-cell-editor"
+                            style={{
+                              backgroundColor: "transparent",
+                              border: "none",
+                            }}
+                            value={item.MtrlCost}
+                            onChange={(e) =>
+                              handleJWMR(key, "MtrlCost", e.target.value)
+                            }
+                          />
+                        </td>
+                      </tr>
+                    ) : null;
+                  })} */}
                 </tbody>
               </Table>
             </div>

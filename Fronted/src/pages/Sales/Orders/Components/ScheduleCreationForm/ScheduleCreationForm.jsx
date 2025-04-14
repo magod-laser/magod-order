@@ -2197,7 +2197,7 @@ export default function ScheduleCreationForm(props) {
                 Cust_Code={Cust_Code}
               />
             </Tab>
-            <Tab eventKey="profarmaInvoiceList" title="Proforma Invoice List">
+            <Tab eventKey="profarmaInvoiceList" title="Profarma Invoice List">
               <ProfarmaInvoiceList
                 OrderData={OrderData}
                 OrderCustData={OrderCustData}

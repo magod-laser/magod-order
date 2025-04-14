@@ -23,7 +23,7 @@ export default function ProductTable(props) {
                 <td>{val.Mtrl}</td>
                 <td>
                   <input
-                    type="number"
+                    type="text"
                     value={val.Qty}
                     min="1"
                     style={{
@@ -37,8 +37,14 @@ export default function ProductTable(props) {
                         ? "input-disabled"
                         : ""
                     }
+                    // onChange={(e) => {
+                    //   props.changeQTY(key, e.target.value || 0);
+                    // }}
                     onChange={(e) => {
-                      props.changeQTY(key, e.target.value || 0);
+                      const value = e.target.value;
+                      if (/^\d*$/.test(value)) {
+                        props.changeQTY(key, value === '' ? 0 : parseInt(value, 10));
+                      }
                     }}
                   />
                   {/* {val.Qty} */}

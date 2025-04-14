@@ -353,7 +353,7 @@ export default function PrintInvoiceAndAnnexure(props) {
 												</View>
 											</View>
 
-											{/* Proforma Invoice Type */}
+											{/* PROFARMA INVOICE Type */}
 											<View
 												style={{
 													borderBottom: "1px",
@@ -367,7 +367,7 @@ export default function PrintInvoiceAndAnnexure(props) {
 														...style.globalPadding,
 													}}>
 													<Text style={{ ...style.fontBold }}>
-														Proforma Invoice Type
+														PROFARMA INVOICE Type
 													</Text>
 												</View>
 												<View style={{ width: "75%", ...style.globalPadding }}>
@@ -389,7 +389,7 @@ export default function PrintInvoiceAndAnnexure(props) {
 														...style.globalPadding,
 													}}>
 													<Text style={{ ...style.fontBold }}>
-														Proforma Invoice No
+														PROFARMA INVOICE No
 													</Text>
 												</View>
 												<View
