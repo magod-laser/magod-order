@@ -362,6 +362,13 @@ function OrdrTable(props) {
     setSelectedRows,
     setSelectedRowItems,
     selectedRowItems,
+    // hande arrow keys
+    currentIndex,
+    setCurrentIndex,
+    goToFirst,
+    goToPrevious,
+    goToNext,
+    goToLast,
   } = props;
 
   useEffect(() => {
@@ -512,62 +519,62 @@ function OrdrTable(props) {
 
 
   //  const [data, setData] = useState(["Row 1", "Row 2", "Row 3", "Row 4"]);
-   const [currentIndex, setCurrentIndex] = useState(0);
+  //  const [currentIndex, setCurrentIndex] = useState(0);
 
-   const goToFirst = () => setCurrentIndex(0);
-   const goToPrevious = () => setCurrentIndex((prev) => Math.max(prev - 1, 0));
-   const goToNext = () =>
-     setCurrentIndex((prev) => Math.min(prev + 1, filteredData.length - 1));
-   const goToLast = () => setCurrentIndex(filteredData.length - 1);
+  //  const goToFirst = () => setCurrentIndex(0);
+  //  const goToPrevious = () => setCurrentIndex((prev) => Math.max(prev - 1, 0));
+  //  const goToNext = () =>
+  //    setCurrentIndex((prev) => Math.min(prev + 1, filteredData.length - 1));
+  //  const goToLast = () => setCurrentIndex(filteredData.length - 1);
  
 
 
   return (
     <>
-    <div style={{ overflow: "auto", height: "350px" }}>
-      <Table bordered hover className="table-data border">
-        <thead
-          className="tableHeaderBGColor"
-          style={{
-            textAlign: "center",
-            position: "sticky",
-            top: "-1px",
-            whiteSpace: "nowrap",
-          }}
-        >
-          <tr>
-            {columns.map(({ key, label, resizable }) => (
-              <th key={key} style={{ whiteSpace: "nowrap" }}>
-                {resizable ? (
-                  <ResizableBox
-                    width={columnWidths[key]}
-                    height={30}
-                    axis="x"
-                    resizeHandles={["e"]}
-                    onResizeStop={(e, data) => handleResize(key, e, data)}
-                  >
-                    <span
-                      onClick={() => requestSort && requestSort(key)}
-                      style={{
-                        display: "inline-block",
-                        width: "100%",
-                        cursor: "pointer",
-                      }}
+      <div style={{ overflow: "auto", height: "350px" }}>
+        <Table bordered hover className="table-data border">
+          <thead
+            className="tableHeaderBGColor"
+            style={{
+              textAlign: "center",
+              position: "sticky",
+              top: "-1px",
+              whiteSpace: "nowrap",
+            }}
+          >
+            <tr>
+              {columns.map(({ key, label, resizable }) => (
+                <th key={key} style={{ whiteSpace: "nowrap" }}>
+                  {resizable ? (
+                    <ResizableBox
+                      width={columnWidths[key]}
+                      height={30}
+                      axis="x"
+                      resizeHandles={["e"]}
+                      onResizeStop={(e, data) => handleResize(key, e, data)}
                     >
+                      <span
+                        onClick={() => requestSort && requestSort(key)}
+                        style={{
+                          display: "inline-block",
+                          width: "100%",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {label}
+                      </span>
+                    </ResizableBox>
+                  ) : (
+                    <span onClick={() => requestSort && requestSort(key)}>
                       {label}
                     </span>
-                  </ResizableBox>
-                ) : (
-                  <span onClick={() => requestSort && requestSort(key)}>
-                    {label}
-                  </span>
-                )}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {/* <tr
+                  )}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {/* <tr
             key={index}
             style={{
               backgroundColor: index === currentIndex ? "lightblue" : "white",
@@ -576,145 +583,186 @@ function OrdrTable(props) {
             <td>{item}</td>
           </tr> */}
 
-          {/* style={{ textAlign: "center" }} */}
-          {sortedData()?.map((OrdrDetailsItem, i) => {
-            const backgroundColor = getRowBackgroundColor(OrdrDetailsItem);
-            // const isSelected = selectedRows.includes(OrdrDetailsItem); // Check if the row is selected
-            return (
-              <tr
-                // key={i}
-                // onClick={() => selectItem(OrdrDetailsItem, false)}
-                // onClick={() => selectItem(OrdrDetailsItem, imprtDwgObj)}
-                // onClick={() => selectedRowItem(OrdrDetailsItem, imprtDwgObj)}
-                // style={{
-                //   cursor: "pointer",
-                //   backgroundColor: selectedItems?.includes(OrdrDetailsItem)
-                //     ? "#98a8f8"
-                //     : backgroundColor,
-                //   whiteSpace: "nowrap",
-                // }}
-                // // className="order-details-row"
+            {/* style={{ textAlign: "center" }} */}
+            {sortedData()?.map((OrdrDetailsItem, i) => {
+              const backgroundColor = getRowBackgroundColor(OrdrDetailsItem);
+              // const isSelected = selectedRows.includes(OrdrDetailsItem); // Check if the row is selected
+              return (
+                <tr
+                  // key={i}
+                  // onClick={() => selectItem(OrdrDetailsItem, false)}
+                  // onClick={() => selectItem(OrdrDetailsItem, imprtDwgObj)}
+                  // onClick={() => selectedRowItem(OrdrDetailsItem, imprtDwgObj)}
+                  // style={{
+                  //   cursor: "pointer",
+                  //   backgroundColor: selectedItems?.includes(OrdrDetailsItem)
+                  //     ? "#98a8f8"
+                  //     : backgroundColor,
+                  //   whiteSpace: "nowrap",
+                  // }}
+                  // // className="order-details-row"
 
-                // data-srlstatus={OrdrDetailsItem.SrlStatus}
-                // key={i}
-                // onClick={() => handleRowClick(OrdrDetailsItem)}
-                // style={{
-                //   cursor: "pointer",
-                //   backgroundColor:
-                //     selectedRow &&
-                //     selectedRow.Order_Srl === OrdrDetailsItem.Order_Srl
-                //       ? "#98a8f8" // Highlight color for the selected row
-                //       : backgroundColor, // Default background color
-                //   whiteSpace: "nowrap",
-                // }}
-                // data-srlstatus={OrdrDetailsItem.SrlStatus}
-                key={i}
-                onClick={() => handleRowClick(OrdrDetailsItem)}
-                style={{
-                  cursor: "pointer",
-
-                  backgroundColor:
-                    selectedRow &&
-                    selectedRow.Order_Srl === OrdrDetailsItem.Order_Srl
-                      ? "#98a8f8" // Set the background color to red for the selected row
-                      : backgroundColor, // Default background color
-                  whiteSpace: "nowrap",
-                }}
-                data-srlstatus={OrdrDetailsItem.SrlStatus}
-              >
-                <td
+                  // data-srlstatus={OrdrDetailsItem.SrlStatus}
+                  // key={i}
+                  // onClick={() => handleRowClick(OrdrDetailsItem)}
+                  // style={{
+                  //   cursor: "pointer",
+                  //   backgroundColor:
+                  //     selectedRow &&
+                  //     selectedRow.Order_Srl === OrdrDetailsItem.Order_Srl
+                  //       ? "#98a8f8" // Highlight color for the selected row
+                  //       : backgroundColor, // Default background color
+                  //   whiteSpace: "nowrap",
+                  // }}
+                  // data-srlstatus={OrdrDetailsItem.SrlStatus}
+                  key={i}
+                  onClick={() => handleRowClick(OrdrDetailsItem)}
                   style={{
-                    textAlign: "center",
-                    paddingLeft: "10px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Form.Check
-                    type="checkbox"
-                    id={`select-checkbox-${i}`}
-                    checked={selectedRows.some(
-                      (row) => row.Order_Srl === OrdrDetailsItem.Order_Srl
-                    )}
-                    onChange={() => handleCheckboxChange(OrdrDetailsItem)} // Passed the entire row data
-                    onClick={(e) => e.stopPropagation()} // Prevent triggering row click
-                  />
-                </td>
-                <td>{i + 1}</td>
-                 {/* <td>{OrdrDetailsItem.Order_Srl}</td> */}
-                {/* <td>
-                  <Form.Check type="checkbox" id={`select-checkbox-${i}`} />
-                </td> */}
-                {/* <td>{OrdrDetailsItem.Order_Srl}</td> */}
-                {/* <td>{OrdrDetailsItem.Order_Srl}</td> */}
-                <td
-                  className="dwg-name"
-                  style={{ width: columnWidths.DwgName }}
-                >
-                  {OrdrDetailsItem.DwgName}
-                </td>
-                {props.OrderData?.Type === "Profile" ? (
-                  <td>
-                    <Form.Check
-                      style={{
-                        textAlign: "center",
-                        paddingLeft: "10px",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                      type="checkbox"
-                      id="selected"
-                      checked={!!OrdrDetailsItem.Dwg} // Convert value to boolean
-                      readOnly // Prevent manual change
+                    cursor: "pointer",
 
-                      //                   type="checkbox"
-                      //                   id="selected"
-                      //                   checked={OrdrDetailsItem.Dwg ? 1 : 0} // If DwgName exists, check the box
-                      // readOnly // Prevent manual change
-                      //                   // defaultChecked
+                    backgroundColor:
+                      selectedRow &&
+                      // selectedRow.Order_Srl === OrdrDetailsItem.Order_Srl
+                      selectedRow.OrderDetailId ===
+                        OrdrDetailsItem.OrderDetailId
+                        ? "#98a8f8" // Set the background color to red for the selected row
+                        : backgroundColor, // Default background color
+                    whiteSpace: "nowrap",
+                  }}
+                  data-srlstatus={OrdrDetailsItem.SrlStatus}
+                >
+                  <td
+                    style={{
+                      textAlign: "center",
+                      paddingLeft: "10px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Form.Check
+                      type="checkbox"
+                      id={`select-checkbox-${i}`}
+                      checked={selectedRows.some(
+                        // (row) => row.Order_Srl === OrdrDetailsItem.Order_Srl
+                        (row) =>
+                          row.OrderDetailId === OrdrDetailsItem.OrderDetailId
+                      )}
+                      onChange={() => handleCheckboxChange(OrdrDetailsItem)} // Passed the entire row data
+                      onClick={(e) => e.stopPropagation()} // Prevent triggering row click
                     />
                   </td>
-                ) : null}
-                {/* <td>{OrdrDetailsItem.Mtrl_Code}</td> */}
-                <td>
-                  {OrdrDetailsItem.Type === "Service"
-                    ? OrdrDetailsItem.Material
-                    : OrdrDetailsItem.Mtrl_Code}
-                </td>
-                <td>{OrdrDetailsItem.Operation}</td>
-                <td>{OrdrDetailsItem.Mtrl_Source}</td>
-                <td>
-                  {" "}
-                  <input
-                    className="table-cell-editor"
-                    style={{
-                      backgroundColor: "transparent",
-                      border: "none",
+                  <td>{i + 1}</td>
+                  {/* <td>{OrdrDetailsItem.Order_Srl}</td> */}
+                  {/* <td>
+                  <Form.Check type="checkbox" id={`select-checkbox-${i}`} />
+                </td> */}
+                  {/* <td>{OrdrDetailsItem.Order_Srl}</td> */}
+                  {/* <td>{OrdrDetailsItem.Order_Srl}</td> */}
+                  <td
+                    className="dwg-name"
+                    style={{ width: columnWidths.DwgName }}
+                  >
+                    {OrdrDetailsItem.DwgName}
+                  </td>
+                  {props.OrderData?.Type === "Profile" ? (
+                    <td>
+                      <Form.Check
+                        style={{
+                          textAlign: "center",
+                          paddingLeft: "10px",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                        type="checkbox"
+                        id="selected"
+                        checked={!!OrdrDetailsItem.Dwg} // Convert value to boolean
+                        readOnly // Prevent manual change
 
-                      textAlign: "end",
-                      paddingLeft: "10px",
-                      // display: "flex",
-                      justifyContent: "end",
-                      alignItems: "end",
-                    }}
-                    value={OrdrDetailsItem.Qty_Ordered}
-                    // onChange={(e) =>
-                    //   handleJWMR(i, "Qty_Ordered", e.target.value)
-                    // }
-                    // onChange={(e) => {
-                    //   handleJWMR(i, "Qty_Ordered", e.target.value, true);
-                    // }}
-                    onChange={(e) =>
-                      handleJWMR(i, "Qty_Ordered", e.target.value)
-                    }
-                  />
-                </td>
-                <td>
-                  {" "}
-                  <input
-                    className="table-cell-editor"
+                        //                   type="checkbox"
+                        //                   id="selected"
+                        //                   checked={OrdrDetailsItem.Dwg ? 1 : 0} // If DwgName exists, check the box
+                        // readOnly // Prevent manual change
+                        //                   // defaultChecked
+                      />
+                    </td>
+                  ) : null}
+                  {/* <td>{OrdrDetailsItem.Mtrl_Code}</td> */}
+                  <td>
+                    {OrdrDetailsItem.Type === "Service"
+                      ? OrdrDetailsItem.Material
+                      : OrdrDetailsItem.Mtrl_Code}
+                  </td>
+                  <td>{OrdrDetailsItem.Operation}</td>
+                  <td>{OrdrDetailsItem.Mtrl_Source}</td>
+                  <td>
+                    {" "}
+                    <input
+                      className="table-cell-editor"
+                      style={{
+                        backgroundColor: "transparent",
+                        border: "none",
+
+                        textAlign: "end",
+                        paddingLeft: "10px",
+                        // display: "flex",
+                        justifyContent: "end",
+                        alignItems: "end",
+                      }}
+                      value={OrdrDetailsItem.Qty_Ordered}
+                      // onChange={(e) =>
+                      //   handleJWMR(i, "Qty_Ordered", e.target.value)
+                      // }
+                      // onChange={(e) => {
+                      //   handleJWMR(i, "Qty_Ordered", e.target.value, true);
+                      // }}
+                      onChange={(e) =>
+                        handleJWMR(i, "Qty_Ordered", e.target.value)
+                      }
+                    />
+                  </td>
+                  <td>
+                    {" "}
+                    <input
+                      className="table-cell-editor"
+                      style={{
+                        backgroundColor: "transparent",
+                        border: "none",
+                        textAlign: "end",
+                        paddingLeft: "10px",
+                        // display: "flex",
+                        justifyContent: "end",
+                        alignItems: "end",
+                      }}
+                      value={OrdrDetailsItem.JWCost}
+                      // onChange={(e) => handleJWMR(i, "JWCost", e.target.value)}
+                      onChange={(e) => {
+                        handleJWMR(i, "JWCost", e.target.value, true);
+                      }}
+                    />
+                  </td>
+                  <td>
+                    {" "}
+                    <input
+                      className="table-cell-editor"
+                      style={{
+                        backgroundColor: "transparent",
+                        border: "none",
+                        textAlign: "end",
+                        paddingLeft: "10px",
+                        // display: "flex",
+                        justifyContent: "end",
+                        alignItems: "end",
+                      }}
+                      value={OrdrDetailsItem.MtrlCost}
+                      // onChange={(e) => handleJWMR(i, "MtrlCost", e.target.value)}
+                      onChange={(e) => {
+                        handleJWMR(i, "MtrlCost", e.target.value, true);
+                      }}
+                    />
+                  </td>
+                  <td
                     style={{
                       backgroundColor: "transparent",
                       border: "none",
@@ -724,110 +772,83 @@ function OrdrTable(props) {
                       justifyContent: "end",
                       alignItems: "end",
                     }}
-                    value={OrdrDetailsItem.JWCost}
-                    // onChange={(e) => handleJWMR(i, "JWCost", e.target.value)}
-                    onChange={(e) => {
-                      handleJWMR(i, "JWCost", e.target.value, true);
-                    }}
-                  />
-                </td>
-                <td>
-                  {" "}
-                  <input
-                    className="table-cell-editor"
-                    style={{
-                      backgroundColor: "transparent",
-                      border: "none",
-                      textAlign: "end",
-                      paddingLeft: "10px",
-                      // display: "flex",
-                      justifyContent: "end",
-                      alignItems: "end",
-                    }}
-                    value={OrdrDetailsItem.MtrlCost}
-                    // onChange={(e) => handleJWMR(i, "MtrlCost", e.target.value)}
-                    onChange={(e) => {
-                      handleJWMR(i, "MtrlCost", e.target.value, true);
-                    }}
-                  />
-                </td>
-                <td
-                  style={{
-                    backgroundColor: "transparent",
-                    border: "none",
-                    textAlign: "end",
-                    paddingLeft: "10px",
-                    // display: "flex",
-                    justifyContent: "end",
-                    alignItems: "end",
-                  }}
-                >
-                  {/* <input value={OrdrDetailsItem.UnitPrice} /> */}
-                  {/* {OrdrDetailsItem.UnitPrice} */}
-                  {/* {parseFloat(parseFloat(OrdrDetailsItem.MtrlCost) +
+                  >
+                    {/* <input value={OrdrDetailsItem.UnitPrice} /> */}
+                    {/* {OrdrDetailsItem.UnitPrice} */}
+                    {/* {parseFloat(parseFloat(OrdrDetailsItem.MtrlCost) +
                     parseFloat(OrdrDetailsItem.JWCost))} */}
-                  {(
-                    parseFloat(OrdrDetailsItem.MtrlCost) +
-                    parseFloat(OrdrDetailsItem.JWCost)
-                  ).toFixed(2)}
-                </td>
-                {/* {/* <td>{OrdrDetailsItem.LOC}</td> */}
-                {props.OrderData?.Type === "Profile" ? (
-                  <td>{OrdrDetailsItem.LOC}</td>
-                ) : null}
-                {/* <td>{OrdrDetailsItem.Holes}</td> } */}
-                {props.OrderData?.Type === "Profile" ? (
-                  <td>{OrdrDetailsItem.Holes}</td>
-                ) : null}
-                <td>{OrdrDetailsItem.InspLevel}</td>
-                <td>{OrdrDetailsItem.PackingLevel}</td>
-                <td>{OrdrDetailsItem.tolerance}</td>
-                {/* <td>
+                    {(
+                      parseFloat(OrdrDetailsItem.MtrlCost) +
+                      parseFloat(OrdrDetailsItem.JWCost)
+                    ).toFixed(2)}
+                  </td>
+                  {/* {/* <td>{OrdrDetailsItem.LOC}</td> */}
+                  {props.OrderData?.Type === "Profile" ? (
+                    <td>{OrdrDetailsItem.LOC}</td>
+                  ) : null}
+                  {/* <td>{OrdrDetailsItem.Holes}</td> } */}
+                  {props.OrderData?.Type === "Profile" ? (
+                    <td>{OrdrDetailsItem.Holes}</td>
+                  ) : null}
+                  <td>{OrdrDetailsItem.InspLevel}</td>
+                  <td>{OrdrDetailsItem.PackingLevel}</td>
+                  <td>{OrdrDetailsItem.tolerance}</td>
+                  {/* <td>
                                     {" "}
                                     <input value={OrdrDetailsItem.JWCost} />{" "}
                                 </td> */}
-                {/* <td>
+                  {/* <td>
                                     <input value={OrdrDetailsItem.MtrlCost} />
                                 </td> */}
-                {/* <td> */}
-                {/* <input value={OrdrDetailsItem.Qty_Ordered} /> */}
-                {/* {OrdrDetailsItem.Qty_Ordered} */}
-                {/* </td> */}
-                <td
-                  style={{
-                    backgroundColor: "transparent",
-                    border: "none",
-                    textAlign: "end",
-                    paddingLeft: "10px",
-                    // display: "flex",
-                    justifyContent: "end",
-                    alignItems: "end",
-                  }}
-                >
-                  {parseFloat(
-                    OrdrDetailsItem.UnitPrice * OrdrDetailsItem.Qty_Ordered
-                  ).toFixed(2)}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table>
+                  {/* <td> */}
+                  {/* <input value={OrdrDetailsItem.Qty_Ordered} /> */}
+                  {/* {OrdrDetailsItem.Qty_Ordered} */}
+                  {/* </td> */}
+                  <td
+                    style={{
+                      backgroundColor: "transparent",
+                      border: "none",
+                      textAlign: "end",
+                      paddingLeft: "10px",
+                      // display: "flex",
+                      justifyContent: "end",
+                      alignItems: "end",
+                    }}
+                  >
+                    {parseFloat(
+                      OrdrDetailsItem.UnitPrice * OrdrDetailsItem.Qty_Ordered
+                    ).toFixed(2)}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
 
-     
-    </div>
-    <div>
-    <button onClick={goToFirst}>First</button>
-    <button onClick={goToPrevious}>Previous</button>
-    <span>
-      {filteredData.length > 0
-        ? ` ${currentIndex + 1} of ${filteredData.length}`
-        : "No data available"}
-    </span>
-    <button onClick={goToNext}>Next</button>
-    <button onClick={goToLast}>Last</button>
-  </div>
- </>
+        {/* <div>
+        <button onClick={goToFirst}>First</button>
+        <button onClick={goToPrevious}>Previous</button>
+        <span>
+          {filteredData.length > 0
+            ? ` ${currentIndex + 1} of ${filteredData.length}`
+            : "No data available"}
+        </span>
+        <button onClick={goToNext}>Next</button>
+        <button onClick={goToLast}>Last</button>
+      </div> */}
+      </div>
+      <div>
+        <button onClick={goToFirst}>First</button>
+        <button onClick={goToPrevious}>Previous</button>
+        <span>
+          {filteredData.length > 0
+            ? ` ${currentIndex + 1} of ${filteredData.length}`
+            : "No data available"}
+        </span>
+        <button onClick={goToNext}>Next</button>
+        <button onClick={goToLast}>Last</button>
+      </div>
+    </>
   );
 }
 
