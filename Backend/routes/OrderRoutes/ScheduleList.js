@@ -52,7 +52,7 @@ ScheduleListRouter.post(`/getDwgTableData`, async (req, res, next) => {
 
 //ShiftDetailsTabData
 ScheduleListRouter.post(`/ScheduleDetails`, async (req, res, next) => {
-  console.log("req.body",req.body);
+  // console.log("req.body", req.body);
   let query = `SELECT o.*, cast(o1.Qty_Ordered As SIGNED)  - cast(o1.QtyScheduled As SIGNED) 
   as QtyToSchedule ,o1.OrderDetailId 
   FROM magodmis.orderscheduledetails o, magodmis.Order_details o1 
@@ -65,7 +65,7 @@ ScheduleListRouter.post(`/ScheduleDetails`, async (req, res, next) => {
         console.log("err", err);
       } else {
         res.send(data);
-        console.log("===response is",data);
+        console.log("===response is", data);
       }
     });
   } catch (error) {
@@ -1615,13 +1615,13 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                 //     }
                 //   }
                 // );
-                
+
                 return res.status(200).json({
                   message: `${paymentCautionCount} Invoices have PaymentDate exceeding by 60 days. Get Payment Cleared. Do you wish to proceed Scheduling?`,
                 });
-                
-              } 
-              
+
+              }
+
               else {
                 console.log(
                   "No payment caution issues, checking schedule details"
@@ -1655,7 +1655,7 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                         hasZeroQtyScheduled
                       );
 
-                      if (hasZeroQtyScheduled ) {
+                      if (hasZeroQtyScheduled) {
                         console.log(
                           "Zero quantity detected in schedule, returning warning"
                         );
@@ -1705,8 +1705,7 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                             // Loop through newState array and execute updateQuery1 for each object
                             newState.forEach((item, index) => {
                               console.log(
-                                `Processing newState item ${index + 1}/${
-                                  newState.length
+                                `Processing newState item ${index + 1}/${newState.length
                                 }:`,
                                 item
                               );
@@ -1716,14 +1715,12 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                               // Execute the update query for order_details
                               misQueryMod(updateQuery1, (err, result) => {
                                 console.log(
-                                  `Inside updateQuery1 callback for item ${
-                                    index + 1
+                                  `Inside updateQuery1 callback for item ${index + 1
                                   }`
                                 );
                                 if (err) {
                                   console.log(
-                                    `Error executing update query 1 for item ${
-                                      index + 1
+                                    `Error executing update query 1 for item ${index + 1
                                     }:`,
                                     err
                                   );
@@ -1732,14 +1729,12 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                     .json({ error: "Internal Server Error" });
                                 } else {
                                   console.log(
-                                    `UpdateQuery1 result for item ${
-                                      index + 1
+                                    `UpdateQuery1 result for item ${index + 1
                                     }:`,
                                     result
                                   );
                                   console.log(
-                                    `Entering into updateQuery2 for item ${
-                                      index + 1
+                                    `Entering into updateQuery2 for item ${index + 1
                                     }`
                                   );
 
@@ -1758,14 +1753,12 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                   // Execute the update query for magodmis.orderscheduledetails
                                   misQueryMod(updateQuery2, (err, result) => {
                                     console.log(
-                                      `Inside updateQuery2 callback for item ${
-                                        index + 1
+                                      `Inside updateQuery2 callback for item ${index + 1
                                       }`
                                     );
                                     if (err) {
                                       console.log(
-                                        `Error executing update query 2 for item ${
-                                          index + 1
+                                        `Error executing update query 2 for item ${index + 1
                                         }:`,
                                         err
                                       );
@@ -1776,8 +1769,7 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                         });
                                     }
                                     console.log(
-                                      `UpdateQuery2 result for item ${
-                                        index + 1
+                                      `UpdateQuery2 result for item ${index + 1
                                       }:`,
                                       result
                                     );
@@ -2084,72 +2076,71 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
 
                                                           //veeranna 14042025 1754
                                                           const groupedTasks =
-                                req.body.Type === "Profile"
-                                  ? scheduleDetails.reduce((acc, row) => {
-                                      // For Profile type, create a key combining all three attributes
-                                      const key = `${row.Mtrl_Code}_${row.Mtrl_Source}_${row.Operation}`;
-                                      console.log(
-                                        "Group key (Mtrl_Code_Source_Operation):",
-                                        key
-                                      );
+                                                            req.body.Type === "Profile"
+                                                              ? scheduleDetails.reduce((acc, row) => {
+                                                                // For Profile type, create a key combining all three attributes
+                                                                const key = `${row.Mtrl_Code}_${row.Mtrl_Source}_${row.Operation}`;
+                                                                console.log(
+                                                                  "Group key (Mtrl_Code_Source_Operation):",
+                                                                  key
+                                                                );
 
-                                      // Initialize the array for this unique combination if it doesn't exist
-                                      if (!acc[key]) {
-                                        acc[key] = [];
-                                        // Assign task number only once per unique combination
-                                        taskCounters[key] = taskNumber
-                                          .toString()
-                                          .padStart(2, "0");
-                                        console.log(
-                                          `New group ${key}, assigned task number:`,
-                                          taskCounters[key]
-                                        );
-                                        taskNumber++;
-                                      }
+                                                                // Initialize the array for this unique combination if it doesn't exist
+                                                                if (!acc[key]) {
+                                                                  acc[key] = [];
+                                                                  // Assign task number only once per unique combination
+                                                                  taskCounters[key] = taskNumber
+                                                                    .toString()
+                                                                    .padStart(2, "0");
+                                                                  console.log(
+                                                                    `New group ${key}, assigned task number:`,
+                                                                    taskCounters[key]
+                                                                  );
+                                                                  taskNumber++;
+                                                                }
 
-                                      // Add the row to the group with the assigned TaskNo
-                                      acc[key].push({
-                                        ...row,
-                                        TaskNo: `${row.ScheduleNo} ${taskCounters[key]}`,
-                                      });
-                                      console.log(
-                                        `Added row to group ${key} with TaskNo:`,
-                                        `${row.ScheduleNo} ${taskCounters[key]}`
-                                      );
+                                                                // Add the row to the group with the assigned TaskNo
+                                                                acc[key].push({
+                                                                  ...row,
+                                                                  TaskNo: `${row.ScheduleNo} ${taskCounters[key]}`,
+                                                                });
+                                                                console.log(
+                                                                  `Added row to group ${key} with TaskNo:`,
+                                                                  `${row.ScheduleNo} ${taskCounters[key]}`
+                                                                );
 
-                                      return acc;
-                                    }, {})
-                                  : // For 'Service' and 'Fabrication', create a separate task for each row
-                                    scheduleDetails.reduce((acc, row) => {
-                                      console.log(
-                                        "Processing service/fabrication row for task:",
-                                        row.SchDetailsID
-                                      );
+                                                                return acc;
+                                                              }, {})
+                                                              : // For 'Service' and 'Fabrication', create a separate task for each row
+                                                              scheduleDetails.reduce((acc, row) => {
+                                                                console.log(
+                                                                  "Processing service/fabrication row for task:",
+                                                                  row.SchDetailsID
+                                                                );
 
-                                      row.TaskNo = `${
-                                        row.ScheduleNo
-                                      } ${taskNumber
-                                        .toString()
-                                        .padStart(2, "0")}`;
-                                      console.log(
-                                        "Assigned TaskNo:",
-                                        row.TaskNo
-                                      );
-                                      taskNumber++;
+                                                                row.TaskNo = `${row.ScheduleNo
+                                                                  } ${taskNumber
+                                                                    .toString()
+                                                                    .padStart(2, "0")}`;
+                                                                console.log(
+                                                                  "Assigned TaskNo:",
+                                                                  row.TaskNo
+                                                                );
+                                                                taskNumber++;
 
-                                      acc[row.SchDetailsID] = [row]; // Each row gets its own task
-                                      console.log(
-                                        "Created individual task for SchDetailsID:",
-                                        row.SchDetailsID
-                                      );
+                                                                acc[row.SchDetailsID] = [row]; // Each row gets its own task
+                                                                console.log(
+                                                                  "Created individual task for SchDetailsID:",
+                                                                  row.SchDetailsID
+                                                                );
 
-                                      return acc;
-                                    }, {});
+                                                                return acc;
+                                                              }, {});
 
-                              console.log(
-                                "Total grouped tasks:",
-                                Object.keys(groupedTasks).length
-                              );
+                                                          console.log(
+                                                            "Total grouped tasks:",
+                                                            Object.keys(groupedTasks).length
+                                                          );
                                                           // Function to execute database queries
                                                           const queryDatabase =
                                                             (query) => {
@@ -2407,10 +2398,8 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                                                   row,
                                                                 ] of taskGroup.entries()) {
                                                                   console.log(
-                                                                    `Processing task part ${
-                                                                      index + 1
-                                                                    }/${
-                                                                      taskGroup.length
+                                                                    `Processing task part ${index + 1
+                                                                    }/${taskGroup.length
                                                                     }, SchDetailsID:`,
                                                                     row.SchDetailsID
                                                                   );
@@ -2433,8 +2422,7 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                                                     insertTaskPartsListQuery
                                                                   );
                                                                   console.log(
-                                                                    `Completed processing task part ${
-                                                                      index + 1
+                                                                    `Completed processing task part ${index + 1
                                                                     }`
                                                                   );
                                                                 }
@@ -2462,10 +2450,9 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                                               )) {
                                                                 taskIndex++;
                                                                 console.log(
-                                                                  `Processing task group ${taskIndex}/${
-                                                                    Object.keys(
-                                                                      groupedTasks
-                                                                    ).length
+                                                                  `Processing task group ${taskIndex}/${Object.keys(
+                                                                    groupedTasks
+                                                                  ).length
                                                                   }`
                                                                 );
                                                                 await processTask(
@@ -3544,12 +3531,12 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
 //         const scheduleCount = selectData[0].ScheduleCount;
 //         let newState = req.body.newState; // Assuming newState is an array of objects
 //         console.log("newState",newState);
-        
+
 
 //         // Loop through newState array and execute updateQuery1 for each object
 //         newState.forEach((item) => {
 //           console.log("update query for order_details");
-          
+
 //           let updateQuery1 = `UPDATE order_details SET QtyScheduled=QtyScheduled+'${item.QtyScheduled}' WHERE OrderDetailID='${item.OrderDetailID}'`;
 
 //           // Execute the update query for order_details
@@ -3563,7 +3550,7 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
 //               console.log("Update magodmis.orderscheduledetails");
 //               console.log("Update magodmis.orderscheduledetails",item.QtyScheduled);
 //               console.log("Update magodmis.orderscheduledetails",item.SchDetailsID);
-              
+
 //               let updateQuery2 = `UPDATE magodmis.orderscheduledetails SET QtyScheduled='${item.QtyScheduled}' WHERE SchDetailsID='${item.SchDetailsID}'`;
 
 //               // Execute the update query for magodmis.orderscheduledetails
@@ -3576,7 +3563,7 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
 //                 }
 //                 else{
 //                 console.log("ressssss==",result);
-                
+
 //                 }
 //               });
 //             }
@@ -3901,10 +3888,10 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
 ScheduleListRouter.post(`/scheduleAfterLogin`, async (req, res, next) => {
   try {
 
-    console.log("req1404",req.body);
-    console.log("req1404",req.body.formdata);
-    console.log("req1404",req.body.formdata[0].Type);
-    
+    console.log("req1404", req.body);
+    console.log("req1404", req.body.formdata);
+    console.log("req1404", req.body.formdata[0].Type);
+
     const originalDate = new Date();
     const formattedDate = originalDate
       .toISOString()
@@ -4036,71 +4023,70 @@ ScheduleListRouter.post(`/scheduleAfterLogin`, async (req, res, next) => {
                             } else {
                               const taskCounters = {};
                               let taskNumber = 1;
-console.log("req.body.Type",req.body.Type);
+                              console.log("req.body.Type", req.body.Type);
 
                               // Grouping logic based on Mtrl_Code, Mtrl_Source, and Operation
                               const groupedTasks =
                                 req?.body?.formdata[0]?.Type === "Profile"
                                   ? scheduleDetails.reduce((acc, row) => {
-                                      // For Profile type, create a key combining all three attributes
-                                      const key = `${row.Mtrl_Code}_${row.Mtrl_Source}_${row.Operation}`;
+                                    // For Profile type, create a key combining all three attributes
+                                    const key = `${row.Mtrl_Code}_${row.Mtrl_Source}_${row.Operation}`;
+                                    console.log(
+                                      "Group key (Mtrl_Code_Source_Operation):",
+                                      key
+                                    );
+
+                                    // Initialize the array for this unique combination if it doesn't exist
+                                    if (!acc[key]) {
+                                      acc[key] = [];
+                                      // Assign task number only once per unique combination
+                                      taskCounters[key] = taskNumber
+                                        .toString()
+                                        .padStart(2, "0");
                                       console.log(
-                                        "Group key (Mtrl_Code_Source_Operation):",
-                                        key
+                                        `New group ${key}, assigned task number:`,
+                                        taskCounters[key]
                                       );
+                                      taskNumber++;
+                                    }
 
-                                      // Initialize the array for this unique combination if it doesn't exist
-                                      if (!acc[key]) {
-                                        acc[key] = [];
-                                        // Assign task number only once per unique combination
-                                        taskCounters[key] = taskNumber
-                                          .toString()
-                                          .padStart(2, "0");
-                                        console.log(
-                                          `New group ${key}, assigned task number:`,
-                                          taskCounters[key]
-                                        );
-                                        taskNumber++;
-                                      }
+                                    // Add the row to the group with the assigned TaskNo
+                                    acc[key].push({
+                                      ...row,
+                                      TaskNo: `${row.ScheduleNo} ${taskCounters[key]}`,
+                                    });
+                                    console.log(
+                                      `Added row to group ${key} with TaskNo:`,
+                                      `${row.ScheduleNo} ${taskCounters[key]}`
+                                    );
 
-                                      // Add the row to the group with the assigned TaskNo
-                                      acc[key].push({
-                                        ...row,
-                                        TaskNo: `${row.ScheduleNo} ${taskCounters[key]}`,
-                                      });
-                                      console.log(
-                                        `Added row to group ${key} with TaskNo:`,
-                                        `${row.ScheduleNo} ${taskCounters[key]}`
-                                      );
-
-                                      return acc;
-                                    }, {})
+                                    return acc;
+                                  }, {})
                                   : // For 'Service' and 'Fabrication', create a separate task for each row
-                                    scheduleDetails.reduce((acc, row) => {
-                                      console.log(
-                                        "Processing service/fabrication row for task:",
-                                        row.SchDetailsID
-                                      );
+                                  scheduleDetails.reduce((acc, row) => {
+                                    console.log(
+                                      "Processing service/fabrication row for task:",
+                                      row.SchDetailsID
+                                    );
 
-                                      row.TaskNo = `${
-                                        row.ScheduleNo
+                                    row.TaskNo = `${row.ScheduleNo
                                       } ${taskNumber
                                         .toString()
                                         .padStart(2, "0")}`;
-                                      console.log(
-                                        "Assigned TaskNo:",
-                                        row.TaskNo
-                                      );
-                                      taskNumber++;
+                                    console.log(
+                                      "Assigned TaskNo:",
+                                      row.TaskNo
+                                    );
+                                    taskNumber++;
 
-                                      acc[row.SchDetailsID] = [row]; // Each row gets its own task
-                                      console.log(
-                                        "Created individual task for SchDetailsID:",
-                                        row.SchDetailsID
-                                      );
+                                    acc[row.SchDetailsID] = [row]; // Each row gets its own task
+                                    console.log(
+                                      "Created individual task for SchDetailsID:",
+                                      row.SchDetailsID
+                                    );
 
-                                      return acc;
-                                    }, {});
+                                    return acc;
+                                  }, {});
 
                               console.log(
                                 "Total grouped tasks:",
@@ -4721,64 +4707,178 @@ ScheduleListRouter.post(`/createProfileOrder`, async (req, res, next) => {
 });
 
 // Print PDF ScheduleList
-ScheduleListRouter.post(`/PrintPdf`, async (req, res, next) => {
-  // console.log("===", req.body.formdata[0].ScheduleId);
+// ScheduleListRouter.post(`/PrintPdf`, async (req, res, next) => {
+//   // console.log("===", req.body.formdata[0].ScheduleId);
 
+//   const ScheduleId = req.body?.ScheduleId;
+
+//   console.log("ScheduleId===0204", ScheduleId);
+
+//   try {
+//     let query = `SELECT * FROM magodmis.orderscheduledetails where ScheduleId='${ScheduleId}';`;
+
+//     console.log("query in print pdf:", query);
+
+//     misQueryMod(query, (err, data) => {
+//       if (err) {
+//         console.log("err", err);
+//         res
+//           .status(500)
+//           .send({ error: "An error occurred while fetching data" });
+//       } else {
+//         console.log("data received in print pdf-1 ::", data);
+
+//         if (data.length > 0) {
+//           // Group data by task number
+//           const groupedData = {};
+//           data.forEach((item) => {
+//             const TaskNo = item.TaskNo;
+//             console.log("TaskNo111", TaskNo);
+
+//             if (!groupedData[TaskNo]) {
+//               groupedData[TaskNo] = [];
+//             }
+//             groupedData[TaskNo].push(item);
+
+//           });
+//           console.log("groupedData111", groupedData);
+
+//           // Format grouped data
+//           const formattedData = [];
+//           for (const TaskNo in groupedData) {
+//             formattedData.push({
+//               taskNo: TaskNo,
+//               Mtrl_Code: groupedData[TaskNo][0].Mtrl_Code,
+//               Mtrl_Source: groupedData[TaskNo][0].Mtrl_Source,
+//               Operation: groupedData[TaskNo][0].Operation,
+//               otherdetails: groupedData[TaskNo],
+//             });
+//           }
+//           console.log("formatted data lgged::", formattedData)
+//           res.send(formattedData);
+//         } else {
+          
+//           res
+//             .status(404)
+//             .send({ error: "No data found for the provided ScheduleId" });
+//         }
+//       }
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+// Print PDF ScheduleList
+ScheduleListRouter.post(`/PrintPdf`, async (req, res, next) => {
   const ScheduleId = req.body?.ScheduleId;
 
-  console.log("ScheduleId===0204", ScheduleId);
+  console.log("ScheduleId for PDF generation:", ScheduleId);
 
   try {
-    let query = `SELECT * FROM magodmis.orderscheduledetails where ScheduleId='${ScheduleId}';`;
+    // First, get the schedule details with the correct task numbers
+    const query = `SELECT o.* FROM magodmis.orderscheduledetails o WHERE o.ScheduleId='${ScheduleId}';`;
+
+    console.log("Query for PDF data:", query);
 
     misQueryMod(query, (err, data) => {
       if (err) {
-        console.log("err", err);
-        res
+        console.log("Error fetching schedule details:", err);
+        return res
           .status(500)
           .send({ error: "An error occurred while fetching data" });
-      } else {
-        console.log("data111",data);
+      }
+
+      console.log("Data received for PDF generation:", data);
+
+      if (data.length > 0) {
+        // First, identify all valid task numbers to avoid conflicts
+        const existingTaskNos = new Set();
+        data.forEach(item => {
+          if (item.TaskNo && item.TaskNo !== '"NotTasked"') {
+            existingTaskNos.add(item.TaskNo);
+          }
+        });
         
-        if (data.length > 0) {
-          // Group data by task number
-          const groupedData = {};
-          data.forEach((item) => {
+        console.log("Existing valid task numbers:", Array.from(existingTaskNos));
+        
+        // Group data by material properties (Mtrl_Code, Mtrl_Source, Operation) similar to Profile type grouping
+        const groupedData = {};
+        const taskCounters = {};
+        let taskNumber = 1;
+        
+        // First, group by material properties
+        data.forEach((item) => {
+          // For items that already have a valid task number, keep it
+          if (item.TaskNo && item.TaskNo !== '"NotTasked"') {
             const TaskNo = item.TaskNo;
-            console.log("TaskNo111",TaskNo);
             
             if (!groupedData[TaskNo]) {
               groupedData[TaskNo] = [];
             }
             groupedData[TaskNo].push(item);
-
-          });
-console.log("groupedData111",groupedData);
-
-          // Format grouped data
-          const formattedData = [];
-          for (const TaskNo in groupedData) {
-            formattedData.push({
-              taskNo: TaskNo,
-              Mtrl_Code: groupedData[TaskNo][0].Mtrl_Code,
-              Mtrl_Source: groupedData[TaskNo][0].Mtrl_Source,
-              Operation: groupedData[TaskNo][0].Operation,
-              otherdetails: groupedData[TaskNo],
-            });
+            console.log("Using existing TaskNo:", TaskNo);
+          } else {
+            // Group by material properties like in Profile type
+            const key = `${item.Mtrl_Code}_${item.Mtrl_Source}_${item.Operation}`;
+            console.log("Group key (Mtrl_Code_Source_Operation):", key);
+            
+            // Initialize the array for this unique combination if it doesn't exist
+            if (!groupedData[key]) {
+              groupedData[key] = [];
+              // Assign task number only once per unique combination
+              taskCounters[key] = taskNumber.toString().padStart(2, "0");
+              console.log(`New group ${key}, assigned task number:`, taskCounters[key]);
+              taskNumber++;
+            }
+            
+            // Add the item to the group
+            groupedData[key].push(item);
           }
-console.log("formatted data lgged::", formattedData)
-          res.send(formattedData);
-        } else {
-          res
-            .status(404)
-            .send({ error: "No data found for the provided ScheduleId" });
-        }
+        });
+        
+        // Now convert the material-based keys to actual task numbers
+        const finalGroupedData = {};
+        
+        Object.entries(groupedData).forEach(([key, items]) => {
+          // If the key is already a task number (from existing TaskNo), use it directly
+          if (existingTaskNos.has(key)) {
+            finalGroupedData[key] = items;
+          } else {
+            // For material-based keys, create a task number
+            const baseScheduleNo = items[0].ScheduleNo || items[0].Order_No;
+            const newTaskNo = `${baseScheduleNo} ${taskCounters[key]}`;
+            console.log(`Converting group ${key} to TaskNo:`, newTaskNo);
+            
+            finalGroupedData[newTaskNo] = items;
+            // Update the TaskNo in each item for consistency
+            items.forEach(item => item.TaskNo = newTaskNo);
+          }
+        });
+
+        console.log("Grouped data by task number:", Object.keys(finalGroupedData));
+
+        // Format grouped data
+        const formattedData = Object.entries(finalGroupedData).map(([TaskNo, details]) => ({
+          taskNo: TaskNo,
+          Mtrl_Code: details[0].Mtrl_Code,
+          Mtrl_Source: details[0].Mtrl_Source,
+          Operation: details[0].Operation,
+          otherdetails: details,
+        }));
+
+        console.log("Formatted data for PDF:", formattedData.length, "task groups");
+        res.send(formattedData);
+      } else {
+        console.log("No data found for ScheduleId:", ScheduleId);
+        res.status(404).send({ error: "No data found for the provided ScheduleId" });
       }
     });
   } catch (error) {
     next(error);
   }
 });
+
 
 //getCustomerName
 // ScheduleListRouter.post(`/getCustomerName`, async (req, res, next) => {
@@ -5132,7 +5232,7 @@ ScheduleListRouter.post(`/saveNcTaskList`, async (req, res, next) => {
   } else {
     console.log(
       "******************Saving NC Task Data" +
-        JSON.stringify(req.body.taskdata)
+      JSON.stringify(req.body.taskdata)
     );
     let taskdataarray = req.body.taskdata;
     let mtrl = "";
@@ -5187,20 +5287,15 @@ ScheduleListRouter.post(`/saveNcTaskList`, async (req, res, next) => {
             misQueryMod(
               `INSERT INTO magodmis.nc_task_list(TaskNo, ScheduleID, DeliveryDate, order_No, ScheduleNo, Cust_Code, Mtrl_Code, MTRL,
                      Thickness, CustMtrl, NoOfDwgs, TotalParts, MProcess, Operation, TotalLOC, TotalHoles, Machine)
-                     VALUES('${element.TaskNo}', '${element.ScheduleID}', '${
-                element.DeliveryDate == null
-                  ? moment(cDate).format("YYYY-mm-DD")
-                  : element.DeliveryDate
+                     VALUES('${element.TaskNo}', '${element.ScheduleID}', '${element.DeliveryDate == null
+                ? moment(cDate).format("YYYY-mm-DD")
+                : element.DeliveryDate
               }',
-                     '${element.Order_No}', '${element.ScheduleNo}','${
-                element.Cust_code
-              }', '${element.Mtrl_Code}', '${element.MTRL}', '${
-                element.Thickness
+                     '${element.Order_No}', '${element.ScheduleNo}','${element.Cust_code
+              }', '${element.Mtrl_Code}', '${element.MTRL}', '${element.Thickness
               }',
-                     '${element.CustMtrl}', '${element.NoOfDwgs}', '${
-                element.TotalParts
-              }', '${element.MProcess}', '${element.Operation}', '${
-                element.TotalLOC
+                     '${element.CustMtrl}', '${element.NoOfDwgs}', '${element.TotalParts
+              }', '${element.MProcess}', '${element.Operation}', '${element.TotalLOC
               }',
                      '${element.TotalHoles}', '')`,
               (err, data1) => {
@@ -5236,26 +5331,19 @@ ScheduleListRouter.post(`/saveNcTaskList`, async (req, res, next) => {
         } else {
           console.log("Updating NC Task List: " + element.TaskNo);
           misQueryMod(
-            `UPDATE magodmis.nc_task_list SET DeliveryDate='${
-              element.DeliveryDate == null
-                ? moment(cDate).format("YYYY-mm-DD")
-                : element.DeliveryDate
+            `UPDATE magodmis.nc_task_list SET DeliveryDate='${element.DeliveryDate == null
+              ? moment(cDate).format("YYYY-mm-DD")
+              : element.DeliveryDate
             }',
-                      order_No='${element.Order_No}', ScheduleNo='${
-              element.ScheduleNo
-            }', Cust_Code='${element.Cust_code}', Mtrl_Code='${
-              element.Mtrl_Code
+                      order_No='${element.Order_No}', ScheduleNo='${element.ScheduleNo
+            }', Cust_Code='${element.Cust_code}', Mtrl_Code='${element.Mtrl_Code
             }', MTRL='${element.MTRL}',
-                      Thickness='${element.Thickness}', CustMtrl='${
-              element.CustMtrl
-            }', NoOfDwgs='${element.NoOfDwgs}', TotalParts='${
-              element.TotalParts
+                      Thickness='${element.Thickness}', CustMtrl='${element.CustMtrl
+            }', NoOfDwgs='${element.NoOfDwgs}', TotalParts='${element.TotalParts
             }', MProcess='${element.MProcess}',
-                      Operation='${element.Operation}', TotalLOC='${
-              element.TotalLOC
+                      Operation='${element.Operation}', TotalLOC='${element.TotalLOC
             }', TotalHoles='${element.TotalHoles}', Machine=''
-                      WHERE ScheduleID='${element.ScheduleID}' And TaskNo='${
-              element.TaskNo
+                      WHERE ScheduleID='${element.ScheduleID}' And TaskNo='${element.TaskNo
             }'`,
             (err, data1) => {
               if (err) {
@@ -5348,9 +5436,8 @@ ScheduleListRouter.post(`/getTaskPartDetails`, async (req, res, next) => {
         if (strSchdetsId.length > 0) {
           await misQueryMod(
             `SELECT Distinct DwgName, QtyToNest, QtyNested, QtyProduced, QtyCleared From magodmis.task_partslist Part
-                        Where Part.TaskNo = '${
-                          req.body.TaskNo
-                        }' And Part.SchDetailsId In (${strSchdetsId.slice(
+                        Where Part.TaskNo = '${req.body.TaskNo
+            }' And Part.SchDetailsId In (${strSchdetsId.slice(
               0,
               -1
             )})`,
