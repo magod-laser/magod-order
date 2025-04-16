@@ -408,6 +408,7 @@ function OrdrTable(props) {
   };
 
   const sortedData = () => {
+        console.log("filterdata loggedin sorted data;;", filteredData);
     const dataCopy = [...filteredData];
 
     if (sortConfig.key) {
@@ -515,7 +516,7 @@ function OrdrTable(props) {
     }));
   };
 
-  console.log("OrdrDetailsData", OrdrDetailsData);
+  // console.log("OrdrDetailsData", OrdrDetailsData);
 
 
   //  const [data, setData] = useState(["Row 1", "Row 2", "Row 3", "Row 4"]);

@@ -79,14 +79,15 @@ export default function OrderDetails(props) {
     sortedData,
     OrdrDetailsItem,
 
-    // hande arrow keys 
-     currentIndex ,
-    setCurrentIndex ,
-    goToFirst , 
-     goToPrevious ,
-    goToNext ,
-     goToLast 
-    } = props;
+    // hande arrow keys
+    currentIndex,
+    setCurrentIndex,
+    goToFirst,
+    goToPrevious,
+    goToNext,
+    goToLast,
+    FindOldOrderButtonData,
+  } = props;
 
   const [groupBoxAddSrlVisible, setGroupBoxAddSrlVisible] = useState(true);
 
@@ -247,9 +248,9 @@ export default function OrderDetails(props) {
     });
   }, []);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
 
   const handleDwgInputChange = (event) => {
     const newValue = event.target.value;
@@ -452,7 +453,7 @@ export default function OrderDetails(props) {
       (singleChngData) => {
         ////// //console.log(" blkChngData", blkChngData);
         if (singleChngData.affectedRows != 0) {
-         alert("Updated successfully");
+          alert("Updated successfully");
           // toast.success("Updated successfully");
           fetchData();
         } else {
@@ -468,8 +469,8 @@ export default function OrderDetails(props) {
       selectedOptions.length > 0 ? selectedOptions[0]?.Mtrl_Code : " ";
     setStrMtrlCode(selectedValue);
   };
-  console.log("strmtrlcode1",strmtrlcode);
-  
+  console.log("strmtrlcode1", strmtrlcode);
+
   const handleMtrlCodeTypeaheadChange = (selectedOptions) => {
     // setSelectedItems(selectedOptions);
     if (selectedOptions.length > 0) {
@@ -479,7 +480,7 @@ export default function OrderDetails(props) {
       selectedOptions.length > 0 ? selectedOptions[0]?.Mtrl_Code : " ";
     setStrMtrlCode(selectedValue);
   };
-  console.log("strmtrlcode2",strmtrlcode);
+  console.log("strmtrlcode2", strmtrlcode);
 
   const handleInputChange = (input) => {
     setLastSlctedRow((prevSelectedItem) => ({
@@ -497,7 +498,7 @@ export default function OrderDetails(props) {
     });
     // console.log("endpoints.getmtrldetsbymtrlcode");
     // postRequest(
-      
+
     //   endpoints.getmtrldetsbymtrlcode,
     //   { MtrlCode: e.target.value },
     //   (mtrldata) => {
@@ -520,7 +521,7 @@ export default function OrderDetails(props) {
     //   }
     // );
   };
-  console.log("strmtrlcode3",strmtrlcode);
+  console.log("strmtrlcode3", strmtrlcode);
   const selectProc = async (e) => {
     e.preventDefault();
     setOperation(e.target.value);
@@ -615,6 +616,9 @@ export default function OrderDetails(props) {
       setImportOldOrdrMdl(true);
     }
   };
+  useEffect(() => {
+    FindOldOrderButtonData();
+  }, []);
 
   const handleImportFromExcelModal = () => {
     if (props.OrdrDetailsData.length > 0) {
@@ -722,8 +726,7 @@ export default function OrderDetails(props) {
   //   setisLoading(false);
   // }
 
-
-// commented after refactoring the function on 4 april 2025 : Bodheesh
+  // commented after refactoring the function on 4 april 2025 : Bodheesh
 
   // function deleteRowsBySrl() {
   //   // setRefresh(prev => !prev); // Toggle refresh
@@ -742,7 +745,7 @@ export default function OrderDetails(props) {
   //       if (deleteData.success === true) {
   //         // toast.success("Serial Deleted successfully");
   //         toast.success("Serial Deleted successfully");
-          
+
   //         // After successful deletion, re-index the serial numbers in the frontend
   //         postRequest(
   //           endpoints.getOrdDetailsData,
@@ -753,7 +756,7 @@ export default function OrderDetails(props) {
   //               // Sort the data by existing Order_Srl to maintain relative order
   //               const sortedData = [...updatedData].sort((a, b) => a.Order_Srl - b.Order_Srl);
   //               console.log("sorted data logged in::", sortedData)
-                
+
   //               // Re-index the serial numbers starting from 1
   //               const reIndexedData = sortedData.map((item, idx) => ({
   //                 ...item,
@@ -761,10 +764,10 @@ export default function OrderDetails(props) {
   //               }));
 
   //               console.log("reIndexedData", reIndexedData)
-                
+
   //               // Update the state with the re-indexed data
   //               setOrdrDetailsData(reIndexedData);
-                
+
   //               // Update the database with the re-indexed serial numbers
   //               const updatePromises = reIndexedData.map((item) => {
   //                 return new Promise((resolve, reject) => {
@@ -783,7 +786,7 @@ export default function OrderDetails(props) {
   //                   );
   //                 });
   //               });
-                
+
   //               // After all updates are done
   //               Promise.all(updatePromises)
   //                 .then(() => {
@@ -814,11 +817,11 @@ export default function OrderDetails(props) {
   // }
 
   // Refactored deleteRowsBySrl function to improve readability and maintainability
-  // Bug fixed No:159, 163 
+  // Bug fixed No:159, 163
   function deleteRowsBySrl() {
     // Avoid unnecessary state updates
     const orderNo = props.OrderData.Order_No;
-    
+
     // Step 1: Request to delete the serial numbers
     postRequest(
       endpoints.postDeleteDetailsBySrl,
@@ -831,7 +834,7 @@ export default function OrderDetails(props) {
         // Step 2: Handle success and failure scenarios for the delete request
         if (deleteData.success === true) {
           toast.success("Serial Deleted successfully");
-  
+
           // Step 3: Fetch updated data and update UI
           postRequest(
             endpoints.getOrdDetailsData,
@@ -839,20 +842,22 @@ export default function OrderDetails(props) {
             (updatedData) => {
               if (updatedData && updatedData.length > 0) {
                 console.log("Updated data found:", updatedData);
-  
+
                 // Step 4: Sort the data based on Order_Srl to maintain relative order
-                const sortedData = updatedData.sort((a, b) => a.Order_Srl - b.Order_Srl);
+                const sortedData = updatedData.sort(
+                  (a, b) => a.Order_Srl - b.Order_Srl
+                );
                 const reIndexedData = sortedData.map((item, idx) => ({
                   ...item,
-                  Order_Srl: idx + 1
+                  Order_Srl: idx + 1,
                 }));
-  
+
                 console.log("Re-indexed data:", reIndexedData);
-  
+
                 // Step 5: Update the state and database in parallel
                 // Update state with new order details
                 setOrdrDetailsData(reIndexedData);
-  
+
                 // Step 6: Batch update the serial numbers in the database
                 updateSerialNumbersInDatabase(reIndexedData, orderNo);
               } else {
@@ -867,7 +872,7 @@ export default function OrderDetails(props) {
       }
     );
   }
-  
+
   // Batch update serial numbers in the database
   function updateSerialNumbersInDatabase(reIndexedData, orderNo) {
     const updatePromises = reIndexedData.map((item) =>
@@ -883,7 +888,7 @@ export default function OrderDetails(props) {
         (updateResult) => updateResult
       )
     );
-  
+
     // Handle all updates
     Promise.all(updatePromises)
       .then(() => {
@@ -901,7 +906,6 @@ export default function OrderDetails(props) {
         setordrDetailsChange([]);
       });
   }
-  
 
   useEffect(() => {
     deleteRowsBySrl();
@@ -1129,7 +1133,7 @@ export default function OrderDetails(props) {
       let srcpath = `\\Wo\\` + OrderNo + "\\DXF";
       postRequest(endpoints.getOrdDxf, { selectedDwg, srcpath }, (respfile) => {
         filetoService(window.respfile);
-     //   setDwgOpen(true);
+        //   setDwgOpen(true);
       });
     }
     // }
@@ -1237,7 +1241,7 @@ export default function OrderDetails(props) {
   // Insert order details flag 1,2,3
   const PostOrderDetails = async (flag, imprtDwgObj) => {
     console.log("entering post order details");
-    
+
     console.log("OrderDetails.jsx - imprtDwgObj ", imprtDwgObj);
     // setisLoading(true);
     let requestData = {};
@@ -1324,8 +1328,8 @@ export default function OrderDetails(props) {
       let material;
       let grade;
       let specificwt;
-     console.log(" entring into the flag 2");
-     
+      console.log(" entring into the flag 2");
+
       // console.log("Cutting : ", imprtDwgObj.dblCuttingRate);
       // console.log("Piercing : ", imprtDwgObj.dblPierceRate);
       // console.log("FileName 1 : " + imprtDwgObj.dgfiles.files[0].name);
@@ -1334,15 +1338,14 @@ export default function OrderDetails(props) {
 
       let impDwgFileData = [];
       let dwgnamefiles = imprtDwgObj.dgfiles.files;
-console.log("strmtrlcode===4",imprtDwgObj.strmtrlcode);
+      console.log("strmtrlcode===4", imprtDwgObj.strmtrlcode);
 
       await postRequest(
         endpoints.getmtrldetsbymtrlcode,
         { MtrlCode: imprtDwgObj.strmtrlcode },
         async (mtrldata1) => {
-          
           if (mtrldata1.length > 0) {
-             console.log("1175  - MtrlData : ", mtrldata1);
+            console.log("1175  - MtrlData : ", mtrldata1);
             setThickness(mtrldata1[0]["Thickness"]);
             setGradeID(mtrldata1[0]["MtrlGradeID"]);
             setMaterial(mtrldata1[0]["Mtrl_Type"]);
@@ -1350,11 +1353,10 @@ console.log("strmtrlcode===4",imprtDwgObj.strmtrlcode);
             setSpecificWt(mtrldata1[0]["Specific_Wt"]);
             material = mtrldata1[0]["Mtrl_Type"];
             grade = mtrldata1[0]["Grade"];
-            console.log("===thickeness",mtrldata1[0]["Thickness"]);
-            
+            console.log("===thickeness", mtrldata1[0]["Thickness"]);
+
             thickness = mtrldata1[0]["Thickness"];
             specificwt = mtrldata1[0]["Specific_Wt"];
-
 
             let thck = mtrldata1[0]["Thickness"];
             let spwt = mtrldata1[0]["Specific_Wt"];
@@ -1371,7 +1373,7 @@ console.log("strmtrlcode===4",imprtDwgObj.strmtrlcode);
       await dxfupload(dwgnamefiles, destPath, (res) => {
         // console.log(res);
       });
-      // CHECKING 24032025 
+      // CHECKING 24032025
       for (let i = 0; i < dwgnamefiles.length; i++) {
         console.log(
           "material, grade, thickness ",
@@ -1500,7 +1502,7 @@ console.log("strmtrlcode===4",imprtDwgObj.strmtrlcode);
     );
   };
 
-  const PostSrlData = () => { };
+  const PostSrlData = () => {};
   console.log("PostSrlData - material : ", materia);
   //SURESH SIR CODE REALATED TO DXF
   let locCalc = async (drwfile, material, grade, thickness, cb) => {
@@ -1588,11 +1590,10 @@ console.log("strmtrlcode===4",imprtDwgObj.strmtrlcode);
   // const locCalc = async (drwfile, material, grade, thickness, specificwt, cb) => {
   //   console.log("123", drwfile, material, grade, thickness, specificwt, cb);
 
-
   //   const formData = new FormData();
   //   formData.append("file", drwfile);
   //   formData.append("thickness", thickness);
-  //   formData.append("specificWeight", specificwt);      
+  //   formData.append("specificWeight", specificwt);
 
   //   console.log("Sending to Service");
 
@@ -1636,8 +1637,6 @@ console.log("strmtrlcode===4",imprtDwgObj.strmtrlcode);
   //     noOfPierces: response?.data?.noOfPierces || 0,
   //   });
   // };
-
-
 
   // Drawing/Part Name	Material	Operation	Source	Insp Level	Tolerance	Packing Level	LOC	Pierces	JW Cost	Mtrl Cost	Unit Rate	Qty Ordered	Total
   const PrintXLOrderTable = () => {
@@ -1693,6 +1692,7 @@ console.log("strmtrlcode===4",imprtDwgObj.strmtrlcode);
       Total: parseFloat(row["UnitPrice"] * row["Qty_Ordered"]).toFixed(2),
     }));
   };
+
   return (
     <>
       <ConfirmationModal

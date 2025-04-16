@@ -291,6 +291,8 @@ OrderDetailsRouter.post(`/insertnewsrldata`, async (req, res, next) => {
 });
 
 OrderDetailsRouter.post(`/getbomdata`, async (req, res, next) => {
+  console.log("req.body.custcode",req.body.custcode);
+  
   try {
     misQueryMod(
       // `SELECT *
@@ -2524,6 +2526,9 @@ OrderDetailsRouter.post("/ordertablevaluesupdate", async (req, res, next) => {
 // });
 
 OrderDetailsRouter.post("/singleChangeUpdate", async (req, res, next) => {
+
+  console.log("asdfghjkl",req.body);
+  
   try {
     // Ensure all numeric values are valid, else default to 0
     const qtyOrdered = parseInt(req.body.quantity) || 0;
@@ -2541,7 +2546,7 @@ OrderDetailsRouter.post("/singleChangeUpdate", async (req, res, next) => {
     // Fetch the old order details before updating
     misQueryMod(
       `SELECT Qty_Ordered, JWCost, MtrlCost FROM magodmis.order_details 
-       WHERE Order_No = '${req.body.OrderNo}' AND Order_Srl = '${req.body.OrderSrl}'`,
+       WHERE Order_No = '${req.body.OrderNo}' AND OrderDetailId = '${req.body.OrderSrl}'`,
       (err, oldRowResult) => {
         if (err) {
           logger.error(err);
@@ -2571,7 +2576,10 @@ OrderDetailsRouter.post("/singleChangeUpdate", async (req, res, next) => {
           DwgName = '${DwgName}',
           Mtrl_Source = '${Mtrl_Source}',
           Mtrl_Code = '${Mtrl_Code}'
-        WHERE Order_No = '${req.body.OrderNo}' AND Order_Srl = '${req.body.OrderSrl}'`;
+        WHERE Order_No = '${req.body.OrderNo}' AND OrderDetailId = '${req.body.OrderSrl}'`;
+
+
+          // WHERE Order_No = '${req.body.OrderNo}' AND Order_Srl = '${req.body.OrderSrl}
 
         misQueryMod(updateQuery, (err, singlecngdata) => {
           if (err) {

@@ -28,6 +28,8 @@ export default function ProfarmaInvoiceList(props) {
       const arr = props.profarmaInvDetails?.filter(
         (obj) => obj.ProfarmaID === val.ProfarmaID
       );
+      console.log("arr", arr);
+      
       setFilteredDetailsData(arr);
     }
   };
@@ -162,6 +164,9 @@ export default function ProfarmaInvoiceList(props) {
       toast.warning("Please select the profarma invoice");
     }
   }
+
+
+  
 
   return (
     <>
