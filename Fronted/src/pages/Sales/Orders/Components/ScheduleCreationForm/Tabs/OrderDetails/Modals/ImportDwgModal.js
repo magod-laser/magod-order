@@ -610,43 +610,92 @@ function ImportDwgModal(props) {
   // Load saved values when modal opens
   useEffect(() => {
     if (importdwgmdlshow) {
-      const savedValues = JSON.parse(sessionStorage.getItem('importDwgModalValues') || '{}');
+      // Try to get saved values from localStorage instead of sessionStorage for persistence
+      const savedValues = JSON.parse(localStorage.getItem('importDwgModalValues') || '{}');
       console.log("Loading saved values:", savedValues);
       
-      if (savedValues) {
+      if (Object.keys(savedValues).length > 0) {
+        // Update local form state
         setFormValues(savedValues);
-        if (savedValues.strmtrlcode) selectMtrl(savedValues.strmtrlcode);
-        if (savedValues.stroperation) selectProc({ target: { value: savedValues.stroperation } });
-        if (savedValues.strsource) selectMtrlSrc({ target: { value: savedValues.strsource } });
-        if (savedValues.strtolerance) selectTolerance({ target: { value: savedValues.strtolerance } });
-        if (savedValues.strinsp) selectInsp({ target: { value: savedValues.strinsp } });
-        if (savedValues.strpkng) selectPack({ target: { value: savedValues.strpkng } });
-        if (savedValues.quantity) setQuantity(savedValues.quantity);
+        
+        // Create mock event objects for the select handlers
+        const createMockEvent = (value) => ({ 
+          preventDefault: () => {}, 
+          target: { value } 
+        });
+        
+        // Update parent component state with proper event objects
+        if (savedValues.strmtrlcode) {
+          // For material, we don't call selectMtrl directly to avoid errors
+          setProcess(savedValues.stroperation || "");
+        }
+        
+        if (savedValues.stroperation) {
+          setProcess(savedValues.stroperation);
+          // Only call selectProc if it's needed for parent state
+          // selectProc(createMockEvent(savedValues.stroperation));
+        }
+        
+        if (savedValues.strsource) {
+          setMtrSrc(savedValues.strsource);
+          // selectMtrlSrc(createMockEvent(savedValues.strsource));
+        }
+        
+        if (savedValues.strtolerance) {
+          setToler(savedValues.strtolerance);
+          // selectTolerance(createMockEvent(savedValues.strtolerance));
+        }
+        
+        if (savedValues.strinsp) {
+          // selectInsp(createMockEvent(savedValues.strinsp));
+        }
+        
+        if (savedValues.strpkng) {
+          // selectPack(createMockEvent(savedValues.strpkng));
+        }
+        
+        if (savedValues.quantity) {
+          setQuantity(savedValues.quantity);
+        }
       }
     }
   }, [importdwgmdlshow]);
 
-  // Save values when modal closes
+  // Save values when modal closes or when Save is clicked
   const handleModalClose = () => {
-   
-    // console.log("Saving values:", formValues);
-    sessionStorage.setItem('importDwgModalValues', JSON.stringify(formValues));
+    // Save to localStorage instead of sessionStorage for persistence between sessions
+    localStorage.setItem('importDwgModalValues', JSON.stringify(formValues));
     handleCloseImportDwgmdl();
   };
 
   //20012025
   const PostOrderDwgData = async (e) => {
-
     e.preventDefault();
-	console.log("enetring the save function");
-    // console.log("PostOrderDwgData");
+    console.log("entering the save function");
+    
+    // Get form values
     let dwgfiles = [];
     dwgfiles = e.target.elements.impDwgFiles;
     let strInsplvl = e.target.elements.strinspLvl.value;
     let strPknglvl = e.target.elements.strpkngLvl.value;
+    let cuttingRate = e.target.dblCuttingRate.value;
+    let pierceRate = e.target.dblPierceRate.value;
 
-    // console.log("strInsplvl", strInsplvl);
-    // console.log("strPknglvl", strPknglvl);
+    // Update form values with latest inputs
+    const updatedFormValues = {
+      ...formValues,
+      stroperation: e.target.elements.stroperation.value,
+      strsource: e.target.elements.strsource.value,
+      strtolerance: e.target.elements.strtolerance.value,
+      strinsp: strInsplvl,
+      strpkng: strPknglvl,
+      dblCuttingRate: cuttingRate,
+      dblPierceRate: pierceRate
+    };
+    
+    // Save updated values to localStorage
+    localStorage.setItem('importDwgModalValues', JSON.stringify(updatedFormValues));
+    setFormValues(updatedFormValues);
 
     let imprtdwgobjtemp = {
       ...imprtDwgObj,
@@ -654,23 +703,20 @@ function ImportDwgModal(props) {
       stroperation: e.target.elements.stroperation.value,
       strsource: e.target.elements.strsource.value,
       strtolerance: e.target.elements.strtolerance.value,
-      strinsp: e.target.elements.strinspLvl.value,
-      strpkng: e.target.elements.strpkngLvl.value,
+      strinsp: strInsplvl,
+      strpkng: strPknglvl,
       quantity: formValues.quantity,
-      dblCuttingRate: e.target.dblCuttingRate.value,
-      dblPierceRate: e.target.dblPierceRate.value,
+      dblCuttingRate: cuttingRate,
+      dblPierceRate: pierceRate,
       dgfiles: dwgfiles,
     };
 
-  
-
     setImprtDwgObj(imprtdwgobjtemp);
-	console.log("imprtdwgobjtemp", imprtdwgobjtemp);
-	console.log("exiting the save function");
-	
+    console.log("imprtdwgobjtemp", imprtdwgobjtemp);
+    console.log("exiting the save function");
+    
     PostOrderDetails(2, imprtdwgobjtemp);
     setImportDwgmdlShow(false);
-	
   };
 
   return (
@@ -679,7 +725,6 @@ function ImportDwgModal(props) {
       style={{ maxHeight: "600px" }}>
       <Modal
         show={importdwgmdlshow}
-        // onHide={handleCloseImportDwgmdl}
         onHide={handleModalClose}>
         <Modal.Header
           className="justify-content-md-center"
@@ -708,11 +753,10 @@ function ImportDwgModal(props) {
                         {mtrldata?.length > 0 || mtrldata != null ? (
                           <Typeahead
                             className="ip-select in-field"
-                            id="strmtrlcode"
+                            id="material-typeahead"
                             labelKey="Mtrl_Code"
                             name="impDwgMaterial"
                             onChange={handleMtrlChange}
-                            // clearButton
                             backspaceRemoves={true}
                             selected={formValues.strmtrlcode ? [{ Mtrl_Code: formValues.strmtrlcode }] : []}
                             options={mtrldata}
@@ -736,20 +780,9 @@ function ImportDwgModal(props) {
                             className="ip-select"
                             id="stroperation"
                             name="impDwgProcess"
+                            value={formValues.stroperation}
                             onChange={handleProcChange}>
-                            {/* <option
-                              value=""
-                              disabled
-                              selected>
-                              ** Select **
-                            </option> */}
-                            {/* {procdata?.map((proc) => {
-                              return (
-                                <option value={proc["ProcessDescription"]}>
-                                  {proc["ProcessDescription"]}
-                                </option>
-                              );
-                            })} */}
+                            <option value="" disabled>** Select **</option>
                             {procdata.map((proc) => {
                               // Check for the Type and map options based on that
                               if (props.OrderData?.Type === "Service") {
@@ -815,13 +848,9 @@ function ImportDwgModal(props) {
                           className="ip-select"
                           id="strsource"
                           name="impDwgSource"
+                          value={formValues.strsource}
                           onChange={handleSourceChange}>
-                          {/* <option
-                            value=""
-                            disabled
-                            selected>
-                            ** Select **
-                          </option> */}
+                          <option value="" disabled>** Select **</option>
                           <option value={"Customer"}>Customer</option>
                           <option value={"Magod"}>Magod</option>
                         </select>
@@ -839,6 +868,7 @@ function ImportDwgModal(props) {
                           className="ip-select"
                           id="strtolerance"
                           name="impDwgTolerance"
+                          value={formValues.strtolerance}
                           onChange={handleToleranceChange}>
                           {/* <option
                             value=""
@@ -864,14 +894,13 @@ function ImportDwgModal(props) {
                     <div
                       className="d-flex col-md-6 field-gap"
                       style={{ gap: "33px" }}>
-                      <label className="form-label label-space">
-                        Insp Level
-                      </label>
+                      <label className="form-label label-space">Insp Level</label>
                       {inspdata?.length > 0 ? (
                         <select
                           id="strinspLvl"
                           className="ip-select"
                           name="impDwgInspLvl"
+                          value={formValues.strinsp}
                           onChange={handleInspChange}>
                           {/* <option
                             value=""
@@ -900,6 +929,7 @@ function ImportDwgModal(props) {
                           id="strpkngLvl"
                           className="ip-select"
                           name="impDwgPkngLvl"
+                          value={formValues.strpkng}
                           onChange={handlePkngChange}>
                           {/* <option
                             value=""
