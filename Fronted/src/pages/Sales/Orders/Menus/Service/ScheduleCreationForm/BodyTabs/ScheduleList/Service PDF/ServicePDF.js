@@ -242,13 +242,13 @@ const styles = StyleSheet.create({
   ScheduleDatedata: {
     width: "70%",
     // paddingBottom: "3px",
-    margin: "5px 0px 0px 0px",
+    margin: "0px 0px 0px 0px",
     marginLeft: "2%",
   },
   PoNodata: {
     width: "75%",
     // paddingBottom: "3px",
-    margin: "5px 2px 0px 0px",
+    margin: "0px 2px 0px 0px",
     marginLeft: "2%",
     paddingRight: '2px'
   },
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   },
   DeliverDatedata: {
     width: "70%",
-    margin: "5px 0px 0px 0px",
+    margin: "0px 0px 0px 0px",
   },
 
   TargetDate: {
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
   TargetDatedata: {
     width: "70%",
     // paddingBottom: "3px",
-    margin: "5px 0px 0px 0px",
+    margin: "0px 0px 0px 0px",
     marginLeft: "2%",
   },
 
@@ -302,6 +302,8 @@ const styles = StyleSheet.create({
   },
   custName: {
     width: "70%",
+    textAlign: "right",
+    paddingRight: "40px",
   },
   taskNoStyle: {
     width: "30%",
@@ -760,7 +762,9 @@ const TableHeader = () => (
 );
 
 const ServicePDF = ({ formdata, PDFData, Tabledata, setTabledata }) => {
-  console.log("formdata", formdata[0]?.OrdSchNo);
+  console.log("formdata-1", formdata[0]?.OrdSchNo);
+  console.log("formdata-2", formdata, PDFData, Tabledata);
+ 
 
   // const [Tabledata, setTabledata] = useState([]);
   const [index, setIndex] = useState(0);

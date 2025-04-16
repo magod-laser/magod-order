@@ -739,15 +739,22 @@ OrderDetailsRouter.post(
 OrderDetailsRouter.post(
   `/postDeleteDetailsByOrderNo`,
   async (req, res, next) => {
-    // console.log("req.body", req.body.Order_No);
+    console.log("req.body-1", req.body.Order_No);
+    console.log("req.body-2", req.body.filteredData[0].
+      DwgName
+      );
     try {
       // Suresh 08-04-25
       let filespath = path.join(process.env.FILE_SERVER_PATH, "/WO//", req.body.Order_No, "//DXF//"); //, deletedwgsinfolder[i].DwgName);
-      fsSync.readdir(filespath, (err, files) => {
-        if (err) {
-          return res.status(500).send("Failed to read directory");
-        }
-        files.forEach((file) => {
+      // fsSync.readdir(filespath, (err, files) => {
+      //   if (err) {
+      //     return res.status(500).send("Failed to read directory");
+      //   }
+
+      for (let index = 0; index < req.body.filteredData.length; index++) {
+        const element = req.body.filteredData[index];
+        let file = element.DwgName;
+                // files.forEach((file) => {
           const fpath = path.join(filespath, file);
           console.log("fpath : ",fpath);
           fsAsync.unlink(fpath, (err) => {
@@ -755,8 +762,9 @@ OrderDetailsRouter.post(
               console.log(`Error deleting file ${file} : `, err);
             }
           })
-        })
-      })
+        }
+        // })
+     // })
       // Suresh 
       misQueryMod(
         `DELETE FROM magodmis.order_details WHERE (Order_No = '${req.body.Order_No}')`,

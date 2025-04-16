@@ -100,6 +100,8 @@ export default function OrderDetails(props) {
 
   const [isLoading, setisLoading] = useState(false);
 
+  console.log("filteredData - asdf", filteredData);
+  // console.log("LastSlctedRow", LastSlctedRow);
   // console.log("LastSlctedRow", LastSlctedRow);
 
   function importExcelFunc() {
@@ -921,7 +923,7 @@ export default function OrderDetails(props) {
   function deleteRowsByOrderNoFunc() {
     postRequest(
       endpoints.postDeleteDetailsByOrderNo,
-      { Order_No: props.OrderData.Order_No },
+      { Order_No: props.OrderData.Order_No, filteredData:filteredData },
       (deleteData) => {
         if (deleteData.flag > 0) {
           setOrdrDetailsData([]);

@@ -31,7 +31,7 @@ export default function ServiceModal({
 }) {
   // console.log("in Print Modal",selectedWeek)
 
-  console.log("formdata", formdata);
+  console.log("formdata in service modal::", formdata);
   console.log("OrdSchNo", formdata[0]?.OrdSchNo);
   console.log("ScheduleId", formdata[0]?.ScheduleId);
   console.log("Order_No", formdata[0]?.Order_No);
@@ -42,19 +42,74 @@ export default function ServiceModal({
     console.log(formdata[0]?.ScheduleId);
   }, [formdata[0]?.ScheduleId]);
 
-  console.log("SchId", SchId);
+  console.log("SchId outside useeffect::", SchId);
   const [Tabledata, setTabledata] = useState([]);
+
+
+  // useEffect(() => {
+  //   console.log("SchId in useEffect", SchId);
+  //   console.log("formdata[0]?.ScheduleId in useEffect", formdata[0]?.ScheduleId);
+  //   if (SchId){
+  //     postRequest(
+  //       endpoints.pdfdata,
+  //       // { ScheduleId: formdata[0]?.ScheduleId },
+  //       { ScheduleId: SchId },
+  //       (response) => {
+  //         console.log("Schedul response is", response);
+  //         setTabledata(response);
+  //       }
+  //     );
+
+  //   } else {
+  //     console.log("ScheduleId is not available");
+
+  //   }
+  //   // }, [formdata[0]?.ScheduleId]);
+  // }, [SchId, formdata[0]?.ScheduleId]);
+
+  // useEffect(() => {
+  //   const scheduleId = formdata[0]?.ScheduleId;
+  
+  //   if (!scheduleId) return;
+  
+  //   console.log("Calling API with ScheduleId:", scheduleId);
+  
+  //   postRequest(
+  //     endpoints.pdfdata,
+  //     { ScheduleId: scheduleId },
+  //     (response) => {
+  //       console.log("Schedule response is", response);
+  //       setTabledata(response);
+  //     }
+  //   );
+  // }, [formdata[0]?.ScheduleId]);
+
+
+// Updated logic with async/await for fetching schedule data - Bodheesh
   useEffect(() => {
-    console.log("SchId", SchId);
-    postRequest(
-      endpoints.pdfdata,
-      { ScheduleId: formdata[0]?.ScheduleId },
-      (response) => {
-        console.log("Schedul response is", response);
+    const scheduleId = formdata[0]?.ScheduleId;
+    if (!scheduleId) return;
+  
+    const fetchData = async () => {
+      try {
+        console.log("Calling API with ScheduleId:", scheduleId);
+        const response = await postRequest(endpoints.pdfdata, { ScheduleId: scheduleId });
+        console.log("Schedule response is received in servicemodal::", response);
         setTabledata(response);
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-    );
+    };
+  
+    fetchData();
   }, [formdata[0]?.ScheduleId]);
+  
+  
+
+ 
+  console.log("Tabledata logged in service modal ::", Tabledata);
+
+
 
   let OrderNo = formdata[0]?.Order_No;
 

@@ -94,6 +94,18 @@ export default function ProfarmaInvoiceForm(props) {
     // console.log("profarmaMainData:", profarmaMainData);
     // console.log("profarmaDetailsData:", profarmaDetailsData);
     // console.log("profarmaTaxData:", profarmaMainData);
+     
+    const hasZeroValue = profarmaDetailsData.some(
+      (item) => item.Qty === 0 || item.Qty === "0" || item.Qty === ""
+    );
+
+    if (hasZeroValue) {
+      alert(
+        "Invoice cannot be created as Qty in Proforma Details has a value of 0."
+      );
+      return;
+    }
+
 
     postRequest(
       endpoints.postSaveInvoice,

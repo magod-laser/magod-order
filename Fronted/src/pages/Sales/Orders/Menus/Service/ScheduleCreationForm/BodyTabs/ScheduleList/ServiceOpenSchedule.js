@@ -707,6 +707,8 @@ function ServiceOpenSchedule() {
       endpoints.onClickScheduled,
       { scheduleDetailsRow, formdata, newState, Type, OrdrDetailsData },
       (response) => {
+        console.log("unique-response", response);
+        
         if (response.message === "Scheduled") {
           setModalMessage(response.message);
           setSmShow(true);
