@@ -201,6 +201,10 @@ export default function ScheduleCreationForm(props) {
   let [bolPkng, setBolPkng] = useState(false);
   let [bolTolerance, setBolTolerance] = useState(false);
   let [bolQty, setBolQty] = useState(false);
+
+const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
+
+
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -272,7 +276,8 @@ export default function ScheduleCreationForm(props) {
 
     // if (!(orderStatus === "Created" || orderStatus === "Recorded")) {
     //   alert("Cannot import after the Order is recorded");
-    //   return;
+    //   return;import FindOldPart from './../../Menus/Profile/Find Order/Header Tabs/FindOldPart';
+
     // }
 
     let materialcode = strmtrlcode;
@@ -336,6 +341,8 @@ export default function ScheduleCreationForm(props) {
     window.dxffiles = files;
     setShow(false);
   };
+
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -575,7 +582,10 @@ export default function ScheduleCreationForm(props) {
         MtrlSrc: value,
       }));
     } else if (name === "odrDtlMtrlSrc") {
-      ////console("e.target.value---", e.target.value);
+      console.log("odrDtlMtrlSrc e.target.value---", e.target.value);
+
+      setOdrDtlMtrlSrc(e.target.value)
+
       setordrDetailsChange((prevState) => ({
         ...prevState,
         MtrlSrc: value,
@@ -897,13 +907,18 @@ export default function ScheduleCreationForm(props) {
 
   let updateOrdrData = async () => {
     // console.log("selectedSrl", selectedSrl);
-    // console.log("ordrDetailsChange", ordrDetailsChange);
+    console.log("ordrDetailsChange", ordrDetailsChange);
+
+    const unitPrice = ordrDetailsChange.MtrlSrc === "Customer"
+  ? parseFloat(ordrDetailsChange.jwRate)
+  : parseFloat(ordrDetailsChange.jwRate) + parseFloat(ordrDetailsChange.materialRate);
 
     postRequest(
       endpoints.singleChangeUpdate,
       {
         OrderNo: Orderno,
         custcode: props.OrderCustData?.Cust_Code,
+        // custcode: Cust_Code || CustCode,
         DwgName: ordrDetailsChange.DwgName,
         MtrlSrc: ordrDetailsChange.MtrlSrc,
         quantity: ordrDetailsChange.quantity,
@@ -911,9 +926,11 @@ export default function ScheduleCreationForm(props) {
         JwCost: ordrDetailsChange.jwRate,
         mtrlcost: ordrDetailsChange.materialRate,
 
-        unitPrice:
-          parseFloat(ordrDetailsChange.jwRate) +
-          parseFloat(ordrDetailsChange.materialRate),
+        // unitPrice:
+        //   parseFloat(ordrDetailsChange.jwRate) +
+        //   parseFloat(ordrDetailsChange.materialRate),
+        unitPrice:unitPrice,
+ 
         Operation: ordrDetailsChange.Operation,
         InspLvl: ordrDetailsChange.InspLvl,
         PkngLvl: ordrDetailsChange.PkngLvl,
@@ -924,6 +941,14 @@ export default function ScheduleCreationForm(props) {
           // toast.success("Updated successfully");
           alert("Updated successfully");
           fetchData();
+          // const ordrDetailsDataAfterinsertnewsrldata = postRequest(
+          //   endpoints.PostNewSrlData,
+          //   {
+          //     custcode: Cust_Code,
+          //     OrderNo: orderNUmber,
+          //   }
+          // );
+          // setOrdrDetailsData(ordrDetailsDataAfterinsertnewsrldata);
           // setSelectedRow(null);
           // setSelectedRows([]);
           // setSelectedRowItems([]);
@@ -1009,78 +1034,178 @@ export default function ScheduleCreationForm(props) {
   const [oldOrderListData, setOldOrderListData] = useState([]);
   const [oldOrderDetailsData, setOldOrderDetailsData] = useState([]);
 
+  const [createInvoicetrigger,SetCreateInvoicetrigger] = useState(false)
+
   // Register button
   const [isButtonDisabled, setButtonDisabled] = useState(false);
   // Alert Modals
   const [alertModal, setAlertModal] = useState(false);
   const [registerOrder, setRegisterOrder] = useState(false);
+
+  const [CustCode, SetCustCode] = useState();
   // veeranna
+  // const fetchData = async () => {
+  //   try {
+  //     const orderData = await postRequest(
+  //       endpoints.getOrderDetailsByOrdrNoAndType,
+  //       {
+  //         orderNo: orderNUmber,
+  //         orderType: orderType,
+  //       }
+  //     );
+  //     if (orderData?.orderData?.length > 0 && orderData?.custData?.length > 0) {
+  //       const custCode = orderData.custData[0].Cust_Code;
+  //       SetCustCode(orderData.custData[0].Cust_Code);
+  //       setOrderData(orderData.orderData[0]);
+  //       setOrderCustData(orderData.custData[0]);
+
+  //       // Fetch BOM Data
+  //       const bomData = await postRequest(endpoints.GetBomData, {
+  //         // custcode: custCode,
+  //         custcode: Cust_Code || custCode,
+  //       });
+  //       setBomData(bomData);
+
+  //       // Fetch FindOldPart Data
+  //       const findOldPartData = await postRequest(
+  //         endpoints.GetFindOldpartData,
+  //         {
+  //           // custcode: custCode,
+  //           custcode: Cust_Code || custCode,
+  //         }
+  //       );
+  //       setfindOldpart(findOldPartData);
+
+  //       // Fetch New Serial Data
+  //       const ordrDetailsData = await postRequest(endpoints.PostNewSrlData, {
+  //         custcode: Cust_Code || custCode,
+  //         OrderNo: orderNUmber,
+
+  //         //   custcode:  custCode,
+  //         // OrderNo: orderNo,
+  //       });
+  //       setOrdrDetailsData(ordrDetailsData);
+
+  //       // Fetch Old Order Data
+  //       const oldOrderData = await postRequest(
+  //         endpoints.getOldOrderByCustCodeAndOrderNo,
+  //         {
+  //           Cust_Code: Cust_Code || orderData.orderData[0].Cust_Code,
+  //           Order_No: orderNUmber || orderData.orderData[0].Order_No,
+  //           // Cust_Code:  orderData.orderData[0].Cust_Code,
+  //           // Order_No:  orderData.orderData[0].Order_No,
+  //         }
+  //       );
+  //       console.log("oldOrderData", oldOrderData);
+
+  //       setOldOrderListData(oldOrderData?.orderListData);
+  //       setOldOrderDetailsData(oldOrderData?.orderDetailsData);
+  //     } else {
+  //       // console.error("Invalid orderData or custData");
+  //     }
+
+  //     // Fetch Profarma Main Data
+  //     const profarmaMainData = await postRequest(endpoints.getProfarmaMain, {
+  //       OrderNo: orderNUmber,
+  //       // OrderNo: orderNo,
+  //     });
+  //     setProfarmaInvMain(profarmaMainData);
+
+  //     // Fetch Profarma Details Data
+  //     const profarmaDetailsData = await postRequest(
+  //       endpoints.getProfarmaDetails,
+  //       {
+  //         // OrderNo: orderNUmber,
+  //         OrderNo: orderNo,
+  //       }
+  //     );
+  //     setProfarmaInvDetails(profarmaDetailsData);
+
+  //     // Reset Selected Items
+  //     setSelectedItems([]);
+  //   } catch (error) {
+  //     // console.error("Error fetching data:", error);
+  //   }
+  // };
   const fetchData = async () => {
+    try {
+      await LoadInitialData();
+      await PerformaTabData();
+      await FindOldOrderButtonData();
+    } catch (error) {
+      // console.error("Error fetching data:", error);
+    }
+  };
+
+  //s------------------
+  const LoadInitialData = async () => {
+    // alert("load initial");
     try {
       const orderData = await postRequest(
         endpoints.getOrderDetailsByOrdrNoAndType,
         {
-          // orderNo: orderNo,
-          // orderType: props.Type,
-
           orderNo: orderNUmber,
           orderType: orderType,
         }
       );
+      console.log("orderdata inside initial;;", orderData);
+
       if (orderData?.orderData?.length > 0 && orderData?.custData?.length > 0) {
         const custCode = orderData.custData[0].Cust_Code;
+        SetCustCode(orderData.custData[0].Cust_Code);
         setOrderData(orderData.orderData[0]);
         setOrderCustData(orderData.custData[0]);
 
         // Fetch BOM Data
         const bomData = await postRequest(endpoints.GetBomData, {
-          // custcode: custCode,
           custcode: Cust_Code || custCode,
         });
         setBomData(bomData);
+        // alert("alert two");
+        console.log("Cust_Code initial", Cust_Code);
+        console.log("CustCode initial", CustCode);
+        console.log("orderNUmber initail", orderNUmber);
 
-        // Fetch FindOldPart Data
-        const findOldPartData = await postRequest(
-          endpoints.GetFindOldpartData,
-          {
-            // custcode: custCode,
-            custcode: Cust_Code || custCode,
-          }
-        );
-        setfindOldpart(findOldPartData);
-
-        // Fetch New Serial Data
+        // Order Details table Data
         const ordrDetailsData = await postRequest(endpoints.PostNewSrlData, {
           custcode: Cust_Code || custCode,
           OrderNo: orderNUmber,
-
-          //   custcode:  custCode,
-          // OrderNo: orderNo,
         });
         setOrdrDetailsData(ordrDetailsData);
-
-        // Fetch Old Order Data
-        const oldOrderData = await postRequest(
-          endpoints.getOldOrderByCustCodeAndOrderNo,
-          {
-            Cust_Code: Cust_Code || orderData.orderData[0].Cust_Code,
-            Order_No: orderNUmber || orderData.orderData[0].Order_No,
-            // Cust_Code:  orderData.orderData[0].Cust_Code,
-            // Order_No:  orderData.orderData[0].Order_No,
-          }
-        );
-        console.log("oldOrderData", oldOrderData);
-
-        setOldOrderListData(oldOrderData?.orderListData);
-        setOldOrderDetailsData(oldOrderData?.orderDetailsData);
-      } else {
-        // console.error("Invalid orderData or custData");
       }
+    } catch (error) {
+      console.log("error in load initial", error.message);
+    }
+  };
 
+  const FindOldPartData = async () => {
+    try {
+      const findOldPartData = await postRequest(endpoints.GetFindOldpartData, {
+        custcode: Cust_Code || CustCode,
+      });
+      setfindOldpart(findOldPartData);
+    } catch (error) {}
+  };
+
+  const FindOldOrderButtonData = async () => {
+    try {
+      const oldOrderData = await postRequest(
+        endpoints.getOldOrderByCustCodeAndOrderNo,
+        {
+          Cust_Code: Cust_Code || CustCode,
+          Order_No: orderNUmber,
+        }
+      );
+      setOldOrderListData(oldOrderData?.orderListData);
+      setOldOrderDetailsData(oldOrderData?.orderDetailsData);
+    } catch (error) {}
+  };
+  // Called alrady in child page no need to pass this
+  const PerformaTabData = async () => {
+    try {
       // Fetch Profarma Main Data
       const profarmaMainData = await postRequest(endpoints.getProfarmaMain, {
         OrderNo: orderNUmber,
-        // OrderNo: orderNo,
       });
       setProfarmaInvMain(profarmaMainData);
 
@@ -1088,18 +1213,14 @@ export default function ScheduleCreationForm(props) {
       const profarmaDetailsData = await postRequest(
         endpoints.getProfarmaDetails,
         {
-          // OrderNo: orderNUmber,
-          OrderNo: orderNo,
+          OrderNo: orderNUmber,
         }
       );
       setProfarmaInvDetails(profarmaDetailsData);
-
-      // Reset Selected Items
-      setSelectedItems([]);
-    } catch (error) {
-      // console.error("Error fetching data:", error);
-    }
+    } catch (error) {}
   };
+
+
 
   const fetchSalesExecLists = async () => {
     try {
@@ -1649,20 +1770,14 @@ export default function ScheduleCreationForm(props) {
     // const isSameRowSelected =
     //   selectedRow && selectedRow.Order_Srl === rowData.Order_Srl;
     const isSameRowSelected =
-      selectedRow && selectedRow.
-OrderDetailId
- === rowData.
-OrderDetailId
-;
+      selectedRow && selectedRow.OrderDetailId === rowData.OrderDetailId;
     setSelectedRow(isSameRowSelected ? null : rowData);
     setLastSlctedRow(isSameRowSelected ? null : rowData);
 
     if (!isSameRowSelected) {
       setSelectedItems([rowData]); // Store only current row
       // setSelectedSrl([rowData.Order_Srl]);
-      setSelectedSrl([rowData.
-OrderDetailId
-]);
+      setSelectedSrl([rowData.OrderDetailId]);
     } else {
       setSelectedItems([]);
       setSelectedSrl([]);
@@ -1736,9 +1851,7 @@ OrderDetailId
 
     const currentIndex = filteredData.findIndex(
       // (r) => r.Order_Srl === LastSlctedRow.Order_Srl
-      (r) => r.OrderDetailId
- === LastSlctedRow.OrderDetailId
-
+      (r) => r.OrderDetailId === LastSlctedRow.OrderDetailId
     );
 
     let newRow = null;
@@ -1842,14 +1955,12 @@ OrderDetailId
     setSelectedRows((prevSelectedRows) => {
       const updatedRows = prevSelectedRows.some(
         // (selectedRow) => selectedRow.Order_Srl === rowData.Order_Srl
-        (selectedRow) => selectedRow.OrderDetailId
- === rowData.OrderDetailId
-
+        (selectedRow) => selectedRow.OrderDetailId === rowData.OrderDetailId
       )
-        // ? prevSelectedRows.filter((row) => row.Order_Srl !== rowData.Order_Srl)
-        ? prevSelectedRows.filter((row) => row.OrderDetailId
- !== rowData.OrderDetailId
-)
+        ? // ? prevSelectedRows.filter((row) => row.Order_Srl !== rowData.Order_Srl)
+          prevSelectedRows.filter(
+            (row) => row.OrderDetailId !== rowData.OrderDetailId
+          )
         : [...prevSelectedRows, rowData];
 
       console.log("updatedRows", updatedRows);
@@ -1866,17 +1977,13 @@ OrderDetailId
 
       const isSelected = prevSelectedItems.some(
         // (item) => item.Order_Srl === rowData.Order_Srl
-        (item) => item.OrderDetailId
- === rowData.OrderDetailId
-
+        (item) => item.OrderDetailId === rowData.OrderDetailId
       );
 
       const updatedSelectedItems = isSelected
         ? prevSelectedItems.filter(
             // (item) => item.Order_Srl !== rowData.Order_Srl
-            (item) => item.OrderDetailId
- !== rowData.OrderDetailId
-
+            (item) => item.OrderDetailId !== rowData.OrderDetailId
           )
         : [...prevSelectedItems, rowData];
 
@@ -2077,6 +2184,8 @@ OrderDetailId
     setFilteredData(OrdrDetailsData);
   }, [OrdrDetailsData]);
 
+  console.log("filteredData", filteredData);
+
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
@@ -2197,6 +2306,7 @@ OrderDetailId
               OrderData={OrderData}
               findOldpart={findOldpart}
               setfindOldpart={setfindOldpart}
+              FindOldPartData={FindOldPartData}
             />
           </Tab>
           <Tab eventKey="materialinfo" title="Material Info">
@@ -2272,6 +2382,8 @@ OrderDetailId
                 goToPrevious={goToPrevious}
                 goToNext={goToNext}
                 goToLast={goToLast}
+                FindOldOrderButtonData={FindOldOrderButtonData}
+                OdrDtlMtrlSrc={OdrDtlMtrlSrc}
               />
             </Tab>
             <Tab eventKey="scheduleList" title="Schedule List">

@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
+
 import { Table } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import { postRequest } from "../../../../../../api/apiinstance";
+import { endpoints } from "../../../../../../api/constants";
 // import { Tab, Table, Tabs, Form } from "react-bootstrap";
 // Table
 
 export default function FindOldPart(props) {
-  const { OrderData, findOldpart, setfindOldpart } = props;
-  // console.log("OrderData",OrderData)
+  const { OrderData } = props;
+  console.log("OrderData", OrderData.Cust_Code);
   // console.log("findOldpart",findOldpart)
   const [selectedParts, setSelectedParts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [findOldpart, setfindOldpart] = useState();
 
   const selectItem = (findOldpartItem) => {
     const isSelected = selectedParts.some(
@@ -32,7 +36,7 @@ export default function FindOldPart(props) {
   );
 
   // table sorting
-const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
 
   // sorting function for table headings of the table
   const requestSort = (key) => {
@@ -56,8 +60,7 @@ const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
         if (
           sortConfig.key === "Order_No" ||
           sortConfig.key === "UnitPrice" ||
-          sortConfig.key === "MtrlCost" 
-         
+          sortConfig.key === "MtrlCost"
         ) {
           valueA = parseFloat(valueA);
           valueB = parseFloat(valueB);
@@ -75,6 +78,56 @@ const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
     return dataCopy;
   };
 
+  //  const FindOldPartData = async () => {
+  //   console.log("OrderData.Cust_Code", OrderData?.Cust_Code);
+
+  // if (!OrderData?.Cust_Code) return;
+
+  //   try {
+  //     const findOldPartData = await postRequest(endpoints.GetFindOldpartData, {
+  //       custcode: OrderData.Cust_Code,
+  //     });
+  //     console.log("findOldPartData in find old part", findOldPartData);
+
+  //     setfindOldpart(findOldPartData);
+  //   } catch (error) {}
+  //   };
+
+  //   useEffect(() => {
+  //     FindOldPartData();
+  //   }, [OrderData?.Cust_Code]);
+
+  // Fetch old part data only if a valid and changed customer code is available - Bodheesh
+  const FindOldPartData = useCallback(async (custCode) => {
+    if (!custCode) return;
+
+    try {
+      console.log("OrderData.Cust_Code", custCode);
+
+      const findOldPartData = await postRequest(endpoints.GetFindOldpartData, {
+        custcode: custCode,
+      });
+
+      console.log("findOldPartData in find old part", findOldPartData);
+      setfindOldpart(findOldPartData);
+    } catch (error) {
+      console.error("Error fetching old part data:", error);
+    }
+  }, []);
+
+  const prevCustCodeRef = useRef(null);
+
+  useEffect(() => {
+    const custCode = OrderData?.Cust_Code;
+
+    // Avoid calling if value hasn't changed
+    if (custCode && custCode !== prevCustCodeRef.current) {
+      prevCustCodeRef.current = custCode;
+      FindOldPartData(custCode);
+    }
+  }, [OrderData?.Cust_Code, FindOldPartData]);
+
+  
 
   return (
     <>
@@ -110,7 +163,7 @@ const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
               style={{ textAlign: "center" }}
             >
               <tr>
-                <th onClick={() => requestSort("DwgName")} >DWG Name</th>
+                <th onClick={() => requestSort("DwgName")}>DWG Name</th>
                 <th onClick={() => requestSort("Mtrl_Code")}>Material</th>
                 <th onClick={() => requestSort("Operation")}>Operation</th>
                 <th onClick={() => requestSort("Mtrl_Source")}>Source</th>
@@ -124,7 +177,7 @@ const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
             <tbody className="tablebody" style={{ textAlign: "center" }}>
               {filteredFindOldpart?.length > 0 ? (
                 // filteredFindOldpart.map((findOldpartItem, index) => {
-                  sortedData()?.map((findOldpartItem, index) => {
+                sortedData()?.map((findOldpartItem, index) => {
                   const isSelected = selectedParts.includes(findOldpartItem);
 
                   return (

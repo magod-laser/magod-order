@@ -87,6 +87,7 @@ export default function OrderInfo(props) {
 		if (orderDetailsResponse.success) {
 			// toast.success("Order details updated successfully");
 			// fetchData(); // Fetch updated data after both updates
+			
 		} else {
 			// toast.warning("Order details update failed, check once");
 		}

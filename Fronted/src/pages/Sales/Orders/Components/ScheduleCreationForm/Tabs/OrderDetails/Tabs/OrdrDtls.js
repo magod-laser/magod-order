@@ -73,10 +73,14 @@ function OrdrDtls(props) {
     Operation,
     setOperation,
     deleteRowsBySrl,
-    selectedRow,
+    selectedRow,OdrDtlMtrlSrc
   } = props;
 
   console.log("selectedRow", selectedRow);
+  // console.log("OdrDtlMtrlSrc", OdrDtlMtrlSrc);
+  console.log("OdrDtlMtrlSrc", OdrDtlMtrlSrc);
+
+ 
 
   const [materialCode, setMaterialCode] = useState(
     selectedItems[0]?.Mtrl_Code || ""
@@ -488,7 +492,9 @@ function OrdrDtls(props) {
                     //   props.OrderData?.Order_Status === "Recorded") ||
                     // (props.OrderData?.Order_Type === "Complete" &&
                     //   props.OrderData?.Order_Status === "Recorded")
-                    LastSlctedRow?.Mtrl_Source === "Customer"
+                    // LastSlctedRow?.Mtrl_Source  === "Customer"
+                    LastSlctedRow?.Mtrl_Source && ordrDetailsChange.MtrlSrc === "Customer"
+                    // OdrDtlMtrlSrc || ordrDetailsChange.MtrlSrc|| LastSlctedRow?.Mtrl_Source  === "Customer"
                   }
                 />
 
@@ -519,11 +525,11 @@ function OrdrDtls(props) {
                   //   parseFloat(ordrDetailsChange.materialRate)
                   // }
                   value={
-                    LastSlctedRow?.Mtrl_Source === "Customer"
-                      ? parseFloat(ordrDetailsChange.jwRate)
-                      : LastSlctedRow?.Mtrl_Source === "Magod"
-                      ? parseFloat(ordrDetailsChange.jwRate) + parseFloat(ordrDetailsChange.materialRate)
-                      : 0
+                    LastSlctedRow?.Mtrl_Source && ordrDetailsChange.MtrlSrc === "Customer"
+                      ? parseFloat(ordrDetailsChange.jwRate).toFixed(2)
+                      : LastSlctedRow?.Mtrl_Source && ordrDetailsChange.MtrlSrc === "Magod"
+                      ? (parseFloat(ordrDetailsChange.jwRate) + parseFloat(ordrDetailsChange.materialRate)).toFixed(2)
+                      : 0.00
                   }
                   disabled
                 />
