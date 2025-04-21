@@ -291,6 +291,9 @@ import { toast } from "react-toastify";
 
 export default function IETable(props) {
   // Ensure Order_Srl is mapped
+  const { dwgData, setDwgData, compareData, updatePara } = props;
+  console.log("props.importedExcelData ==2", props.importedExcelData);
+  
   useEffect(() => {
     const updatedData = props.importedExcelData.map((item, index) => ({
       ...item,
@@ -404,7 +407,13 @@ export default function IETable(props) {
               }}
             >
               <td>{val.Order_Srl}</td>
-              <td>
+              <td
+              // style={{
+              //   backgroundColor: val.mismatches?.Dwg_Name
+              //     ? "#ffd6d6"
+              //     : "inherit",
+              // }}
+              >
                 <input
                   value={val.Dwg_Name}
                   name="Dwg_Name"
@@ -421,7 +430,13 @@ export default function IETable(props) {
                   }
                 />
               </td>
-              <td>
+              <td
+                style={{
+                  backgroundColor: val.mismatches?.Mtrl_Code
+                    ? "#ffd6d6"
+                    : "inherit",
+                }}
+              >
                 {val.materialError && (
                   <span className="text-danger">Mtrl_Code data error</span>
                 )}
@@ -459,7 +474,13 @@ export default function IETable(props) {
                   placeholder="Choose a Material..."
                 />
               </td>
-              <td>
+              <td
+                style={{
+                  backgroundColor: val.mismatches?.Source
+                    ? "#ffd6d6"
+                    : "inherit",
+                }}
+              >
                 {val.sourceError && (
                   <span className="text-danger">Source data error</span>
                 )}
@@ -487,7 +508,13 @@ export default function IETable(props) {
                 />
               </td>
 
-              <td>
+              <td
+                style={{
+                  backgroundColor: val.mismatches?.Operation
+                    ? "#ffd6d6"
+                    : "inherit",
+                }}
+              >
                 {val.operationError && (
                   <span className="text-danger">Operation data error</span>
                 )}

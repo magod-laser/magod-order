@@ -72,7 +72,6 @@ export default function PrepareScheduleTab({
     console.log("Today's Date:", ScheduleDate);
   }, [ScheduleDate]);
 
-
   //select ALL for Right Table
   // const [selectAllChecked, setSelectAllChecked] = useState(false);
   const onClickSelectAllRight = () => {
@@ -143,26 +142,34 @@ export default function PrepareScheduleTab({
     if (rowselectleft.length <= 1) {
       validationModal();
     } else {
-      postRequest(endpoints.CreateSchedule, {
-        rowselectleft,
-        custCode: custCode,
-        selectedSalesContact: selectedSalesContact,
-        Date: storedDate,
-        ScheduleDate: ScheduleDate,
-      },(response) => {
-        setDisableButton(true);
-        setCombinedScheduleNo(response.combinedScheduleNos[0]);
-        openCombineScheduleModal();
-      });
+      postRequest(
+        endpoints.CreateSchedule,
+        {
+          rowselectleft,
+          custCode: custCode,
+          selectedSalesContact: selectedSalesContact,
+          Date: storedDate,
+          ScheduleDate: ScheduleDate,
+        },
+        (response) => {
+          setDisableButton(true);
+          setCombinedScheduleNo(response.combinedScheduleNos[0]);
+          openCombineScheduleModal();
+        }
+      );
     }
   };
 
   const getAlldataAfterCombineSchedule = () => {
-    postRequest(endpoints.afterCombinedSchedule, {
-      combinedScheduleNo,
-    },(response) => {
-      setBeforeCombine(response);
-    });
+    postRequest(
+      endpoints.afterCombinedSchedule,
+      {
+        combinedScheduleNo,
+      },
+      (response) => {
+        setBeforeCombine(response);
+      }
+    );
   };
 
   useEffect(() => {
@@ -225,13 +232,34 @@ export default function PrepareScheduleTab({
           </div>
           <div style={{ overflowY: "scroll" }}>
             <Table
-              striped
+              // striped
+              bordered
               className="table-data border mt-2"
               style={{ border: "1px", height: "400px" }}
             >
-              <thead className="tableHeaderBGColor table-space">
+              <thead
+                className="tableHeaderBGColor"
+                style={{
+                  textAlign: "center",
+                  position: "sticky",
+                  top: "-1px",
+                  whiteSpace: "nowrap",
+                  // color:"red"
+                }}
+              >
                 <tr>
-                  <th>Select</th>
+                  <th
+                    style={{
+                      // textAlign: "center",
+                      // paddingLeft: "10px",
+                      // display: "flex",
+                      // justifyContent: "center",
+                      // alignItems: "center",
+                      textAlign: "center",
+                    }}
+                  >
+                    Select
+                  </th>
                   <th>Order Schedule No</th>
                   <th>PO</th>
                   <th>Target Date</th>
@@ -251,7 +279,15 @@ export default function PrepareScheduleTab({
                         key === selectedRows?.index ? "selcted-row-clr" : ""
                       }
                     >
-                      <td>
+                      <td
+                        style={{
+                          textAlign: "center",
+                          paddingLeft: "10px",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
                         <input
                           type="checkbox"
                           checked={isChecked}

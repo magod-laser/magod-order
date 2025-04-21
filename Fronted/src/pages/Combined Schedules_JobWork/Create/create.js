@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import PrepareScheduleTab from "./PrepareScheduleTab";
 import CombinedScheduleDetailsTab from "./CombinedScheduleDetailsTab";
 import { Form, Tab, Tabs } from "react-bootstrap";
@@ -7,6 +9,7 @@ import { getRequest, postRequest } from "../../api/apiinstance";
 import { endpoints } from "../../api/constants";
 
 export default function Create({ type }) {
+  const navigate = useNavigate();
   //disable button
 
   const [disablebutton, setDisableButton] = useState(true);
@@ -236,7 +239,7 @@ export default function Create({ type }) {
           </select>
         </div>
 
-        <div className="d-flex field-gap col-md-4">
+        <div className="d-flex field-gap col-md-3">
           <label className="form-label label-space">Completion Date</label>
           <input
             className="in-field mt-1"
@@ -245,6 +248,11 @@ export default function Create({ type }) {
             value={displayDate}
             onChange={handleDateChange}
           />
+        </div>
+        <div className="d-flex field-gap col-md-1">
+          <button className="button-style" onClick={() => navigate(-1)}>
+            Close
+          </button>
         </div>
       </div>
 

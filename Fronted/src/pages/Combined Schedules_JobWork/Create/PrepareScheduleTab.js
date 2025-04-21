@@ -3,6 +3,7 @@ import { Table } from "react-bootstrap";
 import { getRequest, postRequest } from "../../api/apiinstance";
 import { endpoints } from "../../api/constants";
 import Popup from "../Components/Popup";
+import { style } from '@mui/system';
 
 export default function PrepareScheduleTab({
   oderSchedule,
@@ -226,8 +227,8 @@ export default function PrepareScheduleTab({
         type,
       },
       (response) => {
-        console.log('response Jobwork', response.data);
-        
+        console.log("response Jobwork", response.data);
+
         setBeforeCombine(response);
       }
     );
@@ -243,8 +244,8 @@ export default function PrepareScheduleTab({
         if (rowselectleft.length <= 1) {
           validationModal();
         } else {
-          console.log('Hello Jobwork');
-          
+          console.log("Hello Jobwork");
+
           postRequest(
             endpoints.CreateSchedule,
             {
@@ -261,7 +262,8 @@ export default function PrepareScheduleTab({
                 response.combinedScheduleNos[0],
                 "another is",
                 response.combinedScheduleNos,
-                "OrderDetails", response.odrdesDetails
+                "OrderDetails",
+                response.odrdesDetails
               );
               setCombinedScheduleNo(response.combinedScheduleNos[0]);
               openCombineScheduleModal();
@@ -500,14 +502,22 @@ export default function PrepareScheduleTab({
                 style={{ overflowY: "scroll", height: "200px" }}
               >
                 <Table striped className="table-data border">
-                  <thead className="tableHeaderBGColor table-space">
+                  <thead
+                    className="tableHeaderBGColor"
+                    style={{
+                      textAlign: "center",
+                      position: "sticky",
+                      top: "-1px",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
                     <tr>
                       <th>Select</th>
                       <th>Task No</th>
                       <th>CustName</th>
                       <th>Mtrl Code</th>
-                      <th>NoOfDwg</th>
-                      <th>Total Parts</th>
+                      <th style={{ textAlign: "center" }}>NoOfDwg</th>
+                      <th style={{ textAlign: "center" }}>Total Parts</th>
                       <th>Operation</th>
                     </tr>
                   </thead>
@@ -527,7 +537,15 @@ export default function PrepareScheduleTab({
                               : ""
                           }
                         >
-                          <td>
+                          <td
+                            style={{
+                              textAlign: "center",
+                              paddingLeft: "10px",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
                             <input
                               type="checkbox"
                               checked={isChecked}
@@ -539,8 +557,12 @@ export default function PrepareScheduleTab({
                           <td>{value.TaskNo}</td>
                           <td>{value.Cust_name}</td>
                           <td>{value.Mtrl_Code}</td>
-                          <td>{value.NoOfDwgs}</td>
-                          <td>{value.TotalParts}</td>
+                          <td style={{ textAlign: "center" }}>
+                            {value.NoOfDwgs}
+                          </td>
+                          <td style={{ textAlign: "center" }}>
+                            {value.TotalParts}
+                          </td>
                           <td>{value.Operation}</td>
                         </tr>
                       );
@@ -703,8 +725,12 @@ export default function PrepareScheduleTab({
                                 />
                               </td>
                               <td>{item.TaskNo}</td>
-                              <td>{item.NoOfDwgs}</td>
-                              <td>{item.TotalParts}</td>
+                              <td style={{ textAlign: "center" }}>
+                                {item.NoOfDwgs}
+                              </td>
+                              <td style={{ textAlign: "center" }}>
+                                {item.TotalParts}
+                              </td>
                               <td>{item.Cust_name}</td>
                             </tr>
                           );
@@ -850,7 +876,16 @@ export default function PrepareScheduleTab({
                 style={{ overflowY: "scroll", height: "180px" }}
               >
                 <Table striped className="table-data border">
-                  <thead className="tableHeaderBGColor table-space">
+                  <thead
+                    className="tableHeaderBGColor"
+                    style={{
+                      textAlign: "center",
+                      position: "sticky",
+                      top: "-1px",
+                      whiteSpace: "nowrap",
+                      // color: "red",
+                    }}
+                  >
                     <tr>
                       <th>Select</th>
                       <th>Order Schedule No</th>
@@ -883,9 +918,13 @@ export default function PrepareScheduleTab({
                               }
                             />
                           </td>
-                          <td>{value.OrdSchNo}</td>
-                          <td>{value.PO}</td>
-                          <td>{value.schTgtDateFormatted}</td>
+                          <td style={{ textAlign: "center" }}>
+                            {value.OrdSchNo}
+                          </td>
+                          <td style={{ textAlign: "center" }}>{value.PO}</td>
+                          <td style={{ textAlign: "center" }}>
+                            {value.schTgtDateFormatted}
+                          </td>
                         </tr>
                       );
                     })}
@@ -901,10 +940,19 @@ export default function PrepareScheduleTab({
                 }}
               >
                 <Table striped className="table-data border">
-                  <thead className="tableHeaderBGColor">
+                  <thead
+                    className="tableHeaderBGColor"
+                    style={{
+                      textAlign: "center",
+                      position: "sticky",
+                      top: "-1px",
+                      whiteSpace: "nowrap",
+                      // color: "red",
+                    }}
+                  >
                     <tr>
                       <th>Dwg Name</th>
-                      <th>Quantity</th>
+                      <th style={{ textAlign: "right" }}>Quantity</th>
                       <th>MProcess</th>
                       <th>Operation</th>
                     </tr>
@@ -914,10 +962,18 @@ export default function PrepareScheduleTab({
                       return (
                         <>
                           <tr>
-                            <td>{data.DwgName}</td>
-                            <td>{data.QtyScheduled}</td>
-                            <td>{data.MProcess}</td>
-                            <td>{data.Operation}</td>
+                            <td style={{ textAlign: "center" }}>
+                              {data.DwgName}
+                            </td>
+                            <td style={{ textAlign: "right" }}>
+                              {data.QtyScheduled}
+                            </td>
+                            <td style={{ textAlign: "center" }}>
+                              {data.MProcess}
+                            </td>
+                            <td style={{ textAlign: "center" }}>
+                              {data.Operation}
+                            </td>
                           </tr>
                         </>
                       );
@@ -951,11 +1007,21 @@ export default function PrepareScheduleTab({
               </div>
               <div className="mt-1" style={{ overflowY: "scroll" }}>
                 <Table
-                  striped
+                  // striped
+                  bordered
                   className="table-data border"
                   style={{ border: "1px", height: "360px" }}
                 >
-                  <thead className="tableHeaderBGColor table-space">
+                  <thead
+                    className="tableHeaderBGColor"
+                    style={{
+                      textAlign: "center",
+                      position: "sticky",
+                      top: "-1px",
+                      whiteSpace: "nowrap",
+                      // color: "red",
+                    }}
+                  >
                     <tr>
                       <th>Select</th>
                       <th>Order Schedule No</th>
@@ -987,9 +1053,13 @@ export default function PrepareScheduleTab({
                                 onChange={() => handleCheckboxChange(key, item)}
                               />
                             </td>
-                            <td>{item.OrdSchNo}</td>
-                            <td>{item.PO}</td>
-                            <td>{item.schTgtDateFormatted}</td>
+                            <td style={{ textAlign: "center" }}>
+                              {item.OrdSchNo}
+                            </td>
+                            <td style={{ textAlign: "center" }}>{item.PO}</td>
+                            <td style={{ textAlign: "center" }}>
+                              {item.schTgtDateFormatted}
+                            </td>
                           </tr>
                         </>
                       );

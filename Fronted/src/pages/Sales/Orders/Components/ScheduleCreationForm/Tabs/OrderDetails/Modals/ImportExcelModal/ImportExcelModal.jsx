@@ -8,6 +8,8 @@ import IETable from "./elements/IETable";
 import IEFormHeader from "./elements/IEFormHeader";
 import { toast } from "react-toastify";
 import Set from "./Modals/Set";
+import { postRequest } from "../../../../../../../../api/apiinstance";
+import { endpoints } from "../../../../../../../../api/constants";
 
 export default function ImportExcelModal(props) {
 	const [importedExcelData, setImportedExcelData] = useState([]);
@@ -99,7 +101,96 @@ export default function ImportExcelModal(props) {
 
 
 	// console.log("props.procdata-excelmdl",props.procdata);
+// -----------------------------------------------------------
+
+const [dwgData, setDwgData] = useState([]);
+
+
+
+useEffect(() => {
+  postRequest(
+    endpoints.getDwgData,
+    {
+      Cust_Code: props.OrderData.Cust_Code,
+    },
+    (detailsDataInImportExcel) => {
+		console.log("detailsDataInImportExcel", detailsDataInImportExcel);
+		
+      // console.log("detailsDataInImportAtn", detailsDataInImportAtn);
+      if (detailsDataInImportExcel.result) {
+        //  props.setOrdrDetailsData(arr);
+		setDwgData(detailsDataInImportExcel.DwgData);
+        toast.success("Srls loaded to order successfull.");
+        props.closeModal();
+        props.fetchData();
+      } else if (detailsDataInImportExcel.length ===0) {
+        // toast.warning("uncaught backend error");
+        toast.warning("There is no data to compare");
+      }
+    }
+  );
+},[]);
+
+//COMPARE BUTTON
+const compareData = () => {
+	console.log("importedExcelData", importedExcelData);
 	
+  const updatedData = importedExcelData.map((excelRow) => {
+    const dbRow = dwgData.find((db) => db.Dwg_Name === excelRow.Dwg_Name);
+
+	console.log(" compareData dbRow", dbRow);
+	
+
+    if (!dbRow) {
+      return {
+        ...excelRow,
+        mismatches: {
+          Dwg_Name: true,
+          Mtrl_Code: true,
+          Source: true,
+          Operation: true,
+        },
+      };
+    }
+
+    const mismatches = {};
+    if (excelRow.Mtrl_Code !== dbRow.Mtrl_Code) mismatches.Mtrl_Code = true;
+    if (excelRow.Source !== dbRow.Source) mismatches.Source = true;
+    if (excelRow.Operation !== dbRow.Operation) mismatches.Operation = true;
+
+    return {
+      ...excelRow,
+      mismatches,
+    };
+  });
+
+  setImportedExcelData(updatedData);
+};
+
+// UPDATE PARA BUTTON
+const updatePara = () => {
+  const updatedData = importedExcelData.map((excelRow) => {
+    const dbRow = dwgData.find((db) => db.Dwg_Name === excelRow.Dwg_Name);
+	console.log(" updatePara dbRow", dbRow);
+    if (!dbRow) return excelRow; // no match, skip
+
+    const updatedRow = { ...excelRow };
+
+    if (excelRow.Mtrl_Code !== dbRow.Mtrl_Code)
+      updatedRow.Mtrl_Code = dbRow.Mtrl_Code;
+
+    if (excelRow.Source !== dbRow.Source) updatedRow.Source = dbRow.Source;
+
+    if (excelRow.Operation !== dbRow.Operation)
+      updatedRow.Operation = dbRow.Operation;
+
+    updatedRow.mismatches = {}; // reset mismatches
+
+    return updatedRow;
+  });
+
+ setImportedExcelData(updatedData);
+};
 	return (
 		<>
 			<Modal
@@ -126,6 +217,7 @@ export default function ImportExcelModal(props) {
 						closeModal={closeModal}
 						exportExcelTemplate={exportExcelTemplate}
 						fetchData={props.fetchData}
+						dwgData={dwgData} setDwgData={setDwgData} compareData={compareData} updatePara={updatePara}
 					/>
 					<IETable
 						importedExcelData={importedExcelData}
@@ -137,6 +229,8 @@ export default function ImportExcelModal(props) {
 						selectedRows={selectedRows}
 						OrdrDetailsData={props.OrdrDetailsData}
 						// setOrdrDetailsData={props.setOrdrDetailsData}
+						dwgData={dwgData} setDwgData={setDwgData} compareData={compareData} updatePara={updatePara}
+						
 					/>
 				</Modal.Body>
 				<Modal.Footer className="d-flex justify-content-between">

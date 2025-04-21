@@ -738,45 +738,45 @@ OrderDetailsRouter.post(
 );
 
 
-OrderDetailsRouter.post(
-  `/postDeleteDetailsByOrderNo`,
-  async (req, res, next) => {
-    // console.log("req.body", req.body.Order_No);
-    try {
-      // Suresh 08-04-25
-      let filespath = path.join(process.env.FILE_SERVER_PATH, "/WO//", req.body.Order_No, "//DXF//"); //, deletedwgsinfolder[i].DwgName);
-      fsSync.readdir(filespath, (err, files) => {
-        if (err) {
-          return res.status(500).send("Failed to read directory");
-        }
-        files.forEach((file) => {
-          const fpath = path.join(filespath, file);
-          console.log("fpath : ",fpath);
-          fsAsync.unlink(fpath, (err) => {
-            if (err) {
-              console.log(`Error deleting file ${file} : `, err);
-            }
-          })
-        })
-      })
-      // Suresh 
-      misQueryMod(
-        `DELETE FROM magodmis.order_details WHERE (Order_No = '${req.body.Order_No}')`,
-        (err, deleteOrderData) => {
-          if (err) {
-            res.status(500).send("Internal Server Error");
-          } else {
-            // console.log("deleteOrderData", deleteOrderData);
-            res.send({ deleteOrderData: deleteOrderData, flag: 1 });
-          }
-        }
-      );
+// OrderDetailsRouter.post(
+//   `/postDeleteDetailsByOrderNo`,
+//   async (req, res, next) => {
+//     // console.log("req.body", req.body.Order_No);
+//     try {
+//       // Suresh 08-04-25
+//       let filespath = path.join(process.env.FILE_SERVER_PATH, "/WO//", req.body.Order_No, "//DXF//"); //, deletedwgsinfolder[i].DwgName);
+//       fsSync.readdir(filespath, (err, files) => {
+//         if (err) {
+//           return res.status(500).send("Failed to read directory");
+//         }
+//         files.forEach((file) => {
+//           const fpath = path.join(filespath, file);
+//           console.log("fpath : ",fpath);
+//           fsAsync.unlink(fpath, (err) => {
+//             if (err) {
+//               console.log(`Error deleting file ${file} : `, err);
+//             }
+//           })
+//         })
+//       })
+//       // Suresh 
+//       misQueryMod(
+//         `DELETE FROM magodmis.order_details WHERE (Order_No = '${req.body.Order_No}')`,
+//         (err, deleteOrderData) => {
+//           if (err) {
+//             res.status(500).send("Internal Server Error");
+//           } else {
+//             // console.log("deleteOrderData", deleteOrderData);
+//             res.send({ deleteOrderData: deleteOrderData, flag: 1 });
+//           }
+//         }
+//       );
 
-    } catch (error) {
-      next(error);
-    }
-  }
-);
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
 // Import Qtn
 // OrderDetailsRouter.post(
 //   `/postDetailsDataInImportQtn`,
@@ -923,6 +923,65 @@ OrderDetailsRouter.post(
 //   }
 // );
 // -------------------
+
+
+OrderDetailsRouter.post(
+  "/postDeleteDetailsByOrderNo",
+  async (req, res, next) => {
+    const orderNo = req.body.Order_No;
+
+    try {
+      const filesPath = path.join(
+        process.env.FILE_SERVER_PATH,
+        "WO",
+        orderNo,
+        "DXF"
+      );
+
+      let files;
+      try {
+        files = await fs.readdir(filesPath);
+      } catch (err) {
+        console.error("Failed to read directory:", err);
+        return res.status(500).send("Failed to read directory");
+      }
+
+      // Delete files in parallel
+      try {
+        await Promise.all(
+          files.map(async (file) => {
+            const filePath = path.join(filesPath, file);
+            console.log("Deleting file:", filePath);
+            try {
+              await fs.unlink(filePath);
+            } catch (err) {
+              console.error(`Error deleting file ${file}:`, err);
+            }
+          })
+        );
+      } catch (err) {
+        console.error("Error deleting files:", err);
+      }
+
+      // After files are deleted, proceed to delete DB records
+      misQueryMod(
+        `DELETE FROM magodmis.order_details WHERE (Order_No = ?)`,
+        [orderNo],
+        (err, deleteOrderData) => {
+          if (err) {
+            console.error("DB delete error:", err);
+            return res.status(500).send("Internal Server Error");
+          } else {
+            return res.send({ deleteOrderData, flag: 1 });
+          }
+        }
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 const getMonthName = (monthNumber) => {
   const date = new Date(2020, monthNumber - 1); // months are 0-indexed (0 = January, 1 = February, etc.)
   return date.toLocaleString('default', { month: 'long' }); // returns the full month name
@@ -2697,6 +2756,36 @@ OrderDetailsRouter.post(`/postDeleteDetailsBySrl`, async (req, res, next) => {
   } catch (error) {
     console.error("Error:", error);
     next(error);
+  }
+});
+
+//getDwgData
+OrderDetailsRouter.post("/getDwgData", async (req, res) => {
+  // const custCode = parseInt(req.body.Cust_Code, 10);
+  const custCode = req.body.Cust_Code;
+
+  if (isNaN(custCode)) {
+    return res.status(400).send({ error: "Invalid Cust_Code provided." });
+  }
+
+  try {
+    const query = `SELECT * FROM magodmis.dwg_data d WHERE d.Cust_Code = ? ORDER BY DwgName;`;
+
+    misQueryMod(query, [custCode], (err, DwgData) => {
+      if (err) {
+        logger.error(err);
+        logger.error(`Error fetching BOM data: ${err.message}`);
+        return res
+          .status(500)
+          .send({ error: "An error occurred while fetching DwgData" });
+      }
+
+      console.log("DwgData...", DwgData);
+      res.send(DwgData);
+    });
+  } catch (error) {
+    logger.error("Unexpected error:", error);
+    res.status(500).send({ error: "Internal server error" });
   }
 });
 

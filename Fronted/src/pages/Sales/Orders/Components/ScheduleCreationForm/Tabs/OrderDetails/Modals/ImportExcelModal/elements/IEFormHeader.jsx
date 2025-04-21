@@ -13,9 +13,10 @@ import {
 import { endpoints } from "../../../../../../../../../../../src/pages/api/constants";
 export default function IEFormHeader(props) {
   // const [importedExcelData, setImportedExcelData] = useState([]);
-
+const {dwgData, setDwgData, compareData, updatePara}=props
   const [buttonClickedFor, setButtonClickedFor] = useState("");
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+
 
   const noFileFoundFun = (e) => {
     // console.log("download the file.......");
@@ -58,131 +59,6 @@ export default function IEFormHeader(props) {
         ) {
           console.log("Keys in parsedData[0]:", Object.keys(parsedData[0]));
           console.log("parsedData[0]:", parsedData[0]); // Print the full object for reference
-
-          // if (
-          //   parsedData[0].Dwg_Name &&
-          //   parsedData[0].Mtrl_Code &&
-          //   parsedData[0].Source &&
-          //   parsedData[0].Operation &&
-          //   //
-          //   "Order_Qty" in parsedData[0] &&
-          //   parsedData[0].Order_Qty !== undefined &&
-          //   "JW_Cost" in parsedData[0] &&
-          //   parsedData[0].JW_Cost !== undefined &&
-          //   "Mtrl_Cost" in parsedData[0] &&
-          //   parsedData[0].Mtrl_Cost !== undefined
-          // ) {
-          //   let procData = props.procdata?.filter((obj) =>
-          //     props.OrderData.Type === "Service"
-          //       ? obj.Service !== 0
-          //       : props.OrderData.Type === "Fabrication"
-          //       ? obj.MultiOperation !== 0
-          //       : obj.Profile !== 0
-          //   );
-
-          //   // console.log("procData", procData);
-
-          //   let matArray = [];
-          //   let processArray = [];
-          //   let finalArray = [];
-
-          //   // making array for material
-          //   for (let i = 0; i < props.mtrldata.length; i++) {
-          //     const element = props.mtrldata[i];
-          //     matArray.push(element.Mtrl_Code);
-          //   }
-
-          //   // making array for process data
-          //   for (let i = 0; i < procData.length; i++) {
-          //     const element = procData[i];
-          //     console.log("element", element);
-          //     // processArray.push(element.ProcessDescription);
-          //     processArray.push(element.Operation);
-          //   }
-
-          //   for (let i = 0; i < parsedData.length; i++) {
-          //     let element = parsedData[i];
-
-          //     // check for material
-          //     if (matArray.includes(element.Mtrl_Code)) {
-          //       element.materialError = false;
-          //     } else {
-          //       element.materialError = true;
-          //     }
-
-          //     // check for source
-          //     if (
-          //       element.Source === "Magod" ||
-          //       element.Source === "magod" ||
-          //       element.Source === "Customer" ||
-          //       element.Source === "customer"
-          //     ) {
-          //       element.sourceError = false;
-          //     } else {
-          //       element.sourceError = true;
-          //     }
-
-          //     // check for operation
-          //     console.log("=processArray", processArray);
-
-          //     if (processArray.includes(element.Operation)) {
-          //       console.log("=element.Operation", element.Operation);
-
-          //       element.operationError = false;
-          //     } else {
-          //       element.operationError = true;
-          //     }
-
-          //     // console.log("processArray", processArray);
-          //     // console.log("element.Operation", element.Operation);
-          //     finalArray.push(element);
-          //   }
-
-          //   // console.log("finalArray", finalArray);
-
-          //   // for (let i = 0; i < parsedData.length; i++) {
-          //   //   const element0 = parsedData[i];
-          //   //   for (let i = 0; i < props.mtrldata.length; i++) {
-          //   //     const element1 = props.mtrldata[i];
-
-          //   //     if (element0.Mtrl_Code === element1.Mtrl_Code) {
-          //   //       newArray.push(element0);
-
-          //   //       // console.log("element0.Mtrl_Code", element0.Mtrl_Code);
-          //   //       // console.log("element1.Mtrl_Code", element1.Mtrl_Code);
-          //   //     }
-          //   //   }
-          //   // }
-
-          //   props.setImportedExcelData(parsedData);
-          //   toast.success("All order details correctly loaded.");
-          // } else {
-          //   let missingFields = [];
-
-          //   if (!("Dwg_Name" in parsedData[0])) missingFields.push("Dwg_Name");
-          //   if (!("Mtrl_Code" in parsedData[0]))
-          //     missingFields.push("Mtrl_Code");
-          //   if (!("Source" in parsedData[0])) missingFields.push("Source");
-          //   if (!("Operation" in parsedData[0]))
-          //     missingFields.push("Operation");
-          //   if (!("Order_Qty" in parsedData[0]))
-          //     missingFields.push("Order_Qty");
-          //   if (!("JW_Cost" in parsedData[0])) missingFields.push("JW_Cost");
-          //   if (!("Mtrl_Cost" in parsedData[0]))
-          //     missingFields.push("Mtrl_Cost");
-
-          //   if (missingFields.length > 0) {
-          //     toast.error(
-          //       `Template error: Missing fields - ${missingFields.join(", ")}`
-          //     );
-          //   } else {
-          //     toast.success("All order details correctly loaded.");
-          //   }
-          //   // toast.error(
-          //   //   `Template error, Please click on "Download Excel Template"`
-          //   // );
-          //   props.setImportedExcelData([]);
-          // }
 
           // 27-03-2025
           if (
@@ -390,7 +266,8 @@ export default function IEFormHeader(props) {
   const CompareAndUpdatePara = (e) => {
     setOrderTotal(props.orderTotal);
   };
-  const [excelData, setExcelData] = useState();
+ 
+   const [excelData, setExcelData] = useState();
 
   const checkMatching = () => {
     const updatedData = excelData.map((row) => {
@@ -439,6 +316,9 @@ export default function IEFormHeader(props) {
   //     (obj) => obj.materialError || obj.sourceError || obj.operationError
   //   )
   // );
+
+  
+  
   return (
     <>
       <div
@@ -490,7 +370,8 @@ export default function IEFormHeader(props) {
         <button
           className="button-style m-1"
           // onClick={handleUpdatePara}
-          onClick={CompareAndUpdatePara}
+          // onClick={CompareAndUpdatePara}
+          onClick={updatePara}
         >
           Update Para
         </button>
@@ -509,7 +390,8 @@ export default function IEFormHeader(props) {
         <button
           className="button-style m-1"
           // onClick={checkMatching}
-          onClick={CompareAndUpdatePara}
+          // onClick={CompareAndUpdatePara}
+          onClick={compareData}
         >
           Compare
         </button>

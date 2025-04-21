@@ -80,7 +80,8 @@ export default function CombinedScheduleDetailsTab({
                 class=""
                 type="text"
                 style={{ borderRadius: "0" }}
-                value={beforecombine[0]?.Special_Instructions || null}
+                // value={beforecombine[0]?.Special_Instructions || null}
+                value={beforecombine[0]?.Special_Instructions || " "}
               />
             </div>
             <div className="col-md-4  mb-2 col-sm-12">

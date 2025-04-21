@@ -44,6 +44,7 @@ export const endpoints = {
   singleChangeUpdate: `${API}/OrderDetails/singleChangeUpdate`,
   postDeleteDetailsBySrl: `${API}/OrderDetails/postDeleteDetailsBySrl`,
   MenuUrlsAPI: `${API}/user/fetchMenuUrls`,
+  getDwgData: `${API}/OrderDetails/getDwgData`,
   // profarma inv list...............
   getProfarmaMain: `${API}/profarmaInvList/getProfarmaMain`,
   getProfarmaDetails: `${API}/profarmaInvList/getProfarmaDetails`,
