@@ -2862,9 +2862,7 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
 //                                                                     // }
 
 //                                                                     // // Add the current row to the task group
-//                                                                     // acc[
-//                                                                     //   row.TaskNo
-//                                                                     // ].push(row);
+//                                                                     // acc[row.TaskNo].push(row);
 
 //                                                                     // Add the row to the array for this material
 //                                                                     acc[
@@ -2885,14 +2883,8 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
 //                                                                     row
 //                                                                   ) => {
 //                                                                     // row.TaskNo = `${neworderSch} ${taskNumber
-//                                                                     row.TaskNo = `${
-//                                                                       row.ScheduleNo
-//                                                                     } ${taskNumber
-//                                                                       .toString()
-//                                                                       .padStart(
-//                                                                         2,
-//                                                                         "0"
-//                                                                       )}`;
+//                                                                     row.TaskNo = `${row.ScheduleNo} ${taskNumber.toString()
+//                                                                       .padStart(2, "0")}`;
 //                                                                     taskNumber++;
 //                                                                     console.log(
 //                                                                       "This is service/fabrication part executing for SchDetailsID:",
@@ -2911,24 +2903,12 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
 //                                                           const queryDatabase =
 //                                                             (query) => {
 //                                                               return new Promise(
-//                                                                 (
-//                                                                   resolve,
-//                                                                   reject
-//                                                                 ) => {
-//                                                                   misQueryMod(
-//                                                                     query,
-//                                                                     (
-//                                                                       err,
-//                                                                       results
-//                                                                     ) => {
+//                                                                 (resolve,reject) => {
+//                                                                   misQueryMod(query,(err,results) => {
 //                                                                       if (err) {
-//                                                                         return reject(
-//                                                                           err
-//                                                                         );
+//                                                                         return reject(err);
 //                                                                       }
-//                                                                       resolve(
-//                                                                         results
-//                                                                       );
+//                                                                       resolve(results);
 //                                                                     }
 //                                                                   );
 //                                                                 }
@@ -2937,24 +2917,15 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
 
 //                                                           // Function to process a single task (for a group of rows with the same TaskNo)
 //                                                           const processTask =
-//                                                             async (
-//                                                               taskGroup
-//                                                             ) => {
+//                                                             async (taskGroup) => {
 //                                                               try {
-//                                                                 const row =
-//                                                                   taskGroup[0]; // Use the first row to get the common details
+//                                                                 const row = taskGroup[0]; // Use the first row to get the common details
 
 //                                                                 // Query to get the ProcessID based on the ProcessDescription
 //                                                                 let selectProcessIdQuery = `SELECT ProcessID FROM machine_data.magod_process_list WHERE ProcessDescription='${row.Operation}'`;
-//                                                                 const processIdData =
-//                                                                   await queryDatabase(
-//                                                                     selectProcessIdQuery
-//                                                                   );
+//                                                                 const processIdData = await queryDatabase( selectProcessIdQuery );
 
-//                                                                 if (
-//                                                                   processIdData.length ===
-//                                                                   0
-//                                                                 ) {
+//                                                                 if (processIdData.length === 0) {
 //                                                                   console.log(
 //                                                                     `No ProcessID found for Operation ${row.Operation}`
 //                                                                   );
@@ -2963,22 +2934,12 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
 //                                                                   );
 //                                                                 }
 
-//                                                                 const MProcess =
-//                                                                   processIdData[0]
-//                                                                     .ProcessID;
+//                                                                 const MProcess = processIdData[0].ProcessID;
 
 //                                                                 // Calculate total NoOfDwgs and TotalParts for the task
-//                                                                 const noOfDwgs =
-//                                                                   taskGroup.length;
-//                                                                 const totalParts =
-//                                                                   taskGroup.reduce(
-//                                                                     (
-//                                                                       sum,
-//                                                                       item
-//                                                                     ) =>
-//                                                                       sum +
-//                                                                       item.QtyScheduled,
-//                                                                     0
+//                                                                 const noOfDwgs = taskGroup.length;
+//                                                                 const totalParts = taskGroup.reduce((sum, item ) =>
+//                                                                       sum + item.QtyScheduled,0
 //                                                                   );
 
 //                                                                 let NcTaskId;
@@ -3011,26 +2972,13 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
 //                                                                     : "default_thickness";
 
 //                                                                 // Check if the Operation Type is "Profile"
-//                                                                 if (
-//                                                                   req.body
-//                                                                     .Type ===
-//                                                                   "Profile"
-//                                                                 ) {
+//                                                                 if (req.body.Type === "Profile") {
 //                                                                   // Check if an entry already exists in the nc_task_list table
 //                                                                   let selectTaskQuery = `SELECT * FROM magodmis.nc_task_list WHERE ScheduleID='${row.ScheduleId}' AND Mtrl_Code='${row.Mtrl_Code}'`;
-//                                                                   const existingTaskData =
-//                                                                     await queryDatabase(
-//                                                                       selectTaskQuery
-//                                                                     );
+//                                                                   const existingTaskData = await queryDatabase(selectTaskQuery );
 
-//                                                                   if (
-//                                                                     existingTaskData.length >
-//                                                                     0
-//                                                                   ) {
-//                                                                     console.log(
-//                                                                       "1803row.TaskNo",
-//                                                                       row.TaskNo
-//                                                                     );
+//                                                                   if ( existingTaskData.length > 0 ) {
+//                                                                     console.log( "1803row.TaskNo", row.TaskNo );
 
 //                                                                     // Entry exists, so update it
 //                                                                     let updateNcTaskListQuery = `UPDATE magodmis.nc_task_list

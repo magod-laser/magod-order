@@ -101,6 +101,7 @@ const {dwgData, setDwgData, compareData, updatePara}=props
               }
               if (
                 parsedData[0].Mtrl_Cost === 0 ||
+                parsedData[0].Mtrl_Cost === "0" ||
                 parsedData[0].Mtrl_Cost === 0.0 ||
                 parsedData[0].Mtrl_Cost === "0.00"
               ) {
@@ -418,6 +419,33 @@ const {dwgData, setDwgData, compareData, updatePara}=props
               alert("JW Cost cannot be 0. Please correct the data.");
               return;
             }
+
+            // ------
+         console.log("importedExcelData",props.importedExcelData);
+         
+            const invalidItems = props.importedExcelData.filter(
+              (item) =>
+                (item.Mtrl_Cost === "0" || item.Mtrl_Cost === 0 || item.Mtrl_Cost === 0.0 || item.Mtrl_Cost === "0.00") &&
+                item.Source === "Magod"
+            );
+            
+            if (invalidItems.length > 0) {
+              const drawingNames = invalidItems.map((item) => item.Dwg_Name || "Unknown Drawing").join(", ");
+              alert(`Mtrl_Cost cannot be 0 for the following drawing(s): ${drawingNames}. Please correct the data.`);
+              return;
+            }
+          
+            // const MtrlCostZero = props.importedExcelData.some(
+            //   (item) => (item.Mtrl_Cost === "0" || item.Mtrl_Cost === 0 || item.Mtrl_Cost === 0.00 || item.Mtrl_Cost === "0.00" )&& item.Source === "Magod"
+
+            // );
+            // console.log("MtrlCostZero", MtrlCostZero);
+
+            // if (MtrlCostZero) {
+            //   alert("Mtrl_Cost cannot be 0. Please correct the data.");
+            //   return;
+            // }
+          
             setButtonClickedFor("Load to Order");
             setConfirmModalOpen(true);
           }}

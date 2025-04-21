@@ -184,6 +184,7 @@ export default function OrderInfo(props) {
 							className="in-field"
 							type="text"
 							value={props.OrderData?.OrderValue}
+							// value={props.OrderData?.OrderValue.toFixed(2)}
 							onChange={props.handleChangeOrderInfo}
 						/>
 					</div>

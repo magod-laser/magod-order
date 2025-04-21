@@ -23,7 +23,7 @@ export default function ProductTable(props) {
                 <td>{val.Mtrl}</td>
                 <td>
                   <input
-                    type="number"
+                    type="text"
                     value={val.Qty}
                     min="1"
                     step="1" // Prevent decimals
@@ -38,6 +38,9 @@ export default function ProductTable(props) {
                         ? "input-disabled"
                         : ""
                     }
+                    // onChange={(e) => {
+                    //   props.changeQTY(key, e.target.value || 0);
+                    // }}
                     onChange={(e) => {
                       const inputValue = e.target.value;
 

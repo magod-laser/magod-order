@@ -77,8 +77,10 @@ export const endpoints = {
   getDwgFiles: `${API}/file/getfolderfilenames`,
   dxfCopy: `${API}/file/copydxf`,
   checkDxf: `${API}/file/checkdxf`,
-  orderCopyDxf: `${API}/file/ordcopydxf`,
+  checkmultiDxf: `${API}/file/checkmultidxf`,
+  orderCopyDxf:`${API}/file/ordcopydxf`,
   getOrdDxf: `${API}/file/orddxf`,
+  saveToCustDwg: `${API}/file/saveToCustDwg`,
   checkdxffilesimportoldorder: `${API}/file/checkdxffilesimportoldorder`,
   getStates: `${API}/states/allstates`,
   getStateCode: `${API}/states/getstatecode`,
@@ -246,6 +248,7 @@ export const endpoints = {
   AllotAndTaskCombinedSchedule: `${API}/order/allotandtaskcombinedschedule`,
   updateUploadFiles: `${API}/order/updateuploadfiles`,
   CheckDwgFileStatus: `${API}/order/checkdwgfilestatus`,
+  
 
   InsertCombinedSchedule: `${API}/order/insertcombinedschedule`,
 
@@ -389,6 +392,7 @@ export const endpoints = {
 
   postDeleteDetailsByOrderNo: `${API}/orderDetails/postDeleteDetailsByOrderNo`,
   postDetailsDataInImportQtn: `${API}/orderDetails/postDetailsDataInImportQtn`,
+  UpdateOrdDWG:`${API}/orderDetails/updateOrdDWG`,
 
   // IMPORT EXCEL
   postDetailsDataInImportExcel: `${API}/orderDetails/postDetailsDataInImportExcel`,

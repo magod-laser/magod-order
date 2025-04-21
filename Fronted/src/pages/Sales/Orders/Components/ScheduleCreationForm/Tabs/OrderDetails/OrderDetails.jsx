@@ -86,7 +86,7 @@ export default function OrderDetails(props) {
     goToPrevious,
     goToNext,
     goToLast,
-    FindOldOrderButtonData,
+    FindOldOrderButtonData,OdrDtlMtrlSrc
   } = props;
 
   const [groupBoxAddSrlVisible, setGroupBoxAddSrlVisible] = useState(true);
@@ -101,6 +101,8 @@ export default function OrderDetails(props) {
 
   const [isLoading, setisLoading] = useState(false);
 
+  console.log("filteredData - asdf", filteredData);
+  // console.log("LastSlctedRow", LastSlctedRow);
   // console.log("LastSlctedRow", LastSlctedRow);
 
   function importExcelFunc() {
@@ -852,7 +854,7 @@ export default function OrderDetails(props) {
                   Order_Srl: idx + 1,
                 }));
 
-                console.log("Re-indexed data:", reIndexedData);
+                // console.log("Re-indexed data:", reIndexedData);
 
                 // Step 5: Update the state and database in parallel
                 // Update state with new order details
@@ -907,9 +909,9 @@ export default function OrderDetails(props) {
       });
   }
 
-  useEffect(() => {
-    deleteRowsBySrl();
-  }, []);
+  // useEffect(() => {
+  //   deleteRowsBySrl();
+  // }, []);
 
   function clearSelections() {
     // console.log("clearSelections");
@@ -925,7 +927,7 @@ export default function OrderDetails(props) {
   function deleteRowsByOrderNoFunc() {
     postRequest(
       endpoints.postDeleteDetailsByOrderNo,
-      { Order_No: props.OrderData.Order_No },
+      { Order_No: props.OrderData.Order_No, filteredData:filteredData },
       (deleteData) => {
         if (deleteData.flag > 0) {
           setOrdrDetailsData([]);
@@ -2019,14 +2021,14 @@ export default function OrderDetails(props) {
                               </h6>
                             </label>
                           </td>
-                          <td colspan="2">
+                          <td colspan="2Combined Schedule Creator">
                             <label>
                               <h6>Process: {LastSlctedRow.Operation}</h6>
                             </label>
                           </td>
                         </tr>
                         <tr>
-                          <td style={{ width: "25%" }}>
+                          <td style={{ width: "40%" }}>
                             <label>
                               <h6>Mtrl Grade : {LastSlctedRow.Mtrl_Code}</h6>
                             </label>
@@ -2036,12 +2038,12 @@ export default function OrderDetails(props) {
                               <h6>Mtrl Source : {LastSlctedRow.Mtrl_Source}</h6>
                             </label>
                           </td>
-                          <td style={{ width: "25%" }}>
+                          <td style={{ width: "20%" }}>
                             <label>
                               <h6>Quantity : {LastSlctedRow.Qty_Ordered}</h6>
                             </label>
                           </td>
-                          <td style={{ width: "25%" }}>
+                          <td style={{ width: "24%" }}>
                             <button
                               className="button-style"
                               onClick={ShowDfxForm}
@@ -2150,6 +2152,7 @@ export default function OrderDetails(props) {
                   // key={refresh}
                   deleteRowsBySrl={deleteRowsBySrl}
                   selectedRow={selectedRow}
+                  OdrDtlMtrlSrc={OdrDtlMtrlSrc}
                 />
               </Tab>
             </Tabs>

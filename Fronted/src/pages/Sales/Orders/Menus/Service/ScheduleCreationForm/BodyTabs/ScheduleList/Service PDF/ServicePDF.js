@@ -683,7 +683,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     marginTop: 40,
     marginBottom: 50,
-    paddingBottom: 50,
+    paddingBottom: 70,
   },
 
   // *********************

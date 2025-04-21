@@ -344,7 +344,7 @@ export default function ProfarmaInvoiceForm(props) {
         // console.log("resp", resp);
 
         if (resp.flag) {
-          toast.success(resp.message || "Proforma Invoice Created");
+          toast.success(resp.message || "Profarma Invoice Created");
           fetchData();
 
           // postRequest(
@@ -375,7 +375,7 @@ export default function ProfarmaInvoiceForm(props) {
     <>
       <div>
         <div>
-          <h4 className="title m-0">Proforma Invoice Form</h4>
+          <h4 className="title m-0">Profarma Invoice Form</h4>
         </div>
         <div className="p-1"></div>
         <div className="row border rounded">
@@ -389,7 +389,7 @@ export default function ProfarmaInvoiceForm(props) {
           </div>
           <div className="col-md-3">
             <label className="form-label m-0 label-space">
-              Proforma Invoice No & Date
+              Profarma Invoice No & Date
             </label>
             <input
               value={
@@ -405,7 +405,7 @@ export default function ProfarmaInvoiceForm(props) {
           </div>
           <div className="col-md-3">
             <label className="form-label m-0 label-space">
-              Proforma Invoice Type
+              Profarma Invoice Type
             </label>
             <input
               value={profarmaMainData?.InvType || ""}
@@ -993,7 +993,7 @@ export default function ProfarmaInvoiceForm(props) {
       <Confirmation
         setConfirmModalOpen={setConfirmModalOpen}
         confirmModalOpen={confirmModalOpen}
-        message={"Are you sure to create the Proforma Invoice"}
+        message={"Are you sure to create the Profarma Invoice"}
         yesClickedFunc={createInvoice}
       />
 
@@ -1012,12 +1012,12 @@ export default function ProfarmaInvoiceForm(props) {
 // <div>
 //   <div className="row">
 //     <div className="col-md-12">
-//       <h4 className="title">Proforma Invoice Form</h4>
+//       <h4 className="title">PROFARMA INVOICE Form</h4>
 //     </div>
 //   </div>
 //   <div className="row mt-2">
 //     <div className="col-md-4">
-//       <label className="form-label m-0">Proforma Invoice Type</label>
+//       <label className="form-label m-0">PROFARMA INVOICE Type</label>
 //       <input type="text" />
 //     </div>
 //     <div className="col-md-4">
@@ -1032,7 +1032,7 @@ export default function ProfarmaInvoiceForm(props) {
 
 //   <div className="row">
 //     <div className="col-md-4">
-//       <label className="form-label m-0">Proforma Invoice No</label>
+//       <label className="form-label m-0">PROFARMA INVOICE No</label>
 //       <input type="text" />
 //     </div>
 //     <div className="col-md-4">

@@ -3,7 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 
-let folderBase = "C:/Magod/Jigani";
+let folderBase = process.env.FILE_SERVER_PATH; // "C:/Magod/Jigani";
 
 let checkdrawings = async (qtnNo, callback) => {
   qtnNo = qtnNo.replaceAll("/", "_");
@@ -40,6 +40,8 @@ let checkdrawings = async (qtnNo, callback) => {
     }
   }
 };
+
+
 
 let createFolder = async (SrlType, qno, month, callback) => {
   try {

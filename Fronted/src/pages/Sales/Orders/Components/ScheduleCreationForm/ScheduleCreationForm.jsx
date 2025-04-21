@@ -201,6 +201,10 @@ export default function ScheduleCreationForm(props) {
   let [bolPkng, setBolPkng] = useState(false);
   let [bolTolerance, setBolTolerance] = useState(false);
   let [bolQty, setBolQty] = useState(false);
+
+const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
+
+
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -337,6 +341,8 @@ export default function ScheduleCreationForm(props) {
     window.dxffiles = files;
     setShow(false);
   };
+
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -576,7 +582,10 @@ export default function ScheduleCreationForm(props) {
         MtrlSrc: value,
       }));
     } else if (name === "odrDtlMtrlSrc") {
-      ////console("e.target.value---", e.target.value);
+      console.log("odrDtlMtrlSrc e.target.value---", e.target.value);
+
+      setOdrDtlMtrlSrc(e.target.value)
+
       setordrDetailsChange((prevState) => ({
         ...prevState,
         MtrlSrc: value,
@@ -872,7 +881,7 @@ export default function ScheduleCreationForm(props) {
 
     const updateOrderDetailsData = {
       orderNo: OrderData.Order_No,
-      updatedRows: Object.values(editedData), // Send all edited rows
+      updatedRows: Object.values(editedData), 
     };
 
     console.log("Updating order details:", updateOrderDetailsData);
@@ -882,12 +891,14 @@ export default function ScheduleCreationForm(props) {
       updateOrderDetailsData
     );
 
+    console.log("orderDetailsResponse",orderDetailsResponse);
+    
     if (orderDetailsResponse.success) {
       // toast.success("Order details updated successfully", {
       //   position: toast.POSITION.TOP_CENTER,
       // });
       alert("Order details updated successfully");
-
+        fetchData();
       setEditedData({}); // Clear stored changes
     } else {
       toast.error("Order update failed. Try again!", {
@@ -899,6 +910,10 @@ export default function ScheduleCreationForm(props) {
   let updateOrdrData = async () => {
     // console.log("selectedSrl", selectedSrl);
     console.log("ordrDetailsChange", ordrDetailsChange);
+
+    const unitPrice = ordrDetailsChange.MtrlSrc === "Customer"
+  ? parseFloat(ordrDetailsChange.jwRate)
+  : parseFloat(ordrDetailsChange.jwRate) + parseFloat(ordrDetailsChange.materialRate);
 
     postRequest(
       endpoints.singleChangeUpdate,
@@ -913,9 +928,11 @@ export default function ScheduleCreationForm(props) {
         JwCost: ordrDetailsChange.jwRate,
         mtrlcost: ordrDetailsChange.materialRate,
 
-        unitPrice:
-          parseFloat(ordrDetailsChange.jwRate) +
-          parseFloat(ordrDetailsChange.materialRate),
+        // unitPrice:
+        //   parseFloat(ordrDetailsChange.jwRate) +
+        //   parseFloat(ordrDetailsChange.materialRate),
+        unitPrice:unitPrice,
+ 
         Operation: ordrDetailsChange.Operation,
         InspLvl: ordrDetailsChange.InspLvl,
         PkngLvl: ordrDetailsChange.PkngLvl,
@@ -1116,6 +1133,7 @@ export default function ScheduleCreationForm(props) {
     try {
       await LoadInitialData();
       await PerformaTabData();
+      await FindOldOrderButtonData();
     } catch (error) {
       // console.error("Error fetching data:", error);
     }
@@ -2283,6 +2301,7 @@ export default function ScheduleCreationForm(props) {
               setSelectedRowItems={setSelectedRowItems}
               setLastSlctedRow={setLastSlctedRow}
               setSelectedRow={setSelectedRow}
+              fetchData={fetchData}
             />
           </Tab>
           <Tab eventKey="findoldpart" title="Find Old Part">
@@ -2367,6 +2386,7 @@ export default function ScheduleCreationForm(props) {
                 goToNext={goToNext}
                 goToLast={goToLast}
                 FindOldOrderButtonData={FindOldOrderButtonData}
+                OdrDtlMtrlSrc={OdrDtlMtrlSrc}
               />
             </Tab>
             <Tab eventKey="scheduleList" title="Schedule List">
@@ -2383,7 +2403,7 @@ export default function ScheduleCreationForm(props) {
                 Cust_Code={Cust_Code}
               />
             </Tab>
-            <Tab eventKey="profarmaInvoiceList" title="Proforma Invoice List">
+            <Tab eventKey="profarmaInvoiceList" title="Profarma Invoice List">
               <ProfarmaInvoiceList
                 OrderData={OrderData}
                 OrderCustData={OrderCustData}

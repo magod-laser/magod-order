@@ -135,7 +135,7 @@ export default function ModalProfarmaInvoice(props) {
               alignItems: "center",
             }}
           >
-            Print Proforma Invoice{" "}
+            Print Profarma Invoice{" "}
             <div>
               <button
                 className="button-style"

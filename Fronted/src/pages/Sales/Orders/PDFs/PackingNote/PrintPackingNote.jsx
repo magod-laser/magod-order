@@ -404,7 +404,7 @@ export default function PrintPackingNote(props) {
 													</Text>
 												</View>
 											</View>
-											{/* Proforma Invoice Type */}
+											{/* PROFARMA INVOICE Type */}
 											<View
 												style={{
 													borderBottom: "1px",
@@ -418,7 +418,7 @@ export default function PrintPackingNote(props) {
 														...style.globalPadding,
 													}}>
 													<Text style={{ ...style.fontBold }}>
-														Proforma Invoice Type
+													Profarma Invoice Type
 													</Text>
 												</View>
 												<View
@@ -441,7 +441,7 @@ export default function PrintPackingNote(props) {
 													<Text></Text>
 												</View>
 											</View>
-											{/* Proforma Invoice No and invoice date */}
+											{/* PROFARMA INVOICE No and invoice date */}
 											<View
 												style={{
 													borderBottom: "1px",
@@ -455,7 +455,7 @@ export default function PrintPackingNote(props) {
 														...style.globalPadding,
 													}}>
 													<Text style={{ ...style.fontBold }}>
-														Proforma Invoice No
+													Profarma Invoice No
 													</Text>
 												</View>
 												<View
@@ -1117,7 +1117,7 @@ export default function PrintPackingNote(props) {
 //             {/* <Text>{props.invRegisterData?.DC_Date}</Text> */}
 //           </View>
 //         </View>
-//         {/* Proforma Invoice Type */}
+//         {/* PROFARMA INVOICE Type */}
 //         <View
 //           style={{
 //             borderBottom: "1px",
@@ -1132,7 +1132,7 @@ export default function PrintPackingNote(props) {
 //               ...style.globalPadding,
 //             }}
 //           >
-//             <Text style={{ ...style.fontBold }}>Proforma Invoice Type</Text>
+//             <Text style={{ ...style.fontBold }}>PROFARMA INVOICE Type</Text>
 //           </View>
 //           <View
 //             style={{
@@ -1156,7 +1156,7 @@ export default function PrintPackingNote(props) {
 //             <Text></Text>
 //           </View>
 //         </View>
-//         {/* Proforma Invoice No and invoice date */}
+//         {/* PROFARMA INVOICE No and invoice date */}
 //         <View
 //           style={{
 //             borderBottom: "1px",
@@ -1171,7 +1171,7 @@ export default function PrintPackingNote(props) {
 //               ...style.globalPadding,
 //             }}
 //           >
-//             <Text style={{ ...style.fontBold }}>Proforma Invoice No</Text>
+//             <Text style={{ ...style.fontBold }}>PROFARMA INVOICE No</Text>
 //           </View>
 //           <View
 //             style={{

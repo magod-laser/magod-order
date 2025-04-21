@@ -86,15 +86,40 @@ export default function ServiceModal({
 
 
 // Updated logic with async/await for fetching schedule data - Bodheesh
+  // useEffect(() => {
+  //   const scheduleId = formdata[0]?.ScheduleId;
+  //   console.log("scheduleId === 1",SchId);
+  //   console.log("scheduleId === 12",scheduleId);
+    
+  //   if (!SchId) return;
+  
+  //   const fetchData = async () => {
+  //     try {
+  //       console.log("Calling API with ScheduleId:", SchId);
+  //       const response = await postRequest(endpoints.pdfdata, { ScheduleId: SchId });
+  //       console.log("Schedule response is received in servicemodal::", response);
+  //       setTabledata(response);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+  
+  //   fetchData();
+  // }, [SchId]);
   useEffect(() => {
+    if (!formdata || formdata.length === 0 || !formdata[0]?.ScheduleId || !SchId) {
+      return; 
+    }
+  
     const scheduleId = formdata[0]?.ScheduleId;
-    if (!scheduleId) return;
+    console.log("scheduleId from formdata:", scheduleId);
+    console.log("SchId from state/prop:", SchId);
   
     const fetchData = async () => {
       try {
-        console.log("Calling API with ScheduleId:", scheduleId);
-        const response = await postRequest(endpoints.pdfdata, { ScheduleId: scheduleId });
-        console.log("Schedule response is received in servicemodal::", response);
+        console.log("Calling API with ScheduleId:", SchId);
+        const response = await postRequest(endpoints.pdfdata, { ScheduleId: SchId });
+        console.log("Schedule response received in servicemodal:", response);
         setTabledata(response);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -102,7 +127,8 @@ export default function ServiceModal({
     };
   
     fetchData();
-  }, [formdata[0]?.ScheduleId]);
+  }, [formdata, SchId]); 
+  
   
   
 

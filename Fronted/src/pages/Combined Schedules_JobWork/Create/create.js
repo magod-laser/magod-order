@@ -186,7 +186,7 @@ export default function Create({ type }) {
 
   return (
     <div>
-      <h4 className="title">Combined Schedule Creator</h4>
+      <h4 className="title">Order Schedule No</h4>
 
       <div className="row">
         <div className="col-md-4">
