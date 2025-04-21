@@ -162,7 +162,7 @@ export default function CreateSales() {
   console.log("selectedSalesContact", selectedSalesContact);
   return (
     <div>
-      <h4 className="title">Combined Schedule Creator</h4>
+      <h4 className="title"></h4>
 
       <div className="row mt-3">
         <div className="col-md-4">

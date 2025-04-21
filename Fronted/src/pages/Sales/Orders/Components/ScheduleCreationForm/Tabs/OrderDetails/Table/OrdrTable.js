@@ -399,7 +399,7 @@ function OrdrTable(props) {
   };
   // sorting function for table headings of the table
   const requestSort = (key) => {
-    console.log("entering into the request sort");
+    // console.log("entering into the request sort");
     let direction = "asc";
     if (sortConfig.key === key && sortConfig.direction === "asc") {
       direction = "desc";
@@ -408,7 +408,7 @@ function OrdrTable(props) {
   };
 
   const sortedData = () => {
-        console.log("filterdata loggedin sorted data;;", filteredData);
+        // console.log("filterdata loggedin sorted data;;", filteredData);
     const dataCopy = [...filteredData];
 
     if (sortConfig.key) {

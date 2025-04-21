@@ -854,7 +854,7 @@ export default function OrderDetails(props) {
                   Order_Srl: idx + 1,
                 }));
 
-                console.log("Re-indexed data:", reIndexedData);
+                // console.log("Re-indexed data:", reIndexedData);
 
                 // Step 5: Update the state and database in parallel
                 // Update state with new order details
@@ -2021,14 +2021,14 @@ export default function OrderDetails(props) {
                               </h6>
                             </label>
                           </td>
-                          <td colspan="2">
+                          <td colspan="2Combined Schedule Creator">
                             <label>
                               <h6>Process: {LastSlctedRow.Operation}</h6>
                             </label>
                           </td>
                         </tr>
                         <tr>
-                          <td style={{ width: "25%" }}>
+                          <td style={{ width: "40%" }}>
                             <label>
                               <h6>Mtrl Grade : {LastSlctedRow.Mtrl_Code}</h6>
                             </label>
@@ -2038,12 +2038,12 @@ export default function OrderDetails(props) {
                               <h6>Mtrl Source : {LastSlctedRow.Mtrl_Source}</h6>
                             </label>
                           </td>
-                          <td style={{ width: "25%" }}>
+                          <td style={{ width: "20%" }}>
                             <label>
                               <h6>Quantity : {LastSlctedRow.Qty_Ordered}</h6>
                             </label>
                           </td>
-                          <td style={{ width: "25%" }}>
+                          <td style={{ width: "24%" }}>
                             <button
                               className="button-style"
                               onClick={ShowDfxForm}

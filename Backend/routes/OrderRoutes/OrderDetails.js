@@ -2998,12 +2998,39 @@ OrderDetailsRouter.post("/singleChangeUpdate", async (req, res, next) => {
   }
 });
 
+OrderDetailsRouter.post(`/updateOrdDWG`, async (req,res, next) => {
+  try {
+    console.log("orderno : ",req.body.orderno);
+    console.log("Dwg Name :",req.body.orddwg);
+    console.log("intdwg: ",req.body.intdwg)
+    
+      const updateOrderDwgQuery = `UPDATE magodmis.order_details
+      SET Dwg = ${req.body.intdwg}  WHERE order_no = '${req.body.orderno}' And DwgName = '${req.body.orddwg}'`;
+
+    misQueryMod(updateOrderDwgQuery, (err, updateOrderDwgRes) => {
+      if (err) {
+        logger.error(err);
+        return res.status(500).send("Error updating Dwg Exists.");
+      }
+console.log("updateOrderDwgRes : ",updateOrderDwgRes)
+      return res.send({
+        message: "Row updated order Dwg successfully.",
+      });
+    });
+
+  } catch (error) {
+    logger.error(error);
+    next(error);
+  }
+})
+
+
+
 OrderDetailsRouter.post(`/postDeleteDetailsBySrl`, async (req, res, next) => {
   try {
     const { Order_No, selectedItems } = req.body;
 
     // console.log("postDeleteDetailsBySrl reqq",req.body.selectedSrl);
-
 
     if (!selectedItems || selectedItems.length === 0) {
       return res.status(400).json({ error: "No selected items provided" });

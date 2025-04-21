@@ -5,9 +5,11 @@ import { Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import AddNewSrlModal from "../Modals/AddNewSrlModal";
 import { Typeahead } from "react-bootstrap-typeahead";
-import { Login } from "@mui/icons-material";
+import { Folder, Login } from "@mui/icons-material";
 import { Last } from "react-bootstrap/esm/PageItem";
 import LoadingPage from "../../../Loading";
+import { postRequest } from "../../../../../../../api/apiinstance";
+import { endpoints } from "../../../../../../../api/constants";
 
 function OrdrDtls(props) {
   const {
@@ -76,9 +78,9 @@ function OrdrDtls(props) {
     selectedRow,OdrDtlMtrlSrc
   } = props;
 
-  console.log("selectedRow", selectedRow);
+  // console.log("selectedRow", selectedRow);
   // console.log("OdrDtlMtrlSrc", OdrDtlMtrlSrc);
-  console.log("OdrDtlMtrlSrc", OdrDtlMtrlSrc);
+  // console.log("OdrDtlMtrlSrc", OdrDtlMtrlSrc);
 
  
 
@@ -105,9 +107,31 @@ function OrdrDtls(props) {
     // Your other logic if needed
   };
 
-  useEffect(() => {
-    deleteRowsBySrl();
-  }, []);
+  // useEffect(() => {
+  //   deleteRowsBySrl();
+  // }, []);
+
+const SaveToCustDwgs = () =>{
+  console.log("entering into the save to dwg funtion");
+  
+
+// 1. To bring Orderno, Drawingname, CustCode
+// 2. Send the same to API
+// 3. API -> to Check the folder inside CustDwg\DXF
+//      a. Not Present then Create CustDwg\DXF Folder
+//      b. Then Copy the File from WO\Dxf File   to  CustDwg\Dxf
+
+let orderno = selectedRow.Order_No;
+let ccode = selectedRow.Cust_Code;
+let dwgname = selectedRow.DwgName;
+
+
+postRequest(endpoints.saveToCustDwg, {orderno, ccode, dwgname},(respdwg)=> {
+  console.log("respdwg : ",respdwg);
+})
+
+}
+
   return (
     <div>
       <AddNewSrlModal
@@ -711,7 +735,7 @@ function OrdrDtls(props) {
                 </button>
               </div>
               <div className="col-md-4">
-                <button className="button-style ">Save to Customer Dwg</button>
+                <button className="button-style" onClick={SaveToCustDwgs} >Save to Customer Dwg</button>
               </div>
             </div>
 

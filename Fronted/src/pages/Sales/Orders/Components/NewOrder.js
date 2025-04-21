@@ -56,6 +56,10 @@ function NewOrder(props) {
   const [userName, setuserName] = useState("");
 
   useEffect(() => {
+    // Clear importDwgModalValues from localStorage when creating a new order
+    // This ensures the Import Drawing modal starts fresh without any retained values
+    localStorage.removeItem('importDwgModalValues');
+    
     let data = JSON.parse(localStorage.getItem("LazerUser"));
     setuserName(data.data[0].Name);
 

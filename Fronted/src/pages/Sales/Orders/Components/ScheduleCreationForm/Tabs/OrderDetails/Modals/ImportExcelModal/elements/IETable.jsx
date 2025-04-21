@@ -376,12 +376,20 @@ export default function IETable(props) {
 
   return (
     <div style={{ overflow: "auto", height: " 500px" }}>
-      <Table striped className="table-data border">
-        <thead className="tableHeaderBGColor">
+      {/* <Table striped className="table-data border"> */}
+       <Table bordered hover className="table-data border">
+        {/* <thead className="tableHeaderBGColor"> */}
+        <thead  className="tableHeaderBGColor"
+            style={{
+              textAlign: "center",
+              position: "sticky",
+              top: "-1px",
+              whiteSpace: "nowrap",
+            }}>
           <tr>
             <th>SL No</th>
             <th>Drawing Name</th>
-            <th>Material Code</th>
+            <th >Material Code</th>
             <th>Source</th>
             <th>Operation</th>
             <th>Order Qty</th>
@@ -604,7 +612,7 @@ export default function IETable(props) {
                   name="Mtrl_Cost"
                   style={{
                     background:
-                      val.Source === "Magod"
+                      val.Source === "Magod" || val.Source === "Customer"
                         ? "rgb(204, 255, 204)"
                         : "transparent", // Green if Source is "Magod", otherwise transparent
                     border: "none",

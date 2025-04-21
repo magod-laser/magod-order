@@ -881,7 +881,7 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
 
     const updateOrderDetailsData = {
       orderNo: OrderData.Order_No,
-      updatedRows: Object.values(editedData), // Send all edited rows
+      updatedRows: Object.values(editedData), 
     };
 
     console.log("Updating order details:", updateOrderDetailsData);
@@ -891,12 +891,14 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
       updateOrderDetailsData
     );
 
+    console.log("orderDetailsResponse",orderDetailsResponse);
+    
     if (orderDetailsResponse.success) {
       // toast.success("Order details updated successfully", {
       //   position: toast.POSITION.TOP_CENTER,
       // });
       alert("Order details updated successfully");
-
+        fetchData();
       setEditedData({}); // Clear stored changes
     } else {
       toast.error("Order update failed. Try again!", {
@@ -2299,6 +2301,7 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
               setSelectedRowItems={setSelectedRowItems}
               setLastSlctedRow={setLastSlctedRow}
               setSelectedRow={setSelectedRow}
+              fetchData={fetchData}
             />
           </Tab>
           <Tab eventKey="findoldpart" title="Find Old Part">

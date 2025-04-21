@@ -455,6 +455,57 @@ export default function PrepareScheduleTab({
     setPrepareScheduleData([]);
   }, [selectedCustomerSales]);
 
+
+  // ---------------------------------
+
+  
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+  
+    // sorting function for table headings of the table
+    const requestSort = (key) => {
+      console.log("entering into the request sort");
+      let direction = "asc";
+      if (sortConfig.key === key && sortConfig.direction === "asc") {
+        direction = "desc";
+      }
+      setSortConfig({ key, direction });
+    };
+  
+    const sortedData = () => {
+      const dataCopy = [...oderSchedule];
+  
+      if (sortConfig.key) {
+        dataCopy.sort((a, b) => {
+          let valueA = a[sortConfig.key];
+          let valueB = b[sortConfig.key];
+  
+          // Convert only for the "intiger" columns
+          if (sortConfig.key === "OrdSchNo") {
+            valueA = parseFloat(valueA);
+            valueB = parseFloat(valueB);
+          }
+  
+          // Convert Printable_Order_Date to date object for proper sorting
+          if (
+            sortConfig.key === "schTgtDateFormatted" 
+            
+          ) {
+            valueA = new Date(valueA.split("/").reverse().join("-")); // Convert "DD/MM/YYYY" to "YYYY-MM-DD"
+            valueB = new Date(valueB.split("/").reverse().join("-"));
+          }
+          if (valueA < valueB) {
+            return sortConfig.direction === "asc" ? -1 : 1;
+          }
+          if (valueA > valueB) {
+            return sortConfig.direction === "asc" ? 1 : -1;
+          }
+          return 0;
+        });
+      }
+      return dataCopy;
+    };
+  
+
   return (
     <>
       {type === "Sales" ? (
@@ -957,14 +1008,16 @@ export default function PrepareScheduleTab({
                 >
                   <thead className="tableHeaderBGColor table-space">
                     <tr>
-                      <th>Select</th>
-                      <th>Order Schedule No</th>
-                      <th>PO</th>
-                      <th>Target Date</th>
+                      <th >Select</th>
+                      <th onClick={() => requestSort("OrdSchNo")}>Order Schedule No</th>
+                      <th onClick={() => requestSort("PO")}>PO</th>
+                      <th onClick={() => requestSort("schTgtDateFormatted")}>Target Date</th>
                     </tr>
                   </thead>
                   <tbody className="tablebody table-space">
-                    {oderSchedule.map((item, key) => {
+                    {/* {oderSchedule.map((item, key) => { */}
+                    {sortedData()?.map((item, key) => {
+                   
                       const isChecked = selectedRows.some(
                         (selectedItem) =>
                           selectedItem.ScheduleId === item.ScheduleId
