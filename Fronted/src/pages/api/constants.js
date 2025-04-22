@@ -45,6 +45,13 @@ export const endpoints = {
   postDeleteDetailsBySrl: `${API}/OrderDetails/postDeleteDetailsBySrl`,
   MenuUrlsAPI: `${API}/user/fetchMenuUrls`,
   getDwgData: `${API}/OrderDetails/getDwgData`,
+  saveToCustDwgsinsrt: `${API}/OrderDetails/saveToCustDrawgs`,
+  testttttt: `${API}/OrderDetails/testttttt`,
+  compareCustDwg: `${API}/file/compareCustDwg`,
+
+
+
+
   // profarma inv list...............
   getProfarmaMain: `${API}/profarmaInvList/getProfarmaMain`,
   getProfarmaDetails: `${API}/profarmaInvList/getProfarmaDetails`,

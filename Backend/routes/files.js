@@ -5,6 +5,7 @@ const fileRouter = require("express").Router();
 var createError = require("http-errors");
 const fsSync = require("fs");
 const fsAsync = require('fs').promises;
+const fs = require('fs');
 const multer = require("multer");
 const { copyfiles } = require("../helpers/folderhelper");
 // const JSONStream = require("JSONStream");
@@ -258,6 +259,45 @@ fileRouter.post("/saveToCustDwg", async (req, res, next) => {
 	}
 });
 
+
+fileRouter.post("/compareCustDwg", async (req, res, next) => {
+	console.log("compareCustDwg");
+	// console.log(req.body.Dwg);
+	try {
+	//	let orderno = req.body.orderno;
+		 let ccode = req.body.ccode;
+		// let files = req.body.dwgname;
+
+		let destpath = path.join(process.env.FILE_SERVER_PATH, '\\CustDwg\\', ccode, '\\DXF\\');
+		//let sourpath = path.join(process.env.FILE_SERVER_PATH, '\\WO\\', orderno, '\\DXF\\', files)
+
+		fs.readdir(destpath, (err, files) => {
+			if (err) res.send({"error": err})
+			if (files.length > 0) {
+				res.send({status : "Found"})
+			 } else {
+				console.log(" The Folder is empty");
+				res.send({status : "Not Found"});
+			 }
+		})
+		
+		//  if (err) {
+		// 	console.log("Folder does not exist", err);
+		// 	return;
+		//  }
+		
+		//  if (files.length > 0) {
+		// 	res.send({status : "Found"})
+		//  } else {
+		// 	console.log(" The Folder is empty");
+		// 	res.send({status : "Not Found"});
+		//  }
+
+	} catch (err) {
+		console.log(err);
+		next(err);
+	}
+});
 
 // fileRouter.post("/checkmultidxf", async (req, res, next) => {
 // 	try {
