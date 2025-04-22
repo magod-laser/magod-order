@@ -444,11 +444,20 @@ console.log("data-selectedrow",props.selectedRows);
         //       : "#90ee90" // light green for match
         //     : "transparent", // default when not compared
         // }}
+        // style={{
+        //   backgroundColor: val.Matching
+        //     ? "#90ee90" // green if Matching is true
+        //     : "#ffb6c1", // pink for mismatch if Matching is false
+        // }}
+
         style={{
-          backgroundColor: val.Matching
-            ? "#90ee90" // green if Matching is true
-            : "#ffb6c1", // pink for mismatch if Matching is false
-        }}
+  backgroundColor: props.MatchingFlag
+    ? (val.Matching
+        ? "#90ee90" // green if Matching is true
+        : "#ffb6c1" // pink for mismatch if Matching is false
+      )
+    : "white", // default white before comparison
+}}
         onClick={() => {
           props.setSelectedRows(
             props.selectedRows.includes(key)
