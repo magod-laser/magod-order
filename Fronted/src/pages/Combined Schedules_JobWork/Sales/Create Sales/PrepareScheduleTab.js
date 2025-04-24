@@ -29,6 +29,9 @@ export default function PrepareScheduleTab({
   const [openTasked, setOpenTasked] = useState(false);
   const [validationpopup, setValidationPopup] = useState();
 
+console.log("beforecombine",beforecombine);
+
+
   //open CombineSchedule Modal
   const openCombineScheduleModal = () => {
     setOpenCombinedSchedule(true);

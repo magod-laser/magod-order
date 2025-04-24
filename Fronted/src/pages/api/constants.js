@@ -89,6 +89,7 @@ export const endpoints = {
   getOrdDxf: `${API}/file/orddxf`,
   saveToCustDwg: `${API}/file/saveToCustDwg`,
   checkdxffilesimportoldorder: `${API}/file/checkdxffilesimportoldorder`,
+  orddxffilesimporttocombsch:`${API}/file/orddxffilesimporttocombsch`,
   getStates: `${API}/states/allstates`,
   getStateCode: `${API}/states/getstatecode`,
   getStateName: `${API}/states/getstatename`,

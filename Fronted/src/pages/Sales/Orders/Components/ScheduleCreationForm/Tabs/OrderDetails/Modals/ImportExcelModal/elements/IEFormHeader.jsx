@@ -360,8 +360,8 @@ const {dwgData, setDwgData, compareData, updatePara,MtrlFlg, setMtrlFlg}=props
 
           <label className="form-label label-space">Order Total</label>
 
-          {/* <input disabled value={props.orderTotal} className="in-field" /> */}
-          <input disabled value={orderTotal} className="in-field" />
+          <input disabled value={props.orderTotal} className="in-field" />
+          {/* <input disabled value={orderTotal} className="in-field" /> */}
         </div>
       </div>
       {/* <div className="row">

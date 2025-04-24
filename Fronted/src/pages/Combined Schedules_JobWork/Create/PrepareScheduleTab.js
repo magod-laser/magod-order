@@ -4,6 +4,7 @@ import { getRequest, postRequest } from "../../api/apiinstance";
 import { endpoints } from "../../api/constants";
 import Popup from "../Components/Popup";
 import { style } from '@mui/system';
+import { useLocation } from "react-router-dom";
 
 export default function PrepareScheduleTab({
   oderSchedule,
@@ -38,7 +39,40 @@ export default function PrepareScheduleTab({
   const [validationpopup, setValidationPopup] = useState();
   const [rowselectleftSales, setRowSelectLeftSales] = useState([]);
   const [openSchedule, setOpenSchedule] = useState(false);
+  const [cmbScheId, setcmbScheId] = useState();
 
+  console.log("preapreScheduleData---",preapreScheduleData);
+  console.log("beforecombine---",beforecombine);
+  console.log("rowselectleft---",rowselectleft);
+  console.log("preapreScheduleData---",  preapreScheduleData  );
+  
+  // const location = useLocation();
+  //   const { selectedRow } = location?.state || {};
+
+  //   console.log("selectedRow---",selectedRow);
+    
+  
+   //SchedueleList Details
+    const [scheduleListDetailsData, setScheduleListDetailsData] = useState([]);
+
+    const getScheduleListDetails = () => {
+      postRequest(
+        endpoints.getSchedudleDetails,
+        {
+          selectedRow:cmbScheId,
+          Component: "Create"
+        },
+        (response) => {
+          console.log("resss----create",response);
+          setScheduleListDetailsData(response.data);
+          setPrepareScheduleData(response.data)
+        }
+      );
+    };
+  
+useEffect(()=>{
+  getScheduleListDetails();
+},[cmbScheId])
   //open CombineSchedule Modal
   const openCombineScheduleModal = () => {
     setOpenCombinedSchedule(true);
@@ -254,8 +288,14 @@ export default function PrepareScheduleTab({
               selectedSalesContact: selectedSalesContact,
               Date: storedDate,
               ScheduleDate: ScheduleDate,
+              Operation :preapreScheduleData[0].Operation,              
+              Mtrl_Source:preapreScheduleData[0].Mtrl_Source
             },
             (response) => {
+              // console.log("response----",response);
+              // console.log("response----",response.cmbSchId);
+              setcmbScheId(response.cmbSchId)
+              
               setDisableButton(true);
               console.log(
                 "response after create is",
@@ -283,6 +323,8 @@ export default function PrepareScheduleTab({
               selectedSalesContact: selectedSalesContact,
               Date: storedDate,
               ScheduleDate: ScheduleDate,
+              Operation :preapreScheduleData[0].Operation,              
+              Mtrl_Source:preapreScheduleData[0].Mtrl_Source
             },
             (response) => {
               setDisableButton(true);
@@ -924,7 +966,7 @@ export default function PrepareScheduleTab({
               </div>
               <div
                 className="mt-1"
-                style={{ overflowY: "scroll", height: "180px" }}
+                style={{ overflowY: "scroll", height: "250px" }}
               >
                 <Table striped className="table-data border">
                   <thead
@@ -946,6 +988,11 @@ export default function PrepareScheduleTab({
                   </thead>
                   <tbody className="tablebody table-space">
                     {beforecombine.map((value, key) => {
+                      const date = new Date(value.schTgtDate);
+                      const formattedDate = date.toLocaleDateString('en-GB'); 
+                      console.log("formattedDate",formattedDate);
+                      
+                      
                       const isChecked = rowselectleft.some(
                         (selectedItem) =>
                           selectedItem.ScheduleId === value.ScheduleId
@@ -974,7 +1021,9 @@ export default function PrepareScheduleTab({
                           </td>
                           <td style={{ textAlign: "center" }}>{value.PO}</td>
                           <td style={{ textAlign: "center" }}>
-                            {value.schTgtDateFormatted}
+                            {/* {value.schTgtDateFormatted} */}
+                            {/* {value.schTgtDate} */}
+                            {formattedDate}
                           </td>
                         </tr>
                       );
@@ -985,7 +1034,7 @@ export default function PrepareScheduleTab({
               <div
                 className="mt-1"
                 style={{
-                  height: "180px",
+                  height: "240px",
                   overflowY: "scroll",
                   overflowX: "scroll",
                 }}
@@ -1008,7 +1057,7 @@ export default function PrepareScheduleTab({
                       <th>Operation</th>
                     </tr>
                   </thead>
-                  <tbody className="tablebody table-space">
+                  {/* <tbody className="tablebody table-space">
                     {preapreScheduleData?.map((data, key) => {
                       return (
                         <>
@@ -1029,7 +1078,21 @@ export default function PrepareScheduleTab({
                         </>
                       );
                     })}
-                  </tbody>
+                  </tbody> */}
+
+
+                  {/* // Condtion based table mapping with prepare and sch dtat */}
+                  <tbody className="tablebody table-space">
+  {(cmbScheId ? scheduleListDetailsData : preapreScheduleData)?.map((data, key) => (
+    <tr key={key}>
+      <td style={{ textAlign: "center" }}>{data.DwgName}</td>
+      <td style={{ textAlign: "right" }}>{data.QtyScheduled}</td>
+      <td style={{ textAlign: "center" }}>{data.MProcess}</td>
+      <td style={{ textAlign: "center" }}>{data.Operation}</td>
+    </tr>
+  ))}
+</tbody>
+
                 </Table>
               </div>
             </div>
@@ -1056,12 +1119,19 @@ export default function PrepareScheduleTab({
                   </button>
                 </div>
               </div>
-              <div className="mt-1" style={{ overflowY: "scroll" }}>
+              <div className="mt-1" 
+              // style={{ overflowY: "scroll" }}
+              style={{
+                height: "500px",
+                overflowY: "scroll",
+                overflowX: "scroll",
+              }}
+              >
                 <Table
                   // striped
                   bordered
                   className="table-data border"
-                  style={{ border: "1px", height: "360px" }}
+                  style={{ border: "1px"}}
                 >
                   <thead
                     className="tableHeaderBGColor"

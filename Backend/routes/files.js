@@ -15,6 +15,8 @@ const CustomStorageEngine = require("../helpers/storageEngine");
 
 // const basefolder='C:\\Magod\\Jigani';
 const basefolder = process.env.FILE_SERVER_PATH;
+console.log("basefolder---",basefolder);
+
 
 var storage = new CustomStorageEngine({
 	destination: function (req, file, cb) {
@@ -398,10 +400,10 @@ fileRouter.post("/ordcopydxf", async (req, res, next) => {
 
 	//console.log("custdwgname : ", req.body.custdwgname);
 	try {
-		let files = req.body.orderdwg; //OrdrDetailsData.DwgName; //custdwgname;
+			let files = req.body.orderdwg; //OrdrDetailsData.DwgName; //custdwgname;
+
 			let sourcefld = path.join(req.body.srcfolder, '\\');
 			let destinationfld = path.join(req.body.destfolder, '\\');
-
 		console.log("files : ", files);
 		for (let i = 0; i < files.length; i++) {
 			 sourcefld = path.join(req.body.srcfolder, '\\', files[i]);
@@ -435,9 +437,12 @@ fileRouter.post("/ordcopydxf", async (req, res, next) => {
 
 fileRouter.post("/getfolderfilenames", async (req, res) => {
 	console.log(" Get Folder File Names ");
+	console.log("requset",req.body);
 	let filedetails = [];
 	try {
-		let path = basefolder + req.body.destPath;
+		let path = basefolder + req.body.desPath;
+		console.log("path",path);
+		
 
 		const directoryPath = path; // '/path/to/your/directory';
 
@@ -551,76 +556,77 @@ fileRouter.get("/orddxf", async (req, res, next) => {
 	}
 });
 
-fileRouter.post('/getfolderfilenames', async (req, res) => {
+// fileRouter.post('/getfolderfilenames', async (req, res) => {
 
-	let filedetails = [];
-	try {
+// 	let filedetails = [];
+// 	try {
 
-		let path = basefolder + req.body.destPath;
-		const directoryPath = path; // '/path/to/your/directory';
+// 		let path = basefolder + req.body.destPath;
+// 		const directoryPath = path; // '/path/to/your/directory';
 
-		// Step 2: Get all file names in the directory
-		const files = fsSync.readdirSync(directoryPath, { withFileTypes: true })
-			.filter(dirent => dirent.isFile()) // Only include files, not directories
-			.map(dirent => {
-				const filePath = directoryPath + dirent.name;
-				const stats = fsSync.statSync(filePath); // Get file information including size
-				return {
-					name: dirent.name,
-					size: stats.size // Size in bytes
-				};
-			});
-		console.log('Files with sizes:');
-		files.forEach(file => {
-			``
-			console.log(`${file.name}: ${file.size} bytes`);
-		});
+// 		// Step 2: Get all file names in the directory
+// 		const files = fsSync.readdirSync(directoryPath, { withFileTypes: true })
+// 			.filter(dirent => dirent.isFile()) // Only include files, not directories
+// 			.map(dirent => {
+// 				const filePath = directoryPath + dirent.name;
+// 				const stats = fsSync.statSync(filePath); // Get file information including size
+// 				return {
+// 					name: dirent.name,
+// 					size: stats.size // Size in bytes
+// 				};
+// 			});
+// 		console.log('Files with sizes:');
+// 		files.forEach(file => {
+// 			``
+// 			console.log(`${file.name}: ${file.size} bytes`);
+// 		});
 
-		// Step 3: Read each file's content (optional)
-		files.forEach(file => {
-			const filePath = directoryPath + file.name;
-			const content = fsSync.readFileSync(filePath, 'utf8'); // Read the file content
-			// console.log(`Content of ${file.name}:`);
-			//  console.log(content);
-			filedetails = [...filedetails, { name: file.name, fcontent: content, size: (file.size / 1024).toFixed(2) + ' KB' }];
-		});
+// 		// Step 3: Read each file's content (optional)
+// 		files.forEach(file => {
+// 			const filePath = directoryPath + file.name;
+// 			const content = fsSync.readFileSync(filePath, 'utf8'); // Read the file content
+// 			// console.log(`Content of ${file.name}:`);
+// 			//  console.log(content);
+// 			filedetails = [...filedetails, { name: file.name, fcontent: content, size: (file.size / 1024).toFixed(2) + ' KB' }];
+// 		});
 
 
 
-		//     const directoryPath = path; // '/some/directory/path';
-		//     const files = fs.readdirSync(directoryPath, { withFileTypes: true })
-		//                    .filter(item => !item.isDirectory())
-		//                    .map(item => item.name);
-		//   //  res.json(files);
+// 		//     const directoryPath = path; // '/some/directory/path';
+// 		//     const files = fs.readdirSync(directoryPath, { withFileTypes: true })
+// 		//                    .filter(item => !item.isDirectory())
+// 		//                    .map(item => item.name);
+// 		//   //  res.json(files);
 
-		//     for (let i = 0; i < files.length; i++) {
-		//         let fpath = path + files[i].name;
-		//         await fs.stat(fpath, (err, stats) => {
-		//             if (err) {
-		//                 console.error(err);
-		//                 return;
-		//             }
-		//             //   respdata.push({ name: data[i].name, size: (stats.size / 1024).toFixed(2) + ' KB' });
-		//             //   console.log(data[i].name +'|| ' +(stats.size/1024).toFixed(2) + ' KB');
-		//             filedetails = [...filedetails, { name: files[i].name, size: (stats.size / 1024).toFixed(2) + ' KB' }];
-		//             // stats.isFile(); // true
-		//             // stats.isDirectory(); // false
-		//             // stats.isSymbolicLink(); // false
-		//             // stats.size; // 1024000 //= 1MB
-		//             //   filedetails = [...filedetails, { name: data[i].name, size: (stats.size / 1024).toFixed(2) + ' KB' }];
-		//               console.log(filedetails);
-		//         });
-		//   }
-		console.log(filedetails);
-		res.send(filedetails);
-	} catch (error) {
-		console.log(error);
-		//       next(error);
-	}
-});
+// 		//     for (let i = 0; i < files.length; i++) {
+// 		//         let fpath = path + files[i].name;
+// 		//         await fs.stat(fpath, (err, stats) => {
+// 		//             if (err) {
+// 		//                 console.error(err);
+// 		//                 return;
+// 		//             }
+// 		//             //   respdata.push({ name: data[i].name, size: (stats.size / 1024).toFixed(2) + ' KB' });
+// 		//             //   console.log(data[i].name +'|| ' +(stats.size/1024).toFixed(2) + ' KB');
+// 		//             filedetails = [...filedetails, { name: files[i].name, size: (stats.size / 1024).toFixed(2) + ' KB' }];
+// 		//             // stats.isFile(); // true
+// 		//             // stats.isDirectory(); // false
+// 		//             // stats.isSymbolicLink(); // false
+// 		//             // stats.size; // 1024000 //= 1MB
+// 		//             //   filedetails = [...filedetails, { name: data[i].name, size: (stats.size / 1024).toFixed(2) + ' KB' }];
+// 		//               console.log(filedetails);
+// 		//         });
+// 		//   }
+// 		console.log(filedetails);
+// 		res.send(filedetails);
+// 	} catch (error) {
+// 		console.log(error);
+// 		//       next(error);
+// 	}
+// });
 
 
 // Function to execute database queries
+
 const queryDatabase = (query) => {
 	return new Promise((resolve, reject) => {
 		misQueryMod(query, (err, results) => {
@@ -704,6 +710,62 @@ fileRouter.post(`/checkdxffilesimportoldorder`, async (req, res, next) => {
 
 
 
+					}
+				});
+			});
+		});
+	} catch (error) {
+		next(error);
+	}
+
+
+})
+
+fileRouter.post(`/orddxffilesimporttocombsch`, async (req, res, next) => {
+	console.log("checking the import order dxf files to comb sch folder");
+	console.log("request", req.body);
+
+	let Doctype = req.body.Doctype;
+	let Old_Order_No = req.body.docNo;
+	let New_Order_No = req.body.newdocNo
+	let srcfilepth = path.join(process.env.FILE_SERVER_PATH, "//Wo//", Old_Order_No, '//DXF//');
+	let dstfilepth = path.join(process.env.FILE_SERVER_PATH, "//Wo//", New_Order_No, '//DXF//');
+	console.log("srcfilepth: ", srcfilepth)
+	console.log("dstfilepth: ", dstfilepth)
+	try {
+
+		const sourceFolder = srcfilepth;
+		const destinationFolder = dstfilepth;
+
+		fsSync.readdir(sourceFolder, (err, files) => {
+			if (err) {
+				return console.error('Error reading source folder:', err);
+			}
+
+			// Filter out .dxf files
+			const dxfFiles = files.filter(file => path.extname(file).toLowerCase() === '.dxf');
+
+			// Copy each .dxf file to the destination folder
+			dxfFiles.forEach(file => {
+				const sourceFilePath = path.join(sourceFolder, file);
+				const destinationFilePath = path.join(destinationFolder, file);
+
+				fsSync.copyFile(sourceFilePath, destinationFilePath, err => {
+					if (err) {
+						console.error(`Error copying ${file}:`, err);
+					} else {
+						console.log(`${file} copied successfully to ${destinationFolder}`);
+						// Suresh 04-04-25
+						// send the message to frontend and then update the order details table - Dwg field with 1 for the DWgName = ${file}
+						// Update TaskNo and NcTaskId for each row in the task group
+						console.log("New_Order_No:", New_Order_No);
+						console.log("file", file);
+						// const fileName = path.basename(file); // this gets 'part1.dwg'
+						const fileName = path.basename(file).trim(); // Clean file name
+
+
+						console.log("fileName", fileName);
+					
 					}
 				});
 			});

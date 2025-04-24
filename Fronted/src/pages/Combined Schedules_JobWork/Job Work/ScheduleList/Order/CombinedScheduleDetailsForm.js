@@ -33,18 +33,22 @@ function CombinedScheduleDetailsForm() {
         selectedRow,
       },
       (response) => {
-        // console.log(response);
-        setScheduleListDetailsData(response);
+        console.log("resss----",response);
+        setScheduleListDetailsData(response.data);
       }
     );
   };
 
   const getBackgroundColor = (item) => {
+    // console.log("item",item);
+    
     if (!colordisable) {
       if (item.QtyScheduled === 0) {
-        return "red";
+        // return "red";
+        return "#ffb6c1";
       } else if (item.QtyScheduled === item.QtyScheduled) {
-        return "green";
+        // return "green";
+        return "#90ee90";
       } else if (item.QtyScheduled === item.QtyCleared) {
         return "yellow";
       } else if (item.QtyCleared > 0) {
@@ -212,7 +216,7 @@ function CombinedScheduleDetailsForm() {
             selectedRow,
           },
           (response) => {
-            // console.log(response);
+            console.log("----2",response);
             setScheduleListDetailsData(response);
           }
         );
@@ -278,19 +282,24 @@ function CombinedScheduleDetailsForm() {
   const [files, setFiles] = useState([]);
 
   const onClickOpenFolder = () => {
-    if (openFolder) {
-      // Prepare data to send in the POST request
-      const requestData = {
-        OrderNo: selectedRow?.Order_No,
-      };
-      // Send POST request to fetch files from the server
-      postRequest(endpoints.openFolder, { requestData }, (response) => {
-        setFiles(response);
-        setOpenFileModal(true);
-      });
-    } else {
-      fileInputRef.current.click();
-    }
+  
+    setOpenFileModal(true)
+  
+    // if (openFolder) {
+    //   // Prepare data to send in the POST request
+    //   const requestData = {
+    //     OrderNo: selectedRow?.Order_No,
+    //   };
+    //   // Send POST request to fetch files from the server
+    //   postRequest(endpoints.openFolder, { requestData }, (response) => {
+    //     setFiles(response);
+    //     setOpenFileModal(true);
+    //   });
+    // } else {
+    //   fileInputRef.current.click();
+    // }
+
+    
   };
 
   const handleFileChange = (event) => {
@@ -836,6 +845,7 @@ function CombinedScheduleDetailsForm() {
         openfileModal={openfileModal}
         setOpenFileModal={setOpenFileModal}
         files={files}
+        selectedRow={selectedRow}
       />
     </div>
   );

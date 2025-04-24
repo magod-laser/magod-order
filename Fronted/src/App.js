@@ -96,6 +96,7 @@ import FabImportQtn from "./pages/Sales/Orders/Menus/Fabrication/ScheduleCreatio
 import FabEditDxf from "./pages/Sales/Orders/Menus/Fabrication/ScheduleCreationForm/BodyTabs/Buttons/FabEditDxf";
 import ProfileScheduleCreationForm from "./pages/Sales/Orders/Menus/Profile/ScheduleCreationForm/ProfileScheduleCreationForm";
 import { QuotationProvider } from "./context/QuotationContext";
+
 import { OrderProvider } from "./context/OrderContext";
 import { MenuProvider } from "./context/MenusContext";
 import ServiceOpenSchedule from "./pages/Sales/Orders/Menus/Service/ScheduleCreationForm/BodyTabs/ScheduleList/ServiceOpenSchedule";
@@ -118,11 +119,13 @@ import SolidStateLaserTable from "./pages/Sales/Orders/Menus/Service/ScheduleCre
 import CoTable from "./pages/Sales/Orders/Menus/Service/ScheduleCreationForm/BodyTabs/ScheduleList/CoTable";
 import Solidstatelaser from "./pages/Sales/Orders/Menus/Service/ScheduleCreationForm/BodyTabs/ScheduleList/JobParameters/SolidStateLaser/Solidstatelaser";
 import Co2Form from "./pages/Sales/Orders/Menus/Service/ScheduleCreationForm/BodyTabs/ScheduleList/JobParameters/Co2Form/Co2Form";
+import { ScheduleProvider } from "./context/CombScheduleContext";
 
 function App() {
 	return (
 		<BrowserRouter>
 			<MenuProvider>
+			<ScheduleProvider>
 				<QuotationProvider>
 					{/* <OrderProvider> */}
 					<ToastContainer position="top-center" />
@@ -142,6 +145,7 @@ function App() {
 						/>
 						{/* </Route> */}
 						{/* <Route element={<RequireAuth />}> */}
+						{/* <ScheduleProvider> */}
 						<Route element={<WithNav />}>
 							<Route
 								path="/Orders"
@@ -547,6 +551,7 @@ function App() {
 								</Route>
 							</Route>
 						</Route>
+						{/* </ScheduleProvider> */}
 						{/* </Route> */}
 						{/* Catch-all route for any other paths */}
 						{/* <Route
@@ -561,6 +566,7 @@ function App() {
 					</Routes>
 					{/* </OrderProvider> */}
 				</QuotationProvider>
+				</ScheduleProvider>
 			</MenuProvider>
 		</BrowserRouter>
 	);

@@ -496,9 +496,7 @@ function OrdrTable(props) {
     tolerance: 90,
     Total: 80,
   };
-  // const [columnWidths, setColumnWidths] = useState(
-  //   columns.reduce((acc, col) => ({ ...acc, [col.key]: 120 }), {})
-  // );
+ 
   const [columnWidths, setColumnWidths] = useState(
     columns.reduce(
       (acc, col) => ({
@@ -515,20 +513,6 @@ function OrdrTable(props) {
       [key]: size.width,
     }));
   };
-
-  // console.log("OrdrDetailsData", OrdrDetailsData);
-
-
-  //  const [data, setData] = useState(["Row 1", "Row 2", "Row 3", "Row 4"]);
-  //  const [currentIndex, setCurrentIndex] = useState(0);
-
-  //  const goToFirst = () => setCurrentIndex(0);
-  //  const goToPrevious = () => setCurrentIndex((prev) => Math.max(prev - 1, 0));
-  //  const goToNext = () =>
-  //    setCurrentIndex((prev) => Math.min(prev + 1, filteredData.length - 1));
-  //  const goToLast = () => setCurrentIndex(filteredData.length - 1);
- 
-
 
   return (
     <>

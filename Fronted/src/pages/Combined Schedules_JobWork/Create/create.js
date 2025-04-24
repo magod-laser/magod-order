@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSchedule } from "../../../context/CombScheduleContext";
 
 import PrepareScheduleTab from "./PrepareScheduleTab";
 import CombinedScheduleDetailsTab from "./CombinedScheduleDetailsTab";
@@ -9,6 +10,10 @@ import { getRequest, postRequest } from "../../api/apiinstance";
 import { endpoints } from "../../api/constants";
 
 export default function Create({ type }) {
+
+
+  const { rowselectleft, setRowSelectLeft } = useSchedule();
+
   const navigate = useNavigate();
   //disable button
 
@@ -138,8 +143,11 @@ export default function Create({ type }) {
     setSelectedRows(updatedSelection);
   };
 
+  console.log("selectedrowsss---",selectedRows);
+  
   //rowselect left table
-  const [rowselectleft, setRowSelectLeft] = useState([]);
+  // const [rowselectleft, setRowSelectLeft] = useState([]);
+
   const handleCheckboxChangeLeft = (index, item) => {
     const updatedSelection1 = [...rowselectleft];
     const selectedItemIndex = updatedSelection1.findIndex(
@@ -173,6 +181,8 @@ export default function Create({ type }) {
     );
   };
 
+  console.log("preapreScheduleData",preapreScheduleData);
+  
   const [selectedSalesContact, setSelectedSalesContact] = useState("");
   useEffect(() => {
     // Set default value when component mounts
