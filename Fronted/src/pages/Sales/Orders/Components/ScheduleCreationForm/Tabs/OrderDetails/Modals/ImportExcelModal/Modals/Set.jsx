@@ -252,6 +252,7 @@ export default function Set(props) {
         //     Mtrl_Code: "",
         //     Operation: "",
         // });
+        props.setSelectedRows([]);
         props.setSettingModal(false);
     };
 
@@ -363,7 +364,7 @@ const onSave = () => {
     }
   
     toast.success("Set Material and Operation.");
-    // props.setSelectedRows([]);
+    props.setSelectedRows([]);
     closeModal();
   };
   console.log("props.newMaterialUpdates",props.newMtrlCodeUpdate);
@@ -382,6 +383,7 @@ return (
                             id="Mtrl_Code"
                             onChange={(e) => changeHandle("Mtrl_Code", e.length > 0 ? e[0].label : "")}
                             placeholder="Choose a Material..."
+                            labelKey="Mtrl_Code"
                         />
                         <b>Select Operation</b>
                         <Typeahead
@@ -389,6 +391,7 @@ return (
                             id="Operation"
                             onChange={(e) => changeHandle("Operation", e.length > 0 ? e[0].label : "")}
                             placeholder="Choose an Operation..."
+                            // labelKey={"Operation"}
                         />
                     </div>
                 </Modal.Body>

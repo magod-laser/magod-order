@@ -136,16 +136,109 @@ const compareData = async () => {
 			console.log("data-old", detailsDataInImportExcel);
 			setDwgData(detailsDataInImportExcel);
 			console.log("data-new", importedExcelData);
+			
   
-			if (detailsDataInImportExcel) {
+			// if (detailsDataInImportExcel) {
+			//   const dwgDataFromDB = detailsDataInImportExcel;
+  
+
+			//   const updatedData = importedExcelData.map((excelRow) => {
+
+
+			// 	const dbRow = dwgDataFromDB.find(
+			// 	  (db) =>
+			// 		db.DwgName?.trim().toLowerCase() ===
+			// 		excelRow.Dwg_Name?.trim().toLowerCase()
+			// 	);
+			// 	// if (dwgDataFromDB.length === 0 ) {
+			// 	// 	return {
+			// 	// 	  ...excelRow,
+			// 	// 	  Matching: true,
+			// 	// 	};
+			// 	//   }
+			// 	//   else if (!dbRow) {
+			// 	// 		return {
+			// 	// 		  ...excelRow,
+			// 	// 		  Matching: false,
+			// 	// 		};
+					  
+			// 	//   }
+  
+			// 	if (!dbRow) {
+			// 	  return {
+			// 		...excelRow,
+			// 		Matching: false,
+			// 	  };
+			// 	}
+			
+				
+				
+ 
+  
+			// 	// Compare each field
+			// 	const isMatching =
+			// 	  excelRow.Mtrl_Code === dbRow.Mtrl_Code &&
+			// 	  excelRow.Operation === dbRow.Operation &&
+			// 	  parseFloat(excelRow.JW_Cost) === parseFloat(dbRow.JobWorkCost) &&
+			// 	  parseFloat(excelRow.Mtrl_Cost) === parseFloat(dbRow.MtrlCost);
+  
+			// 	return {
+			// 	  ...excelRow,
+			// 	  JW_Cost_Old: dbRow.JobWorkCost,
+			// 	  Mtrl_Cost_Old: dbRow.MtrlCost,
+			// 	  Operation_Old: dbRow.Operation,
+			// 	  Mtrl_Code_Old: dbRow.Mtrl_Code,
+			// 	  Matching: isMatching,
+			// 	};
+			//   });
+  
+			//   setImportedExcelData(updatedData); // update state
+			//   setMatchingRows(updatedData.filter((row) => row.Matching === false)); // only mismatched rows
+			//   if (updatedData.some((row) => row.Matching === false)) {
+			// 	setMatchingFlag(true);
+			//   }
+			// }
+			if (!detailsDataInImportExcel || detailsDataInImportExcel.length === 0) {
+				const updatedData = importedExcelData.map((excelRow) => ({
+				  ...excelRow,
+				  JW_Cost_Old: "",
+				  Mtrl_Cost_Old: "",
+				  Operation_Old: "",
+				  Mtrl_Code_Old: "",
+				  Matching: true,
+				}));
+			  
+				setImportedExcelData(updatedData);
+				setMatchingRows([]); // No mismatches
+				setMatchingFlag(true); // ✅ Set this OUTSIDE the map
+			  
+				return; // Exit early to skip the rest
+			  }
+			 else  {
 			  const dwgDataFromDB = detailsDataInImportExcel;
   
+
 			  const updatedData = importedExcelData.map((excelRow) => {
+
+
 				const dbRow = dwgDataFromDB.find(
 				  (db) =>
 					db.DwgName?.trim().toLowerCase() ===
 					excelRow.Dwg_Name?.trim().toLowerCase()
 				);
+				// if (dwgDataFromDB.length === 0 ) {
+				// 	return {
+				// 	  ...excelRow,
+				// 	  Matching: true,
+				// 	};
+				//   }
+				//   else if (!dbRow) {
+				// 		return {
+				// 		  ...excelRow,
+				// 		  Matching: false,
+				// 		};
+					  
+				//   }
   
 				if (!dbRow) {
 				  return {
@@ -153,6 +246,10 @@ const compareData = async () => {
 					Matching: false,
 				  };
 				}
+			
+				
+				
+ 
   
 				// Compare each field
 				const isMatching =
@@ -177,6 +274,11 @@ const compareData = async () => {
 				setMatchingFlag(true);
 			  }
 			}
+			  
+		
+			
+			
+			
 		  }
 		);
 	  }

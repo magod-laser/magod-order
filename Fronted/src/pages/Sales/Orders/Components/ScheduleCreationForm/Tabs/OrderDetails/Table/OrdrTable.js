@@ -823,15 +823,15 @@ function OrdrTable(props) {
       </div> */}
       </div>
       <div>
-        <button onClick={goToFirst}>First</button>
-        <button onClick={goToPrevious}>Previous</button>
+        <button className="button-style" onClick={goToFirst}>First</button>
+        <button className="button-style" onClick={goToPrevious}>Previous</button>
         <span>
           {filteredData.length > 0
             ? ` ${currentIndex + 1} of ${filteredData.length}`
             : "No data available"}
         </span>
-        <button onClick={goToNext}>Next</button>
-        <button onClick={goToLast}>Last</button>
+        <button className="button-style" onClick={goToNext}>Next</button>
+        <button className="button-style"onClick={goToLast}>Last</button>
       </div>
     </>
   );

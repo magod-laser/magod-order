@@ -481,7 +481,7 @@ export default function IETable(props) {
     setDwgData(updatedOld);
   };
 
-console.log("data-selectedrow",props.selectedRows);
+//console.log("data-selectedrow",props.selectedRows);
 
 //   return (
 //     <div style={{ overflow: "auto", height: " 500px" }}>
@@ -952,13 +952,17 @@ return (
           {importedExcelData?.map((val, key) => {
             const oldVal = dwgData?.[key];
 
+            console.log("dwgData",dwgData);
+            console.log("val.Matching ",val.Matching );
+            
+
             return (
               <tr
                 key={key}
                 className={selectedRows.includes(key) ? "selected-row" : ""}
                 style={{
                   backgroundColor: MatchingFlag
-                    ? val.Matching
+                    ? val.Matching 
                       ? "#90ee90"
                       : "#ffb6c1"
                     : "white",
@@ -1020,7 +1024,7 @@ return (
                       )
                     }
                     options={mtrldata}
-                    selected={val.Mtrl_Code ? [{ label: val.Mtrl_Code }] : []}
+                    selected={val.Mtrl_Code && typeof val.Mtrl_Code === "string" ? [{ label: val.Mtrl_Code }] : []}
                     allowNew
                     placeholder="Choose a Material..."
                   />
@@ -1050,7 +1054,8 @@ return (
                       selected={
                         val?.Mtrl_Code === val.Mtrl_Code_Old
                           ? [{ label: val?.Mtrl_Code_Old }]
-                          : [{ label: val?.Mtrl_Code_Old }]
+                          // : [{ label: val?.Mtrl_Code_Old }] 
+                          : [] 
                       }
                       allowNew
                       placeholder="Choose a Material..."
@@ -1146,18 +1151,19 @@ return (
                       onChange={(e) =>
                         handleOldValChange(
                           key,
-                          "Operation",
+                          "Old_Operation",
                           e.length > 0 ? e[0].label : ""
                         )
                       }
                       onInputChange={(text) =>
-                        handleOldValChange(key, "Operation", text)
+                        handleOldValChange(key, "Old_Operation", text)
                       }
                       options={procdata}
                       selected={
                         val?.Operation === val?.Operation_Old
                           ? [{ label: val?.Operation_Old }]
-                          : [{ label: val?.Operation_Old }]
+                          // : [{ label: val?.Operation_Old }]
+                          : [ ]
                       }
                       allowNew
                       placeholder="Choose an Operation..."
@@ -1290,7 +1296,7 @@ return (
                         const newValue = parseFloat(e.target.value);
                         handleOldValChange(
                           key,
-                          "MtrlCost",
+                          "old_MtrlCost",
                           isNaN(newValue) ? 0 : newValue
                         );
                       }}

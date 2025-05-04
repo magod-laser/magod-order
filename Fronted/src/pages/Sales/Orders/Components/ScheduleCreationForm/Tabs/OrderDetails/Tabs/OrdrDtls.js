@@ -775,14 +775,14 @@ postRequest(endpoints.saveToCustDwg, {orderno, ccode, dwgname},(respdwg)=> {
                       selected={selectedPartId}
                       // id="basic-example"
                       options={options}
-                      labelKey="label"
+                      // labelKey="label"
                       placeholder="Select ..."
                       onChange={handleSelectChange}
                     />
                   ) : (
                     <Typeahead
                       className="in-field"
-                      labelKey="label"
+                      // labelKey="label"
                       placeholder="No PartId for this Customer"
                       disabled
                     />
@@ -905,7 +905,7 @@ postRequest(endpoints.saveToCustDwg, {orderno, ccode, dwgname},(respdwg)=> {
                 ) : (
                   <Typeahead
                     className="ip-slecet input-field"
-                    labelKey="label"
+                    // labelKey="label"
                     placeholder="No PartId's"
                     disabled
                   />

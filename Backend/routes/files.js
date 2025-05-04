@@ -209,6 +209,8 @@ fileRouter.post("/tocopydxfforselected", async (req, res, next) => {
 //   }
 // });
 
+
+
 fileRouter.post("/checkdxf", async (req, res, next) => {
 	try {
 		const docno = req.body.orderno;
@@ -272,8 +274,12 @@ fileRouter.post("/compareCustDwg", async (req, res, next) => {
 
 		let destpath = path.join(process.env.FILE_SERVER_PATH, '\\CustDwg\\', ccode, '\\DXF\\');
 		//let sourpath = path.join(process.env.FILE_SERVER_PATH, '\\WO\\', orderno, '\\DXF\\', files)
-
+		if (!fs.existsSync(destpath)) {
+			console.log(" The Folder not found");
+				res.send({status : "Not Found"});
+		}
 		fs.readdir(destpath, (err, files) => {
+			console.log("files : ",files)
 			if (err) res.send({"error": err})
 			if (files.length > 0) {
 				res.send({status : "Found"})

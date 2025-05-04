@@ -412,7 +412,6 @@ export default function ProductionScheduleCreation({
   const fnCheckDxf = async () => {
     let orderno = OrderData.Order_No;
     await postRequest(endpoints.checkDxf, { orderno }, (checkdata) => {
-
       for (let i = 0; i < OrdrDetailsData.length; i++) {
         const isFilePresent = checkdata.some((file) => file === OrdrDetailsData[i].DwgName);
         if (!isFilePresent) {

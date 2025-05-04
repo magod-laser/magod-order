@@ -337,8 +337,17 @@ export default function FormHeader(props) {
           {/* <Link> */}
           <button
             className="button-style "
+
+            // props.OrderData?.Order_No
+            onClick={() => {
+              if (props.OrderData?.Order_No.startsWith('6') || props.OrderData?.Order_No.startsWith('7')) {
+                navigate(-1);
+              } else if (props.OrderData?.Order_No.startsWith('2')) {
+                navigate("/Orders");
+              }
+            }}
             // onClick={() => navigate(-1)}
-            onClick={() => navigate("/Orders")}
+            // onClick={() => navigate("/Orders")}
             style={{ float: "right" }}
           >
             Close
