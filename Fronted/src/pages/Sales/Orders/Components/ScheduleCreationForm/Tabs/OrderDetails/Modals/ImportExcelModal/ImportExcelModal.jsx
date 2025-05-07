@@ -120,9 +120,13 @@ const compareData = async () => {
 	  { ccode: props.OrderData.Cust_Code },
 	  (compareCustDwg) => {
 		console.log("compareCustDwg", compareCustDwg);
-		if (compareCustDwg.status === "Not Found") {
+		if (compareCustDwg.status === "Folder Not Found") {
 		  alert("Dwgs are not there in CustDwg folder");
 		  return;
+		}
+		if (compareCustDwg.status === "The Folder is empty") {
+			alert("CustDwg folder is empty");
+			return;
 		}
   
 		// Step 2: Fetch DWG data from DB

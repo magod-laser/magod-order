@@ -183,7 +183,7 @@ ScheduleListRouter.post(`/save`, async (req, res, next) => {
                 console.log("item---",item);
                 
                 const updateDetailQuery = `UPDATE magodmis.orderscheduledetails 
-                                           SET JWCost = '${item.JWCost}', MtrlCost = '${item.MtrlCost}',QtyCleared =  '${item.QtyCleared}'
+                                           SET JWCost = '${item.JWCost}', MtrlCost = '${item.MtrlCost}',QtyCleared =  '${item.QtyCleared}',QtyScheduled = '${item.QtyScheduled}'
                                            WHERE SchDetailsID = '${item.SchDetailsID}'`;
                 return new Promise((resolve, reject) => {
                   misQueryMod(updateDetailQuery, (err, result) => {
@@ -4541,11 +4541,13 @@ ScheduleListRouter.post(`/fixtureOrder`, async (req, res, next) => {
 
       // Update magod_runningno table with the new nextSrl
       let updateRunningNoQuery = `UPDATE magod_setup.magod_runningno SET Running_No=${nextSrl} WHERE Id=33`;
-      misQueryMod(updateRunningNoQuery, (err, updateResult) => {
+      misQueryMod(updateRunningNoQuery, async (err, updateResult) => {
         if (err) {
           console.log("Error updating Running_No:", err);
           return res.status(500).send("Error updating Running_No");
         }
+
+        await createFolder("Order", nextSrl, "");
 
         // Prepare and execute the INSERT INTO query with nextSrl
         let insertQuery = `INSERT INTO magodmis.order_list(

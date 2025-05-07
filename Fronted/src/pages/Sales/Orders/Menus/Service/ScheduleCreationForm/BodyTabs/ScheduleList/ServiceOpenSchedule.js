@@ -17,6 +17,7 @@ import moment from "moment";
 import * as XLSX from "xlsx";
 import OkayModal from "../../../../../../../components/OkayModal";
 // import { useNavigation } from "../../../../../../../../../src/context/NavigationContext";
+import LoadingPage from "../../../../../../../Sales/Orders/Components/ScheduleCreationForm/Loading";
 
 function ServiceOpenSchedule() {
   //  const { customNavigate, handleClose } = useNavigation();
@@ -1141,6 +1142,7 @@ const proceedWithScheduling = (validRows) => {
   const [selectedMtrlDimenId, setSelectedMtrlDimenId] = useState(0);
 
   const fnSchCreateWS = async () => {
+  
     if (formdata[0]?.Schedule_Status != "Created") {
       alert("Cannot check material requirement once scheduled");
       return;
@@ -1150,6 +1152,7 @@ const proceedWithScheduling = (validRows) => {
     let Task_PartsList = [];
     let nctasklist1 = [];
     console.log(DwgNameList[0].ScheduleId);
+   // setisLoading(true)
     await postRequest(
       endpoints.getScheduleDetails,
       { ScheduleId: DwgNameList[0].ScheduleId },
@@ -1386,8 +1389,15 @@ const proceedWithScheduling = (validRows) => {
       { TaskNo: item.TaskNo, ScheduleId: item.ScheduleID },
       (partDetails1) => {
         //    console.log("Part Data");
-        //   console.log(partDetails);
+        console.log("partDetails :--",partDetails1.length);
+       
         setPartDetails(partDetails1);
+
+        // if (partDetails1.length > 0) {
+        //   setisLoading(false)
+            
+        //   }
+        
       }
     );
     console.log(item.ScheduleID);
@@ -1474,8 +1484,12 @@ const proceedWithScheduling = (validRows) => {
   //     console.warn("Invalid Type: Unable to navigate");
   //   }
   // };
+
+    const [isLoading, setisLoading] = useState(false);
+
   return (
     <div>
+       {isLoading && <LoadingPage />}
       <h4 className="title">Order Schedule Details</h4>
       <label className="form-label ms-2">{Type}</label>
 
@@ -2557,7 +2571,8 @@ const proceedWithScheduling = (validRows) => {
                             </div>
                             <div className="col-md-6 col-sm-12">
                               <input
-                                className="mt-2 in-fields"
+                                className="mt-3" // in-fields"
+                                style={{fontSize:'14px'}}
                                 type="text"
                                 value={mtrlLength}
                               />
@@ -2570,7 +2585,8 @@ const proceedWithScheduling = (validRows) => {
                             </div>
                             <div className="col-md-6 col-sm-12">
                               <input
-                                className="mt-3 in-fields"
+                                className="mt-3" // in-fields"
+                                style={{fontSize:'14px'}}
                                 type="text"
                                 value={mtrlwidth}
                               />
@@ -2585,7 +2601,8 @@ const proceedWithScheduling = (validRows) => {
                             </div>
                             <div className="col-md-6 col-sm-12">
                               <input
-                                className="mt-3 in-fields"
+                                className="mt-3" // in-fields"
+                                style={{fontSize: '14px'}}
                                 type="text"
                                 value={mtrlquantity}
                               />

@@ -1126,6 +1126,8 @@ export default function OrderDetails(props) {
       //alert("Failed to connect to the DXF service. Please ensure the service is running.");
     }
   };
+
+
   let [selectedDwg, setSelectedDwg] = useState("");
   // let [dwgopen, setDwgOpen] = useState(false);
   const funcEditDXF = async () => {
@@ -1137,15 +1139,16 @@ export default function OrderDetails(props) {
       // console.log(selectedDwg);
       let srcpath = `\\Wo\\` + OrderNo + "\\DXF";
       postRequest(endpoints.getOrdDxf, { selectedDwg, srcpath }, (respfile) => {
+        console.log("respfile : ", respfile);
         filetoService(window.respfile);
         //   setDwgOpen(true);
       });
     }
     // }
-    if (!window.dxffile) return alert("No DXF file selected");
-    if (selectedDwg === window.dxffile.name) {
-      return alert("Selected DXF File is kept Open below");
-    }
+    // if (!window.dxffile) return alert("No DXF file selected");
+    // if (selectedDwg === window.dxffile.name) {
+    //   return alert("Selected DXF File is kept Open below");
+    // }
     if (!window.dxffile) return alert("No DXF file selected");
     try {
       const request = await fetch("http://127.0.0.1:21341/status", {

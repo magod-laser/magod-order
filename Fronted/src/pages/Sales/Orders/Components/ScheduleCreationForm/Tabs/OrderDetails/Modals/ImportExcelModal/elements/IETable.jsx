@@ -401,13 +401,17 @@ export default function IETable(props) {
   console.log("err-m", props.materialError);
   console.log("err-s", props.sourceError);
   console.log("err-o", props.operationError);
+  console.log("err-jw", props.jwCostError);
+  console.log("err-mc", props.mtrlCostError);
   const handleChange = (
     key,
     name,
     val,
     materialError,
     sourceError,
-    operationError
+    operationError,
+    jwCostError,
+    mtrlCostError
   ) => {
     //  if (val.JW_Cost < 1) {
     //    toast.warning("Value should be greater than 0");
@@ -420,6 +424,7 @@ export default function IETable(props) {
             materialError,
             sourceError,
             operationError,
+            jwCostError,mtrlCostError,
             Order_Srl: key + 1, // Ensure Order_Srl is always correct
           }
         : item
@@ -1033,6 +1038,7 @@ return (
                 {MatchingFlag && (
                   <td style={{ width: "200px" }}>
                     <Typeahead
+                    
                       className="typeaheadClass"
                       id="Mtrl_Code"
                       name="Mtrl_Code"
@@ -1047,6 +1053,7 @@ return (
                         handleOldValChange(key, "Mtrl_Code", text)
                       }
                       options={mtrldata}
+                      disabled
                       // selected={
                       //   val?.Mtrl_Code_Old ? [{ label: oldVal?.Mtrl_Code }]
                       //     : []
@@ -1058,7 +1065,7 @@ return (
                           : [] 
                       }
                       allowNew
-                      placeholder="Choose a Material..."
+                      // placeholder="Choose a Material..."
                     />
                   </td>
                 )}
@@ -1159,6 +1166,7 @@ return (
                         handleOldValChange(key, "Old_Operation", text)
                       }
                       options={procdata}
+                      disabled
                       selected={
                         val?.Operation === val?.Operation_Old
                           ? [{ label: val?.Operation_Old }]
@@ -1166,7 +1174,7 @@ return (
                           : [ ]
                       }
                       allowNew
-                      placeholder="Choose an Operation..."
+                      // placeholder="Choose an Operation..."
                     />
                   </td>
                 )}
@@ -1195,8 +1203,13 @@ return (
                   />
                 </td>
 
-                <td style={{ width: "70px" }}>
+                {/* <td style={{ width: "70px" }}>
                   <input
+                  className={
+                    val.jwCostError
+                      ? "border rounded border-1 border-danger typeaheadClass"
+                      : "typeaheadClass"
+                  }
                     type="number"
                     min="0"
                     value={val.JW_Cost}
@@ -1213,17 +1226,54 @@ return (
                         toast.error("JW Cost must be greater than 0");
                         return;
                       }
+                    
                       handleChange(
                         key,
                         e.target.name,
                         newValue,
                         val.materialError,
                         val.sourceError,
-                        val.operationError
+                        val.operationError,
+                        val.jwCostError
                       );
                     }}
                   />
-                </td>
+                </td> */}
+
+<td style={{ width: "70px" }}>
+  <input
+    type="number"
+    min="0"
+    value={val.JW_Cost}
+    name="JW_Cost"
+    className={`typeaheadClass rounded text-end ${
+      val.jwCostError ? "border border-danger border-2" : "border-0"
+    }`}
+    style={{
+      background: "rgb(255, 255, 204)",
+      borderRadius: "5px",
+      padding: "2px 5px",
+    }}
+    onChange={(e) => {
+      const newValue = parseFloat(e.target.value);
+      if (newValue <= 0 || isNaN(newValue)) {
+        toast.error("JW Cost must be greater than 0");
+        return;
+      }
+
+      handleChange(
+        key,
+        e.target.name,
+        newValue,
+        // val.materialError,
+        // val.sourceError,
+        // val.operationError,
+        val.jwCostError
+      );
+    }}
+  />
+</td>
+
 
                 {MatchingFlag && (
                   <td style={{ width: "24px" }}>
@@ -1232,6 +1282,7 @@ return (
                       value={val?.JW_Cost_Old || ""}
                       name="old_JW_Cost"
                       min="0"
+                      disabled
                       style={{
                         background: "#fff9cc",
                         border: "1px solid #ccc",
@@ -1250,9 +1301,14 @@ return (
                   </td>
                 )}
 
-                <td style={{ width: "25px" }}>
+                {/* <td style={{ width: "25px" }}>
                   <input
                     type="number"
+                    className={
+                      val.mtrlCostError
+                        ? "border rounded border-1 border-danger typeaheadClass"
+                        : "typeaheadClass"
+                    }
                     min="0"
                     value={val.Mtrl_Cost}
                     name="Mtrl_Cost"
@@ -1277,7 +1333,40 @@ return (
                       )
                     }
                   />
-                </td>
+                </td> */}
+
+<td style={{ width: "25px" }}>
+  <input
+    type="number"
+    min="0"
+    value={val.Mtrl_Cost.toFixed(2)}
+    name="Mtrl_Cost"
+    className={`typeaheadClass rounded text-end ${
+      val.mtrlCostError ? "border border-danger border-2" : "border-0"
+    }`}
+    style={{
+      background:
+        val.Source === "Magod" || val.Source === "Customer"
+          ? "rgb(204, 255, 204)"
+          : "transparent",
+      borderRadius: "5px",
+      padding: "2px 5px",
+    }}
+    onChange={(e) =>
+      handleChange(
+        key,
+        e.target.name,
+        parseFloat(e.target.value),
+        val.materialError,
+        val.sourceError,
+        val.operationError,
+        val.mtrlCostError
+      )
+    }
+  />
+</td>
+
+
 
                 {MatchingFlag && (
                   <td style={{ width: "24px" }}>
@@ -1285,6 +1374,7 @@ return (
                       type="number"
                       value={val?.Mtrl_Cost_Old || ""}
                       name="old_Mtrl_Cost"
+                      disabled
                       min="0"
                       style={{
                         background: "#fff9cc",
