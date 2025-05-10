@@ -176,6 +176,7 @@ const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   // };
 
 // 07052025 ----------------
+
 const handleChange = (e) => {
   const reader = new FileReader();
 
@@ -228,6 +229,8 @@ const handleChange = (e) => {
 
       const finalArray = parsedData.map((row, idx) => {
         const source = row.Source?.toLowerCase();
+        console.log("source",source);
+        
         const errors = [];
 
         row.jwCostError = false;
@@ -237,15 +240,50 @@ const handleChange = (e) => {
         row.operationError = false;
 
         // Source-specific cost validation
-        if (source === "customer") {
-          row.jwCostError = Number(row.JW_Cost) === 0;
-          if (row.jwCostError) errors.push("JW_Cost should not be 0 for Customer");
-        } else if (source === "magod") {
-          row.jwCostError = Number(row.JW_Cost) === 0;
-          row.mtrlCostError = Number(row.Mtrl_Cost) === 0 || Number(row.Mtrl_Cost) === 0.00 || Number(row.Mtrl_Cost) === "0" || Number(row.Mtrl_Cost) === "0.00" ;
-          if (row.jwCostError) errors.push("JW_Cost should not be 0 for Magod");
-          if (row.mtrlCostError) errors.push("Mtrl_Cost should not be 0 for Magod");
-        } else {
+        // if (source === "customer") {
+        //   row.jwCostError = Number(row.JW_Cost) === 0;
+        //   if (row.jwCostError) errors.push("JW_Cost should not be 0 for Customer");
+        // } else if (source === "magod") {
+        //   row.jwCostError = Number(row.JW_Cost) === 0;
+        //   row.mtrlCostError = Number(row.Mtrl_Cost) === 0 || Number(row.Mtrl_Cost) === 0.00 || Number(row.Mtrl_Cost) === "0" || Number(row.Mtrl_Cost) === "0.00" ;
+        //   if (row.jwCostError) errors.push("JW_Cost should not be 0 for Magod");
+        //   if (row.mtrlCostError) errors.push("Mtrl_Cost should not be 0 for Magod") };
+        console.log("source",source);
+        if (source === "customer" || source === "Customer") {
+          row.jwCostError = parseInt(row.JW_Cost) === 0;
+
+          console.log("row.jwCostError ",  row.jwCostError );
+          
+          if (row.jwCostError) {
+            console.log(`Row ${idx + 2}: JW_Cost Error (Customer) = ${row.JW_Cost}`);
+            errors.push("JW_Cost should not be 0 for Customer");
+          }
+        } 
+        
+        else if (source === "magod" || source === "Magod") {
+          console.log("row.JW_Cost",row.JW_Cost);
+          console.log("row.Mtrl_Cost",row.Mtrl_Cost);
+          console.log("Number(row.JW_Cost)",Number(row.JW_Cost));
+
+          row.jwCostError = parseInt(row.JW_Cost) === 0  ;
+          row.mtrlCostError = parseInt(row.Mtrl_Cost) === 0;
+
+          console.log("row.mtrlCostError",row.mtrlCostError);
+          console.log("row.jwCostError",row.mtrlCostError);
+          
+          
+          if (row.mtrlCostError) {
+            console.log(`Row ${idx + 2}: Mtrl_Cost Error (Magod) = ${row.Mtrl_Cost}`);
+            errors.push("Mtrl_Cost should not be 0 for Magod");
+          }
+          if (row.jwCostError) {
+            
+            console.log(`Row ${idx + 2}: JW_Cost Error (Magod) = ${row.JW_Cost}`);
+            errors.push("JW_Cost should not be 0 for Magod");
+          }
+        }
+        
+        else {
           row.sourceError = true;
           errors.push("Invalid Source (must be 'Customer' or 'Magod')");
         }
@@ -270,7 +308,7 @@ const handleChange = (e) => {
 
       if (rowsWithErrors.length > 0) {
         // toast.warning("Some rows have issues. Please check the highlighted fields.");
-       alert("Some rows have issues. Please check the highlighted fields.");
+      //  alert("Some rows have issues. Please check the highlighted fields.");
         console.warn("Validation Errors:", rowsWithErrors.map((r) => r.rowErrorMessage));
       } else {
         toast.success("All order details correctly loaded.");
@@ -284,7 +322,6 @@ const handleChange = (e) => {
     setConfirmModalOpen(true);
   }
 };
-
 
   console.log("OrderData", props.OrderData.Order_No);
 

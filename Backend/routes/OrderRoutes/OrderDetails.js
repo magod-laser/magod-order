@@ -326,6 +326,8 @@ OrderDetailsRouter.post(`/insertnewsrldata`, async (req, res, next) => {
     //     }
     try {
       const requestData = req.body.requestData.imprtDwgData;
+      console.log("requestData ---",requestData);
+      
       const orderNo = requestData.OrderNo;
 
       // Step 1: Fetch existing order value rows

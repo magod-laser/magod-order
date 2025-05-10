@@ -41,6 +41,8 @@ function ServiceOpenSchedule() {
       endpoints.ShiftDetails,
       { ScheduleId: scheduleId },
       (response) => {
+        console.log("newstateresponse",response);
+        
         setNewState(response);
       }
     );

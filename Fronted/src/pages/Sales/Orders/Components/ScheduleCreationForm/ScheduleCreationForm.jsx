@@ -1133,7 +1133,8 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
     try {
       await LoadInitialData();
       await PerformaTabData();
-      await FindOldOrderButtonData();
+      await FindOldPartData()
+      // await FindOldOrderButtonData();
     } catch (error) {
       // console.error("Error fetching data:", error);
     }
@@ -1173,12 +1174,14 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
           custcode: Cust_Code || custCode,
           OrderNo: orderNUmber,
         });
+
         setOrdrDetailsData(ordrDetailsData);
       }
     } catch (error) {
       console.log("error in load initial", error.message);
     }
   };
+console.log("OrdrDetailsData----,",OrdrDetailsData,);
 
   const FindOldPartData = async () => {
     try {

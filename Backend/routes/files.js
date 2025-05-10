@@ -210,23 +210,42 @@ fileRouter.post("/tocopydxfforselected", async (req, res, next) => {
 // });
 
 fileRouter.post("/checkdxf", async (req, res, next) => {
+
+	console.log("entred checkdxf api");
+	
+	let message = '';
   try {
     const docno = req.body.orderno;
     let basefolder =
       process.env.FILE_SERVER_PATH + "\\Wo\\" + docno + "\\DXF\\";
     console.log("Base Folder Path:", basefolder);
 
+	if (!fs.existsSync(basefolder)) {
+		message = "Order Folder does not exist";
+		console.log("message -1 : ",message);
+		res.send({data: [],status: message});
+		return;
+	}
+
     const files = await fsAsync.readdir(basefolder);
+	if (!files.length > 0) {
+		message = "Drawings does not exist in the Order folder";
+		console.log("message -2 : ",message);
+		res.send({data:[],status: message});
+		return;
+	}
     const dxfFiles = files; //.filter((file) => path.extname(file).toLowerCase() === ".dxf");
 
     console.log("dxffiles :", dxfFiles);
 
     if (dxfFiles.length > 0) {
-      res.send(dxfFiles);
+	//	console.log("with data - message -4 : ",message);
+      res.send({data:dxfFiles,status: message});
     }
-    // else {
-    // 	res.send({ message: "Not Present" });
-    // }
+    else {
+		//console.log("message -3 : ",message);
+    	res.send({data:dxfFiles,status: message});
+    }
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send("An error occurred");
