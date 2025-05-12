@@ -1129,6 +1129,9 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
   //     // console.error("Error fetching data:", error);
   //   }
   // };
+
+
+
   const fetchData = async () => {
     try {
       await LoadInitialData();
@@ -1141,6 +1144,11 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
   };
 
   //s------------------
+ useEffect(()=>{
+  FindOldOrderButtonData();
+  PerformaTabData();
+ },[CustCode])
+ 
   const LoadInitialData = async () => {
     // alert("load initial");
     try {
@@ -1199,6 +1207,9 @@ console.log("OrdrDetailsData----,",OrdrDetailsData,);
         {
           Cust_Code: Cust_Code || CustCode,
           Order_No: orderNUmber,
+          orderType: orderType,
+          
+
         }
       );
       setOldOrderListData(oldOrderData?.orderListData);
@@ -1767,7 +1778,7 @@ console.log("OrdrDetailsData----,",OrdrDetailsData,);
     //   return;
     // }
     if (!rowData || !rowData.OrderDetailId) {
-      alert("Invalid rowData, Please check");
+      // alert("Invalid rowData, Please check");
       return;
     }
 
@@ -1976,7 +1987,7 @@ console.log("OrdrDetailsData----,",OrdrDetailsData,);
     setSelectedRowItems((prevSelectedItems = []) => {
       // if (!rowData || !rowData.Order_Srl) {
       if (!rowData || !rowData.OrderDetailId) {
-        alert("Invalid rowData, Please check");
+        // alert("Invalid rowData, Please check");
         return prevSelectedItems;
       }
 
@@ -2173,13 +2184,18 @@ console.log("OrdrDetailsData----,",OrdrDetailsData,);
         const element = OrdrDetailsData[i];
         if (selectedRows.includes(element)) {
         } else {
+          console.log("ARnewArray",newArray);
+          
           newArray.push(element);
         }
       }
       setSelectedRows(newArray);
+      setSelectedItems(newArray)
     }
   };
 
+  console.log("ARafter revrse--",selectedItems);
+  
   //Sales Job Work
   const [scheduleType, setScheduleType] = useState("Job Work");
   const [scheduleOption, setScheduleOption] = useState("Full Order");
