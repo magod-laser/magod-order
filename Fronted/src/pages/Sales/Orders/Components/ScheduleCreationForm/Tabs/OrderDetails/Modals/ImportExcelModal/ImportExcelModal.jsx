@@ -12,6 +12,10 @@ import { postRequest } from "../../../../../../../../api/apiinstance";
 import { endpoints } from "../../../../../../../../api/constants";
 
 export default function ImportExcelModal(props) {
+
+	console.log("orderData",props.OrderData.Cust_Code);
+
+	
 	const [importedExcelData, setImportedExcelData] = useState([]);
 	const [orderTotal, setOrderTotal] = useState(0);
 	const [selectedRows, setSelectedRows] = useState([]);
@@ -99,98 +103,219 @@ export default function ImportExcelModal(props) {
 		toast.success("Export excel template successful");
 	}
 
-
-	// console.log("props.procdata-excelmdl",props.procdata);
-// -----------------------------------------------------------
-
 const [dwgData, setDwgData] = useState([]);
+const [MatchingFlag, setMatchingFlag] = useState(false);
+const [MtrlFlg, setMtrlFlg]=useState(false)
+const [newMtrlCodeUpdate, setnewMtrlCodeUpdate]=useState([])
+const [matchingRows, setMatchingRows]=useState([])
 
 
+const compareData = async () => {
+	console.log("entering into compare function");
+	console.log("props.OrderData.Cust_Code ", props.OrderData.Cust_Code);
+  
+	// Step 1: Check if CustDwg folder has data
+	await postRequest(
+	  endpoints.compareCustDwg,
+	  { ccode: props.OrderData.Cust_Code },
+	  (compareCustDwg) => {
+		console.log("compareCustDwg", compareCustDwg);
+		if (compareCustDwg.status === "Not Found") {
+		  alert("Dwgs are not there in CustDwg folder");
+		  return;
+		}
+  
+		// Step 2: Fetch DWG data from DB
+		postRequest(
+		  endpoints.getDwgData,
+		  {
+			Cust_Code: props.OrderData.Cust_Code,
+			importedExcelData: importedExcelData,
+		  },
+		  (detailsDataInImportExcel) => {
+			console.log("data-old", detailsDataInImportExcel);
+			setDwgData(detailsDataInImportExcel);
+			console.log("data-new", importedExcelData);
+			
+  
+			// if (detailsDataInImportExcel) {
+			//   const dwgDataFromDB = detailsDataInImportExcel;
+  
 
-useEffect(() => {
-  postRequest(
-    endpoints.getDwgData,
-    {
-      Cust_Code: props.OrderData.Cust_Code,
-    },
-    (detailsDataInImportExcel) => {
-		console.log("detailsDataInImportExcel", detailsDataInImportExcel);
+			//   const updatedData = importedExcelData.map((excelRow) => {
+
+
+			// 	const dbRow = dwgDataFromDB.find(
+			// 	  (db) =>
+			// 		db.DwgName?.trim().toLowerCase() ===
+			// 		excelRow.Dwg_Name?.trim().toLowerCase()
+			// 	);
+			// 	// if (dwgDataFromDB.length === 0 ) {
+			// 	// 	return {
+			// 	// 	  ...excelRow,
+			// 	// 	  Matching: true,
+			// 	// 	};
+			// 	//   }
+			// 	//   else if (!dbRow) {
+			// 	// 		return {
+			// 	// 		  ...excelRow,
+			// 	// 		  Matching: false,
+			// 	// 		};
+					  
+			// 	//   }
+  
+			// 	if (!dbRow) {
+			// 	  return {
+			// 		...excelRow,
+			// 		Matching: false,
+			// 	  };
+			// 	}
+			
+				
+				
+ 
+  
+			// 	// Compare each field
+			// 	const isMatching =
+			// 	  excelRow.Mtrl_Code === dbRow.Mtrl_Code &&
+			// 	  excelRow.Operation === dbRow.Operation &&
+			// 	  parseFloat(excelRow.JW_Cost) === parseFloat(dbRow.JobWorkCost) &&
+			// 	  parseFloat(excelRow.Mtrl_Cost) === parseFloat(dbRow.MtrlCost);
+  
+			// 	return {
+			// 	  ...excelRow,
+			// 	  JW_Cost_Old: dbRow.JobWorkCost,
+			// 	  Mtrl_Cost_Old: dbRow.MtrlCost,
+			// 	  Operation_Old: dbRow.Operation,
+			// 	  Mtrl_Code_Old: dbRow.Mtrl_Code,
+			// 	  Matching: isMatching,
+			// 	};
+			//   });
+  
+			//   setImportedExcelData(updatedData); // update state
+			//   setMatchingRows(updatedData.filter((row) => row.Matching === false)); // only mismatched rows
+			//   if (updatedData.some((row) => row.Matching === false)) {
+			// 	setMatchingFlag(true);
+			//   }
+			// }
+			if (!detailsDataInImportExcel || detailsDataInImportExcel.length === 0) {
+				const updatedData = importedExcelData.map((excelRow) => ({
+				  ...excelRow,
+				  JW_Cost_Old: "",
+				  Mtrl_Cost_Old: "",
+				  Operation_Old: "",
+				  Mtrl_Code_Old: "",
+				  Matching: true,
+				}));
+			  
+				setImportedExcelData(updatedData);
+				setMatchingRows([]); // No mismatches
+				setMatchingFlag(true); // ✅ Set this OUTSIDE the map
+			  
+				return; // Exit early to skip the rest
+			  }
+			 else  {
+			  const dwgDataFromDB = detailsDataInImportExcel;
+  
+
+			  const updatedData = importedExcelData.map((excelRow) => {
+
+
+				const dbRow = dwgDataFromDB.find(
+				  (db) =>
+					db.DwgName?.trim().toLowerCase() ===
+					excelRow.Dwg_Name?.trim().toLowerCase()
+				);
+				// if (dwgDataFromDB.length === 0 ) {
+				// 	return {
+				// 	  ...excelRow,
+				// 	  Matching: true,
+				// 	};
+				//   }
+				//   else if (!dbRow) {
+				// 		return {
+				// 		  ...excelRow,
+				// 		  Matching: false,
+				// 		};
+					  
+				//   }
+  
+				if (!dbRow) {
+				  return {
+					...excelRow,
+					Matching: false,
+				  };
+				}
+			
+				
+				
+ 
+  
+				// Compare each field
+				const isMatching =
+				  excelRow.Mtrl_Code === dbRow.Mtrl_Code &&
+				  excelRow.Operation === dbRow.Operation &&
+				  parseFloat(excelRow.JW_Cost) === parseFloat(dbRow.JobWorkCost) &&
+				  parseFloat(excelRow.Mtrl_Cost) === parseFloat(dbRow.MtrlCost);
+  
+				return {
+				  ...excelRow,
+				  JW_Cost_Old: dbRow.JobWorkCost,
+				  Mtrl_Cost_Old: dbRow.MtrlCost,
+				  Operation_Old: dbRow.Operation,
+				  Mtrl_Code_Old: dbRow.Mtrl_Code,
+				  Matching: isMatching,
+				};
+			  });
+  
+			  setImportedExcelData(updatedData); // update state
+			  setMatchingRows(updatedData.filter((row) => row.Matching === false)); // only mismatched rows
+			  if (updatedData.some((row) => row.Matching === false)) {
+				setMatchingFlag(true);
+			  }
+			}
+			  
 		
-      // console.log("detailsDataInImportAtn", detailsDataInImportAtn);
-      if (detailsDataInImportExcel.result) {
-        //  props.setOrdrDetailsData(arr);
-		setDwgData(detailsDataInImportExcel.DwgData);
-        toast.success("Srls loaded to order successfull.");
-        props.closeModal();
-        props.fetchData();
-      } else if (detailsDataInImportExcel.length ===0) {
-        // toast.warning("uncaught backend error");
-        toast.warning("There is no data to compare");
-      }
-    }
-  );
-},[]);
+			
+			
+			
+		  }
+		);
+	  }
+	);
+  };
 
-//COMPARE BUTTON
-const compareData = () => {
-	console.log("importedExcelData", importedExcelData);
-	
-  const updatedData = importedExcelData.map((excelRow) => {
-    const dbRow = dwgData.find((db) => db.Dwg_Name === excelRow.Dwg_Name);
-
-	console.log(" compareData dbRow", dbRow);
-	
-
-    if (!dbRow) {
-      return {
-        ...excelRow,
-        mismatches: {
-          Dwg_Name: true,
-          Mtrl_Code: true,
-          Source: true,
-          Operation: true,
-        },
-      };
-    }
-
-    const mismatches = {};
-    if (excelRow.Mtrl_Code !== dbRow.Mtrl_Code) mismatches.Mtrl_Code = true;
-    if (excelRow.Source !== dbRow.Source) mismatches.Source = true;
-    if (excelRow.Operation !== dbRow.Operation) mismatches.Operation = true;
-
-    return {
-      ...excelRow,
-      mismatches,
-    };
-  });
-
-  setImportedExcelData(updatedData);
-};
-
-// UPDATE PARA BUTTON
+  console.log("updatedData after compare",importedExcelData);
+  
+  
 const updatePara = () => {
-  const updatedData = importedExcelData.map((excelRow) => {
-    const dbRow = dwgData.find((db) => db.Dwg_Name === excelRow.Dwg_Name);
-	console.log(" updatePara dbRow", dbRow);
-    if (!dbRow) return excelRow; // no match, skip
+	const updatedData = importedExcelData.map((excelRow) => {
+	  // Find matching row in dwgData
+	  const dbRow = dwgData.find(
+		(db) => db.DwgName?.trim().toLowerCase() === excelRow.Dwg_Name?.trim().toLowerCase()
+	  );
+  
+	  // If no matching row found, keep it unchanged
+	  if (!dbRow) return excelRow;
+  
+	  // Return updated row with matched values and clear mismatches
+	  return {
+		...excelRow,
+		Mtrl_Code: dbRow.Mtrl_Code,
+		Operation: dbRow.Operation,
+		JW_Cost: parseFloat(dbRow.JobWorkCost),
+		Mtrl_Cost: parseFloat(dbRow.MtrlCost),
+		Matching: true, // updated, now matching
+		mismatches: {}, // clear mismatch indicators
+	  };
+	});
+  
+	setImportedExcelData(updatedData); // Update state
+  };
 
-    const updatedRow = { ...excelRow };
-
-    if (excelRow.Mtrl_Code !== dbRow.Mtrl_Code)
-      updatedRow.Mtrl_Code = dbRow.Mtrl_Code;
-
-    if (excelRow.Source !== dbRow.Source) updatedRow.Source = dbRow.Source;
-
-    if (excelRow.Operation !== dbRow.Operation)
-      updatedRow.Operation = dbRow.Operation;
-
-    updatedRow.mismatches = {}; // reset mismatches
-
-    return updatedRow;
-  });
-
- setImportedExcelData(updatedData);
-};
+  console.log("updatedData after Update para",importedExcelData);
+  
+  
 	return (
 		<>
 			<Modal
@@ -217,6 +342,7 @@ const updatePara = () => {
 						closeModal={closeModal}
 						exportExcelTemplate={exportExcelTemplate}
 						fetchData={props.fetchData}
+						MtrlFlg={MtrlFlg} setMtrlFlg={setMtrlFlg}
 						dwgData={dwgData} setDwgData={setDwgData} compareData={compareData} updatePara={updatePara}
 					/>
 					<IETable
@@ -230,7 +356,11 @@ const updatePara = () => {
 						OrdrDetailsData={props.OrdrDetailsData}
 						// setOrdrDetailsData={props.setOrdrDetailsData}
 						dwgData={dwgData} setDwgData={setDwgData} compareData={compareData} updatePara={updatePara}
-						
+						MatchingFlag={MatchingFlag} setMatchingFlag={ setMatchingFlag}
+						MtrlFlg={MtrlFlg} setMtrlFlg={setMtrlFlg}
+						setnewMtrlCodeUpdate={setnewMtrlCodeUpdate}
+				newMtrlCodeUpdate={newMtrlCodeUpdate}
+				matchingRows={matchingRows}
 					/>
 				</Modal.Body>
 				<Modal.Footer className="d-flex justify-content-between">
@@ -270,6 +400,8 @@ const updatePara = () => {
 				setImportedExcelData={setImportedExcelData}
 				setSelectedRows={setSelectedRows}
 				selectedRows={selectedRows}
+				setnewMtrlCodeUpdate={setnewMtrlCodeUpdate}
+				newMtrlCodeUpdate={newMtrlCodeUpdate}
 			/>
 		</>
 	);

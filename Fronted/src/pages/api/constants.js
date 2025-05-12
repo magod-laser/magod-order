@@ -45,6 +45,13 @@ export const endpoints = {
   postDeleteDetailsBySrl: `${API}/OrderDetails/postDeleteDetailsBySrl`,
   MenuUrlsAPI: `${API}/user/fetchMenuUrls`,
   getDwgData: `${API}/OrderDetails/getDwgData`,
+  saveToCustDwgsinsrt: `${API}/OrderDetails/saveToCustDrawgs`,
+  testttttt: `${API}/OrderDetails/testttttt`,
+  compareCustDwg: `${API}/file/compareCustDwg`,
+
+
+
+
   // profarma inv list...............
   getProfarmaMain: `${API}/profarmaInvList/getProfarmaMain`,
   getProfarmaDetails: `${API}/profarmaInvList/getProfarmaDetails`,
@@ -82,6 +89,7 @@ export const endpoints = {
   getOrdDxf: `${API}/file/orddxf`,
   saveToCustDwg: `${API}/file/saveToCustDwg`,
   checkdxffilesimportoldorder: `${API}/file/checkdxffilesimportoldorder`,
+  orddxffilesimporttocombsch:`${API}/file/orddxffilesimporttocombsch`,
   getStates: `${API}/states/allstates`,
   getStateCode: `${API}/states/getstatecode`,
   getStateName: `${API}/states/getstatename`,

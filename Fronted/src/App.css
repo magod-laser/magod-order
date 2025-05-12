@@ -767,3 +767,18 @@ li.nav-item {
   height: auto;
   line-height: 1.2em;
 }
+
+
+/* resizable table */
+.resizer {
+  width: 5px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: col-resize;
+  user-select: none;
+}
+th {
+  position: relative;
+}

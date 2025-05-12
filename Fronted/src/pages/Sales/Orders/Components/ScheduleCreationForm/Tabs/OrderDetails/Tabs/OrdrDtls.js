@@ -10,6 +10,7 @@ import { Last } from "react-bootstrap/esm/PageItem";
 import LoadingPage from "../../../Loading";
 import { postRequest } from "../../../../../../../api/apiinstance";
 import { endpoints } from "../../../../../../../api/constants";
+import { toast } from "react-toastify";
 
 function OrdrDtls(props) {
   const {
@@ -78,7 +79,8 @@ function OrdrDtls(props) {
     selectedRow,OdrDtlMtrlSrc
   } = props;
 
-  // console.log("selectedRow", selectedRow);
+  console.log("selectedRow", selectedRow);
+  console.log("OrderCustData", OrderCustData);
   // console.log("OdrDtlMtrlSrc", OdrDtlMtrlSrc);
   // console.log("OdrDtlMtrlSrc", OdrDtlMtrlSrc);
 
@@ -114,6 +116,7 @@ function OrdrDtls(props) {
 const SaveToCustDwgs = () =>{
   console.log("entering into the save to dwg funtion");
   
+console.log("selectedRow",selectedRow);
 
 // 1. To bring Orderno, Drawingname, CustCode
 // 2. Send the same to API
@@ -124,11 +127,32 @@ const SaveToCustDwgs = () =>{
 let orderno = selectedRow.Order_No;
 let ccode = selectedRow.Cust_Code;
 let dwgname = selectedRow.DwgName;
+let mtrlcode = selectedRow.Mtrl_Code;
+let operation = selectedRow.Operation;
+let mtrlcost = selectedRow.MtrlCost;
+let jwcost = selectedRow.JWCost;
+let dwgcode = selectedRow.Dwg_Code;
+let dxfloc = OrderCustData.DwgLoc;
 
 
 postRequest(endpoints.saveToCustDwg, {orderno, ccode, dwgname},(respdwg)=> {
   console.log("respdwg : ",respdwg);
+  console.log("respdwg.status : ",respdwg.status);
+  // if (respdwg.status)
+  // {
+    postRequest(endpoints.saveToCustDwgsinsrt,{
+      dwgcode, ccode, dwgname, mtrlcode,dxfloc, operation, mtrlcost,jwcost
+    },(insrres)=>{
+      console.log("insrres",insrres);
+      
+    
+    })
+  // }
+  // toast.warning("not saved check save to dwg")
+  
+
 })
+
 
 }
 
@@ -751,14 +775,14 @@ postRequest(endpoints.saveToCustDwg, {orderno, ccode, dwgname},(respdwg)=> {
                       selected={selectedPartId}
                       // id="basic-example"
                       options={options}
-                      labelKey="label"
+                      // labelKey="label"
                       placeholder="Select ..."
                       onChange={handleSelectChange}
                     />
                   ) : (
                     <Typeahead
                       className="in-field"
-                      labelKey="label"
+                      // labelKey="label"
                       placeholder="No PartId for this Customer"
                       disabled
                     />
@@ -881,7 +905,7 @@ postRequest(endpoints.saveToCustDwg, {orderno, ccode, dwgname},(respdwg)=> {
                 ) : (
                   <Typeahead
                     className="ip-slecet input-field"
-                    labelKey="label"
+                    // labelKey="label"
                     placeholder="No PartId's"
                     disabled
                   />

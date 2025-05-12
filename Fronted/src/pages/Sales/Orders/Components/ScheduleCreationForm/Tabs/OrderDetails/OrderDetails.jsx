@@ -229,6 +229,9 @@ export default function OrderDetails(props) {
       setMtrldata(arr);
     });
     getRequest(endpoints.getProcessLists, (pdata) => {
+
+      console.log("pdata---",pdata);
+      
       let arr = [];
 
       for (let i = 0; i < pdata.length; i++) {

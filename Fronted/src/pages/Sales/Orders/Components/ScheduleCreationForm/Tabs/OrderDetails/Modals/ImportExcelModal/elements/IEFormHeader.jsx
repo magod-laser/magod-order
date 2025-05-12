@@ -13,7 +13,7 @@ import {
 import { endpoints } from "../../../../../../../../../../../src/pages/api/constants";
 export default function IEFormHeader(props) {
   // const [importedExcelData, setImportedExcelData] = useState([]);
-const {dwgData, setDwgData, compareData, updatePara}=props
+const {dwgData, setDwgData, compareData, updatePara,MtrlFlg, setMtrlFlg}=props
   const [buttonClickedFor, setButtonClickedFor] = useState("");
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
@@ -318,7 +318,7 @@ const {dwgData, setDwgData, compareData, updatePara}=props
   //   )
   // );
 
-  
+
   
   return (
     <>
@@ -360,8 +360,8 @@ const {dwgData, setDwgData, compareData, updatePara}=props
 
           <label className="form-label label-space">Order Total</label>
 
-          {/* <input disabled value={props.orderTotal} className="in-field" /> */}
-          <input disabled value={orderTotal} className="in-field" />
+          <input disabled value={props.orderTotal} className="in-field" />
+          {/* <input disabled value={orderTotal} className="in-field" /> */}
         </div>
       </div>
       {/* <div className="row">
@@ -380,9 +380,10 @@ const {dwgData, setDwgData, compareData, updatePara}=props
           className="button-style m-1"
           style={{ width: "auto" }}
           onClick={(e) => {
+            setMtrlFlg(true)
             props.setSettingModal(true);
           }}
-          disabled={props.selectedRows.length < 1}
+          // disabled={props.selectedRows.length < 1}
         >
           Set Material and Operation
         </button>

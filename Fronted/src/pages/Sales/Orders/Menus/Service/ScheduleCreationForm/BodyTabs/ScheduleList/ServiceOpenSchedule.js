@@ -1049,20 +1049,40 @@ const proceedWithScheduling = (validRows) => {
   };
 
   //handle change of table To schedule inputfield
-  const handleSchedulelist = (index, field, value) => {
+  const handleSchedulelist = (index, field, value, name) => {
     console.log("value is", value);
-    if (!/^\d*$/.test(value)) {
+    console.log("name", name);
+    console.log("field", field);
+    console.log("scheduleDetailsRow", scheduleDetailsRow);
+    if (!/^\d*$/.test(value,field)) {
       return;
     }
+// if (field === "QtyCleared" && value > scheduleDetailsRow?.QtyScheduled ) {
+//   toast.error("Cleared cannot be greater than Scheduled Quantity", {
+//     position: toast.POSITION.TOP_CENTER,
+//   });
+  
+// }
+
     if (value < 0) {
       toast.error("Please Enter a Positive Number", {
         position: toast.POSITION.TOP_CENTER,
       });
-    } else if (value > scheduleDetailsRow?.QtyToSchedule) {
+    } 
+    
+    else if (value > scheduleDetailsRow?.QtyToSchedule  && field != "QtyCleared") {
       toast.error("Scheduled cannot be greater than ToSchedule", {
         position: toast.POSITION.TOP_CENTER,
       });
-    } else {
+    }
+
+    else if (  field === "QtyCleared" && value > scheduleDetailsRow?.QtyScheduled ) {
+      toast.error("Cleared cannot be greater than Scheduled Quantity", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+    
+    else {
       const updatedDwgdata = [...newState];
       // Update the specific item's field with the new value
       updatedDwgdata[index] = {
@@ -1854,8 +1874,10 @@ const proceedWithScheduling = (validRows) => {
             </button>
           )}
 
-          {Type === "Fabrication" ||
-            (Type === "Service" && (
+          {Type === "Fabrication" &&
+          //  ||
+          //   (Type === "Service" &&
+               (
               <button
                 className="button-style"
                 onClick={fixtureOrderOpen1}
@@ -1872,7 +1894,8 @@ const proceedWithScheduling = (validRows) => {
               >
                 Fixture Order
               </button>
-            ))}
+            // )
+            )}
         </div>
       </div>
 
@@ -1978,7 +2001,74 @@ const proceedWithScheduling = (validRows) => {
                         </td>
                         <td>{item.QtyProgrammed}</td>
                         <td>{item.QtyProduced}</td>
-                        <td>{item.QtyCleared}</td>
+                        {/* <td>{item.QtyCleared}</td> */}
+                        {/* <td>
+                          <input
+                          name="QtyCleared"
+                            className="table-cell-editor"
+                            style={{
+                              backgroundColor: "transparent",
+                              border: "none",
+                            }}
+                            value={item.QtyCleared}
+                            onChange={(e) => {
+                              const value = Number(e.target.value);
+                              handleSchedulelist(key, "QtyCleared", value);
+                            }}
+                            // onChange={(e) =>
+                            //   handleSchedulelist(
+                            //     key,
+                            //     "QtyScheduled",
+                            //     e.target.value
+                            //   )
+                            // }
+                            // onChange={(e) => {
+                            //   const value = Number(e.target.value);
+                            //   if (value === 0) {
+                            //     if (
+                            //       window.confirm(
+                            //         "You entered Qty Scheduled as 0. Do you want to delete this row?"
+                            //       )
+                            //     ) {
+                            //       const filteredState = newState.filter(
+                            //         (_, i) => i !== key
+                            //       );
+                            //       setNewState(filteredState);
+                            //       setModalMessage(
+                            //         "Row with Qty Scheduled = 0 deleted"
+                            //       );
+                            //       setSmShow(true);
+                            //     } else {
+                            //       setModalMessage("Not Scheduled");
+                            //       setSmShow(true);
+                            //     }
+                            //   } else {
+                            //     handleSchedulelist(key, "QtyScheduled", value);
+                            //   }
+                            // }}
+                          />
+                        </td> */}
+                        {Type === "Fabrication" ? 
+                        
+                           <td>
+                          <input
+                          name="QtyCleared"
+                          autoComplete="off"
+                            className="table-cell-editor"
+                            style={{
+                              backgroundColor: "transparent",
+                              border: "none",
+                            }}
+                            value={item.QtyCleared}
+                            onChange={(e) => {
+                              const value = Number(e.target.value);
+                              handleSchedulelist(key, "QtyCleared", value);
+                            }}                           
+                          />
+                        </td> 
+                        :  
+                        <td>{item.QtyCleared}</td> 
+                        }
                         <td>{item.QtyPacked}</td>
                         <td>{item.QtyDelivered}</td>
                         <td>

@@ -264,15 +264,14 @@ function AddNewSrlModal(props) {
                             }
                           } else if (props.OrderData?.Type === "Fabrication") {
                             // Fabrication logic (assuming this logic for 'MultiOperation' is valid)
-                            if (proc["MultiOperation"] !== 0) {
+                            if (proc["MultiOperation"] === -1) {
                               return (
                                 <option
-                                  key={proc["OperationID"]}
-                                  value={proc["Operation"]}
-                                  required
-                                >
-                                  {proc["Operation"]}
-                                </option>
+                                key={proc["OperationID"]}
+                                value={proc["Operation"]}
+                              >
+                                {proc["Operation"]}
+                              </option>
                               );
                             }
                           } else {

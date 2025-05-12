@@ -737,6 +737,47 @@ OrderDetailsRouter.post(
   }
 );
 
+// import delete
+OrderDetailsRouter.post(
+  `/postDeleteDetailsByOrderNo`,
+  async (req, res, next) => {
+    // console.log("req.body", req.body.Order_No);
+    try {
+      // Suresh 08-04-25
+      let filespath = path.join(process.env.FILE_SERVER_PATH, "/WO//", req.body.Order_No, "//DXF//"); //, deletedwgsinfolder[i].DwgName);
+      fsSync.readdir(filespath, (err, files) => {
+        if (err) {
+          // return res.status(500).send("Failed to read directory");
+        }
+        files.forEach((file) => {
+          const fpath = path.join(filespath, file);
+          console.log("fpath : ", fpath);
+          fsAsync.unlink(fpath, (err) => {
+            if (err) {
+              console.log(`Error deleting file ${file} : `, err);
+            }
+          })
+        })
+      })
+      // Suresh 
+      misQueryMod(
+        `DELETE FROM magodmis.order_details WHERE (Order_No = '${req.body.Order_No}')`,
+        (err, deleteOrderData) => {
+          if (err) {
+            res.status(500).send("Internal Server Error");
+          } else {
+            // console.log("deleteOrderData", deleteOrderData);
+            res.send({ deleteOrderData: deleteOrderData, flag: 1 });
+          }
+        }
+      );
+
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 
 OrderDetailsRouter.post(
   `/postDeleteDetailsByOrderNo`,
@@ -923,6 +964,65 @@ OrderDetailsRouter.post(
 //   }
 // );
 // -------------------
+
+
+// OrderDetailsRouter.post(
+//   "/postDeleteDetailsByOrderNo",
+//   async (req, res, next) => {
+//     const orderNo = req.body.Order_No;
+
+//     try {
+//       const filesPath = path.join(
+//         process.env.FILE_SERVER_PATH,
+//         "WO",
+//         orderNo,
+//         "DXF"
+//       );
+
+//       let files;
+//       try {
+//         files = await fs.readdir(filesPath);
+//       } catch (err) {
+//         console.error("Failed to read directory:", err);
+//         return res.status(500).send("Failed to read directory");
+//       }
+
+//       // Delete files in parallel
+//       try {
+//         await Promise.all(
+//           files.map(async (file) => {
+//             const filePath = path.join(filesPath, file);
+//             console.log("Deleting file:", filePath);
+//             try {
+//               await fs.unlink(filePath);
+//             } catch (err) {
+//               console.error(`Error deleting file ${file}:`, err);
+//             }
+//           })
+//         );
+//       } catch (err) {
+//         console.error("Error deleting files:", err);
+//       }
+
+//       // After files are deleted, proceed to delete DB records
+//       misQueryMod(
+//         `DELETE FROM magodmis.order_details WHERE (Order_No = ?)`,
+//         [orderNo],
+//         (err, deleteOrderData) => {
+//           if (err) {
+//             console.error("DB delete error:", err);
+//             return res.status(500).send("Internal Server Error");
+//           } else {
+//             return res.send({ deleteOrderData, flag: 1 });
+//           }
+//         }
+//       );
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
+
 const getMonthName = (monthNumber) => {
   const date = new Date(2020, monthNumber - 1); // months are 0-indexed (0 = January, 1 = February, etc.)
   return date.toLocaleString('default', { month: 'long' }); // returns the full month name
@@ -1954,8 +2054,6 @@ OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
   const selectedItems = req.body.selectedItems;
   const orderNo = req.body.OrderNo;
 
-  console.log("reqBody", req.body);
-  console.log("reqBody", req.body.MtrlSrc);
 
   let completedUpdates = 0;
   const executeUpdate = (
@@ -1969,8 +2067,13 @@ OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
     InspLevel,
     PackingLevel,
     Mtrl_Source,
-    Mtrl_Code
+    Mtrl_Code,
+    
   ) => {
+
+    console.log("InspLevel :",InspLevel);
+    console.log("PackingLevel :",PackingLevel);
+    
     const updateQuery = `
       UPDATE magodmis.order_details
       SET
@@ -1980,16 +2083,16 @@ OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
 		MtrlCost = ${MtrlCost},
 		UnitPrice = ${UnitPrice},
 		Operation = '${Operation}',
-		InspLevel = '${InspLevel}',
-		PackingLevel = '${PackingLevel}',
+		InspLevel = '${InspLevel || "Insp1"}',
+		PackingLevel = '${PackingLevel || "Pkng1"}',
 		Mtrl_Source='${Mtrl_Source}',
 		 Mtrl_Code='${Mtrl_Code}'
       WHERE Order_No = ${orderNo} 
-      AND Order_Srl = ${orderSrl}
+      AND OrderDetailId = ${orderSrl}
     `;
 
-    console.log(`Executing query for Order_Srl: ${orderSrl}`);
-    console.log(`Query: ${updateQuery}`);
+    // console.log(`Executing query for OrderDetailId: ${orderSrl}`);
+    // console.log(`Query: ${updateQuery}`);
 
     return new Promise((resolve, reject) => {
       misQueryMod(updateQuery, (err, blkcngdata) => {
@@ -1997,7 +2100,7 @@ OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
           logger.error(err);
           reject(err);
         } else {
-          console.log(`Update result for Order_Srl ${orderSrl}:`, blkcngdata);
+          // console.log(`Update result for Order_Srl ${orderSrl}:`, blkcngdata);
           resolve(blkcngdata);
         }
       });
@@ -2009,7 +2112,7 @@ OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
       const orderSrl = orderSrlArray[i];
       const oldValues = selectedItems[i];
 
-      console.log("oldValues", oldValues);
+      // console.log("oldValues", oldValues);
       let qtyOrdered; // Define variable to hold the value
 
       if (typeof oldValues.quantity !== "undefined") {
@@ -2017,7 +2120,7 @@ OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
       } else {
         qtyOrdered = oldValues.Qty_Ordered; // Use oldValues.Qty_Ordered if quantity is undefined
       }
-      console.log("qtyOrdered...", qtyOrdered);
+      // console.log("qtyOrdered...", qtyOrdered);
       const DwgName = oldValues.DwgName;
       const JWCost = parseInt(oldValues.JWCost);
       const MtrlCost = parseInt(oldValues.MtrlCost);
@@ -2032,8 +2135,8 @@ OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
       } else {
         Mtrl_Source = oldValues.Mtrl_Source;
       }
-      console.log("Mtrl_Source", Mtrl_Source);
-      console.log("oldValues.Mtrl_Source", oldValues.Mtrl_Source);
+      // console.log("Mtrl_Source", Mtrl_Source);
+      // console.log("oldValues.Mtrl_Source", oldValues.Mtrl_Source);
       const Mtrl_Code = oldValues.Mtrl_Code;
       await executeUpdate(
         orderSrl,
@@ -2628,6 +2731,34 @@ OrderDetailsRouter.post("/singleChangeUpdate", async (req, res, next) => {
   }
 });
 
+OrderDetailsRouter.post(`/updateOrdDWG`, async (req, res, next) => {
+  try {
+    console.log("orderno : ", req.body.orderno);
+    console.log("Dwg Name :", req.body.orddwg);
+    console.log("intdwg: ", req.body.intdwg)
+
+    const updateOrderDwgQuery = `UPDATE magodmis.order_details
+      SET Dwg = ${req.body.intdwg}  WHERE order_no = '${req.body.orderno}' And DwgName = '${req.body.orddwg}'`;
+
+    misQueryMod(updateOrderDwgQuery, (err, updateOrderDwgRes) => {
+      if (err) {
+        logger.error(err);
+        return res.status(500).send("Error updating Dwg Exists.");
+      }
+      console.log("updateOrderDwgRes : ", updateOrderDwgRes)
+      return res.send({
+        message: "Row updated order Dwg successfully.",
+      });
+    });
+
+  } catch (error) {
+    logger.error(error);
+    next(error);
+  }
+})
+
+
+
 OrderDetailsRouter.post(`/postDeleteDetailsBySrl`, async (req, res, next) => {
   try {
     const { Order_No, selectedItems } = req.body;
@@ -2701,19 +2832,49 @@ OrderDetailsRouter.post(`/postDeleteDetailsBySrl`, async (req, res, next) => {
 });
 
 //getDwgData
-OrderDetailsRouter.post("/getDwgData", async (req, res) => {
-  const custCode = parseInt(req.body.Cust_Code, 10);
+// OrderDetailsRouter.post("/getDwgData", async (req, res) => {
+//   // const custCode = parseInt(req.body.Cust_Code, 10);
+//   const custCode = req.body.Cust_Code;
 
-  if (isNaN(custCode)) {
-    return res.status(400).send({ error: "Invalid Cust_Code provided." });
-  }
+//   console.log("custCode",custCode);
+
+
+//   if (isNaN(custCode)) {
+//     return res.status(400).send({ error: "Invalid Cust_Code provided." });
+//   }
+
+//   try {
+//     const query = `SELECT * FROM magodmis.dwg_data d WHERE d.Cust_Code = ? ORDER BY DwgName;`;
+
+//     misQueryMod(query, [custCode], (err, DwgData) => {
+//       if (err) {
+//         logger.error(err);
+//         logger.error(`Error fetching BOM data: ${err.message}`);
+//         return res
+//           .status(500)
+//           .send({ error: "An error occurred while fetching DwgData" });
+//       }
+
+//       console.log("DwgData...", DwgData);
+//       res.send(DwgData);
+//     });
+//   } catch (error) {
+//     logger.error("Unexpected error:", error);
+//     res.status(500).send({ error: "Internal server error" });
+//   }
+// });
+
+OrderDetailsRouter.post("/getDwgData", async (req, res) => {
+  const custCode = req.body.Cust_Code;
+  const importedExcelData = req.body.importedExcelData;
 
   try {
-    const query = `SELECT * FROM magodmis.dwg_data d WHERE d.Cust_Code = ? ORDER BY DwgName;`;
-
-    misQueryMod(query, [custCode], (err, DwgData) => {
+    console.log("importedExcelData",importedExcelData);
+    
+    misQueryMod(`SELECT * FROM magodmis.dwg_data d WHERE d.Cust_Code = '${custCode}' ORDER BY DwgName`, (err, DwgData) => {
       if (err) {
         logger.error(err);
+        console.log("err", err);
         logger.error(`Error fetching BOM data: ${err.message}`);
         return res
           .status(500)
@@ -2728,5 +2889,65 @@ OrderDetailsRouter.post("/getDwgData", async (req, res) => {
     res.status(500).send({ error: "Internal server error" });
   }
 });
+
+OrderDetailsRouter.post("/saveToCustDrawgs", async (req, res) => {
+  console.log(" saveToCustDrawgs req.body", req.body);
+  try {
+    console.log("req.body.dwgcode", req.body.dwgcode)
+    let dwgcode = ''
+   // if (req.body.dwgcode === 'null') {
+    //  dwgcode = req.body.dwgcode;
+    // } else {
+
+     await misQueryMod(`Select count(*) FROM magodmis.dwg_data where Cust_Code = '${req.body.ccode}'`, (err, custcount) => {
+      if (err) console.log(err)
+        const count = parseInt(custcount[0]) || 0;  // Safely handle NaN
+  console.log("custcount :", count);
+
+      // console.log("custcount : ", parseInt(custcount));
+    
+        let addsrl = String("0000" + count+1).slice(-4);
+        console.log("addsrl : ",addsrl)
+        dwgcode = String(req.body.ccode) + addsrl;
+        console.log("dwgcode : ",dwgcode);
+   //   })
+      
+   // }
+    const ccode = req.body.ccode;
+    const dwgname = req.body.dwgname;
+    const mtrlcode = req.body.mtrlcode;
+    const dxfloc = req.body.dxfloc; 
+    const operation = req.body.operation;
+    const mtrlcost = req.body.mtrlcost;
+    const jwcost = req.body.jwcost;
+
+    misQueryMod(`INSERT INTO magodmis.dwg_data(Dwg_Code,Cust_Code,DwgName, Mtrl_Code, DxfLoc, Operation, MtrlCost, JobWorkCost)
+        VALUES('${dwgcode}', '${ccode}', '${dwgname}', '${mtrlcode}','${dxfloc}', '${operation}', '${mtrlcost}','${jwcost}')`, (err, InsDwgData) => {
+      if (err) {
+        logger.error(err);
+        console.log("err", err);
+        
+        logger.error(`Error Inserting Dwg data: ${err.message}`);
+        return res
+          .status(500)
+          .send({ error: "An error occurred while Inserting DwgData" });
+      }
+
+      console.log("InsDwgData...", InsDwgData);
+      res.send(InsDwgData);
+    });
+  });
+  } catch (error) {
+    logger.error("Unexpected error:", error);
+    res.status(500).send({ error: "Internal server error" });
+  }
+})
+
+
+OrderDetailsRouter.post("/testttttt", async (req, res) => {
+  console.log(" compareDwgsss req.body", req.body);
+  
+})
+
 
 module.exports = OrderDetailsRouter;

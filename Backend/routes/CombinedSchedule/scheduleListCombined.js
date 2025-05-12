@@ -179,15 +179,58 @@ scheduleListCombined.post(
   "/scheduleListDetails",
   jsonParser,
   async (req, res, next) => {
-    // console.log("req.ody",req.body)
+    // console.log("req from scheduleList --1",req.body.selectedRow)
+    // console.log("req from scheduleList --2",req.body.selectedRow.cmbSchID)
+    // console.log("req from create",req.body.selectedRow)
+    // console.log("req from create",req.body.Component)
+    
+    const cmbSchID = req.body.Component === "Create"
+    ? req.body.selectedRow
+    : req.body.selectedRow?.cmbSchID;
+  
+  console.log("cmbSchID", cmbSchID);
+    
+
+
+
+
+
     try {
       mchQueryMod(
-        `SELECT o1.*, c.cmbSchId, o.SchDetailsID, o.Schedule_Srl, o.DwgName, o.Mtrl_Code, o.MProcess, o.Mtrl_Source, o.QtyScheduled, o.QtyProgrammed, o.QtyProduced, o.QtyInspected, o.QtyCleared,o.Rejections, o.Tester, o.LOC, o.Holes, o.Part_Area, o.UnitWt, o.Operation,(SELECT COUNT(*) FROM magodmis.combined_schedule_details c JOIN magodmis.orderschedule o1 ON c.scheduleId = o1.ScheduleID JOIN magodmis.orderscheduledetails o ON c.scheduleId = o.ScheduleID WHERE c.cmbSchId = '${req.body.selectedRow.cmbSchID}') AS TotalRows
-     FROM  magodmis.combined_schedule_details c JOIN magodmis.orderschedule o1 ON c.scheduleId = o1.ScheduleID JOIN magodmis.orderscheduledetails o ON c.scheduleId = o.ScheduleID WHERE c.cmbSchId = '${req.body.selectedRow.cmbSchID}'`,
-        (err, data) => {
+    //     `SELECT o1.*, c.cmbSchId, o.SchDetailsID, o.Schedule_Srl, o.DwgName, o.Mtrl_Code, o.MProcess, o.Mtrl_Source, o.QtyScheduled, o.QtyProgrammed, o.QtyProduced, o.QtyInspected, o.QtyCleared,o.Rejections, o.Tester, o.LOC, o.Holes, o.Part_Area, o.UnitWt, o.Operation,(SELECT COUNT(*) FROM magodmis.combined_schedule_details c JOIN magodmis.orderschedule o1 ON c.scheduleId = o1.ScheduleID JOIN magodmis.orderscheduledetails o ON c.scheduleId = o.ScheduleID WHERE c.cmbSchId = '${req.body.selectedRow.cmbSchID}') AS TotalRows
+    //  FROM  magodmis.combined_schedule_details c JOIN magodmis.orderschedule o1 ON c.scheduleId = o1.ScheduleID JOIN magodmis.orderscheduledetails o ON c.scheduleId = o.ScheduleID WHERE c.cmbSchId = '${req.body.selectedRow.cmbSchID}'`,
+       
+    `SELECT o1.*, c.cmbSchId, o.SchDetailsID, o.Schedule_Srl, o.DwgName, o.Mtrl_Code, o.MProcess, o.Mtrl_Source, o.QtyScheduled, o.QtyProgrammed, o.QtyProduced, o.QtyInspected, o.QtyCleared,o.Rejections, o.Tester, o.LOC, o.Holes, o.Part_Area, o.UnitWt, o.Operation,(SELECT COUNT(*) FROM magodmis.combined_schedule_details c JOIN magodmis.orderschedule o1 ON c.scheduleId = o1.ScheduleID JOIN magodmis.orderscheduledetails o ON c.scheduleId = o.ScheduleID WHERE c.cmbSchId = '${req.body.selectedRow.cmbSchID}') AS TotalRows
+    FROM  magodmis.combined_schedule_details c JOIN magodmis.orderschedule o1 ON c.scheduleId = o1.ScheduleID JOIN magodmis.orderscheduledetails o ON c.scheduleId = o.ScheduleID WHERE c.cmbSchId = '${cmbSchID}'`,
+
+    (err, data) => {
           if (err) logger.error(err);
           //console.log(data)
-          res.send(data);
+          // res.send(data);
+
+          // new 
+          const mergedMap = data.reduce((acc, row) => {
+            if (!acc[row.DwgName]) {
+              acc[row.DwgName] = { ...row };
+            } else {
+              acc[row.DwgName].QtyScheduled += row.QtyScheduled;
+              acc[row.DwgName].QtyProgrammed += row.QtyProgrammed;
+              acc[row.DwgName].QtyProduced += row.QtyProduced;
+              acc[row.DwgName].QtyInspected += row.QtyInspected;
+              acc[row.DwgName].QtyCleared += row.QtyCleared;
+              acc[row.DwgName].Rejections += row.Rejections;
+            }
+            return acc;
+          }, {});
+
+          const mergedDetails = Object.values(mergedMap);
+
+  res.json({
+    success: true,
+    totalRows: mergedDetails.length,
+    data: mergedDetails,
+  });
+
         }
       );
     } catch (error) {
@@ -195,6 +238,80 @@ scheduleListCombined.post(
     }
   }
 );
+
+// 24042025
+// scheduleListCombined.post(
+//   "/scheduleListDetails",
+//   jsonParser,
+//   async (req, res, next) => {
+//     try {
+//       const cmbSchID = req.body.selectedRow.cmbSchID;
+
+//       // Fetch all detail rows for this combined schedule
+//       const rows = await mchQueryMod1(
+//         `
+//         SELECT 
+//           o1.Order_no,
+//           c.cmbSchId,
+//           o.SchDetailsID,
+//           o.Schedule_Srl,
+//           o.DwgName,
+//           o.Mtrl_Code,
+//           o.MProcess,
+//           o.Mtrl_Source,
+//           o.QtyScheduled,
+//           o.QtyProgrammed,
+//           o.QtyProduced,
+//           o.QtyInspected,
+//           o.QtyCleared,
+//           o.Rejections,
+//           o.Tester,
+//           o.LOC,
+//           o.Holes,
+//           o.Part_Area,
+//           o.UnitWt,
+//           o.Operation
+//         FROM magodmis.combined_schedule_details c
+//         JOIN magodmis.orderschedule        o1 ON c.scheduleId = o1.ScheduleID
+//         JOIN magodmis.orderscheduledetails o  ON c.scheduleId = o.ScheduleID
+//         WHERE c.cmbSchId = ?
+//         `,
+//         [cmbSchID]
+//       );
+
+//       // Merge duplicates by DwgName
+//       const mergedMap = rows.reduce((acc, row) => {
+//         if (!acc[row.DwgName]) {
+//           // first time seeing this DwgName: clone the row
+//           acc[row.DwgName] = { ...row };
+//         } else {
+//           // sum up the numeric fields
+//           acc[row.DwgName].QtyScheduled   += row.QtyScheduled;
+//           acc[row.DwgName].QtyProgrammed  += row.QtyProgrammed;
+//           acc[row.DwgName].QtyProduced    += row.QtyProduced;
+//           acc[row.DwgName].QtyInspected   += row.QtyInspected;
+//           acc[row.DwgName].QtyCleared     += row.QtyCleared;
+//           acc[row.DwgName].Rejections     += row.Rejections;
+//           // leave everything else as-is from the first instance
+//         }
+//         return acc;
+//       }, {});
+
+//       const mergedDetails = Object.values(mergedMap);
+
+//       // Send back the merged list and its new total count
+//       res.json({
+//         success: true,
+//         totalRows: mergedDetails.length,
+//         data: mergedDetails,
+//       });
+
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
+
 
 ///Combined Tasks Table
 scheduleListCombined.post(

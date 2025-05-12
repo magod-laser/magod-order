@@ -263,6 +263,7 @@ export default function CombinedScheduleDetailsTab({
                     type="text"
                     style={{ borderRadius: "0" }}
                     value={beforecombine[0]?.Special_Instructions || null}
+                    readOnly
                   />
                 </div>
                 <div className="d-flex field-gap col-md-4 col-sm-12">

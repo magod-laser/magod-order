@@ -180,8 +180,10 @@ ScheduleListRouter.post(`/save`, async (req, res, next) => {
             // Looping through newState and executing the update query for each array item
             try {
               const updateDetailsPromises = req.body.newState.map((item) => {
+                console.log("item---",item);
+                
                 const updateDetailQuery = `UPDATE magodmis.orderscheduledetails 
-                                           SET JWCost = '${item.JWCost}', MtrlCost = '${item.MtrlCost}'
+                                           SET JWCost = '${item.JWCost}', MtrlCost = '${item.MtrlCost}',QtyCleared =  '${item.QtyCleared}'
                                            WHERE SchDetailsID = '${item.SchDetailsID}'`;
                 return new Promise((resolve, reject) => {
                   misQueryMod(updateDetailQuery, (err, result) => {
@@ -192,10 +194,34 @@ ScheduleListRouter.post(`/save`, async (req, res, next) => {
                       );
                       reject(err);
                     } else {
+
+                      resolve(result);
+
+                      // Updating magodmis.nc task list
+                      console.log("Updating magodmis.nc task list with QtyCleared value from orders");
+                      
+                      const updateDetailQuerynctasklist = `UPDATE magodmis.task_partslist 
+                                           set QtyCleared =  '${item.QtyCleared}'
+                                           WHERE SchDetailsID = '${item.SchDetailsID}'`;
+                return new Promise((resolve, reject) => {
+                  misQueryMod(updateDetailQuerynctasklist, (err, result) => {
+                    if (err) {
+                      console.log(
+                        `Error updating SchDetailsID ${item.SchDetailsID}:`,
+                        err
+                      );
+                      reject(err);
+                    } else {
+
                       resolve(result);
                     }
                   });
-                });
+                })
+                    }
+                  });
+                }
+              
+              );
               });
 
               // Wait for all update queries for newState to complete
@@ -1746,8 +1772,12 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                     "item.QtyScheduled:",
                                     item.QtyScheduled
                                   );
-
-                                  let updateQuery2 = `UPDATE magodmis.orderscheduledetails SET QtyScheduled='${item.QtyScheduled}' WHERE SchDetailsID='${item.SchDetailsID}'`;
+                                  console.log(
+                                    "item.QtyCleared---:",
+                                    item.QtyCleared
+                                  );
+                                  //updating  QtyCleared column also
+                                  let updateQuery2 = `UPDATE magodmis.orderscheduledetails SET QtyScheduled='${item.QtyScheduled}' ,QtyCleared = '${item.QtyCleared}' WHERE SchDetailsID='${item.SchDetailsID}'`;
                                   console.log("Update query 2:", updateQuery2);
 
                                   // Execute the update query for magodmis.orderscheduledetails
@@ -2089,9 +2119,7 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                                                 if (!acc[key]) {
                                                                   acc[key] = [];
                                                                   // Assign task number only once per unique combination
-                                                                  taskCounters[key] = taskNumber
-                                                                    .toString()
-                                                                    .padStart(2, "0");
+                                                                  taskCounters[key] = taskNumber.toString().padStart(2, "0");
                                                                   console.log(
                                                                     `New group ${key}, assigned task number:`,
                                                                     taskCounters[key]
@@ -2315,19 +2343,30 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                                                       selectTaskQuery
                                                                     );
 
-                                                                  if (
-                                                                    existingTaskData.length >
-                                                                    0
-                                                                  ) {
+                                                                  if (existingTaskData.length > 0) {
                                                                     console.log(
                                                                       "Existing task found, updating it. TaskNo:",
                                                                       row.TaskNo
                                                                     );
-
+                                                                    // Suresh - for Material data - 30-04-25
+                                                                    let selectTaskMtrlQuery = `SELECT MtrlGradeID FROM magodmis.mtrl_data where Mtrl_Code ='${row.Mtrl_Code}'`;
+                                                                    const existingTaskMtrlData =
+                                                                      await queryDatabase(
+                                                                        selectTaskMtrlQuery
+                                                                      );
+  
+                                                                    if (
+                                                                      existingTaskMtrlData.length >
+                                                                      0
+                                                                    ) {
+                                                                      console.log("Existing Material found, updating it. Material:", row.MtrlGradeID );
+                                                                    }
+                                                                    // Suresh 30-04-25
                                                                     // Entry exists, so update it
                                                                     let updateNcTaskListQuery = `UPDATE magodmis.nc_task_list
                                                                              SET TaskNo='${row.TaskNo}', NoOfDwgs='${noOfDwgs}', TotalParts='${totalParts}', 
-                                                                                 MProcess='${MProcess}', Operation='${row.Operation}', ScheduleNo='${neworderSch}'
+                                                                                 MProcess='${MProcess}', Operation='${row.Operation}', ScheduleNo='${neworderSch}',
+                                                                                 Mtrl ='${row.Mtrl}
                                                                              WHERE ScheduleID='${row.ScheduleId}' AND Mtrl_Code='${row.Mtrl_Code}'`;
                                                                     await queryDatabase(
                                                                       updateNcTaskListQuery
@@ -2345,13 +2384,30 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                                                       "No existing task found, creating new task"
                                                                     );
 
+                                                                    // Suresh 30-4-25
+                                                                    let selectTaskMtrlQuery = `SELECT MtrlGradeID FROM magodmis.mtrl_data where Mtrl_Code ='${row.Mtrl_Code}'`;
+                                                                    const existingTaskMtrlData =
+                                                                      await queryDatabase(
+                                                                        selectTaskMtrlQuery
+                                                                      );
+  
+                                                                    if (
+                                                                      existingTaskMtrlData.length >
+                                                                      0
+                                                                    ) {
+                                                                      console.log("Existing Material found, updating it. Material:", row.MtrlGradeID );
+                                                                    }
+                                                                    // this is from insert statement - original statement
+                                                                    //'${row.Mtrl}', '${thicknessValue}', '${row.Mtrl_Source}', '${noOfDwgs}',
+                                                                    //Suresh 30-04-25
+
                                                                     // Entry does not exist, insert a new task
                                                                     let insertNcTaskListQuery = `INSERT INTO magodmis.nc_task_list(TaskNo, ScheduleID, DeliveryDate, order_No,
                                                                               ScheduleNo, Cust_Code, Mtrl_Code, MTRL, Thickness, CustMtrl, NoOfDwgs, TotalParts, MProcess, Operation) 
                                                                               VALUES('${row.TaskNo}', '${row.ScheduleId}', '${formattedDate}',
                                                                               '${row.Order_No}', '${neworderSch}', 
                                                                               '${req.body.formdata[0].Cust_Code}', '${row.Mtrl_Code}',
-                                                                              '${row.Mtrl}', '${thicknessValue}', '${row.Mtrl_Source}', '${noOfDwgs}',
+                                                                              '${existingTaskMtrlData[0].MtrlGradeID}', '${thicknessValue}', '${row.Mtrl_Source}', '${noOfDwgs}',
                                                                               '${totalParts}', '${MProcess}', '${row.Operation}')`;
                                                                     const insertResult =
                                                                       await queryDatabase(
@@ -2427,9 +2483,7 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                                                   );
                                                                 }
 
-                                                                console.log(
-                                                                  "Completed processing task group"
-                                                                );
+                                                                console.log("Completed processing task group");
                                                               } catch (err) {
                                                                 console.log(
                                                                   "Error processing task:",
@@ -4612,11 +4666,13 @@ ScheduleListRouter.post(`/createProfileOrder`, async (req, res, next) => {
 
       // Update magod_runningno table with the new nextSrl
       let updateRunningNoQuery = `UPDATE magod_setup.magod_runningno SET Running_No=${nextSrl} WHERE Id=32`;
-      misQueryMod(updateRunningNoQuery, (err, updateResult) => {
+      misQueryMod(updateRunningNoQuery, async (err, updateResult) => {
         if (err) {
           console.log("Error updating Running_No:", err);
           return res.status(500).send("Error updating Running_No");
         }
+
+        await createFolder("Order", nextSrl, "");
 
         // Prepare and execute the INSERT INTO query with nextSrl
         let insertQuery = `INSERT INTO magodmis.order_list(order_no, order_date, cust_code, contact_name, Type, 

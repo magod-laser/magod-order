@@ -141,7 +141,7 @@ function ServiceOpenSchedule() {
         <div className="col-md-2 col-sm-3">
           <button className="button-style">Check Status</button>
         </div>
-        <div className="col-md-2 col-sm-3">
+        <div className="col-md-2 col-sm-3"> 
           <button className="button-style ">Print Schedule</button>
         </div>
         <div className="col-md-2 col-sm-3">
@@ -151,7 +151,7 @@ function ServiceOpenSchedule() {
         </div>
         <div className="col-md-2 col-sm-3">
           <button className="button-style" onClick={profileOrderOpen1}>
-            Profile Order
+            Profile Order  
           </button>
         </div>
         <div className="col-md-2 col-sm-3">
