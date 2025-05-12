@@ -1,195 +1,328 @@
-/** @format */
-
 import React, { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
-
 import ConfirmationModal from "../../../../../../../Modal/ConfirmationModal";
-
 import { toast } from "react-toastify";
 import {
   getRequest,
   postRequest,
 } from "../../../../../../../../../../../src/pages/api/apiinstance";
 import { endpoints } from "../../../../../../../../../../../src/pages/api/constants";
-export default function IEFormHeader(props) {
-  // const [importedExcelData, setImportedExcelData] = useState([]);
-const {dwgData, setDwgData, compareData, updatePara,MtrlFlg, setMtrlFlg}=props
-  const [buttonClickedFor, setButtonClickedFor] = useState("");
-  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
+export default function IEFormHeader(props) {
+// const [importedExcelData, setImportedExcelData] = useState([]);
+const {dwgData, setDwgData, compareData, updatePara,MtrlFlg, setMtrlFlg}=props
+const [buttonClickedFor, setButtonClickedFor] = useState("");
+const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   const noFileFoundFun = (e) => {
-    // console.log("download the file.......");
     setButtonClickedFor("");
     setConfirmModalOpen(false);
     props.setImportedExcelData([]);
     props.exportExcelTemplate();
   };
 
-  // console.log("mtrldata", props.mtrldata);
+  // const handleChange = (e) => {
+  //   const reader = new FileReader();
+  //   if (e.target.files.length > 0) {
+  //     reader.readAsBinaryString(e.target.files[0]);
+  //     reader.onload = (e) => {
+  //       const data = e.target.result;
+  //       const workbook = XLSX.read(data, { type: "binary" });
+  //       const sheetName = workbook.SheetNames[0];
+  //       const sheet = workbook.Sheets[sheetName];
+  //       const parsedData = XLSX.utils.sheet_to_json(sheet);
+        
+  //       if (
+  //         parsedData.length > 0 &&
+  //         !(
+  //           parsedData[0].Dwg_Name === "" &&
+  //           parsedData[0].Mtrl_Code === "" &&
+  //           parsedData[0].Source === "" &&
+  //           parsedData[0].Operation === "" &&
+  //           parsedData[0].Order_Qty === "" &&
+  //           parsedData[0].JW_Cost === "" &&
+  //           parsedData[0].Mtrl_Cost === ""
+  //         )
+  //       ) {
+  //           // 27-03-2025      
+  //         if (
+  //           parsedData?.[0]?.Dwg_Name &&
+  //           parsedData?.[0]?.Mtrl_Code &&
+  //           parsedData?.[0]?.Source &&
+  //           parsedData?.[0]?.Operation &&
+  //           "Order_Qty" in parsedData[0] &&
+  //           parsedData[0].Order_Qty !== undefined &&
+  //           "JW_Cost" in parsedData[0] &&
+  //           parsedData[0].JW_Cost !== undefined &&
+  //           "Mtrl_Cost" in parsedData[0] &&
+  //           parsedData[0].Mtrl_Cost !== undefined
+  //         ) {
+  //           let isValid = true;
+  //           let errors = [];
 
-  // console.log("props in excel", props.procdata);
-  // console.log("procdata", props.procdata);
-  const handleChange = (e) => {
-    console.log("entering into handle change");
+  //           // Validate based on Source type
+  //           if (parsedData[0].Source === "Customer") {
+  //             if (
+  //               parsedData[0].JW_Cost === 0 ||
+  //               parsedData[0].JW_Cost === 0.0 ||
+  //               parsedData[0].JW_Cost === "0.00"
+  //             ) {
+  //               isValid = false;
+  //               errors.push("JW_Cost should not be 0 for Customer");
+  //             }
+  //             // else if (parsedData[0].Mtrl_Cost !== 0) {
+  //             //   isValid = false;
+  //             //   errors.push("Mtrl_Cost should be 0 for Customer");
+  //             // }
+  //           } else if (parsedData[0].Source === "Magod") {
+  //             if (
+  //               parsedData[0].JW_Cost === 0 ||
+  //               parsedData[0].JW_Cost === 0.0 ||
+  //               parsedData[0].JW_Cost === "0.00"
+  //             ) {
+  //               isValid = false;
+  //               errors.push("JW_Cost should not be 0 for Magod");
+  //             }
+  //             if (
+  //               parsedData[0].Mtrl_Cost === 0 ||
+  //               parsedData[0].Mtrl_Cost === "0" ||
+  //               parsedData[0].Mtrl_Cost === 0.00 ||
+  //               parsedData[0].Mtrl_Cost === "0.00"
+  //             ) {
+  //               isValid = false;
+  //               errors.push("Mtrl_Cost should not be 0 for Magod");
+  //             }
+  //           } else {
+  //             isValid = false;
+  //             errors.push("Invalid Source (should be 'Customer' or 'Magod')");
+  //           }
 
-    const reader = new FileReader();
+  //           if (!isValid) {
+  //             toast.error(`Please Check: ${errors.join(", ")}`);
+  //             props.setImportedExcelData([]);
+  //             return;
+  //           }
 
-    if (e.target.files.length > 0) {
-      reader.readAsBinaryString(e.target.files[0]);
-      reader.onload = (e) => {
-        const data = e.target.result;
-        const workbook = XLSX.read(data, { type: "binary" });
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-        const parsedData = XLSX.utils.sheet_to_json(sheet);
-        console.log("parsedData", parsedData);
+  //           let procData = props.procdata?.filter((obj) =>
+  //             props.OrderData.Type === "Service"
+  //               ? obj.Service !== 0
+  //               : props.OrderData.Type === "Fabrication"
+  //               ? obj.MultiOperation !== 0
+  //               : obj.Profile !== 0
+  //           );
 
-        if (
-          parsedData.length > 0 &&
-          !(
-            parsedData[0].Dwg_Name === "" &&
-            parsedData[0].Mtrl_Code === "" &&
-            parsedData[0].Source === "" &&
-            parsedData[0].Operation === "" &&
-            parsedData[0].Order_Qty === "" &&
-            parsedData[0].JW_Cost === "" &&
-            parsedData[0].Mtrl_Cost === ""
-          )
-        ) {
-          console.log("Keys in parsedData[0]:", Object.keys(parsedData[0]));
-          console.log("parsedData[0]:", parsedData[0]); // Print the full object for reference
+  //           let matArray = props.mtrldata.map((element) => element.Mtrl_Code);
+  //           let processArray = procData.map((element) => element.Operation);
+  //           let finalArray = [];
 
-          // 27-03-2025
-          if (
-            parsedData?.[0]?.Dwg_Name &&
-            parsedData?.[0]?.Mtrl_Code &&
-            parsedData?.[0]?.Source &&
-            parsedData?.[0]?.Operation &&
-            "Order_Qty" in parsedData[0] &&
-            parsedData[0].Order_Qty !== undefined &&
-            "JW_Cost" in parsedData[0] &&
-            parsedData[0].JW_Cost !== undefined &&
-            "Mtrl_Cost" in parsedData[0] &&
-            parsedData[0].Mtrl_Cost !== undefined
-          ) {
-            let isValid = true;
-            let errors = [];
+  //           for (let i = 0; i < parsedData.length; i++) {
+  //             let element = parsedData[i];
 
-            // Validate based on Source type
-            if (parsedData[0].Source === "Customer") {
-              if (
-                parsedData[0].JW_Cost === 0 ||
-                parsedData[0].JW_Cost === 0.0 ||
-                parsedData[0].JW_Cost === "0.00"
-              ) {
-                isValid = false;
-                errors.push("JW_Cost should not be 0 for Customer");
-              }
-              // else if (parsedData[0].Mtrl_Cost !== 0) {
-              //   isValid = false;
-              //   errors.push("Mtrl_Cost should be 0 for Customer");
-              // }
-            } else if (parsedData[0].Source === "Magod") {
-              if (
-                parsedData[0].JW_Cost === 0 ||
-                parsedData[0].JW_Cost === 0.0 ||
-                parsedData[0].JW_Cost === "0.00"
-              ) {
-                isValid = false;
-                errors.push("JW_Cost should not be 0 for Magod");
-              }
-              if (
-                parsedData[0].Mtrl_Cost === 0 ||
-                parsedData[0].Mtrl_Cost === "0" ||
-                parsedData[0].Mtrl_Cost === 0.0 ||
-                parsedData[0].Mtrl_Cost === "0.00"
-              ) {
-                isValid = false;
-                errors.push("Mtrl_Cost should not be 0 for Magod");
-              }
-            } else {
-              isValid = false;
-              errors.push("Invalid Source (should be 'Customer' or 'Magod')");
-            }
+  //             // Check for material
+  //             element.materialError = !matArray.includes(element.Mtrl_Code);
 
-            if (!isValid) {
-              toast.error(`Please Check: ${errors.join(", ")}`);
-              props.setImportedExcelData([]);
-              return;
-            }
+  //             // Check for source
+  //             element.sourceError = ![
+  //               "Magod",
+  //               "magod",
+  //               "Customer",
+  //               "customer",
+  //             ].includes(element.Source);
 
-            let procData = props.procdata?.filter((obj) =>
-              props.OrderData.Type === "Service"
-                ? obj.Service !== 0
-                : props.OrderData.Type === "Fabrication"
-                ? obj.MultiOperation !== 0
-                : obj.Profile !== 0
-            );
+  //             // Check for operation
+  //             element.operationError = !processArray.includes(
+  //               element.Operation
+  //             );
 
-            let matArray = props.mtrldata.map((element) => element.Mtrl_Code);
-            let processArray = procData.map((element) => element.Operation);
-            let finalArray = [];
+  //             finalArray.push(element);
+  //           }
 
-            for (let i = 0; i < parsedData.length; i++) {
-              let element = parsedData[i];
+  //           props.setImportedExcelData(parsedData);
+  //           toast.success("All order details correctly loaded.");
+  //         } else {
+  //           let missingFields = [];
 
-              // Check for material
-              element.materialError = !matArray.includes(element.Mtrl_Code);
+  //           if (!("Dwg_Name" in parsedData[0])) missingFields.push("Dwg_Name");
+  //           if (!("Mtrl_Code" in parsedData[0]))
+  //             missingFields.push("Mtrl_Code");
+  //           if (!("Source" in parsedData[0])) missingFields.push("Source");
+  //           if (!("Operation" in parsedData[0]))
+  //             missingFields.push("Operation");
+  //           if (!("Order_Qty" in parsedData[0]))
+  //             missingFields.push("Order_Qty");
+  //           if (!("JW_Cost" in parsedData[0])) missingFields.push("JW_Cost");
+  //           if (!("Mtrl_Cost" in parsedData[0]))
+  //             missingFields.push("Mtrl_Cost");
 
-              // Check for source
-              element.sourceError = ![
-                "Magod",
-                "magod",
-                "Customer",
-                "customer",
-              ].includes(element.Source);
+  //           toast.error(
+  //             `Template error: Missing fields - ${missingFields.join(", ")}`
+  //           );
+  //           console.log("Missing Fields:", missingFields);
 
-              // Check for operation
-              element.operationError = !processArray.includes(
-                element.Operation
-              );
+  //           props.setImportedExcelData([]);
+  //         }
+  //       } else {
+  //         toast.warning("Excel file has no data to import");
+  //         props.setImportedExcelData([]);
+  //       }
 
-              finalArray.push(element);
-            }
+  //       // console.log("dataaaaaa", parsedData);
+  //     };
+  //   } else {
+  //     props.setImportedExcelData([]);
+  //     setButtonClickedFor("Import Excel");
+  //     setConfirmModalOpen(true);
+  //   }
+  // };
 
-            props.setImportedExcelData(parsedData);
-            toast.success("All order details correctly loaded.");
-          } else {
-            let missingFields = [];
+// 07052025 ----------------
 
-            if (!("Dwg_Name" in parsedData[0])) missingFields.push("Dwg_Name");
-            if (!("Mtrl_Code" in parsedData[0]))
-              missingFields.push("Mtrl_Code");
-            if (!("Source" in parsedData[0])) missingFields.push("Source");
-            if (!("Operation" in parsedData[0]))
-              missingFields.push("Operation");
-            if (!("Order_Qty" in parsedData[0]))
-              missingFields.push("Order_Qty");
-            if (!("JW_Cost" in parsedData[0])) missingFields.push("JW_Cost");
-            if (!("Mtrl_Cost" in parsedData[0]))
-              missingFields.push("Mtrl_Cost");
+const handleChange = (e) => {
+  const reader = new FileReader();
 
-            toast.error(
-              `Template error: Missing fields - ${missingFields.join(", ")}`
-            );
-            console.log("Missing Fields:", missingFields);
+  if (e.target.files.length > 0) {
+    reader.readAsBinaryString(e.target.files[0]);
+    reader.onload = (e) => {
+      const data = e.target.result;
+      const workbook = XLSX.read(data, { type: "binary" });
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const parsedData = XLSX.utils.sheet_to_json(sheet);
+      console.log("parsedData", parsedData);
 
-            props.setImportedExcelData([]);
+      if (parsedData.length === 0) {
+        toast.warning("Excel file has no data to import");
+        props.setImportedExcelData([]);
+        return;
+      }
+
+      const requiredFields = [
+        "Dwg_Name",
+        "Mtrl_Code",
+        "Source",
+        "Operation",
+        "Order_Qty",
+        "JW_Cost",
+        "Mtrl_Cost",
+      ];
+
+      const missingFields = requiredFields.filter(
+        (field) => !(field in parsedData[0])
+      );
+
+      if (missingFields.length > 0) {
+        toast.error(`Template error: Missing fields - ${missingFields.join(", ")}`);
+        console.log("Missing Fields:", missingFields);
+        props.setImportedExcelData([]);
+        return;
+      }
+
+      const matArray = props.mtrldata.map((el) => el.Mtrl_Code);
+      const procData = props.procdata?.filter((obj) =>
+        props.OrderData.Type === "Service"
+          ? obj.Service !== 0
+          : props.OrderData.Type === "Fabrication"
+          ? obj.MultiOperation !== 0
+          : obj.Profile !== 0
+      );
+      const processArray = procData.map((el) => el.Operation);
+
+      const finalArray = parsedData.map((row, idx) => {
+        const source = row.Source?.toLowerCase();
+        console.log("source",source);
+        
+        const errors = [];
+
+        row.jwCostError = false;
+        row.mtrlCostError = false;
+        row.sourceError = false;
+        row.materialError = false;
+        row.operationError = false;
+
+        // Source-specific cost validation
+        // if (source === "customer") {
+        //   row.jwCostError = Number(row.JW_Cost) === 0;
+        //   if (row.jwCostError) errors.push("JW_Cost should not be 0 for Customer");
+        // } else if (source === "magod") {
+        //   row.jwCostError = Number(row.JW_Cost) === 0;
+        //   row.mtrlCostError = Number(row.Mtrl_Cost) === 0 || Number(row.Mtrl_Cost) === 0.00 || Number(row.Mtrl_Cost) === "0" || Number(row.Mtrl_Cost) === "0.00" ;
+        //   if (row.jwCostError) errors.push("JW_Cost should not be 0 for Magod");
+        //   if (row.mtrlCostError) errors.push("Mtrl_Cost should not be 0 for Magod") };
+        console.log("source",source);
+        if (source === "customer" || source === "Customer") {
+          row.jwCostError = parseInt(row.JW_Cost) === 0;
+
+          console.log("row.jwCostError ",  row.jwCostError );
+          
+          if (row.jwCostError) {
+            console.log(`Row ${idx + 2}: JW_Cost Error (Customer) = ${row.JW_Cost}`);
+            errors.push("JW_Cost should not be 0 for Customer");
           }
-        } else {
-          toast.warning("Excel file has no data to import");
-          props.setImportedExcelData([]);
+        } 
+        
+        else if (source === "magod" || source === "Magod") {
+          console.log("row.JW_Cost",row.JW_Cost);
+          console.log("row.Mtrl_Cost",row.Mtrl_Cost);
+          console.log("Number(row.JW_Cost)",Number(row.JW_Cost));
+
+          row.jwCostError = parseInt(row.JW_Cost) === 0  ;
+          row.mtrlCostError = parseInt(row.Mtrl_Cost) === 0;
+
+          console.log("row.mtrlCostError",row.mtrlCostError);
+          console.log("row.jwCostError",row.mtrlCostError);
+          
+          
+          if (row.mtrlCostError) {
+            console.log(`Row ${idx + 2}: Mtrl_Cost Error (Magod) = ${row.Mtrl_Cost}`);
+            errors.push("Mtrl_Cost should not be 0 for Magod");
+          }
+          if (row.jwCostError) {
+            
+            console.log(`Row ${idx + 2}: JW_Cost Error (Magod) = ${row.JW_Cost}`);
+            errors.push("JW_Cost should not be 0 for Magod");
+          }
+        }
+        
+        else {
+          row.sourceError = true;
+          errors.push("Invalid Source (must be 'Customer' or 'Magod')");
         }
 
-        // console.log("dataaaaaa", parsedData);
-      };
-    } else {
-      props.setImportedExcelData([]);
-      setButtonClickedFor("Import Excel");
-      setConfirmModalOpen(true);
-    }
-  };
+        // Material code validation
+        row.materialError = !matArray.includes(row.Mtrl_Code);
+        if (row.materialError) errors.push("Invalid Mtrl_Code");
+
+        // Operation validation
+        row.operationError = !processArray.includes(row.Operation);
+        if (row.operationError) errors.push("Invalid Operation");
+
+        // Final message
+        if (errors.length > 0) {
+          row.rowErrorMessage = `Row ${idx + 2}: ${errors.join(", ")}`;
+        }
+
+        return row;
+      });
+
+      const rowsWithErrors = finalArray.filter((row) => row.rowErrorMessage);
+
+      if (rowsWithErrors.length > 0) {
+        // toast.warning("Some rows have issues. Please check the highlighted fields.");
+      //  alert("Some rows have issues. Please check the highlighted fields.");
+        console.warn("Validation Errors:", rowsWithErrors.map((r) => r.rowErrorMessage));
+      } else {
+        toast.success("All order details correctly loaded.");
+      }
+
+      props.setImportedExcelData(finalArray);
+    };
+  } else {
+    props.setImportedExcelData([]);
+    setButtonClickedFor("Import Excel");
+    setConfirmModalOpen(true);
+  }
+};
+
   console.log("OrderData", props.OrderData.Order_No);
 
   const loadToOrderFunc = () => {

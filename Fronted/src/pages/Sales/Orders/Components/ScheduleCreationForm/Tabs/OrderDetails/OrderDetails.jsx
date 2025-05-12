@@ -1126,6 +1126,8 @@ export default function OrderDetails(props) {
       //alert("Failed to connect to the DXF service. Please ensure the service is running.");
     }
   };
+
+
   let [selectedDwg, setSelectedDwg] = useState("");
   // let [dwgopen, setDwgOpen] = useState(false);
   const funcEditDXF = async () => {
@@ -1137,15 +1139,16 @@ export default function OrderDetails(props) {
       // console.log(selectedDwg);
       let srcpath = `\\Wo\\` + OrderNo + "\\DXF";
       postRequest(endpoints.getOrdDxf, { selectedDwg, srcpath }, (respfile) => {
+        console.log("respfile : ", respfile);
         filetoService(window.respfile);
         //   setDwgOpen(true);
       });
     }
     // }
-    if (!window.dxffile) return alert("No DXF file selected");
-    if (selectedDwg === window.dxffile.name) {
-      return alert("Selected DXF File is kept Open below");
-    }
+    // if (!window.dxffile) return alert("No DXF file selected");
+    // if (selectedDwg === window.dxffile.name) {
+    //   return alert("Selected DXF File is kept Open below");
+    // }
     if (!window.dxffile) return alert("No DXF file selected");
     try {
       const request = await fetch("http://127.0.0.1:21341/status", {
@@ -1243,6 +1246,13 @@ export default function OrderDetails(props) {
     return res;
   };
 
+  useEffect(()=>{
+console.log("gradeid useeffect---",gradeid);
+setGradeID(gradeid);
+
+  },[gradeid])
+
+
   // Insert order details flag 1,2,3
   const PostOrderDetails = async (flag, imprtDwgObj) => {
     console.log("entering post order details");
@@ -1332,6 +1342,7 @@ export default function OrderDetails(props) {
       let thickness;
       let material;
       let grade;
+      let gradeIdd;
       let specificwt;
       console.log(" entring into the flag 2");
 
@@ -1353,11 +1364,13 @@ export default function OrderDetails(props) {
             console.log("1175  - MtrlData : ", mtrldata1);
             setThickness(mtrldata1[0]["Thickness"]);
             setGradeID(mtrldata1[0]["MtrlGradeID"]);
+            
             setMaterial(mtrldata1[0]["Mtrl_Type"]);
             setGrade(mtrldata1[0]["Grade"]);
             setSpecificWt(mtrldata1[0]["Specific_Wt"]);
             material = mtrldata1[0]["Mtrl_Type"];
             grade = mtrldata1[0]["Grade"];
+            gradeIdd =mtrldata1[0]["MtrlGradeID"]
             console.log("===thickeness", mtrldata1[0]["Thickness"]);
 
             thickness = mtrldata1[0]["Thickness"];
@@ -1368,6 +1381,9 @@ export default function OrderDetails(props) {
           }
         }
       );
+console.log("gradeid----",gradeid,);
+console.log("gradeIdd----",gradeIdd,);
+
 
       for (let i = 0; i < dwgnamefiles.length; i++) {
         // console.log("FileName : " + dwgnamefiles[i].name);
@@ -1432,7 +1448,8 @@ export default function OrderDetails(props) {
           mtrlcost: imprtDwgObj.materialRate,
           strmtrlcode: imprtDwgObj.strmtrlcode,
           material: material,
-          mtrl: gradeid,
+          // mtrl: gradeid,
+          mtrl: gradeIdd,
           Delivery_Date: Delivery_Date,
           //  Operation: Operation,
           Operation: imprtDwgObj.stroperation,
@@ -1444,7 +1461,11 @@ export default function OrderDetails(props) {
           impDwgFileData: impDwgFileData,
         },
       };
-    } else if (flag === 3) {
+      console.log("requestData---",requestData);
+      
+    } 
+    
+    else if (flag === 3) {
       // setHasBOM(1);
       // setisLoading(true);
       requestData = {

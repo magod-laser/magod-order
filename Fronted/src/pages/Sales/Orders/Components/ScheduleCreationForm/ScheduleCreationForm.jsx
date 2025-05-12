@@ -1133,7 +1133,8 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
     try {
       await LoadInitialData();
       await PerformaTabData();
-      await FindOldOrderButtonData();
+      await FindOldPartData()
+      // await FindOldOrderButtonData();
     } catch (error) {
       // console.error("Error fetching data:", error);
     }
@@ -1173,12 +1174,14 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
           custcode: Cust_Code || custCode,
           OrderNo: orderNUmber,
         });
+
         setOrdrDetailsData(ordrDetailsData);
       }
     } catch (error) {
       console.log("error in load initial", error.message);
     }
   };
+console.log("OrdrDetailsData----,",OrdrDetailsData,);
 
   const FindOldPartData = async () => {
     try {
@@ -1764,7 +1767,7 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
     //   return;
     // }
     if (!rowData || !rowData.OrderDetailId) {
-      alert("Invalid rowData, Please check");
+      // alert("Invalid rowData, Please check");
       return;
     }
 
@@ -1973,7 +1976,7 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
     setSelectedRowItems((prevSelectedItems = []) => {
       // if (!rowData || !rowData.Order_Srl) {
       if (!rowData || !rowData.OrderDetailId) {
-        alert("Invalid rowData, Please check");
+        // alert("Invalid rowData, Please check");
         return prevSelectedItems;
       }
 
@@ -2173,9 +2176,13 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
           newArray.push(element);
         }
       }
+      console.log("newArray", newArray);
+      
       setSelectedRows(newArray);
     }
   };
+  console.log("selectedRowss---",selectedRow);
+  
 
   //Sales Job Work
   const [scheduleType, setScheduleType] = useState("Job Work");

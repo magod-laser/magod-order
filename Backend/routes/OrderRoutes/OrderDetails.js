@@ -148,7 +148,10 @@ OrderDetailsRouter.post(`/insertnewsrldata`, async (req, res, next) => {
     // console.log("Flag : ", req.body.requestData.flag);
 
     try {
-      // console.log("Order No : " + req.body.requestData.imprtDwgData["OrderNo"]);
+      const requestData = req.body.requestData.imprtDwgData;
+      console.log("requestData ---",requestData);
+      
+      const orderNo = requestData.OrderNo;
 
       // console.log(
       // 	"File Name 1: ",
@@ -2085,7 +2088,11 @@ OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
 		Operation = '${Operation}',
 		InspLevel = '${InspLevel || "Insp1"}',
 		PackingLevel = '${PackingLevel || "Pkng1"}',
+<<<<<<< HEAD
 		Mtrl_Source='${Mtrl_Source}',
+=======
+		Mtrl_Source='${Mtrl_Source || "Customer"}',
+>>>>>>> 8dd23a9467a697d4e29a12599d2dec7297ed73cc
 		 Mtrl_Code='${Mtrl_Code}'
       WHERE Order_No = ${orderNo} 
       AND OrderDetailId = ${orderSrl}

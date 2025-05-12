@@ -412,14 +412,23 @@ export default function ProductionScheduleCreation({
   const fnCheckDxf = async () => {
     let orderno = OrderData.Order_No;
     await postRequest(endpoints.checkDxf, { orderno }, (checkdata) => {
+    console.log("checkdata-msg",checkdata.status);
+    // if(checkdata.status ="Order Folder does not exist") {
+    if(checkdata.status.length > 0 ) {
+      alert(checkdata.status)
+    }
+    // if(checkdata.data.length > 0){
+    //   alert("data found");
+    // }
+
       for (let i = 0; i < OrdrDetailsData.length; i++) {
-        const isFilePresent = checkdata.some((file) => file === OrdrDetailsData[i].DwgName);
+        const isFilePresent = checkdata.data.some((file) => file === OrdrDetailsData[i].DwgName);
         if (!isFilePresent) {
           postRequest(
             endpoints.UpdateOrdDWG,
             { orderno, orddwg: OrdrDetailsData[i].DwgName, intdwg: 0 },
             (resp) => {
-              //          console.log(resp);
+                      //  console.log(resp);
               fetchData();
             }
           );
