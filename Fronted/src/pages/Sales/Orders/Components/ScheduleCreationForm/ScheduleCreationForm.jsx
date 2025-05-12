@@ -1129,6 +1129,9 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
   //     // console.error("Error fetching data:", error);
   //   }
   // };
+
+
+
   const fetchData = async () => {
     try {
       await LoadInitialData();
@@ -1141,6 +1144,11 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
   };
 
   //s------------------
+ useEffect(()=>{
+  FindOldOrderButtonData();
+  PerformaTabData();
+ },[CustCode])
+ 
   const LoadInitialData = async () => {
     // alert("load initial");
     try {
@@ -1199,6 +1207,9 @@ console.log("OrdrDetailsData----,",OrdrDetailsData,);
         {
           Cust_Code: Cust_Code || CustCode,
           Order_No: orderNUmber,
+          orderType: orderType,
+          
+
         }
       );
       setOldOrderListData(oldOrderData?.orderListData);
@@ -2173,17 +2184,22 @@ console.log("OrdrDetailsData----,",OrdrDetailsData,);
         const element = OrdrDetailsData[i];
         if (selectedRows.includes(element)) {
         } else {
+          console.log("ARnewArray",newArray);
+          
           newArray.push(element);
         }
       }
       console.log("newArray", newArray);
       
       setSelectedRows(newArray);
+      setSelectedItems(newArray)
     }
   };
   console.log("selectedRowss---",selectedRow);
   
 
+  console.log("ARafter revrse--",selectedItems);
+  
   //Sales Job Work
   const [scheduleType, setScheduleType] = useState("Job Work");
   const [scheduleOption, setScheduleOption] = useState("Full Order");

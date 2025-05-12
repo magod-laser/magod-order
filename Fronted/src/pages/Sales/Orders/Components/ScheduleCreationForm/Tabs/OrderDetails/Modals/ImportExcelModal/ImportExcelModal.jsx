@@ -114,6 +114,7 @@ export default function ImportExcelModal(props) {
 
   const compareData = async () => {
     console.log("entering into compare function");
+   alert("entering into compare function");
     console.log("props.OrderData.Cust_Code ", props.OrderData.Cust_Code);
 
     // Step 1: Check if CustDwg folder has data
@@ -290,7 +291,7 @@ export default function ImportExcelModal(props) {
     );
   };
 
-  console.log("updatedData after compare", importedExcelData);
+  // console.log("updatedData after compare", importedExcelData);
 
   const updatePara = () => {
     const updatedData = importedExcelData.map((excelRow) => {
@@ -321,7 +322,7 @@ export default function ImportExcelModal(props) {
     setImportedExcelData(updatedData); // Update state
   };
 
-  console.log("updatedData after Update para", importedExcelData);
+  // console.log("updatedData after Update para", importedExcelData);
 
   return (
     <>

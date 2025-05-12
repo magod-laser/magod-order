@@ -704,10 +704,11 @@ OrderDetailsRouter.post("/getQtnDataByQtnID", async (req, res, next) => {
 OrderDetailsRouter.post(
   `/getOldOrderByCustCodeAndOrderNo`,
   async (req, res, next) => {
-    // console.log("req.body", req.body);
+    console.log("OLD-ORDER-req.body", req.body);
     try {
       misQueryMod(
-        `SELECT * FROM magodmis.order_list WHERE Cust_Code = '${req.body.Cust_Code}' AND Order_No != '${req.body.Order_No}' ORDER BY Order_No DESC`,
+        // `SELECT * FROM magodmis.order_list WHERE Cust_Code = '${req.body.Cust_Code}' AND Order_No != '${req.body.Order_No}' ORDER BY Order_No DESC`,
+        `SELECT * FROM magodmis.order_list WHERE Cust_Code = '${req.body.Cust_Code}' AND Type = '${req.body.orderType}' ORDER BY Order_No DESC`,
         (err, orderListData) => {
           if (err) {
             res.status(500).send("Internal Server Error");
@@ -2055,8 +2056,23 @@ OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
   console.log("Entered bulkChangeUpdate");
   const orderSrlArray = req.body.OrderSrl;
   const selectedItems = req.body.selectedItems;
+  // console.log("selectedItems",selectedItems);
+  
   const orderNo = req.body.OrderNo;
+  for (let index = 0; index < selectedItems.length; index++) {
+    const element = selectedItems[index];
+    console.log("element.OrderDetailId",  element.OrderDetailId);
+    console.log("element.OrderSrl",  element.Order_Srl);
+    console.log("element. Qty_Ordered",  element. Qty_Ordered);
+   
+    
+  }
 
+  // console.log("reqBody", req.body);
+  // console.log("reqBody", req.body.MtrlSrc);
+  // console.log("BC-selectedItems",selectedItems);
+  // console.log("BC-orderSrl",orderSrl);
+  
 
   let completedUpdates = 0;
   const executeUpdate = (
@@ -2073,9 +2089,7 @@ OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
     Mtrl_Code,
     
   ) => {
-
-    console.log("InspLevel :",InspLevel);
-    console.log("PackingLevel :",PackingLevel);
+    // console.log("orderSrl",orderSrl);
     
     const updateQuery = `
       UPDATE magodmis.order_details
@@ -2088,17 +2102,13 @@ OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
 		Operation = '${Operation}',
 		InspLevel = '${InspLevel || "Insp1"}',
 		PackingLevel = '${PackingLevel || "Pkng1"}',
-<<<<<<< HEAD
-		Mtrl_Source='${Mtrl_Source}',
-=======
 		Mtrl_Source='${Mtrl_Source || "Customer"}',
->>>>>>> 8dd23a9467a697d4e29a12599d2dec7297ed73cc
 		 Mtrl_Code='${Mtrl_Code}'
       WHERE Order_No = ${orderNo} 
       AND OrderDetailId = ${orderSrl}
     `;
 
-    // console.log(`Executing query for OrderDetailId: ${orderSrl}`);
+    console.log(`Executing query for Order_Srl: ${orderSrl}`);
     // console.log(`Query: ${updateQuery}`);
 
     return new Promise((resolve, reject) => {
@@ -2122,13 +2132,13 @@ OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
       // console.log("oldValues", oldValues);
       let qtyOrdered; // Define variable to hold the value
 
-      if (typeof oldValues.quantity !== "undefined") {
-        qtyOrdered = parseInt(oldValues.quantity); // Assuming quantity is numeric
+      if (typeof oldValues?.quantity !== "undefined") {
+        qtyOrdered = parseInt(oldValues?.quantity); // Assuming quantity is numeric
       } else {
-        qtyOrdered = oldValues.Qty_Ordered; // Use oldValues.Qty_Ordered if quantity is undefined
+        qtyOrdered = oldValues?.Qty_Ordered; // Use oldValues.Qty_Ordered if quantity is undefined
       }
       // console.log("qtyOrdered...", qtyOrdered);
-      const DwgName = oldValues.DwgName;
+      const DwgName = oldValues?.DwgName;
       const JWCost = parseInt(oldValues.JWCost);
       const MtrlCost = parseInt(oldValues.MtrlCost);
       const UnitPrice = parseInt(oldValues.UnitPrice);

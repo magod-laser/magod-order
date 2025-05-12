@@ -130,6 +130,49 @@ export default function ImportOldOrderModal(props) {
     //   New_Order_No:props.OrderData.Order_No  })
     //   console.log("checkingdxffilesimportoldorder",checkingdxffilesimportoldorder);
   // },[selectedOldOrder.Order_No])
+ const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+
+  // sorting function for table headings of the table
+  const requestSort = (key) => {
+    // console.log("entering into the request sort");
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedData = () => {
+        // console.log("filterdata loggedin sorted data;;", filteredData);
+    const dataCopy = [...props.oldOrderListData];
+
+    if (sortConfig.key) {
+      dataCopy.sort((a, b) => {
+        let valueA = a[sortConfig.key];
+        let valueB = b[sortConfig.key];
+
+        // Convert only for the "intiger" columns
+        if (
+          sortConfig.key === "Order_No" 
+         
+        ) {
+          valueA = parseFloat(valueA);
+          valueB = parseFloat(valueB);
+        }
+
+        if (valueA < valueB) {
+          return sortConfig.direction === "asc" ? -1 : 1;
+        }
+        if (valueA > valueB) {
+          return sortConfig.direction === "asc" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return dataCopy;
+  };
+console.log("props.oldOrderListData",props.oldOrderListData);
+
 
   return (
     <>
@@ -153,13 +196,14 @@ export default function ImportOldOrderModal(props) {
             <thead className="tableHeaderBGColor">
               <tr>
                 <th>SL No</th>
-                <th>Order No</th>
-                <th>PO No</th>
+                <th   onClick={() => requestSort("Order_No")}>Order No</th>
+                <th   onClick={() => requestSort("Purchase_Order")}>PO No</th>
               </tr>
             </thead>
             <tbody className="tablebody">
               {props.oldOrderListData?.length > 0 ? (
-                props.oldOrderListData?.map((val, key) => (
+                // props.oldOrderListData?.map((val, key) => (
+                  sortedData()?.map((val, key) => (
                   <>
                     <tr
                       key={key}
