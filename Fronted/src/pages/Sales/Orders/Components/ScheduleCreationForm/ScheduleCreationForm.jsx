@@ -1808,7 +1808,6 @@ export default function ScheduleCreationForm(props) {
 
     // DXF File Handling (if applicable)
     if (props.Type === "Profile") {
-      // let srcpath = `\\Wo\\` + Orderno + "\\DXF\\";
       let srcpath = `\\Wo\\` + (orderNUmber || Orderno) + "\\DXF\\";
       let filename = rowData.DwgName;
 
@@ -1827,7 +1826,6 @@ export default function ScheduleCreationForm(props) {
         `${endpoints.getOrdDxf}?dxfName=${filename}&srcPath=${srcpath}`,
         async (res) => {
           if (res.status !== 200) {
-            // toast.error(" Try again Error fetching DXF file");
             return;
           }
           const content = await res.text();
@@ -1843,9 +1841,6 @@ export default function ScheduleCreationForm(props) {
         }
       );
     }
-
-    // console.log("singleSelectedItems", selectedItems);
-    // console.log("singleSelectedSrl", selectedSrl);
   };
 
   useEffect(() => {
@@ -1855,11 +1850,9 @@ export default function ScheduleCreationForm(props) {
   }, [currentIndex]);
 
   const handleKeyDown = (e) => {
-    // if (!LastSlctedRow || !LastSlctedRow.Order_Srl) return;
     if (!LastSlctedRow || !LastSlctedRow.OrderDetailId) return;
 
     const currentIndex = filteredData.findIndex(
-      // (r) => r.Order_Srl === LastSlctedRow.Order_Srl
       (r) => r.OrderDetailId === LastSlctedRow.OrderDetailId
     );
 
@@ -1878,120 +1871,32 @@ export default function ScheduleCreationForm(props) {
     }
   };
 
-  // const handleKeyDown = (event) => {
-  //   if (!LastSlctedRow || !LastSlctedRow.Order_Srl) return; // Don't move if no row is selected
-
-  //   const totalRows = sortedData();
-
-  //   // Find the index of the currently selected row based on Order_Srl
-  //   const currentRowIndex = totalRows.findIndex(
-  //     (row) => row.Order_Srl === LastSlctedRow.Order_Srl
-  //   );
-
-  //   let newRow;
-
-  //   if (event.key === "ArrowUp" && currentRowIndex > 0) {
-  //     newRow = totalRows[currentRowIndex - 1];
-  //   } else if (
-  //     event.key === "ArrowDown" &&
-  //     currentRowIndex < totalRows.length - 1
-  //   ) {
-  //     newRow = totalRows[currentRowIndex + 1];
-  //   }
-
-  //   if (newRow) {
-  //     setLastSlctedRow(newRow);
-  //     // Apply style for selected row
-  //     document.querySelectorAll(".row").forEach((row) => {
-  //       row.style.backgroundColor = "";
-  //     });
-  //     const selectedRowElement = document.querySelector(
-  //       `.row[data-order-srl="${newRow.Order_Srl}"]`
-  //     );
-  //     if (selectedRowElement) {
-  //       selectedRowElement.style.backgroundColor = "lightblue"; // or any color you want
-  //     }
-  //   }
-  // };
-
-  // Add event listener for keyboard navigation
-  // useEffect(() => {
-  //   window.addEventListener("keydown", handleKeyDown);
-  //   return () => window.removeEventListener("keydown", handleKeyDown);
-  // }, [LastSlctedRow]);
-
-  // useEffect(() => {
-  //   document.addEventListener("keydown", handleKeyDown);
-  //   return () => {
-  //     document.removeEventListener("keydown", handleKeyDown);
-  //   };
-  // }, [LastSlctedRow, sortedData, filteredData]); // make sure dependencies are accurate
-  // const handleKeyDown = (event) => {
-  //   if (!LastSlctedRow || !LastSlctedRow.Order_Srl) return; // Don't move if no row is selected
-
-  //   const totalRows = sortedData();
-
-  //   // Find the index of the currently selected row based on Order_Srl
-  //   const currentRowIndex = totalRows.findIndex(
-  //     (row) => row.Order_Srl === LastSlctedRow.Order_Srl
-  //   );
-
-  //   if (event.key === "ArrowUp" && currentRowIndex > 0) {
-  //     const prevRow = totalRows[currentRowIndex - 1];
-  //     setLastSlctedRow(prevRow);
-  //   } else if (
-  //     event.key === "ArrowDown" &&
-  //     currentRowIndex < totalRows.length - 1
-  //   ) {
-  //     const nextRow = totalRows[currentRowIndex + 1];
-  //     setLastSlctedRow(nextRow);
-  //   }
-  // };
-
-  // // Add event listener for keyboard navigation
-  // useEffect(() => {
-  //   window.addEventListener("keydown", handleKeyDown);
-  //   return () => window.removeEventListener("keydown", handleKeyDown);
-  // }, [LastSlctedRow]);
-  // console.log("singleSelectedRow", selectedRow);
-  // console.log("singleLastSlctedRow", LastSlctedRow);
-  // console.log("singleSelectedItems", selectedItems);
-  // console.log("singleSelectedSrl", selectedSrl);
-
-  // // Handle multi row selection
-
+  // Handle multi row selection
   const handleCheckboxChange = async (rowData) => {
     setSelectedRows((prevSelectedRows) => {
       const updatedRows = prevSelectedRows.some(
-        // (selectedRow) => selectedRow.Order_Srl === rowData.Order_Srl
         (selectedRow) => selectedRow.OrderDetailId === rowData.OrderDetailId
       )
-        ? // ? prevSelectedRows.filter((row) => row.Order_Srl !== rowData.Order_Srl)
+        ? 
           prevSelectedRows.filter(
             (row) => row.OrderDetailId !== rowData.OrderDetailId
           )
         : [...prevSelectedRows, rowData];
-
-      console.log("updatedRows", updatedRows);
-
       return updatedRows;
     });
 
     setSelectedRowItems((prevSelectedItems = []) => {
-      // if (!rowData || !rowData.Order_Srl) {
       if (!rowData || !rowData.OrderDetailId) {
         // alert("Invalid rowData, Please check");
         return prevSelectedItems;
       }
 
       const isSelected = prevSelectedItems.some(
-        // (item) => item.Order_Srl === rowData.Order_Srl
         (item) => item.OrderDetailId === rowData.OrderDetailId
       );
 
       const updatedSelectedItems = isSelected
         ? prevSelectedItems.filter(
-            // (item) => item.Order_Srl !== rowData.Order_Srl
             (item) => item.OrderDetailId !== rowData.OrderDetailId
           )
         : [...prevSelectedItems, rowData];
@@ -2009,12 +1914,7 @@ export default function ScheduleCreationForm(props) {
       const lastUncheckedRow =
         updatedSelectedItems[updatedSelectedItems.length] || null;
       // setSelectedRow(lastSelectedRow);
-      // console.log("lastSelectedRow", lastSelectedRow);
-      // console.log("lastUncheckedRow", lastUncheckedRow);
-      // console.log("selectedRows", selectedRows);
-
       setLastSlctedRow(lastSelectedRow);
-
       setordrDetailsChange((prevState) => ({
         ...prevState,
         DwgName: lastSelectedRow?.DwgName || "",
@@ -2032,7 +1932,6 @@ export default function ScheduleCreationForm(props) {
       setSelectedSrl(selectedOrderSrl);
 
       if (props.Type === "Profile") {
-        // let srcpath = `\\Wo\\` + Orderno + "\\DXF\\";
         let srcpath = `\\Wo\\` + (orderNUmber || Orderno) + "\\DXF\\";
 
         let filename = rowData.DwgName;
@@ -2072,98 +1971,13 @@ export default function ScheduleCreationForm(props) {
 
     setSelectedRow(null);
   };
-  // console.log("multiSelectedRows", selectedRows);
-  // console.log("multiSelectedRow", selectedRow);
-  // console.log("multiSelectedRows", selectedRows);
-  // console.log("multiLastSlctedRow", LastSlctedRow);
-  // console.log("multiSelectedItems", selectedItems);
-  // console.log("multiSelectedSrl", selectedSrl);
-
-  //28-01-2025
-  // // // Checkbox selection handler
-  // const handleCheckboxChange = async (rowData) => {
-  //   setSelectedRows((prevSelectedRows) => {
-  //     const isAlreadySelected = prevSelectedRows.some(
-  //       (selectedRow) => selectedRow.Order_Srl === rowData.Order_Srl
-  //     );
-
-  //     const updatedSelectedRows = selectedRows.includes(rowData)
-  //       ? selectedRows.filter((row) => row !== rowData) // Unselect the row
-  //       : [...selectedRows, rowData]; // Select the row
-
-  //     setSelectedRows(updatedSelectedRows); // Update the selected rows
-  //     const updatedRows = isAlreadySelected
-  //       ? prevSelectedRows.filter((row) => row.Order_Srl !== rowData.Order_Srl)
-  //       : [...prevSelectedRows, rowData];
-
-  //     // Update single row selection to match the last checkbox action
-  //     const lastCheckedRow = !isAlreadySelected ? rowData : null;
-
-  //     setLastSlctedRow(lastCheckedRow);
-
-  //     // Update row details based on the last checked row
-  //     if (lastCheckedRow) {
-  //       setordrDetailsChange((prevState) => ({
-  //         ...prevState,
-  //         DwgName: lastCheckedRow?.DwgName || "",
-  //         MtrlSrc: lastCheckedRow?.Mtrl_Source || "",
-  //         jwRate: lastCheckedRow?.JWCost || "",
-  //         quantity: lastCheckedRow?.Qty_Ordered || "",
-  //         materialRate: lastCheckedRow?.MtrlCost || "",
-  //         unitPrice: lastCheckedRow?.UnitPrice || "",
-  //         Operation: lastCheckedRow?.Operation || "",
-  //         InspLvl: lastCheckedRow?.InspLevel || "",
-  //         PkngLvl: lastCheckedRow?.PackingLevel || "",
-  //         strmtrlcode: lastCheckedRow?.Mtrl_Code || "",
-  //       }));
-  //     }
-
-  //     return updatedRows;
-  //   });
-
-  //   setSelectedRowItems((prevSelectedItems = []) => {
-  //     const isSelected = prevSelectedItems.some(
-  //       (item) => item.Order_Srl === rowData.Order_Srl
-  //     );
-
-  //     return isSelected
-  //       ? prevSelectedItems.filter(
-  //           (item) => item.Order_Srl !== rowData.Order_Srl
-  //         )
-  //       : [...prevSelectedItems, rowData];
-  //   });
-  // };
-
-  // // // Single row selection handler
-  // const handleRowClick = (rowData) => {
-  //   console.log("Single row selected:", rowData);
-  //   setSelectedRow(rowData);
-  //   setLastSlctedRow(rowData);
-
-  //   // Update row details for the selected row
-  //   setordrDetailsChange((prevState) => ({
-  //     ...prevState,
-  //     DwgName: rowData?.DwgName || "",
-  //     MtrlSrc: rowData?.Mtrl_Source || "",
-  //     jwRate: rowData?.JWCost || "",
-  //     quantity: rowData?.Qty_Ordered || "",
-  //     materialRate: rowData?.MtrlCost || "",
-  //     unitPrice: rowData?.UnitPrice || "",
-  //     Operation: rowData?.Operation || "",
-  //     InspLvl: rowData?.InspLevel || "",
-  //     PkngLvl: rowData?.PackingLevel || "",
-  //     strmtrlcode: rowData?.Mtrl_Code || "",
-  //   }));
-  // };
+  
   // selectAll button
   const handleSelectAll = () => {
     setSelectedRows(OrdrDetailsData);
     setSelectedItems(OrdrDetailsData);
-    // Extract Order_Srl from selected items
-    // const selectedOrderSrl = OrdrDetailsData.map((item) => item.Order_Srl);
     const selectedOrderSrl = OrdrDetailsData.map((item) => item.OrderDetailId);
-    // console.log("selectallselectedOrderSrl", selectedOrderSrl);
-    setSelectedSrl(selectedOrderSrl); // Update selectedSrl state
+    setSelectedSrl(selectedOrderSrl);
   };
 
   // reverse Button
