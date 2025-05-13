@@ -514,6 +514,10 @@ function OrdrTable(props) {
     }));
   };
 
+
+  console.log("props.OrderData----", props.OrderData);
+  console.log("props.OrdrDetailsData----", props.OrdrDetailsData);
+  
   return (
     <>
       <div style={{ overflow: "auto", height: "350px" }}>
@@ -747,26 +751,46 @@ function OrdrTable(props) {
                       }}
                     />
                   </td>
-                  <td
-                    style={{
-                      backgroundColor: "transparent",
-                      border: "none",
-                      textAlign: "end",
-                      paddingLeft: "10px",
-                      // display: "flex",
-                      justifyContent: "end",
-                      alignItems: "end",
-                    }}
-                  >
-                    {/* <input value={OrdrDetailsItem.UnitPrice} /> */}
-                    {/* {OrdrDetailsItem.UnitPrice} */}
-                    {/* {parseFloat(parseFloat(OrdrDetailsItem.MtrlCost) +
+                  {OrdrDetailsItem.Mtrl_Source === "Customer" ? (
+                    <td
+                      style={{
+                        backgroundColor: "transparent",
+                        border: "none",
+                        textAlign: "end",
+                        paddingLeft: "10px",
+                        // display: "flex",
+                        justifyContent: "end",
+                        alignItems: "end",
+                      }}
+                    >
+                      {/* <input value={OrdrDetailsItem.UnitPrice} /> */}
+                      {/* {OrdrDetailsItem.UnitPrice} */}
+                      {/* {parseFloat(parseFloat(OrdrDetailsItem.MtrlCost) +
                     parseFloat(OrdrDetailsItem.JWCost))} */}
-                    {(
-                      parseFloat(OrdrDetailsItem.MtrlCost) +
-                      parseFloat(OrdrDetailsItem.JWCost)
-                    ).toFixed(2)}
-                  </td>
+                      {parseFloat(OrdrDetailsItem.JWCost).toFixed(2)}
+                    </td>
+                  ) : (
+                    <td
+                      style={{
+                        backgroundColor: "transparent",
+                        border: "none",
+                        textAlign: "end",
+                        paddingLeft: "10px",
+                        // display: "flex",
+                        justifyContent: "end",
+                        alignItems: "end",
+                      }}
+                    >
+                      {/* <input value={OrdrDetailsItem.UnitPrice} /> */}
+                      {/* {OrdrDetailsItem.UnitPrice} */}
+                      {/* {parseFloat(parseFloat(OrdrDetailsItem.MtrlCost) +
+                    parseFloat(OrdrDetailsItem.JWCost))} */}
+                      {(
+                        parseFloat(OrdrDetailsItem.MtrlCost) +
+                        parseFloat(OrdrDetailsItem.JWCost)
+                      ).toFixed(2)}
+                    </td>
+                  )}
                   {/* {/* <td>{OrdrDetailsItem.LOC}</td> */}
                   {props.OrderData?.Type === "Profile" ? (
                     <td>{OrdrDetailsItem.LOC}</td>
@@ -789,21 +813,39 @@ function OrdrTable(props) {
                   {/* <input value={OrdrDetailsItem.Qty_Ordered} /> */}
                   {/* {OrdrDetailsItem.Qty_Ordered} */}
                   {/* </td> */}
-                  <td
-                    style={{
-                      backgroundColor: "transparent",
-                      border: "none",
-                      textAlign: "end",
-                      paddingLeft: "10px",
-                      // display: "flex",
-                      justifyContent: "end",
-                      alignItems: "end",
-                    }}
-                  >
-                    {parseFloat(
-                      OrdrDetailsItem.UnitPrice * OrdrDetailsItem.Qty_Ordered
-                    ).toFixed(2)}
-                  </td>
+                  {OrdrDetailsItem.Mtrl_Source === "Customer" ? (
+                    <td
+                      style={{
+                        backgroundColor: "transparent",
+                        border: "none",
+                        textAlign: "end",
+                        paddingLeft: "10px",
+                        // display: "flex",
+                        justifyContent: "end",
+                        alignItems: "end",
+                      }}
+                    >
+                      {parseFloat(
+                        OrdrDetailsItem.JWCost * OrdrDetailsItem.Qty_Ordered
+                      ).toFixed(2)}
+                    </td>
+                  ) : (
+                    <td
+                      style={{
+                        backgroundColor: "transparent",
+                        border: "none",
+                        textAlign: "end",
+                        paddingLeft: "10px",
+                        // display: "flex",
+                        justifyContent: "end",
+                        alignItems: "end",
+                      }}
+                    >
+                      {parseFloat(
+                        OrdrDetailsItem.UnitPrice * OrdrDetailsItem.Qty_Ordered
+                      ).toFixed(2)}
+                    </td>
+                  )}
                 </tr>
               );
             })}

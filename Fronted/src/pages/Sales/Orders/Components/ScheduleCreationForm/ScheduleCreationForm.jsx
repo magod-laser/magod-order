@@ -202,8 +202,7 @@ export default function ScheduleCreationForm(props) {
   let [bolTolerance, setBolTolerance] = useState(false);
   let [bolQty, setBolQty] = useState(false);
 
-const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
-
+  const [OdrDtlMtrlSrc, setOdrDtlMtrlSrc] = useState("");
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -341,8 +340,6 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
     window.dxffiles = files;
     setShow(false);
   };
-
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -584,7 +581,7 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
     } else if (name === "odrDtlMtrlSrc") {
       console.log("odrDtlMtrlSrc e.target.value---", e.target.value);
 
-      setOdrDtlMtrlSrc(e.target.value)
+      setOdrDtlMtrlSrc(e.target.value);
 
       setordrDetailsChange((prevState) => ({
         ...prevState,
@@ -881,7 +878,7 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
 
     const updateOrderDetailsData = {
       orderNo: OrderData.Order_No,
-      updatedRows: Object.values(editedData), 
+      updatedRows: Object.values(editedData),
     };
 
     console.log("Updating order details:", updateOrderDetailsData);
@@ -891,14 +888,14 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
       updateOrderDetailsData
     );
 
-    console.log("orderDetailsResponse",orderDetailsResponse);
-    
+    console.log("orderDetailsResponse", orderDetailsResponse);
+
     if (orderDetailsResponse.success) {
       // toast.success("Order details updated successfully", {
       //   position: toast.POSITION.TOP_CENTER,
       // });
       alert("Order details updated successfully");
-        fetchData();
+      fetchData();
       setEditedData({}); // Clear stored changes
     } else {
       toast.error("Order update failed. Try again!", {
@@ -911,9 +908,11 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
     // console.log("selectedSrl", selectedSrl);
     console.log("ordrDetailsChange", ordrDetailsChange);
 
-    const unitPrice = ordrDetailsChange.MtrlSrc === "Customer"
-  ? parseFloat(ordrDetailsChange.jwRate)
-  : parseFloat(ordrDetailsChange.jwRate) + parseFloat(ordrDetailsChange.materialRate);
+    const unitPrice =
+      ordrDetailsChange.MtrlSrc === "Customer"
+        ? parseFloat(ordrDetailsChange.jwRate)
+        : parseFloat(ordrDetailsChange.jwRate) +
+          parseFloat(ordrDetailsChange.materialRate);
 
     postRequest(
       endpoints.singleChangeUpdate,
@@ -931,8 +930,8 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
         // unitPrice:
         //   parseFloat(ordrDetailsChange.jwRate) +
         //   parseFloat(ordrDetailsChange.materialRate),
-        unitPrice:unitPrice,
- 
+        unitPrice: unitPrice,
+
         Operation: ordrDetailsChange.Operation,
         InspLvl: ordrDetailsChange.InspLvl,
         PkngLvl: ordrDetailsChange.PkngLvl,
@@ -1036,7 +1035,7 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
   const [oldOrderListData, setOldOrderListData] = useState([]);
   const [oldOrderDetailsData, setOldOrderDetailsData] = useState([]);
 
-  const [createInvoicetrigger,SetCreateInvoicetrigger] = useState(false)
+  const [createInvoicetrigger, SetCreateInvoicetrigger] = useState(false);
 
   // Register button
   const [isButtonDisabled, setButtonDisabled] = useState(false);
@@ -1130,13 +1129,11 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
   //   }
   // };
 
-
-
   const fetchData = async () => {
     try {
       await LoadInitialData();
       await PerformaTabData();
-      await FindOldPartData()
+      await FindOldPartData();
       // await FindOldOrderButtonData();
     } catch (error) {
       // console.error("Error fetching data:", error);
@@ -1144,11 +1141,11 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
   };
 
   //s------------------
- useEffect(()=>{
-  FindOldOrderButtonData();
-  PerformaTabData();
- },[CustCode])
- 
+  useEffect(() => {
+    FindOldOrderButtonData();
+    PerformaTabData();
+  }, [CustCode]);
+
   const LoadInitialData = async () => {
     // alert("load initial");
     try {
@@ -1189,7 +1186,7 @@ const [OdrDtlMtrlSrc,  setOdrDtlMtrlSrc] = useState("")
       console.log("error in load initial", error.message);
     }
   };
-console.log("OrdrDetailsData----,",OrdrDetailsData,);
+  console.log("OrdrDetailsData----,", OrdrDetailsData);
 
   const FindOldPartData = async () => {
     try {
@@ -1208,8 +1205,6 @@ console.log("OrdrDetailsData----,",OrdrDetailsData,);
           Cust_Code: Cust_Code || CustCode,
           Order_No: orderNUmber,
           orderType: orderType,
-          
-
         }
       );
       setOldOrderListData(oldOrderData?.orderListData);
@@ -1235,8 +1230,6 @@ console.log("OrdrDetailsData----,",OrdrDetailsData,);
       setProfarmaInvDetails(profarmaDetailsData);
     } catch (error) {}
   };
-
-
 
   const fetchSalesExecLists = async () => {
     try {
@@ -2184,22 +2177,18 @@ console.log("OrdrDetailsData----,",OrdrDetailsData,);
         const element = OrdrDetailsData[i];
         if (selectedRows.includes(element)) {
         } else {
-          console.log("ARnewArray",newArray);
-          
           newArray.push(element);
         }
       }
       console.log("newArray", newArray);
-      
+
       setSelectedRows(newArray);
-      setSelectedItems(newArray)
+      setSelectedItems(newArray);
     }
   };
-  console.log("selectedRowss---",selectedRow);
-  
 
-  console.log("ARafter revrse--",selectedItems);
-  
+  console.log("ARafter revrse--", selectedItems);
+
   //Sales Job Work
   const [scheduleType, setScheduleType] = useState("Job Work");
   const [scheduleOption, setScheduleOption] = useState("Full Order");

@@ -2061,13 +2061,18 @@ OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
   const orderNo = req.body.OrderNo;
   for (let index = 0; index < selectedItems.length; index++) {
     const element = selectedItems[index];
-    console.log("element.OrderDetailId",  element.OrderDetailId);
-    console.log("element.OrderSrl",  element.Order_Srl);
-    console.log("element. Qty_Ordered",  element. Qty_Ordered);
+    const result = {
+      OrderDetailIds: [],
+      OrderSrls: []
+    };
+    // console.log("element.OrderDetailId",  element.OrderDetailId);
+    // console.log("element.OrderSrl",  element.Order_Srl);
+    result.OrderDetailIds.push(element.OrderDetailId);
+  result.OrderSrls.push(element.Order_Srl);
    
+  console.log("Final Object:", result);
     
   }
-
   // console.log("reqBody", req.body);
   // console.log("reqBody", req.body.MtrlSrc);
   // console.log("BC-selectedItems",selectedItems);
