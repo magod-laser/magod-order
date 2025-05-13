@@ -43,6 +43,8 @@ ProfarmaInvListRouter.post("/getProfarmaDetails", async (req, res, next) => {
 });
 
 ProfarmaInvListRouter.post("/postCreateInvoice", async (req, res, next) => {
+  console.log("req.body",req.body);
+  
   let flag;
   try {
     misQueryMod(
