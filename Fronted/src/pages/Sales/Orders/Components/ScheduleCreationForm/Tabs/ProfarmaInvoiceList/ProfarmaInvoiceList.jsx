@@ -57,32 +57,36 @@ export default function ProfarmaInvoiceList(props) {
     }
 
     if (props.selectedItems.length > 0) {
-      let InvType = "Sales";
-      let netTotal = 0;
 
-      // const arr = props.selectedItems?.filter((obj)=>(
-      //   obj.Mtrl_Source === 'Magod'
-      // )).length>0
+      let flag = false;
+     
+      
+      console.log('props.selectedItems',props.selectedItems);
+      
+const magodArr=props.selectedItems?.filter((obj)=>obj.Mtrl_Source==='Magod'||obj.Mtrl_Source==='magod')
+const custArr=props.selectedItems?.filter((obj)=>obj.Mtrl_Source==='Customer'||obj.Mtrl_Source==='customer')
 
-      for (let i = 0; i < props.selectedItems.length; i++) {
-        const element = props.selectedItems[i];
-        if (element.Mtrl_Source === "Magod") {
-          InvType = "Sales";
-        } else {
-          InvType = "Job Work";
-        }
 
-        netTotal = (
-          parseFloat(netTotal) +
-          parseFloat(element.Qty_Ordered) *
-            (parseFloat(element.JWCost) + parseFloat(element.MtrlCost || 0))
-        ).toFixed(2);
-      }
+console.log("MA",magodArr);
+console.log("CA",custArr);
 
-      // console.log("netTotal", netTotal);
-      // console.log("InvType", InvType);
 
-      const profarmaMainData = {
+if (magodArr?.length>0) {
+  let netTotal=0;
+let InvType = "Sales";
+  for (let i = 0; i < magodArr.length; i++) {
+    const element = magodArr[i];
+    
+    netTotal = (
+      parseFloat(netTotal||0) +
+      parseFloat(element.Qty_Ordered||0) *
+      (parseFloat(element.JWCost||0) + parseFloat(element.MtrlCost||0))
+    ).toFixed(2);
+
+
+  }
+
+     const profarmaMainDataForMagod = {
         InvType: InvType,
         OrderNo: props.OrderData.Order_No,
         OrderDate: props.OrderData.Order_Date,
@@ -107,14 +111,15 @@ export default function ProfarmaInvoiceList(props) {
       postRequest(
         endpoints.postCreateInvoice,
         {
-          profarmaMainData: profarmaMainData,
-          profarmaDetailsData: props.selectedItems,
+          profarmaMainData: profarmaMainDataForMagod,
+          profarmaDetailsData: magodArr,
         },
         (resp) => {
           if (resp) {
             if (resp.flag) {
+              flag=true
               toast.success(resp.message);
-              props.fetchData();
+              // props.fetchData();
               // console.log("resp", resp);
             } else {
               toast.error(resp.message);
@@ -124,6 +129,154 @@ export default function ProfarmaInvoiceList(props) {
           }
         }
       );
+   
+   
+
+       
+
+
+}
+
+if (custArr?.length>0) {
+  let netTotal=0;
+let InvType = "Job Work";
+  for (let i = 0; i < custArr.length; i++) {
+    const element = custArr[i];
+    
+    netTotal = (
+      parseFloat(netTotal||0) +
+      parseFloat(element.Qty_Ordered||0) *
+      (parseFloat(element.JWCost||0) )
+    ).toFixed(2);
+
+
+  }
+
+     const profarmaMainDataForCust = {
+        InvType: InvType,
+        OrderNo: props.OrderData.Order_No,
+        OrderDate: props.OrderData.Order_Date,
+        Cust_Code: props.OrderCustData.Cust_Code,
+        Cust_Name: props.OrderCustData.Cust_name || "",
+        Cust_Address: props.OrderCustData.Address || "",
+        Cust_Place: props.OrderCustData.City || "",
+        Cust_State: props.OrderCustData.State || "",
+        Cust_StateId: props.OrderCustData.StateId || "",
+        PIN_Code: props.OrderCustData.Pin_Code || "",
+        DelAddress: props.OrderCustData.Delivery || "",
+        GSTNo: props.OrderCustData.GSTNo || "Unregistered",
+        PO_No: props.OrderData.Purchase_Order || "",
+        PO_Date: props.OrderData.Order_Date || "",
+        Net_Total: netTotal || 0,
+        AssessableValue: netTotal || 0,
+        InvTotal: netTotal || 0,
+        GrandTotal: netTotal || 0,
+        Status: "Draft",
+      };
+
+      postRequest(
+        endpoints.postCreateInvoice,
+        {
+          profarmaMainData: profarmaMainDataForCust,
+          profarmaDetailsData: custArr,
+        },
+        (resp) => {
+          if (resp) {
+            if (resp.flag) {
+              flag=true
+              toast.success(resp.message);
+              // props.fetchData();
+              // console.log("resp", resp);
+            } else {
+              toast.error(resp.message);
+            }
+          } else {
+            toast.error("uncaught error in frontend");
+          }
+        }
+      );
+   
+   
+
+       
+
+
+}
+
+// if(flag){
+  props.fetchData();
+// }
+
+    
+      // for (let i = 0; i < props.selectedItems.length; i++) {
+      //   const element = props.selectedItems[i];
+      //   if (element.Mtrl_Source === "Magod") {
+      //     // InvType = "Sales";
+      //   } else {
+      //     // InvType = "Job Work";
+      //   }
+
+        
+      // //   if (element.Mtrl_Source === "Magod") {
+      // //     netTotal = (
+      // //       parseFloat(netTotal) +
+      // //       parseFloat(element.Qty_Ordered) *
+      // //         (parseFloat(element.JWCost) + parseFloat(element.MtrlCost))
+      // //     ).toFixed(2);
+      // //   } else {
+      // //     netTotal = (
+      // //       parseFloat(netTotal) +
+      // //       parseFloat(element.Qty_Ordered) * parseFloat(element.JWCost)
+      // //     ).toFixed(2);
+      // //   }
+        
+      // }
+
+      
+      // const profarmaMainData = {
+      //   InvType: InvType,
+      //   OrderNo: props.OrderData.Order_No,
+      //   OrderDate: props.OrderData.Order_Date,
+      //   Cust_Code: props.OrderCustData.Cust_Code,
+      //   Cust_Name: props.OrderCustData.Cust_name || "",
+      //   Cust_Address: props.OrderCustData.Address || "",
+      //   Cust_Place: props.OrderCustData.City || "",
+      //   Cust_State: props.OrderCustData.State || "",
+      //   Cust_StateId: props.OrderCustData.StateId || "",
+      //   PIN_Code: props.OrderCustData.Pin_Code || "",
+      //   DelAddress: props.OrderCustData.Delivery || "",
+      //   GSTNo: props.OrderCustData.GSTNo || "Unregistered",
+      //   PO_No: props.OrderData.Purchase_Order || "",
+      //   PO_Date: props.OrderData.Order_Date || "",
+      //   Net_Total: netTotal || 0,
+      //   AssessableValue: netTotal || 0,
+      //   InvTotal: netTotal || 0,
+      //   GrandTotal: netTotal || 0,
+      //   Status: "Draft",
+      // };
+
+      // postRequest(
+      //   endpoints.postCreateInvoice,
+      //   {
+      //     profarmaMainData: profarmaMainData,
+      //     profarmaDetailsData: props.selectedItems,
+      //   },
+      //   (resp) => {
+      //     if (resp) {
+      //       if (resp.flag) {
+      //         toast.success(resp.message);
+      //         props.fetchData();
+      //         // console.log("resp", resp);
+      //       } else {
+      //         toast.error(resp.message);
+      //       }
+      //     } else {
+      //       toast.error("uncaught error in frontend");
+      //     }
+      //   }
+      // );
+   
+   
     } else {
       toast.warning("Please select drawing to create profarma invoice");
     }
