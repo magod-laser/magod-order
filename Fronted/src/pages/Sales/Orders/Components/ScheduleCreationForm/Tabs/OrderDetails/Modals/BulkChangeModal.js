@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import { Form, Modal } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
 import LoadingPage from "../../../Loading";
@@ -61,6 +61,7 @@ function BulkChangeModal(props) {
     setBlkCngCheckBox,
     //---new -----
     blkChange,
+    setBlkChange,
     handleChange,
     handleInputChange,
     isLoading,
@@ -72,6 +73,45 @@ function BulkChangeModal(props) {
     const newCheckedValue = !isChecked;
     setChecked(newCheckedValue);
   };
+
+
+
+// console.log("blkChange", blkChange);
+// console.log("inspdata", inspdata);
+// console.log("packdata", packdata);
+// console.log(
+//   "1 :",
+//   blkChange.PkngLevel,
+//   "2 :",
+//   packdata[0]?.PkngLevel,
+//   "3 :",
+//   "Pkng1"
+// );
+// console.log("insp :", blkChange.InspLvl , inspdata[0]?.InspLevel , "Insp1");
+
+  useEffect(() => {
+    if (inspdata.length > 0 && !blkChange.InspLvl) {
+      setBlkChange((prev) => ({
+        ...prev,
+        InspLvl: inspdata[0].InspLevel || "Insp1",
+      }));
+    }
+  }, [inspdata]);
+  console.log("blkChange.InspLvl", blkChange.InspLvl);
+  
+
+  useEffect(() => {
+    if (packdata.length > 0 && !blkChange.PkngLvl) {
+      setBlkChange((prev) => ({
+        ...prev,
+        PkngLvl: packdata[0].PkngLevel || "Pkng1",
+      }));
+    }
+  }, [packdata]);
+
+  console.log("blkChange.PkngLevel", blkChange.PkngLvl);
+  
+
   return (
     <div className="row">
       {/* {isLoading && <LoadingPage />} */}
@@ -535,7 +575,12 @@ function BulkChangeModal(props) {
                           // onChange={selectInsp}
                           name="blkCngInspLvl"
                           disabled={!blkCngCheckBox[8]}
-                          value={blkChange.InspLvl}
+                          // value={blkChange.InspLvl}
+                          value={
+                            blkChange.InspLvl ||
+                            inspdata[0]?.InspLevel ||
+                            "Insp1"
+                          }
                           onChange={handleChange}
                         >
                           {/* <option value="" selected>
@@ -573,7 +618,12 @@ function BulkChangeModal(props) {
                           name="blkCngPkngLvl"
                           // onChange={selectPack}
                           disabled={!blkCngCheckBox[9]}
-                          value={blkChange.PkngLvl}
+                          // value={blkChange.PkngLvl}
+                          value={
+                            blkChange.PkngLvl ||
+                            packdata[0]?.PkngLevel ||
+                            "Pkng1"
+                          }
                           onChange={handleChange}
                         >
                           {/* <option value="" selected>

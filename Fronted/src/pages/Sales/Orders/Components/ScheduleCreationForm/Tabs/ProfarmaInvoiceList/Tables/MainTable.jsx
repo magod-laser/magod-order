@@ -27,6 +27,7 @@ export default function MainTable(props) {
             >
               <td>{val.InvType}</td>
               <td>{val.ProformaInvNo}</td>
+              {/* {val.InvType === "Job Work" ?  <td>{val.GrandTotal}</td> :  <td>{val.GrandTotal}</td> } */}
               <td>{val.GrandTotal}</td>
               <td>{val.Status}</td>
             </tr>

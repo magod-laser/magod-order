@@ -72,11 +72,24 @@ export default function ProfarmaInvoiceList(props) {
           InvType = "Job Work";
         }
 
-        netTotal = (
-          parseFloat(netTotal) +
-          parseFloat(element.Qty_Ordered) *
-            (parseFloat(element.JWCost) + parseFloat(element.MtrlCost || 0))
-        ).toFixed(2);
+        // netTotal = (
+        //   parseFloat(netTotal) +
+        //   parseFloat(element.Qty_Ordered) *
+        //     (parseFloat(element.JWCost) + parseFloat(element.MtrlCost || 0))
+        // ).toFixed(2);
+        if (element.Mtrl_Source === "Magod") {
+          netTotal = (
+            parseFloat(netTotal) +
+            parseFloat(element.Qty_Ordered) *
+              (parseFloat(element.JWCost) + parseFloat(element.MtrlCost))
+          ).toFixed(2);
+        } else if (element.Mtrl_Source === "Customer") {
+          netTotal = (
+            parseFloat(netTotal) +
+            parseFloat(element.Qty_Ordered) * parseFloat(element.JWCost)
+          ).toFixed(2);
+        }
+        
       }
 
       // console.log("netTotal", netTotal);
