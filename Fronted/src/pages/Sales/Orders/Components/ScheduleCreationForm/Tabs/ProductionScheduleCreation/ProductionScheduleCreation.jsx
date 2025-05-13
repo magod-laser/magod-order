@@ -28,7 +28,7 @@ export default function ProductionScheduleCreation({
   setSelectedRowItems,
   setLastSlctedRow,
   setSelectedRow,
-  fetchData
+  fetchData,
 }) {
   // API call to fetch schedule list
   const fetchScheduleList = (type) => {
@@ -43,7 +43,7 @@ export default function ProductionScheduleCreation({
   };
   const [smShow, setSmShow] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  const [ProfileDatatoSch, SetProfileDatatoSch] = useState()
+  const [ProfileDatatoSch, SetProfileDatatoSch] = useState();
   useEffect(() => {
     if (OrderData && scheduleType) {
       fetchScheduleList(scheduleType);
@@ -190,7 +190,7 @@ export default function ProductionScheduleCreation({
             return; // Exit if material code does not match
           }
 
-          // checking dxf existence before draft sch creation 
+          // checking dxf existence before draft sch creation
           // console.log("OrderData...",OrderData);
           // console.log("OrdrDetailsData...",OrdrDetailsData);
 
@@ -209,21 +209,24 @@ export default function ProductionScheduleCreation({
           console.log("OrderData", OrderData.Type);
 
           if (OrderData.Type === "Profile") {
-            // checking dwg existence 
-            const dwgZeroItems = filteredItems2.filter((item) => Number(item.Dwg) === 0);
-            const dwgOneItems = filteredItems2.filter((item) => Number(item.Dwg) === 1);
-            SetProfileDatatoSch(dwgOneItems)
-
+            // checking dwg existence
+            const dwgZeroItems = filteredItems2.filter(
+              (item) => Number(item.Dwg) === 0
+            );
+            const dwgOneItems = filteredItems2.filter(
+              (item) => Number(item.Dwg) === 1
+            );
+            SetProfileDatatoSch(dwgOneItems);
 
             console.log("dwgZeroItems", dwgZeroItems);
             console.log("dwgOneItems", dwgOneItems);
 
-
             // If any have dwg === 0, show their DWG names in a warning
             if (dwgZeroItems.length > 0) {
-              const dwgNames = dwgZeroItems.map((item) => item.DwgName).join(", ");
-              alert(`Dxf not present for: ${dwgNames}`,)
-             
+              const dwgNames = dwgZeroItems
+                .map((item) => item.DwgName)
+                .join(", ");
+              alert(`Dxf not present for: ${dwgNames}`);
             }
 
             // If no valid dwg === 1 items, stop here
@@ -234,50 +237,47 @@ export default function ProductionScheduleCreation({
               return;
             }
 
-          // }
+            // }
 
-
-
-          console.log("filteredItems2", filteredItems2);
-          postRequest(
-            endpoints.CreateProductionSchedule,
-            {
-              OrderData,
-              scheduleType: scheduleType,
-              // selectedItems: filteredItems2,
-              selectedItems: dwgOneItems,
-              // selectedItems: OrderData.Type === "Profile" ? ProfileDatatoSch : filteredItems2,
-              scheduleOption: scheduleOption,
-              filteredItems: filteredItems,
-            },
-            (response) => {
-              if (response.message === "Draft Schedule Created") {
-                // toast.success(response.message, {
-                //   position: toast.POSITION.TOP_CENTER,
-                // });
-                setModalMessage(response.message);
-                setSmShow(true);
-                // alert("Draft Schedule Created");
-                // setSmShow;
-                postRequest(
-                  endpoints.getScheduleListData,
-                  { Order_No: OrderData.Order_No },
-                  (response) => {
-                    // console.log("response");
-                    setScheduleListData(response);
-                  }
-                );
-              } else {
-                setModalMessage(response.message); // Show error message in modal
-                setSmShow(true);
-                // toast.warning(response.message, {
-                //   position: toast.POSITION.TOP_CENTER,
-                // });
+            console.log("filteredItems2", filteredItems2);
+            postRequest(
+              endpoints.CreateProductionSchedule,
+              {
+                OrderData,
+                scheduleType: scheduleType,
+                // selectedItems: filteredItems2,
+                selectedItems: dwgOneItems,
+                // selectedItems: OrderData.Type === "Profile" ? ProfileDatatoSch : filteredItems2,
+                scheduleOption: scheduleOption,
+                filteredItems: filteredItems,
+              },
+              (response) => {
+                if (response.message === "Draft Schedule Created") {
+                  // toast.success(response.message, {
+                  //   position: toast.POSITION.TOP_CENTER,
+                  // });
+                  setModalMessage(response.message);
+                  setSmShow(true);
+                  // alert("Draft Schedule Created");
+                  // setSmShow;
+                  postRequest(
+                    endpoints.getScheduleListData,
+                    { Order_No: OrderData.Order_No },
+                    (response) => {
+                      // console.log("response");
+                      setScheduleListData(response);
+                    }
+                  );
+                } else {
+                  setModalMessage(response.message); // Show error message in modal
+                  setSmShow(true);
+                  // toast.warning(response.message, {
+                  //   position: toast.POSITION.TOP_CENTER,
+                  // });
+                }
               }
-            }
-          );
-          }
-          else{
+            );
+          } else {
             console.log("filteredItems2", filteredItems2);
             postRequest(
               endpoints.CreateProductionSchedule,
@@ -366,12 +366,12 @@ export default function ProductionScheduleCreation({
 
   // copy Dxf Button Click
   const fnCopyDxf = async () => {
-
     let custcd = OrderData.Cust_Code;
     let custpath = process.env.REACT_APP_SERVER_CUST_PATH;
     let orderno = OrderData.Order_No;
     let srcfolder = custpath + "\\" + custcd + "\\DXF\\";
-    let destfolder = process.env.REACT_APP_SERVER_FILES + "\\" + orderno + "\\DXF\\";
+    let destfolder =
+      process.env.REACT_APP_SERVER_FILES + "\\" + orderno + "\\DXF\\";
     // let dwgelement = [];
     // console.log(OrdrDetailsData);
     // const zerodwgdata = OrdrDetailsData.filter((OrdrDetailsData) => element.includes(Dwg))
@@ -393,17 +393,18 @@ export default function ProductionScheduleCreation({
 
     console.log("Filtered DWG Names:", dwgelement);
 
-    console.log("dwgelement", dwgelement)
+    console.log("dwgelement", dwgelement);
     await postRequest(
       endpoints.orderCopyDxf,
       { srcfolder, destfolder, orderdwg: dwgelement }, // custdwgname },
       (copydata) => {
-        alert("Files Copied Sucessfully..");
+        if (copydata.status == "success") {
+          alert("Files Copied Sucessfully..");
+        }
       }
     );
 
     //  console.log("OrdrDetailsData :",OrdrDetailsData);
-
   };
 
   // console.log("OrdrDetailsData == 123", OrdrDetailsData)
@@ -412,23 +413,25 @@ export default function ProductionScheduleCreation({
   const fnCheckDxf = async () => {
     let orderno = OrderData.Order_No;
     await postRequest(endpoints.checkDxf, { orderno }, (checkdata) => {
-    console.log("checkdata-msg",checkdata.status);
-    // if(checkdata.status ="Order Folder does not exist") {
-    if(checkdata.status.length > 0 ) {
-      alert(checkdata.status)
-    }
-    // if(checkdata.data.length > 0){
-    //   alert("data found");
-    // }
+      console.log("checkdata-msg", checkdata.status);
+      // if(checkdata.status ="Order Folder does not exist") {
+      if (checkdata.status.length > 0) {
+        alert(checkdata.status);
+      }
+      // if(checkdata.data.length > 0){
+      //   alert("data found");
+      // }
 
       for (let i = 0; i < OrdrDetailsData.length; i++) {
-        const isFilePresent = checkdata.data.some((file) => file === OrdrDetailsData[i].DwgName);
+        const isFilePresent = checkdata.data.some(
+          (file) => file === OrdrDetailsData[i].DwgName
+        );
         if (!isFilePresent) {
           postRequest(
             endpoints.UpdateOrdDWG,
             { orderno, orddwg: OrdrDetailsData[i].DwgName, intdwg: 0 },
             (resp) => {
-                      //  console.log(resp);
+              //  console.log(resp);
               fetchData();
             }
           );
@@ -513,7 +516,7 @@ export default function ProductionScheduleCreation({
   };
 
   //open Folder
-  const openFolder = () => { };
+  const openFolder = () => {};
 
   return (
     <>
