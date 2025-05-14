@@ -86,13 +86,20 @@ export default function OrderDetails(props) {
     goToPrevious,
     goToNext,
     goToLast,
-    FindOldOrderButtonData,OdrDtlMtrlSrc
+    FindOldOrderButtonData,
+    OdrDtlMtrlSrc,
   } = props;
+
+  console.log("list--1", selectedItems);
+  console.log("list--2", selectedRows);
+  useEffect(() => {
+    setSelectedItems(selectedRows);
+  }, [selectedRows]);
 
   const [groupBoxAddSrlVisible, setGroupBoxAddSrlVisible] = useState(true);
 
   const [buttonClicked, setButtonClicked] = useState("");
-  // confirmation modal
+  // confirmation modal413
   const [ConfirmationModalOpen, setConfirmationModalOpen] = useState(false);
   // import from excel
   const [importExcelModal, setImportExcelModal] = useState(false);
@@ -229,9 +236,8 @@ export default function OrderDetails(props) {
       setMtrldata(arr);
     });
     getRequest(endpoints.getProcessLists, (pdata) => {
+      console.log("pdata---", pdata);
 
-      console.log("pdata---",pdata);
-      
       let arr = [];
 
       for (let i = 0; i < pdata.length; i++) {
@@ -298,7 +304,6 @@ export default function OrderDetails(props) {
         if (InsertedNewSrlData.affectedRows != 0) {
           fetchData();
           alert("Added serial successfully");
-          // toast.success("Added serial successfully");
           handleCloseImportDwg();
         } else {
           toast.warning("Serial not added check once");
@@ -309,69 +314,6 @@ export default function OrderDetails(props) {
   };
 
   let blkCngCheckBoxx = blkCngCheckBox;
-
-  // let updateblkcngOrdrData = () => {
-  //   handleClosesetBulkChnangMdl();
-
-  //   for (let i = 0; i < selectedItems.length; i++) {
-  //     const element = selectedItems[i];
-
-  //     blkCngCheckBoxx[0] === true
-  //       ? (element.DwgName = blkChange.DwgName)
-  //       : (element.DwgName = element.DwgName);
-  //     blkCngCheckBoxx[1] === true
-  //       ? (element.Mtrl_Code = LastSlctedRow?.Mtrl_Code)
-  //       : (element.Mtrl_Code = element.Mtrl_Code);
-  //     blkCngCheckBoxx[2] === true
-  //       ? (element.Mtrl_Source = blkChange.material)
-  //       : (element.Mtrl_Source = element.Mtrl_Source);
-  //     blkCngCheckBoxx[3] === true
-  //       ? (element.Operation = blkChange.Operation)
-  //       : (element.Operation = element.Operation);
-  //     blkCngCheckBoxx[4] === true
-  //       ? (element.quantity = blkChange.quantity)
-  //       : (element.quantity = element.quantity);
-  //     blkCngCheckBoxx[5] === true
-  //       ? (element.JWCost = blkChange.jwRate)
-  //       : (element.JWCost = element.JWCost);
-  //     blkCngCheckBoxx[6] === true
-  //       ? (element.UnitPrice = blkChange.unitPrice)
-  //       : (element.UnitPrice = element.UnitPrice);
-  //     blkCngCheckBoxx[7] === true
-  //       ? (element.MtrlCost = blkChange.materialRate)
-  //       : (element.MtrlCost = element.MtrlCost);
-  //     blkCngCheckBoxx[8] === true
-  //       ? (element.InspLevel = blkChange.InspLvl)
-  //       : (element.InspLevel = element.InspLevel);
-  //     blkCngCheckBoxx[9] === true
-  //       ? (element.PackingLevel = blkChange.PkngLvl)
-  //       : (element.PackingLevel = element.PackingLevel);
-  //   }
-
-  //   postRequest(
-  //     endpoints.bulkChangeUpdate,
-  //     {
-  //       selectedItems: selectedItems,
-  //       OrderNo: OrderNo,
-  //       custcode: Cust_Code,
-  //       OrderSrl: selectedSrl,
-  //       MtrlSrc: blkChange.MtrlSrc,
-  //     },
-  //     (blkChngData) => {
-  //       if (blkChngData.affectedRows != 0) {
-  //         toast.success("Updated successfully");
-  //         fetchData();
-  //         setSelectedSrl([]);
-  //         handleClosesetBulkChnangMdl();
-  //       } else {
-  //         toast.warning("Serial not updated check once");
-  //         setSelectedSrl([]);
-  //       }
-  //     }
-  //   );
-  //   // window.location.reload();
-  //   clearAllSelections();
-  // };
 
   let updateblkcngOrdrData = () => {
     handleClosesetBulkChnangMdl();
@@ -501,32 +443,7 @@ export default function OrderDetails(props) {
       ...NewSrlFormData,
       Material: e.target.value,
     });
-    // console.log("endpoints.getmtrldetsbymtrlcode");
-    // postRequest(
-
-    //   endpoints.getmtrldetsbymtrlcode,
-    //   { MtrlCode: e.target.value },
-    //   (mtrldata) => {
-    //     console.log("endpoints.getmtrldetsbymtrlcode ", mtrldata);
-    //     if (mtrldata.length > 0) {
-    //       setThickness(mtrldata[0]["Thickness"]);
-    //       setGradeID(mtrldata[0]["MtrlGradeID"]);
-    //       setMaterial(mtrldata[0]["Mtrl_Type"]);
-    //       setGrade(mtrldata[0]["Grade"]);
-    //       setSpecificWt(mtrldata[0]["Specific_Wt"]);
-
-    //       // locCalc(
-    //       //   window.dxffile,
-    //       //   mtrldata[0]["Mtrl_Type"],
-    //       //   mtrldata[0]["Grade"],
-    //       //   mtrldata[0]["Thickness"],
-    //       //   (output) => {}
-    //       // );
-    //     }
-    //   }
-    // );
   };
-  console.log("strmtrlcode3", strmtrlcode);
   const selectProc = async (e) => {
     e.preventDefault();
     setOperation(e.target.value);
@@ -930,7 +847,7 @@ export default function OrderDetails(props) {
   function deleteRowsByOrderNoFunc() {
     postRequest(
       endpoints.postDeleteDetailsByOrderNo,
-      { Order_No: props.OrderData.Order_No, filteredData:filteredData },
+      { Order_No: props.OrderData.Order_No, filteredData: filteredData },
       (deleteData) => {
         if (deleteData.flag > 0) {
           setOrdrDetailsData([]);
@@ -1127,7 +1044,6 @@ export default function OrderDetails(props) {
     }
   };
 
-
   let [selectedDwg, setSelectedDwg] = useState("");
   // let [dwgopen, setDwgOpen] = useState(false);
   const funcEditDXF = async () => {
@@ -1246,12 +1162,10 @@ export default function OrderDetails(props) {
     return res;
   };
 
-  useEffect(()=>{
-console.log("gradeid useeffect---",gradeid);
-setGradeID(gradeid);
-
-  },[gradeid])
-
+  useEffect(() => {
+    console.log("gradeid useeffect---", gradeid);
+    setGradeID(gradeid);
+  }, [gradeid]);
 
   // Insert order details flag 1,2,3
   const PostOrderDetails = async (flag, imprtDwgObj) => {
@@ -1364,13 +1278,13 @@ setGradeID(gradeid);
             console.log("1175  - MtrlData : ", mtrldata1);
             setThickness(mtrldata1[0]["Thickness"]);
             setGradeID(mtrldata1[0]["MtrlGradeID"]);
-            
+
             setMaterial(mtrldata1[0]["Mtrl_Type"]);
             setGrade(mtrldata1[0]["Grade"]);
             setSpecificWt(mtrldata1[0]["Specific_Wt"]);
             material = mtrldata1[0]["Mtrl_Type"];
             grade = mtrldata1[0]["Grade"];
-            gradeIdd =mtrldata1[0]["MtrlGradeID"]
+            gradeIdd = mtrldata1[0]["MtrlGradeID"];
             console.log("===thickeness", mtrldata1[0]["Thickness"]);
 
             thickness = mtrldata1[0]["Thickness"];
@@ -1381,9 +1295,8 @@ setGradeID(gradeid);
           }
         }
       );
-console.log("gradeid----",gradeid,);
-console.log("gradeIdd----",gradeIdd,);
-
+      console.log("gradeid----", gradeid);
+      console.log("gradeIdd----", gradeIdd);
 
       for (let i = 0; i < dwgnamefiles.length; i++) {
         // console.log("FileName : " + dwgnamefiles[i].name);
@@ -1461,11 +1374,8 @@ console.log("gradeIdd----",gradeIdd,);
           impDwgFileData: impDwgFileData,
         },
       };
-      console.log("requestData---",requestData);
-      
-    } 
-    
-    else if (flag === 3) {
+      console.log("requestData---", requestData);
+    } else if (flag === 3) {
       // setHasBOM(1);
       // setisLoading(true);
       requestData = {
