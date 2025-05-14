@@ -678,150 +678,9 @@ export default function ScheduleCreationForm(props) {
     }
   };
 
-  // const handleJWMR = async (index, field, value) => {
-  //   console.log("value is", value);
-  //   if (value < 0) {
-  //     toast.error("Please Enter a Positive Number", {
-  //       position: toast.POSITION.TOP_CENTER,
-  //     });
-  //   } else {
-  //     // Update LastSlctedRow fields directly, keeping it in sync with new value
-  //     const updatedRow = {
-  //       ...LastSlctedRow,
-  //       [field]: value,
-  //     };
-
-  //     console.log("ordertablevaluesupdate", updatedRow);
-
-  //     // Reflect LastSlctedRow change back into filteredData at the given index
-  //     const updatedDwgdata = [...filteredData];
-  //     updatedDwgdata[index] = updatedRow;
-
-  //     // Update filtered data and LastSlctedRow states
-  //     setFilteredData(updatedDwgdata);
-  //     setLastSlctedRow(updatedRow);
-  //     console.log("handleJWMRLastSlctedRow", LastSlctedRow);
-
-  //     // Prepare data for API call, including the updated row
-  //     const updateOrderDetailsData = {
-  //       orderNo: OrderData.Order_No,
-  //       OrderSrl: selectedSrl,
-  //       // LastSlctedRow: updatedRow, // Keeps row selection persistent
-  //       LastSlctedRow: LastSlctedRow, // Keeps row selection persistent
-  //     };
-  //     console.log("updateOrderDetailsData", updateOrderDetailsData);
-
-  //     // Call the updateOrderDetails API
-  //     const orderDetailsResponse = await postRequest(
-  //       endpoints.ordertablevaluesupdate,
-  //       updateOrderDetailsData
-  //     );
-
-  //     if (orderDetailsResponse.success) {
-  //       toast.success("Order details updated successfully", {
-  //         position: toast.POSITION.TOP_CENTER,
-  //       });
-  //       // Optionally fetch data again to verify updates
-  //       // fetchData();
-  //     } else {
-  //       // toast.warning("Order details update failed, check once", {
-  //       //   position: toast.POSITION.TOP_CENTER,
-  //       // });
-  //     }
-  //   }
-  // };
   const [editedData, setEditedData] = useState({}); // Store changed values
-  // const handleJWMR = (index, field, value) => {
-  //   if (value < 0) {
-  //     toast.error("Please enter a positive number!", {
-  //       position: toast.POSITION.TOP_CENTER,
-  //     });
-  //     return;
-  //   }
-
-  //   // Update the row data without triggering an API call
-  //   const updatedRow = { ...LastSlctedRow, [field]: value };
-  //   setLastSlctedRow(updatedRow);
-
-  //   // Store edited values separately (without affecting the API)
-  //   setEditedData((prev) => ({
-  //     ...prev,
-  //     [field]: value,
-  //   }));
-
-  //   // Update filteredData as well
-  //   const updatedDwgdata = [...filteredData];
-  //   updatedDwgdata[index] = updatedRow;
-  //   setFilteredData(updatedDwgdata);
-  // };
-
-  // const handleJWMR = (index, field, value) => {
-  //   console.log("value is", value);
-  //   if (value < 0) {
-  //     toast.error("Please Enter a Positive Number", {
-  //       position: toast.POSITION.TOP_CENTER,
-  //     });
-  //     return;
-  //   }
-
-  //   // Check LastSlctedRow exists and update accordingly
-  //   if (!LastSlctedRow) {
-  //     // console.error("LastSlctedRow is undefined.");
-  //     return;
-  //   }
-
-  //   // Update the row in LastSlctedRow safely
-  //   const updatedRow = {
-  //     ...LastSlctedRow,
-  //     [field]: value,
-  //   };
-
-  //   // Save the updated row data in the state
-  //   setLastSlctedRow(updatedRow);
-
-  //   // Update the filteredData for the table view
-  //   const updatedDwgdata = [...filteredData];
-  //   updatedDwgdata[index] = updatedRow;
-  //   setFilteredData(updatedDwgdata);
-  // };
-
-  // const saveJWMRChanges = async () => {
-  //   if (!Object.keys(editedData).length) {
-  //     toast.warning("No changes to update!", {
-  //       position: toast.POSITION.TOP_CENTER,
-  //     });
-  //     return;
-  //   }
-
-  //   const updateOrderDetailsData = {
-  //     orderNo: OrderData.Order_No,
-  //     OrderSrl: selectedSrl,
-  //     LastSlctedRow: LastSlctedRow, // Sending the latest edited row
-  //   };
-
-  //   // console.log("Updating order details:", updateOrderDetailsData);
-
-  //   const orderDetailsResponse = await postRequest(
-  //     endpoints.ordertablevaluesupdate,
-  //     updateOrderDetailsData
-  //   );
-
-  //   if (orderDetailsResponse.success) {
-  //     toast.success("Order details updated successfully", {
-  //       position: toast.POSITION.TOP_CENTER,
-  //     });
-  //     setEditedData({}); // Clear stored changes after successful update
-  //   } else {
-  //     toast.error("Order update failed. Try again!", {
-  //       position: toast.POSITION.TOP_CENTER,
-  //     });
-  //   }
-  // };
 
   const handleJWMR = (index, field, value) => {
-    console.log("value is", value);
-    console.log("field", field);
-
     if (field === "Qty_Ordered") {
       // Allow only whole numbers (no decimals, no text)
       if (!/^\d*$/.test(value)) {
@@ -863,8 +722,7 @@ export default function ScheduleCreationForm(props) {
     // Store edited fields to track changes before saving
     setEditedData((prev) => ({
       ...prev,
-      // [updatedRow.Order_Srl]: { ...updatedRow }, // Store changes per row
-      [updatedRow.OrderDetailId]: { ...updatedRow }, // Store changes per row
+      [updatedRow.OrderDetailId]: { ...updatedRow },
     }));
   };
 
@@ -881,14 +739,10 @@ export default function ScheduleCreationForm(props) {
       updatedRows: Object.values(editedData),
     };
 
-    console.log("Updating order details:", updateOrderDetailsData);
-
     const orderDetailsResponse = await postRequest(
       endpoints.ordertablevaluesupdate,
       updateOrderDetailsData
     );
-
-    console.log("orderDetailsResponse", orderDetailsResponse);
 
     if (orderDetailsResponse.success) {
       // toast.success("Order details updated successfully", {
@@ -905,9 +759,6 @@ export default function ScheduleCreationForm(props) {
   };
 
   let updateOrdrData = async () => {
-    // console.log("selectedSrl", selectedSrl);
-    console.log("ordrDetailsChange", ordrDetailsChange);
-
     const unitPrice =
       ordrDetailsChange.MtrlSrc === "Customer"
         ? parseFloat(ordrDetailsChange.jwRate)
@@ -927,9 +778,7 @@ export default function ScheduleCreationForm(props) {
         JwCost: ordrDetailsChange.jwRate,
         mtrlcost: ordrDetailsChange.materialRate,
 
-        // unitPrice:
-        //   parseFloat(ordrDetailsChange.jwRate) +
-        //   parseFloat(ordrDetailsChange.materialRate),
+        //unitPrice: parseFloat(ordrDetailsChange.jwRate) +   parseFloat(ordrDetailsChange.materialRate),
         unitPrice: unitPrice,
 
         Operation: ordrDetailsChange.Operation,
@@ -939,83 +788,14 @@ export default function ScheduleCreationForm(props) {
       },
       async (singleChngData) => {
         if (singleChngData.affectedRows != 0) {
-          // toast.success("Updated successfully");
           alert("Updated successfully");
           fetchData();
-          // const ordrDetailsDataAfterinsertnewsrldata = postRequest(
-          //   endpoints.PostNewSrlData,
-          //   {
-          //     custcode: Cust_Code,
-          //     OrderNo: orderNUmber,
-          //   }
-          // );
-          // setOrdrDetailsData(ordrDetailsDataAfterinsertnewsrldata);
-          // setSelectedRow(null);
-          // setSelectedRows([]);
-          // setSelectedRowItems([]);
-          // setSelectedItems([]);
-          // setLastSlctedRow([]);
-          // setSelectedSrl([]);
         } else {
           toast.warning("Serial not updated check once");
         }
       }
     );
-    // const postRequest = async (url, data) => {
-    //   try {
-    //     const response = await fetch(url, {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify(data),
-    //     });
-
-    //     const result = await response.json();
-
-    //     if (response.ok) {
-    //       return { success: true, data: result };
-    //     } else {
-    //       console.error("Error in postRequest:", result);
-    //       return { success: false, error: result };
-    //     }
-    //   } catch (error) {
-    //     console.error("Network error in postRequest:", error);
-    //     return { success: false, error };
-    //   }
-    // };
-
-    // window.location.reload();
   };
-  // const [jrm, setJrm] = useState(false);
-
-  //   const handleExecution = (isJrm) => {
-  //     if (isJrm) {
-  //       console.log("is jrm true");
-  //       // Call the HRM function when the flag `isJrm` is true
-  //       handleHrm();
-  //     } else {
-  //       // Call the other function when the flag `isJrm` is false
-  //       console.log("is jrm false");
-  //       handleOtherFunction();
-  //     }
-  //   };
-
-  //   // HRM function
-  //   const handleHrm = () => {
-  //     console.log("Executing HRM logic...");
-  //     // Add your HRM-specific code here
-  //   };
-
-  //   // Other function
-  //   const handleOtherFunction = () => {
-  //     console.log("Executing other logic...");
-  //     // Add your other-specific code here
-  //   };
-
-  // Example usage
-  // handleExecution(true); // Calls handleHrm
-  // handleExecution(false); // Calls handleOtherFunction
 
   const [orderNo, setorderNo] = useState(location?.state);
   const [OrderData, setOrderData] = useState({});
@@ -1044,7 +824,7 @@ export default function ScheduleCreationForm(props) {
   const [registerOrder, setRegisterOrder] = useState(false);
 
   const [CustCode, SetCustCode] = useState();
-  // veeranna
+
   // const fetchData = async () => {
   //   try {
   //     const orderData = await postRequest(
@@ -1135,19 +915,16 @@ export default function ScheduleCreationForm(props) {
       await PerformaTabData();
       await FindOldPartData();
       // await FindOldOrderButtonData();
-    } catch (error) {
-      // console.error("Error fetching data:", error);
-    }
+    } catch (error) {}
   };
 
-  //s------------------
+  //------------------
   useEffect(() => {
     FindOldOrderButtonData();
     PerformaTabData();
   }, [CustCode]);
 
   const LoadInitialData = async () => {
-    // alert("load initial");
     try {
       const orderData = await postRequest(
         endpoints.getOrderDetailsByOrdrNoAndType,
@@ -1156,7 +933,6 @@ export default function ScheduleCreationForm(props) {
           orderType: orderType,
         }
       );
-      console.log("orderdata inside initial;;", orderData);
 
       if (orderData?.orderData?.length > 0 && orderData?.custData?.length > 0) {
         const custCode = orderData.custData[0].Cust_Code;
@@ -1169,12 +945,7 @@ export default function ScheduleCreationForm(props) {
           custcode: Cust_Code || custCode,
         });
         setBomData(bomData);
-        // alert("alert two");
-        console.log("Cust_Code initial", Cust_Code);
-        console.log("CustCode initial", CustCode);
-        console.log("orderNUmber initail", orderNUmber);
 
-        // Order Details table Data
         const ordrDetailsData = await postRequest(endpoints.PostNewSrlData, {
           custcode: Cust_Code || custCode,
           OrderNo: orderNUmber,
@@ -1182,11 +953,8 @@ export default function ScheduleCreationForm(props) {
 
         setOrdrDetailsData(ordrDetailsData);
       }
-    } catch (error) {
-      console.log("error in load initial", error.message);
-    }
+    } catch (error) {}
   };
-  console.log("OrdrDetailsData----,", OrdrDetailsData);
 
   const FindOldPartData = async () => {
     try {
@@ -1234,11 +1002,8 @@ export default function ScheduleCreationForm(props) {
   const fetchSalesExecLists = async () => {
     try {
       const response = await axios.post(endpoints.getSalesExecLists);
-      //console("SalesExecListsData", response.data);
       setSalesExecdata(response.data);
-    } catch (error) {
-      // console.error("Error fetching Sales Exec Lists", error);
-    }
+    } catch (error) {}
   };
 
   const calculateMinSrlStatus = () => {
@@ -1300,7 +1065,7 @@ export default function ScheduleCreationForm(props) {
     const rows = document.querySelectorAll(".order-details-row");
     rows.forEach((row) => {
       const srlStatus = parseInt(row.getAttribute("data-srlstatus"));
-      let backgroundColor = ""; // Define backgroundColor here
+      let backgroundColor = "";
       switch (srlStatus) {
         case 0:
           backgroundColor = "lavender";
@@ -1402,16 +1167,14 @@ export default function ScheduleCreationForm(props) {
       { Order_No: orderNo, Order_Status: "Recorded" },
       (registerOrderData) => {
         setOrderData({ ...OrderData, Order_Status: "Recorded" });
-        // toast.success("Order Registered Successfully");
         alert("Order Registered Successfully");
         closeRegisterOrder();
       }
     );
     setButtonDisabled(true);
   };
-  // Save Button
+
   const handleSaveBtn = () => {
-    // toast.success("Order Saved Successfully");
     alert("Order Saved Successfully");
   };
 
@@ -1433,9 +1196,7 @@ export default function ScheduleCreationForm(props) {
   let [Dwglist, setDwgList] = useState([]);
 
   const drawSvg = (text) => {
-    //  //console(text);
     setDxfFileData(text);
-    //   //console(String(text));
     const helper = new Helper(text);
     let svg = helper.toSVG();
     let svgContainer = document.getElementById("dxf-content-container");
@@ -1443,22 +1204,17 @@ export default function ScheduleCreationForm(props) {
   };
 
   let displaydrawing = (file) => {
-    //  //console(file);
     let reader = new FileReader();
     reader.onload = function (event) {
       let text = event.target.result;
       drawSvg(text);
     };
-    //  reader.readAsText(file.asInstanceOf[Blob]);
+    // reader.readAsText(file.asInstanceOf[Blob]);
     reader.readAsText(file);
   };
   const selectedRowItem = (OrdrDetailsItem, imprtDwgObj) => {
-    //console("selectedRowItem entering");
-    // //console(OrdrDetailsData);
     selectItem(OrdrDetailsItem);
-    // if (imprtDwgObj.material === "") {
 
-    // let srcpath = `\\Wo\\` + Orderno + "\\DXF\\";
     let srcpath = `\\Wo\\` + (orderNUmber || Orderno) + "\\DXF\\";
     console.log("srcpath", srcpath);
 
@@ -1473,7 +1229,6 @@ export default function ScheduleCreationForm(props) {
       window.dxffile = drawingFile;
       return;
     }
-    //console("filename", filename);
     getFileRequest(
       `${endpoints.getOrdDxf}?dxfName=${filename}&srcPath=${srcpath}`,
       async (res) => {
@@ -1517,7 +1272,6 @@ export default function ScheduleCreationForm(props) {
         ? prevSelectedItems?.filter((item) => item !== OrdrDetailsItem)
         : [...prevSelectedItems, OrdrDetailsItem];
       const selectedOrderSrl = updatedSelectedItems.map(
-        // (item) => item.Order_Srl
         (item) => item.OrderDetailId
       );
 
@@ -1545,7 +1299,6 @@ export default function ScheduleCreationForm(props) {
     });
 
     if (props.Type === "Profile") {
-      // let srcpath = `\\Wo\\` + Orderno + "\\DXF\\";
       let srcpath = `\\Wo\\` + (orderNUmber || Orderno) + "\\DXF\\";
 
       let filename = OrdrDetailsItem.DwgName;
@@ -1587,10 +1340,10 @@ export default function ScheduleCreationForm(props) {
     }
   };
 
-  //// Row selection in orderDetails ( 17-01-2025 )
-  const [selectedRow, setSelectedRow] = useState(null); // For single row selection
-  const [selectedRows, setSelectedRows] = useState([]); // For multi-row selection
-  const [selectedRowItems, setSelectedRowItems] = useState([]); // For multi-row selection
+  // Row selection in orderDetails
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRowItems, setSelectedRowItems] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
 
   const sortedData = () => {
@@ -1601,7 +1354,6 @@ export default function ScheduleCreationForm(props) {
         let valueA = a[sortConfig.key];
         let valueB = b[sortConfig.key];
 
-        // Convert only for the "intiger" columns
         if (
           sortConfig.key === "LOC" ||
           sortConfig.key === "Holes" ||
@@ -1627,128 +1379,6 @@ export default function ScheduleCreationForm(props) {
     return dataCopy;
   };
 
-  //
-  // // Handle single row selection
-  // const handleRowClick = async (rowData) => {
-  //   setSelectedItems([]);
-  //   setSelectedSrl([]);
-  //   setSelectedRow(
-  //     selectedRow && selectedRow.Order_Srl === rowData.Order_Srl
-  //       ? null
-  //       : rowData
-  //   );
-  //   setLastSlctedRow(rowData);
-  //   setSelectedItems(rowData);
-  //   console.log("rowData", rowData);
-
-  //   // setordrDetailsChange((prevState) => ({
-  //   //   ...prevState,
-  //   //   DwgName: rowData?.DwgName || "",
-  //   //   MtrlSrc: rowData?.Mtrl_Source || "",
-  //   //   jwRate: rowData?.JWCost || "",
-  //   //   quantity: rowData?.Qty_Ordered || "",
-  //   //   materialRate: rowData?.MtrlCost || "",
-  //   //   unitPrice: rowData?.UnitPrice || "",
-  //   //   Operation: rowData?.Operation || "",
-  //   //   InspLvl: rowData?.InspLevel || "",
-  //   //   PkngLvl: rowData?.PackingLevel || "",
-  //   //   strmtrlcode: rowData?.Mtrl_Code || "",
-  //   // }));
-  //   setSelectedRowItems((prevSelectedItems = []) => {
-  //     console.log("prevSelectedItems", prevSelectedItems);
-
-  //     if (!rowData || !rowData.Order_Srl) {
-  //       console.error("Invalid rowData", rowData);
-  //       alert("Invalid rowData, Please check");
-  //       return prevSelectedItems;
-  //     }
-
-  //     const isSelected = prevSelectedItems.some(
-  //       (item) => item.Order_Srl === rowData.Order_Srl
-  //     );
-
-  //     const updatedSelectedItems = isSelected
-  //       ? prevSelectedItems.filter(
-  //           (item) => item.Order_Srl !== rowData.Order_Srl
-  //         )
-  //       : [...prevSelectedItems, rowData];
-
-  //     // console.log("isSelected-new", isSelected);
-  //     // console.log("updatedSelectedItems-new", updatedSelectedItems);
-  //     setSelectedItems(updatedSelectedItems);
-
-  //     const selectedOrderSrl = updatedSelectedItems.map(
-  //       (item) => item.Order_Srl
-  //     );
-  //     // console.log("selectedOrderSrl-new", selectedOrderSrl);
-
-  //     const lastSelectedRow =
-  //       updatedSelectedItems[updatedSelectedItems.length - 1] || null;
-  //     // console.log("lastSelectedRow-new", lastSelectedRow);
-  //     setLastSlctedRow(lastSelectedRow);
-
-  //     setordrDetailsChange((prevState) => ({
-  //       ...prevState,
-  //       DwgName: lastSelectedRow?.DwgName || "",
-  //       MtrlSrc: lastSelectedRow?.Mtrl_Source || "",
-  //       jwRate: lastSelectedRow?.JWCost || "",
-  //       quantity: lastSelectedRow?.Qty_Ordered || "",
-  //       materialRate: lastSelectedRow?.MtrlCost || "",
-  //       unitPrice: lastSelectedRow?.UnitPrice || "",
-  //       Operation: lastSelectedRow?.Operation || "",
-  //       InspLvl: lastSelectedRow?.InspLevel || "",
-  //       PkngLvl: lastSelectedRow?.PackingLevel || "",
-  //       strmtrlcode: lastSelectedRow?.Mtrl_Code || "",
-  //     }));
-
-  //     setSelectedSrl(selectedOrderSrl);
-
-  //     if (props.Type === "Profile") {
-  //       let srcpath = `\\Wo\\` + Orderno + "\\DXF\\";
-
-  //       let filename = rowData.DwgName;
-  //       if (orderDrawings[window.Buffer.from(filename, "base64")]) {
-  //         const drawingFile = new File(
-  //           [orderDrawings[window.Buffer.from(filename, "base64")]],
-  //           filename,
-  //           { type: "plain/text" }
-  //         );
-  //         displaydrawing(drawingFile);
-  //         window.dxffile = drawingFile;
-  //         return updatedSelectedItems;
-  //       }
-
-  //       getFileRequest(
-  //         `${endpoints.getOrdDxf}?dxfName=${filename}&srcPath=${srcpath}`,
-  //         async (res) => {
-  //           if (res.status !== 200) {
-  //             toast.error(" Search Order List");
-  //             return;
-  //           }
-  //           const content = await res.text();
-  //           setOrderDrawings((prevState) => ({
-  //             ...prevState,
-  //             [window.Buffer.from(filename, "base64")]: content,
-  //           }));
-  //           const drawingFile = new File([content], filename, {
-  //             type: "plain/text",
-  //           });
-  //           displaydrawing(drawingFile);
-  //           window.dxffile = drawingFile;
-  //         }
-  //       );
-  //     }
-  //     return updatedSelectedItems;
-  //   });
-  //   setSelectedRows([]);
-  //   // setSelectedRow(null);
-  //   // setLastSlctedRow([]);
-  //   // setSelectedRowItems([]);
-  //   setSelectedItems([]);
-
-  //   setSelectedSrl([]);
-  // };
-
   // In ParentComponent
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -1758,34 +1388,23 @@ export default function ScheduleCreationForm(props) {
     setCurrentIndex((prev) => Math.min(prev + 1, filteredData.length - 1));
   const goToLast = () => setCurrentIndex(filteredData.length - 1);
 
+  //Single row selection with whole row selection
   const handleRowClick = async (rowData) => {
-    console.log("rowData-123456", rowData);
-
     setSelectedItems([]);
     setSelectedSrl([]);
 
-    // if (!rowData || !rowData.Order_Srl) {
-    //   // if (!rowData ) {
-    //   // console.error("Invalid rowData", rowData);
-    //   alert("Invalid rowData, Please check");
-    //   return;
-    // }
     if (!rowData || !rowData.OrderDetailId) {
       // alert("Invalid rowData, Please check");
       return;
     }
 
-    // Toggle selection: if same row is clicked again, deselect it
-    // const isSameRowSelected =
-    //   selectedRow && selectedRow.Order_Srl === rowData.Order_Srl;
     const isSameRowSelected =
       selectedRow && selectedRow.OrderDetailId === rowData.OrderDetailId;
     setSelectedRow(isSameRowSelected ? null : rowData);
     setLastSlctedRow(isSameRowSelected ? null : rowData);
 
     if (!isSameRowSelected) {
-      setSelectedItems([rowData]); // Store only current row
-      // setSelectedSrl([rowData.Order_Srl]);
+      setSelectedItems([rowData]);
       setSelectedSrl([rowData.OrderDetailId]);
     } else {
       setSelectedItems([]);
@@ -1871,14 +1490,13 @@ export default function ScheduleCreationForm(props) {
     }
   };
 
-  // Handle multi row selection
+  // Handle multi row selection with checkbox
   const handleCheckboxChange = async (rowData) => {
     setSelectedRows((prevSelectedRows) => {
       const updatedRows = prevSelectedRows.some(
         (selectedRow) => selectedRow.OrderDetailId === rowData.OrderDetailId
       )
-        ? 
-          prevSelectedRows.filter(
+        ? prevSelectedRows.filter(
             (row) => row.OrderDetailId !== rowData.OrderDetailId
           )
         : [...prevSelectedRows, rowData];
@@ -1900,6 +1518,8 @@ export default function ScheduleCreationForm(props) {
             (item) => item.OrderDetailId !== rowData.OrderDetailId
           )
         : [...prevSelectedItems, rowData];
+
+      console.log("updatedSelectedItems-checkbox", updatedSelectedItems);
 
       setSelectedItems(updatedSelectedItems);
 
@@ -1966,12 +1586,15 @@ export default function ScheduleCreationForm(props) {
           }
         );
       }
+
       return updatedSelectedItems;
     });
 
     setSelectedRow(null);
   };
-  
+
+  console.log("After Update", selectedItems)
+
   // selectAll button
   const handleSelectAll = () => {
     setSelectedRows(OrdrDetailsData);
@@ -1979,6 +1602,15 @@ export default function ScheduleCreationForm(props) {
     const selectedOrderSrl = OrdrDetailsData.map((item) => item.OrderDetailId);
     setSelectedSrl(selectedOrderSrl);
   };
+
+  // console.log("selectedItems", selectedItems);
+  // console.log("selectedSrl", selectedSrl);
+  console.log("ASDFselected", selectedRow);
+  console.log("selectedCheckbox",selectedRows.length);
+
+
+
+  // console.log("updatedSelectedItems-slctAll", selectedSrl);
 
   // reverse Button
   const handleReverseSelection = () => {
@@ -1994,14 +1626,13 @@ export default function ScheduleCreationForm(props) {
           newArray.push(element);
         }
       }
-      console.log("newArray", newArray);
-
       setSelectedRows(newArray);
       setSelectedItems(newArray);
     }
   };
 
-  console.log("ARafter revrse--", selectedItems);
+  // console.log("1405Selected rowss---", selectedRows);
+  console.log("list--3", selectedItems);
 
   //Sales Job Work
   const [scheduleType, setScheduleType] = useState("Job Work");
