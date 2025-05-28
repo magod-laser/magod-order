@@ -15,6 +15,11 @@ import ConfirmationModal from "../../../../../../Modal/ConfirmationModal";
 export default function ImportOldOrderModal(props) {
   const [selectedOldOrder, setSelectedOldOrder] = useState({});
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+ // const [orderdwg, setOrderDwg] = useState([]);
+
+
+console.log("new orders DWG Names:", props.OrdrDetailsData.map(item => item.DwgName));
+  //  let orderdwg = props.OrdrDetailsData.map(item => item.DwgName);
 
   const closeModal = () => {
     props.setImportOldOrdrMdl(false);
@@ -115,13 +120,30 @@ export default function ImportOldOrderModal(props) {
   function loadOldOrderValidations() {
     if (selectedOldOrder.Order_No) {
       setConfirmModalOpen(true);
+      // Suresh 14-05-2025
+//       let srcfolder = process.env.REACT_APP_SERVER_FILES +"\\" + selectedOldOrder.Order_No + "\\DXF"
+//       let dstfolder = process.env.REACT_APP_SERVER_FILES +"\\" + props.OrderData.Order_No + "\\DXF"
+
+// //console.log("props.OrdrDetailsData : ", props.OrdrDetailsData);
+
+//    //   let orderdwg = Array.isArray(props.OrdrDetailsData) ? props.OrdrDetailsData.map(item => item.DwgName) : [];
+
+//     //  console.log("props.OrdrDetailsData. : ",props.OrdrDetailsData)
+//       console.log("orderdwg - 1 : ", orderdwg)
+      
       const checkingdxffilesimportoldorder = postRequest(endpoints.checkdxffilesimportoldorder,{
         Old_Order_No:selectedOldOrder.Order_No,
         New_Order_No:props.OrderData.Order_No  })
+     
+      // const checkingdxffilesimportoldorder = postRequest(endpoints.orderCopyDxf, 
+      //   {srcfolder, dstfolder, orderdwg})
+      // // Suresh 14-05-25
         console.log("checkingdxffilesimportoldorder",checkingdxffilesimportoldorder);
+
     } else {
       toast.warning("Please select the order to import");
     }
+
   }
 
   // useEffect(()=>{

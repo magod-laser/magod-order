@@ -342,6 +342,7 @@ export default function FormHeader(props) {
             onClick={() => {
               if (props.OrderData?.Order_No.startsWith('6') || props.OrderData?.Order_No.startsWith('7')) {
                 navigate(-1);
+                // navigate("/Orders/Fabrication/FabricationOpenSchedule");
               } else if (props.OrderData?.Order_No.startsWith('2')) {
                 navigate("/Orders");
               }

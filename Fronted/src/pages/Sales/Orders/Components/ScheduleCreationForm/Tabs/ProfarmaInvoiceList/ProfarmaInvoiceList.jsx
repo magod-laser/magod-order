@@ -55,6 +55,22 @@ export default function ProfarmaInvoiceList(props) {
       );
       return;
     }
+    // -------
+    const hasZeroMtrlValue = props.selectedItems.some(
+      (item) =>
+        item.MtrlCost === 0 ||
+        item.MtrlCost === "" ||
+        item.MtrlCost === 0.00 ||
+        item.MtrlCost === "0.00" ||
+        item.MtrlCost === ""
+    );
+
+    if (hasZeroMtrlValue) {
+      alert(
+        "Invoice cannot be created as Mtrl Cost has a value of 0 for Sales."
+      );
+      return;
+    }
 
     if (props.selectedItems.length > 0) {
 
@@ -74,8 +90,13 @@ console.log("CA",custArr);
 if (magodArr?.length>0) {
   let netTotal=0;
 let InvType = "Sales";
+
+ 
   for (let i = 0; i < magodArr.length; i++) {
     const element = magodArr[i];
+    console.log("element--",element.Mtrl_Source);
+
+   
     
     netTotal = (
       parseFloat(netTotal||0) +

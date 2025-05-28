@@ -309,12 +309,12 @@ export default function PrintProfarmaInvoice(props) {
 												Billing Address :
 											</Text>
 											<View style={{ ...style.globalPadding }}>
-												<Text style={{ ...style.fontBold }}>
-													{props.profarmaMainData.Cust_Name}
+												<Text style={{ ...style.fontBold ,marginBottom:"6px"}}>
+													{props.profarmaMainData.Cust_Name},{"\n"}
 												</Text>
 
 												<Text>
-													{props.profarmaMainData.Cust_Address},{" "}
+													{/* {props.profarmaMainData.Cust_Address}, */}
 													{props.profarmaMainData.Cust_Address},{" "}
 													{props.profarmaMainData.Cust_State} -{" "}
 													{props.profarmaMainData.Cust_State}

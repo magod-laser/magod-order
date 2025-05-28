@@ -975,7 +975,11 @@ export default function ScheduleCreationForm(props) {
           orderType: orderType,
         }
       );
+      console.log("oldOrderData?.orderListData",oldOrderData?.orderListData);
+      console.log("oldOrderData?.orderDetailsData",oldOrderData?.orderDetailsData);
+      
       setOldOrderListData(oldOrderData?.orderListData);
+      setOldOrderDetailsData(oldOrderData?.orderDetailsData);
       setOldOrderDetailsData(oldOrderData?.orderDetailsData);
     } catch (error) {}
   };
