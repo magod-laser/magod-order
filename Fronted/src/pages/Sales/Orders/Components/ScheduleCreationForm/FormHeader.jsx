@@ -296,17 +296,13 @@ export default function FormHeader(props) {
           <button
             className="button-style"
             onClick={() => {
-
-
               if (props.saveJWMRChanges) {
                 props.saveJWMRChanges();
-              }
-              else {
+              } else {
                 updateOrdrData();
               }
-
             }}
-          // onClick={props.openModal}
+            // onClick={props.openModal}
           >
             Save
           </button>
@@ -337,15 +333,43 @@ export default function FormHeader(props) {
           {/* <Link> */}
           <button
             className="button-style "
-
             // props.OrderData?.Order_No
+            // onClick={() => {
+            //   if (props.OrderData?.Order_No.startsWith('6') || props.OrderData?.Order_No.startsWith('7')) {
+            //     navigate(-1);
+            //   }
+
+            //    else if (props.OrderData?.Order_No.startsWith("2")) {
+            //     navigate("/Orders");
+            //   }
+            // }}
             onClick={() => {
-              if (props.OrderData?.Order_No.startsWith('6') || props.OrderData?.Order_No.startsWith('7')) {
+              const orderNo = props.OrderData?.Order_No;
+              const fromPath = props.fromPath;
+
+              if (
+                (orderNo?.startsWith("6") || orderNo?.startsWith("7")) &&
+                (fromPath === "/Orders/Profile/ProfileOpenSchedule" ||
+                  fromPath === "/Orders/Service/ServiceOpenSchedule")
+              ) {
+                navigate(-2);
+              } else if (orderNo?.startsWith("6") || orderNo?.startsWith("7")) {
                 navigate(-1);
-              } else if (props.OrderData?.Order_No.startsWith('2')) {
+              } else if (orderNo?.startsWith("2")) {
                 navigate("/Orders");
+              } else {
+                navigate("/"); // optional fallback
               }
             }}
+            // onClick={() => {
+            //   const orderNo = props.OrderData?.Order_No;
+
+            //   if (orderNo?.startsWith("6") || orderNo?.startsWith("7")) {
+            //     navigate("/Orders/Fabrication/FabricationOpenSchedule");
+            //   } else if (orderNo?.startsWith("2")) {
+            //     navigate("/Orders");
+            //   }
+            // }}
             // onClick={() => navigate(-1)}
             // onClick={() => navigate("/Orders")}
             style={{ float: "right" }}
@@ -357,19 +381,38 @@ export default function FormHeader(props) {
         {/* Displaying Dxf Files from respective folder on Click of Order Dxf Button */}
         <div className="row">
           <Modal show={dxfFolderShow}>
-            <Modal.Header className="justify-content-md-center" style={{ paddingTop: '10px', backgroundColor: '#283E81', color: '#ffffff' }}>
-              <Modal.Title style={{ fontFamily: 'Roboto', fontSize: '18px' }}>Drawing Folder</Modal.Title>
+            <Modal.Header
+              className="justify-content-md-center"
+              style={{
+                paddingTop: "10px",
+                backgroundColor: "#283E81",
+                color: "#ffffff",
+              }}
+            >
+              <Modal.Title style={{ fontFamily: "Roboto", fontSize: "18px" }}>
+                Drawing Folder
+              </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-
-              <div className='row'>
-                <div className='col-md-12' style={{ padding: '0px 10px 0px 10px', fontFamily: 'Roboto', fontSize: '12px' }}>
+              <div className="row">
+                <div
+                  className="col-md-12"
+                  style={{
+                    padding: "0px 10px 0px 10px",
+                    fontFamily: "Roboto",
+                    fontSize: "12px",
+                  }}
+                >
                   <Table striped className="table-data border">
                     <thead className="tableHeaderBGColor">
                       <tr>
                         {/* <th style={{ whiteSpace: "nowrap" }}>Select</th> */}
                         <th style={{ whiteSpace: "nowrap" }}>File Name</th>
-                        <th style={{ whiteSpace: "nowrap", textAlign: 'right' }}>File Size</th>
+                        <th
+                          style={{ whiteSpace: "nowrap", textAlign: "right" }}
+                        >
+                          File Size
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="tablebody">
@@ -383,34 +426,61 @@ export default function FormHeader(props) {
                         </tr>
                       ))} */}
 
-
-                      {(BS_dxfFilesList?.length > 0) ? BS_dxfFilesList.map((file, index) => (
-                        <tr key={index} onClick={() => handleFileSelect(file)} style={{ cursor: "pointer" }} className={selectedFile === file ? '#b8d6f5' : ''}>
-                          <td style={{ Width: '250px' }}>{file.name}</td>
-                          <td style={{ textAlign: 'right' }}>{file.size}</td>
+                      {BS_dxfFilesList?.length > 0 ? (
+                        BS_dxfFilesList.map((file, index) => (
+                          <tr
+                            key={index}
+                            onClick={() => handleFileSelect(file)}
+                            style={{ cursor: "pointer" }}
+                            className={selectedFile === file ? "#b8d6f5" : ""}
+                          >
+                            <td style={{ Width: "250px" }}>{file.name}</td>
+                            <td style={{ textAlign: "right" }}>{file.size}</td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td>No files found</td>
                         </tr>
-                      )) : <tr><td>No files found</td></tr>}
-
+                      )}
                     </tbody>
                   </Table>
                 </div>
               </div>
               <div className="row">
                 <div className="col-md-3">
-                  <button onClick={handleDownload} className="button-style " style={{ width: "100px" }} disabled={!selectedFile}>Download</button>
+                  <button
+                    onClick={handleDownload}
+                    className="button-style "
+                    style={{ width: "100px" }}
+                    disabled={!selectedFile}
+                  >
+                    Download
+                  </button>
                 </div>
                 <div className="col-md-3">
                   {" "}
-                  <button onClick={handleUpload} className="button-style " style={{ width: "100px" }}>Upload</button>
+                  <button
+                    onClick={handleUpload}
+                    className="button-style "
+                    style={{ width: "100px" }}
+                  >
+                    Upload
+                  </button>
                 </div>
                 <div className="col-md-3">
                   {""}
-                  <button onClick={handleCloseDwgFolder} className="button-style " style={{ width: "100px" }}>Close</button>
+                  <button
+                    onClick={handleCloseDwgFolder}
+                    className="button-style "
+                    style={{ width: "100px" }}
+                  >
+                    Close
+                  </button>
                 </div>
               </div>
             </Modal.Body>
-          </Modal >
-
+          </Modal>
         </div>
       </div>
 

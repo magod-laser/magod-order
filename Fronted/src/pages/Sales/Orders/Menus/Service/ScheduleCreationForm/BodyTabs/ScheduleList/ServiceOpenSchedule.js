@@ -1491,7 +1491,7 @@ const proceedWithScheduling = (validRows) => {
 
   return (
     <div>
-       {isLoading && <LoadingPage />}
+      {isLoading && <LoadingPage />}
       <h4 className="title">Order Schedule Details</h4>
       <label className="form-label ms-2">{Type}</label>
 
@@ -1729,6 +1729,7 @@ const proceedWithScheduling = (validRows) => {
               Order_No: formdata[0]?.Order_No,
               Type,
               Cust_Code: DwgNameList[0]?.Cust_Code,
+              from: location.pathname,
             }}
           >
             <button
@@ -1737,6 +1738,7 @@ const proceedWithScheduling = (validRows) => {
                 console.log("Navigating with:", {
                   Order_No: formdata[0]?.Order_No,
                   Type,
+                  from: location.pathname,
                 })
               }
             >
@@ -1890,28 +1892,27 @@ const proceedWithScheduling = (validRows) => {
             </button>
           )}
 
-          {Type === "Fabrication" &&
-          //  ||
-          //   (Type === "Service" &&
-               (
-              <button
-                className="button-style"
-                onClick={fixtureOrderOpen1}
-                disabled={
-                  formdata[0]?.Schedule_Status === "Dispatched" ||
-                  formdata[0]?.Schedule_Status === "Cancelled" ||
-                  formdata[0]?.Schedule_Status === "Closed" ||
-                  formdata[0]?.Schedule_Status === "ShortClosed" ||
-                  formdata[0]?.Schedule_Status === "Suspended" ||
-                  formdata[0]?.Schedule_Status === "Created" ||
-                  formdata[0]?.Schedule_Status === "Completed" ||
-                  formdata[0]?.Schedule_Status === "Ready"
-                }
-              >
-                Fixture Order
-              </button>
+          {Type === "Fabrication" && (
+            //  ||
+            //   (Type === "Service" &&
+            <button
+              className="button-style"
+              onClick={fixtureOrderOpen1}
+              disabled={
+                formdata[0]?.Schedule_Status === "Dispatched" ||
+                formdata[0]?.Schedule_Status === "Cancelled" ||
+                formdata[0]?.Schedule_Status === "Closed" ||
+                formdata[0]?.Schedule_Status === "ShortClosed" ||
+                formdata[0]?.Schedule_Status === "Suspended" ||
+                formdata[0]?.Schedule_Status === "Created" ||
+                formdata[0]?.Schedule_Status === "Completed" ||
+                formdata[0]?.Schedule_Status === "Ready"
+              }
+            >
+              Fixture Order
+            </button>
             // )
-            )}
+          )}
         </div>
       </div>
 
@@ -1950,10 +1951,7 @@ const proceedWithScheduling = (validRows) => {
 
                 <tbody className="tablebody table-space">
                   {newState.map((item, key) => {
-                    
                     return (
-                      
-                     
                       <tr
                         onClick={() => onClickofScheduleDtails(item, key)}
                         className={
@@ -2064,27 +2062,26 @@ const proceedWithScheduling = (validRows) => {
                             // }}
                           />
                         </td> */}
-                        {Type === "Fabrication" ? 
-                        
-                           <td>
-                          <input
-                          name="QtyCleared"
-                          autoComplete="off"
-                            className="table-cell-editor"
-                            style={{
-                              backgroundColor: "transparent",
-                              border: "none",
-                            }}
-                            value={item.QtyCleared}
-                            onChange={(e) => {
-                              const value = Number(e.target.value);
-                              handleSchedulelist(key, "QtyCleared", value);
-                            }}                           
-                          />
-                        </td> 
-                        :  
-                        <td>{item.QtyCleared}</td> 
-                        }
+                        {Type === "Fabrication" ? (
+                          <td>
+                            <input
+                              name="QtyCleared"
+                              autoComplete="off"
+                              className="table-cell-editor"
+                              style={{
+                                backgroundColor: "transparent",
+                                border: "none",
+                              }}
+                              value={item.QtyCleared}
+                              onChange={(e) => {
+                                const value = Number(e.target.value);
+                                handleSchedulelist(key, "QtyCleared", value);
+                              }}
+                            />
+                          </td>
+                        ) : (
+                          <td>{item.QtyCleared}</td>
+                        )}
                         <td>{item.QtyPacked}</td>
                         <td>{item.QtyDelivered}</td>
                         <td>
@@ -2574,7 +2571,7 @@ const proceedWithScheduling = (validRows) => {
                             <div className="col-md-6 col-sm-12">
                               <input
                                 className="mt-3" // in-fields"
-                                style={{fontSize:'14px'}}
+                                style={{ fontSize: "14px" }}
                                 type="text"
                                 value={mtrlLength}
                               />
@@ -2588,7 +2585,7 @@ const proceedWithScheduling = (validRows) => {
                             <div className="col-md-6 col-sm-12">
                               <input
                                 className="mt-3" // in-fields"
-                                style={{fontSize:'14px'}}
+                                style={{ fontSize: "14px" }}
                                 type="text"
                                 value={mtrlwidth}
                               />
@@ -2604,7 +2601,7 @@ const proceedWithScheduling = (validRows) => {
                             <div className="col-md-6 col-sm-12">
                               <input
                                 className="mt-3" // in-fields"
-                                style={{fontSize: '14px'}}
+                                style={{ fontSize: "14px" }}
                                 type="text"
                                 value={mtrlquantity}
                               />

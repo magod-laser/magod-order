@@ -114,7 +114,7 @@ export default function ImportExcelModal(props) {
 
   const compareData = async () => {
     console.log("entering into compare function");
-   alert("entering into compare function");
+    //  alert("entering into compare function");
     console.log("props.OrderData.Cust_Code ", props.OrderData.Cust_Code);
 
     // Step 1: Check if CustDwg folder has data
@@ -199,6 +199,100 @@ export default function ImportExcelModal(props) {
             //   }
             // }
 
+            // if (
+            //   !detailsDataInImportExcel ||
+            //   detailsDataInImportExcel.length === 0
+            // ) {
+            //   const updatedData = importedExcelData.map((excelRow) => ({
+            //     ...excelRow,
+            //     JW_Cost_Old: "",
+            //     Mtrl_Cost_Old: "",
+            //     Operation_Old: "",
+            //     Mtrl_Code_Old: "",
+            //     Matching: true,
+            //   }));
+
+            //   setImportedExcelData(updatedData);
+            //   setMatchingRows([]); // No mismatches
+            //   setMatchingFlag(true);
+
+            //   return; // Exit early to skip the rest
+            // } else {
+            //   const dwgDataFromDB = detailsDataInImportExcel;
+
+            //   const updatedData = importedExcelData.map((excelRow) => {
+            //     const dbRow = dwgDataFromDB.find(
+            //       (db) =>
+            //         db.DwgName?.trim().toLowerCase() ===
+            //         excelRow.Dwg_Name?.trim().toLowerCase()
+            //     );
+
+            //     console.log("dbRow", dbRow);
+
+            //     // if (dwgDataFromDB.length === 0 ) {
+            //     // 	return {
+            //     // 	  ...excelRow,
+            //     // 	  Matching: true,
+            //     // 	};
+            //     //   }
+            //     //   else if (!dbRow) {
+            //     // 		return {
+            //     // 		  ...excelRow,
+            //     // 		  Matching: false,
+            //     // 		};
+
+            //     //   }
+
+            //     // if (!dbRow) {
+            //     //   return {
+            //     // 	...excelRow,
+            //     // 	Matching: false,
+            //     //   };
+            //     // }
+            //     //
+
+            //     //---------
+
+            //     // If no matching drawing in DB, mark as Matching: true (Excel-only)
+
+            //     if (!dbRow) {
+            //       return {
+            //         ...excelRow,
+            //         JW_Cost_Old: "",
+            //         Mtrl_Cost_Old: "",
+            //         Operation_Old: "",
+            //         Mtrl_Code_Old: "",
+            //         Matching: true, // consider it a match (green)
+            //       };
+            //     }
+
+            //     // Compare each field
+            //     const isMatching =
+            //       excelRow.Mtrl_Code === dbRow.Mtrl_Code &&
+            //       excelRow.Operation === dbRow.Operation &&
+            //       parseFloat(excelRow.JW_Cost) ===
+            //         parseFloat(dbRow.JobWorkCost) &&
+            //       parseFloat(excelRow.Mtrl_Cost) === parseFloat(dbRow.MtrlCost);
+
+            //     return {
+            //       ...excelRow,
+            //       JW_Cost_Old: dbRow.JobWorkCost,
+            //       Mtrl_Cost_Old: dbRow.MtrlCost,
+            //       Operation_Old: dbRow.Operation,
+            //       Mtrl_Code_Old: dbRow.Mtrl_Code,
+            //       Matching: isMatching,
+            //     };
+            //   });
+
+            //   setImportedExcelData(updatedData); // update state
+            //   setMatchingRows(
+            //     updatedData.filter((row) => row.Matching === false)
+            //   ); // only mismatched rows
+            //   if (updatedData.some((row) => row.Matching === false)) {
+            //     setMatchingFlag(true);
+            //   }
+            // }
+            // -- 27-05-25
             if (
               !detailsDataInImportExcel ||
               detailsDataInImportExcel.length === 0
@@ -220,34 +314,15 @@ export default function ImportExcelModal(props) {
             } else {
               const dwgDataFromDB = detailsDataInImportExcel;
 
+              let hasAnyMatches = false;
+
               const updatedData = importedExcelData.map((excelRow) => {
                 const dbRow = dwgDataFromDB.find(
                   (db) =>
                     db.DwgName?.trim().toLowerCase() ===
                     excelRow.Dwg_Name?.trim().toLowerCase()
                 );
-                // if (dwgDataFromDB.length === 0 ) {
-                // 	return {
-                // 	  ...excelRow,
-                // 	  Matching: true,
-                // 	};
-                //   }
-                //   else if (!dbRow) {
-                // 		return {
-                // 		  ...excelRow,
-                // 		  Matching: false,
-                // 		};
 
-                //   }
-
-                // if (!dbRow) {
-                //   return {
-                // 	...excelRow,
-                // 	Matching: false,
-                //   };
-                // }
-                //
-                // If no matching drawing in DB, mark as Matching: true (Excel-only)
                 if (!dbRow) {
                   return {
                     ...excelRow,
@@ -255,11 +330,13 @@ export default function ImportExcelModal(props) {
                     Mtrl_Cost_Old: "",
                     Operation_Old: "",
                     Mtrl_Code_Old: "",
-                    Matching: true, // consider it a match (green)
+                    Matching: true,
                   };
                 }
 
-                // Compare each field
+                // If match is found, set the flag
+                hasAnyMatches = true;
+
                 const isMatching =
                   excelRow.Mtrl_Code === dbRow.Mtrl_Code &&
                   excelRow.Operation === dbRow.Operation &&
@@ -277,14 +354,33 @@ export default function ImportExcelModal(props) {
                 };
               });
 
-              setImportedExcelData(updatedData); // update state
+              //  If no matches found in DB for any rows, treat like empty DB
+              if (!hasAnyMatches) {
+                const greenData = importedExcelData.map((excelRow) => ({
+                  ...excelRow,
+                  JW_Cost_Old: "",
+                  Mtrl_Cost_Old: "",
+                  Operation_Old: "",
+                  Mtrl_Code_Old: "",
+                  Matching: true,
+                }));
+                setImportedExcelData(greenData);
+                setMatchingRows([]);
+                setMatchingFlag(true);
+                return;
+              }
+
+              // Otherwise handle normal match/mismatch
+              setImportedExcelData(updatedData);
               setMatchingRows(
                 updatedData.filter((row) => row.Matching === false)
-              ); // only mismatched rows
+              );
+
               if (updatedData.some((row) => row.Matching === false)) {
                 setMatchingFlag(true);
               }
             }
+            
           }
         );
       }

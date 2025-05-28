@@ -80,6 +80,9 @@ export default function ScheduleCreationForm(props) {
   // console.log("props", props);
 
   const location = useLocation();
+   const fromPath = location.state?.from;
+
+  console.log("Came from:", fromPath);
 
   const orderNUmber =
     location.state?.Order_No || props.OrersData || location?.state;
@@ -1718,6 +1721,7 @@ export default function ScheduleCreationForm(props) {
           openModal={openModal}
           closeModal={closeModal}
           updateOrdrData={updateOrdrData}
+          fromPath={fromPath}
           // saveJWMRChanges={saveJWMRChanges}
           saveJWMRChanges={
             editedData && Object.keys(editedData).length > 0
