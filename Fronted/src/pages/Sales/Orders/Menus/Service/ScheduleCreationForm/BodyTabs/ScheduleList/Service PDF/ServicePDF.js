@@ -108,7 +108,8 @@ const styles = StyleSheet.create({
   },
   codestyle: {
     marginLeft: "35px",
-    marginTop: "15px",
+    // marginTop: "15px",
+    marginTop: "5px",
   },
   MagodTitle: {
     width: "70%",
@@ -250,7 +251,7 @@ const styles = StyleSheet.create({
     // paddingBottom: "3px",
     margin: "0px 2px 0px 0px",
     marginLeft: "2%",
-    paddingRight: '2px'
+    paddingRight: "2px",
   },
   DeliverDate: {
     width: "49%",
@@ -337,11 +338,11 @@ const styles = StyleSheet.create({
     width: "790px",
     marginLeft: "30px",
   },
-   mainsidetableview: {
+  mainsidetableview: {
     width: "100%",
     paddingHorizontal: 30,
     marginLeft: "30px",
-    marginTop: '30px',
+    marginTop: "30px",
   },
   datawithboldline: {
     fontFamily: "Helvetica-Bold",
@@ -764,7 +765,6 @@ const TableHeader = () => (
 const ServicePDF = ({ formdata, PDFData, Tabledata, setTabledata }) => {
   console.log("formdata-1", formdata[0]?.OrdSchNo);
   console.log("formdata-2", formdata, PDFData, Tabledata);
- 
 
   // const [Tabledata, setTabledata] = useState([]);
   const [index, setIndex] = useState(0);
@@ -838,7 +838,8 @@ const ServicePDF = ({ formdata, PDFData, Tabledata, setTabledata }) => {
                   alignItems: "center",
                   width: "100%",
                   marginLeft: "-60px",
-                  marginBottom: "40px"
+                  marginBottom: "5px",
+                  marginTop: "-30px",
                 }}
               >
                 <Text style={[styles.title1, { textDecoration: "underline" }]}>
@@ -1127,6 +1128,7 @@ const ServicePDF = ({ formdata, PDFData, Tabledata, setTabledata }) => {
               </>
             ))}
 
+            <View wrap={false}>
             <View style={styles.mainsidetableview}>
               <View style={styles.column}>
                 <View>
@@ -1143,12 +1145,12 @@ const ServicePDF = ({ formdata, PDFData, Tabledata, setTabledata }) => {
                       </View>
 
                       <View style={styles.footer}>
-              <View style={{ marginTop: "40px" }}>
-                <Text style={styles.globalfontwithbold}>
-                  {formdata[0].SalesContact}
-                </Text>
-              </View>
-            </View>
+                        <View style={{ marginTop: "40px" }}>
+                          <Text style={styles.globalfontwithbold}>
+                            {formdata[0].SalesContact}
+                          </Text>
+                        </View>
+                      </View>
                     </View>
 
                     <View style={{ width: "220px", marginLeft: "30px" }}>
@@ -1458,8 +1460,7 @@ const ServicePDF = ({ formdata, PDFData, Tabledata, setTabledata }) => {
                 </View>
               </View>
             </View>
-
-            
+            </View>
           </View>
         </View>
       </Page>

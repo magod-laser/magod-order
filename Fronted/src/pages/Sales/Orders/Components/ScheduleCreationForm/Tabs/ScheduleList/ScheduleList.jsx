@@ -76,10 +76,18 @@ export default function ScheduleList({
   //delete ask modal
   const [deleteAsk, setDeleteAsk] = useState(false);
   const DeleteAskModal = () => {
+   
+    console.log("rowScheduleList---",rowScheduleList);
+    if (scheduleListData.length === 0 ) {
+      toast.warning("There is no draft sch to delete")   
+      return  
+    }
     setDeleteAsk(true);
   };
 
   const deleteScheduleList = () => {
+    // console.log("rowScheduleList---",rowScheduleList);
+    
     postRequest(
       endpoints.deleteScheduleList,
       { rowScheduleList },
@@ -115,7 +123,7 @@ export default function ScheduleList({
                   ? DeleteAskModal
                   : null
               }
-              disabled={rowScheduleList.Schedule_Status !== "Created"}
+              disabled={rowScheduleList.Schedule_Status !== "Created" || scheduleListData.length=== 0}
             >
               Delete Schedule
             </button>
@@ -148,7 +156,7 @@ export default function ScheduleList({
             >
               <button
                 className="button-style"
-                disabled={Object.keys(DwgNameList).length === 0}
+                disabled={Object.keys(DwgNameList).length === 0 || scheduleListData.length=== 0 }
               >
                 Open Schedule
               </button>
@@ -180,14 +188,21 @@ export default function ScheduleList({
                 formatDate={formatDate}
               />
             ) : (
-              <p>Loading schedules or no data available...</p>
+              // <p>Loading schedules or no data available...</p>
+              // <p>No data available...</p>
+              " "
             )}
           </div>
           <div
             className="col-md-6"
             style={{ height: "300px", overflow: "auto" }}
           >
-            <SecondTable DwgNameList={DwgNameList} />
+            {/* <SecondTable DwgNameList={DwgNameList} /> */}
+            {scheduleListData?.length > 0 ? (
+             <SecondTable DwgNameList={DwgNameList} />
+            ) : (
+              <p> No data available...</p>
+            )}
           </div>
         </div>
 

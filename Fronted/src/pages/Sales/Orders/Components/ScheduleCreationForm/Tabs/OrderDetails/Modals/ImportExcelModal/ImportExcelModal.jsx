@@ -113,10 +113,7 @@ export default function ImportExcelModal(props) {
   const [matchingRows, setMatchingRows] = useState([]);
 
   const compareData = async () => {
-    console.log("entering into compare function");
-    //  alert("entering into compare function");
-    console.log("props.OrderData.Cust_Code ", props.OrderData.Cust_Code);
-
+    
     // Step 1: Check if CustDwg folder has data
     await postRequest(
       endpoints.compareCustDwg,

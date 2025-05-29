@@ -80,6 +80,12 @@ export default function ScheduleCreationForm(props) {
   // console.log("props", props);
 
   const location = useLocation();
+
+  // console.log("location.state---", location.state);
+  const FabOrderNo = location.state.FabOrderNo;
+  console.log("FabOrderNo", FabOrderNo);
+  
+  
    const fromPath = location.state?.from;
 
   console.log("Came from:", fromPath);
@@ -89,9 +95,9 @@ export default function ScheduleCreationForm(props) {
   const orderType = location.state?.Type || props.Type;
   const Cust_Code = location.state?.Cust_Code;
 
-  // console.log("0", orderNUmber);
-  // console.log("0", orderType);
-  // console.log("0", Cust_Code);
+  console.log("0", orderNUmber);
+  console.log("0", orderType);
+  console.log("0", Cust_Code);
 
   const [intSchStatus, setIntSchStatus] = useState(0);
   const [mtrldata, setMtrldata] = useState([]);
@@ -978,7 +984,11 @@ export default function ScheduleCreationForm(props) {
           orderType: orderType,
         }
       );
+      console.log("oldOrderData?.orderListData",oldOrderData?.orderListData);
+      console.log("oldOrderData?.orderDetailsData",oldOrderData?.orderDetailsData);
+      
       setOldOrderListData(oldOrderData?.orderListData);
+      setOldOrderDetailsData(oldOrderData?.orderDetailsData);
       setOldOrderDetailsData(oldOrderData?.orderDetailsData);
     } catch (error) {}
   };
@@ -1722,6 +1732,10 @@ export default function ScheduleCreationForm(props) {
           closeModal={closeModal}
           updateOrdrData={updateOrdrData}
           fromPath={fromPath}
+          orderNUmber={orderNUmber}
+          orderType={orderType}
+          Cust_Code={Cust_Code}
+          FabOrderNo={FabOrderNo}
           // saveJWMRChanges={saveJWMRChanges}
           saveJWMRChanges={
             editedData && Object.keys(editedData).length > 0

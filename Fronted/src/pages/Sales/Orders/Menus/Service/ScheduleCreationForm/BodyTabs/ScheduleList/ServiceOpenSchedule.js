@@ -27,6 +27,10 @@ function ServiceOpenSchedule() {
   const OrdrDetailsData = location?.state?.OrdrDetailsData || [];
   // const OrdrDetailsData = location?.state.OrdrDetailsData || [];
 
+  console.log("--FDwgNameList", DwgNameList);
+  console.log("--FType", Type);
+  console.log("--FOrdrDetailsData", OrdrDetailsData);
+
   // Standardize the case of the property name
   const scheduleId = DwgNameList[0]?.ScheduleId || DwgNameList[0]?.ScheduleID;
 
@@ -41,8 +45,8 @@ function ServiceOpenSchedule() {
       endpoints.ShiftDetails,
       { ScheduleId: scheduleId },
       (response) => {
-        console.log("newstateresponse",response);
-        
+        console.log("newstateresponse", response);
+
         setNewState(response);
       }
     );
@@ -97,6 +101,12 @@ function ServiceOpenSchedule() {
       if (response.status === true) {
         navigate("/Orders/Profile/ScheduleCreationForm", {
           state: response.data[0].Order_No,
+          // state: {
+          //   Order_No: response.data[0].Order_No,
+          //   // DwgNameList,
+          //   // Type: OrderData?.Type,
+          //   FabOrderNo: OrdrDetailsData[0]?.Order_No,
+          // },
         });
         // if (response.data[0].Type === "Service") {
         //   navigate("/Orders/Service/ScheduleCreationForm", {
@@ -139,6 +149,8 @@ function ServiceOpenSchedule() {
 
   useEffect(() => {
     if (DwgNameList.length === 0) return; // Ensure DwgNameList is not empty
+    console.log("---", DwgNameList[0]?.Cust_Code, scheduleId);
+
     postRequest(
       endpoints.getScheduleListgetFormDetails,
       {
@@ -711,7 +723,7 @@ function ServiceOpenSchedule() {
       { scheduleDetailsRow, formdata, newState, Type, OrdrDetailsData },
       (response) => {
         console.log("unique-response", response);
-        
+
         if (response.message === "Scheduled") {
           setModalMessage(response.message);
           setSmShow(true);
@@ -761,134 +773,132 @@ function ServiceOpenSchedule() {
       }
     );
   };
-// veeranna 09042025
+  // veeranna 09042025
 
-const onClickScheduled = async () => {
-  console.log("newState", newState);
+  const onClickScheduled = async () => {
+    console.log("newState", newState);
 
-  // Step 1: Identify rows with QtyScheduled = 0
-  const zeroScheduledRows = newState.filter(
-    (item) => Number(item.QtyScheduled) === 0
-  );
-
-  if (zeroScheduledRows.length > 0) {
-    const confirmDelete = window.confirm(
-      "Some rows have Qty Scheduled = 0. Do you want to delete them?"
+    // Step 1: Identify rows with QtyScheduled = 0
+    const zeroScheduledRows = newState.filter(
+      (item) => Number(item.QtyScheduled) === 0
     );
 
-    if (confirmDelete) {
-      try {
-        // Step 2: Collect valid IDs for deletion (filter out null/undefined)
-        const deleteIds = zeroScheduledRows
-          .map((row) => row.SchDetailsID) // or 'id' if your key is named 'id'
-          .filter((id) => id !== null && id !== undefined);
+    if (zeroScheduledRows.length > 0) {
+      const confirmDelete = window.confirm(
+        "Some rows have Qty Scheduled = 0. Do you want to delete them?"
+      );
 
-        console.log("IDs to delete:", deleteIds);
+      if (confirmDelete) {
+        try {
+          // Step 2: Collect valid IDs for deletion (filter out null/undefined)
+          const deleteIds = zeroScheduledRows
+            .map((row) => row.SchDetailsID) // or 'id' if your key is named 'id'
+            .filter((id) => id !== null && id !== undefined);
 
-        if (deleteIds.length > 0) {
-          await postRequest(
-            endpoints.deleteZeroScheduledRows, // Make sure this hits your backend
-            { ids: deleteIds },
-            () => {} // You can handle success message here
+          console.log("IDs to delete:", deleteIds);
+
+          if (deleteIds.length > 0) {
+            await postRequest(
+              endpoints.deleteZeroScheduledRows, // Make sure this hits your backend
+              { ids: deleteIds },
+              () => {} // You can handle success message here
+            );
+          }
+
+          // Step 3: Remove deleted rows from local state
+          const updatedState = newState.filter(
+            (item) => Number(item.QtyScheduled) !== 0
           );
+          setNewState(updatedState);
+
+          setModalMessage("Rows with Qty Scheduled = 0 deleted");
+          setSmShow(true);
+
+          // Step 4: Continue with scheduling using updated data
+          return proceedWithScheduling(updatedState);
+        } catch (err) {
+          console.error("Error deleting rows from DB", err);
+          setModalMessage("Failed to delete rows from DB");
+          setSmShow(true);
+          return;
         }
-
-        // Step 3: Remove deleted rows from local state
-        const updatedState = newState.filter(
-          (item) => Number(item.QtyScheduled) !== 0
-        );
-        setNewState(updatedState);
-
-        setModalMessage("Rows with Qty Scheduled = 0 deleted");
-        setSmShow(true);
-
-        // Step 4: Continue with scheduling using updated data
-        return proceedWithScheduling(updatedState);
-      } catch (err) {
-        console.error("Error deleting rows from DB", err);
-        setModalMessage("Failed to delete rows from DB");
+      } else {
+        setModalMessage("Some items are not scheduled due to Qty = 0");
         setSmShow(true);
         return;
       }
-    } else {
-      setModalMessage("Some items are not scheduled due to Qty = 0");
+    }
+
+    // Step 5: Validate QtyScheduled ≤ QtyToSchedule
+    const hasInvalidQty = newState.some(
+      (row) => Number(row.QtyScheduled) > Number(row.QtyToSchedule)
+    );
+
+    if (hasInvalidQty) {
+      setModalMessage(
+        "Check Qty to Schedule. Make sure Qty to Schedule is correct. Not Scheduled"
+      );
       setSmShow(true);
       return;
     }
-  }
 
-  // Step 5: Validate QtyScheduled ≤ QtyToSchedule
-  const hasInvalidQty = newState.some(
-    (row) => Number(row.QtyScheduled) > Number(row.QtyToSchedule)
-  );
+    // Step 6: Proceed with scheduling
+    proceedWithScheduling(newState);
+  };
 
-  if (hasInvalidQty) {
-    setModalMessage(
-      "Check Qty to Schedule. Make sure Qty to Schedule is correct. Not Scheduled"
-    );
-    setSmShow(true);
-    return;
-  }
+  const proceedWithScheduling = (validRows) => {
+    console.log("Proceeding with scheduling");
 
-  // Step 6: Proceed with scheduling
-  proceedWithScheduling(newState);
-};
+    postRequest(
+      endpoints.onClickScheduled,
+      {
+        scheduleDetailsRow,
+        formdata,
+        newState: validRows,
+        Type,
+        OrdrDetailsData,
+      },
+      (response) => {
+        if (response.message === "Scheduled") {
+          setModalMessage(response.message);
+          setSmShow(true);
+          alert(response.message);
 
+          setTimeout(() => {
+            postRequest(
+              endpoints.ShiftDetails,
+              { ScheduleId: DwgNameList[0].ScheduleId },
+              (response) => setNewState(response)
+            );
 
-const proceedWithScheduling = (validRows) => {
-  console.log("Proceeding with scheduling");
+            postRequest(
+              endpoints.getScheduleListTaskandMaterial,
+              { ScheduleId: formdata[0]?.ScheduleId },
+              (response) => setTaskMaterialData(response)
+            );
+          }, 3000);
+        } else if (
+          response.message.startsWith("Cannot Schedule Zero Quantity For")
+        ) {
+          setDeleteAskModal(true);
+          setDeleteResponse(response.message);
+        } else {
+          setOpenScheduleModal(true);
+          setResponseSchedule(response.message);
+        }
 
-  postRequest(
-    endpoints.onClickScheduled,
-    {
-      scheduleDetailsRow,
-      formdata,
-      newState: validRows,
-      Type,
-      OrdrDetailsData,
-    },
-    (response) => {
-      if (response.message === "Scheduled") {
-        setModalMessage(response.message);
-        setSmShow(true);
-        alert(response.message);
-
-        setTimeout(() => {
-          postRequest(
-            endpoints.ShiftDetails,
-            { ScheduleId: DwgNameList[0].ScheduleId },
-            (response) => setNewState(response)
-          );
-
-          postRequest(
-            endpoints.getScheduleListTaskandMaterial,
-            { ScheduleId: formdata[0]?.ScheduleId },
-            (response) => setTaskMaterialData(response)
-          );
-        }, 3000);
-      } else if (
-        response.message.startsWith("Cannot Schedule Zero Quantity For")
-      ) {
-        setDeleteAskModal(true);
-        setDeleteResponse(response.message);
-      } else {
-        setOpenScheduleModal(true);
-        setResponseSchedule(response.message);
+        // Always fetch latest formdata
+        postRequest(
+          endpoints.getScheduleListgetFormDetails,
+          {
+            Cust_Code: DwgNameList[0]?.Cust_Code,
+            ScheduleId: DwgNameList[0]?.ScheduleId,
+          },
+          (response) => setFormdata(response)
+        );
       }
-
-      // Always fetch latest formdata
-      postRequest(
-        endpoints.getScheduleListgetFormDetails,
-        {
-          Cust_Code: DwgNameList[0]?.Cust_Code,
-          ScheduleId: DwgNameList[0]?.ScheduleId,
-        },
-        (response) => setFormdata(response)
-      );
-    }
-  );
-};
-
+    );
+  };
 
   console.log("formdat===", formdata);
 
@@ -1057,35 +1067,35 @@ const proceedWithScheduling = (validRows) => {
     console.log("name", name);
     console.log("field", field);
     console.log("scheduleDetailsRow", scheduleDetailsRow);
-    if (!/^\d*$/.test(value,field)) {
+    if (!/^\d*$/.test(value, field)) {
       return;
     }
-// if (field === "QtyCleared" && value > scheduleDetailsRow?.QtyScheduled ) {
-//   toast.error("Cleared cannot be greater than Scheduled Quantity", {
-//     position: toast.POSITION.TOP_CENTER,
-//   });
-  
-// }
+    // if (field === "QtyCleared" && value > scheduleDetailsRow?.QtyScheduled ) {
+    //   toast.error("Cleared cannot be greater than Scheduled Quantity", {
+    //     position: toast.POSITION.TOP_CENTER,
+    //   });
+
+    // }
 
     if (value < 0) {
       toast.error("Please Enter a Positive Number", {
         position: toast.POSITION.TOP_CENTER,
       });
-    } 
-    
-    else if (value > scheduleDetailsRow?.QtyToSchedule  && field != "QtyCleared") {
+    } else if (
+      value > scheduleDetailsRow?.QtyToSchedule &&
+      field != "QtyCleared"
+    ) {
       toast.error("Scheduled cannot be greater than ToSchedule", {
         position: toast.POSITION.TOP_CENTER,
       });
-    }
-
-    else if (  field === "QtyCleared" && value > scheduleDetailsRow?.QtyScheduled ) {
+    } else if (
+      field === "QtyCleared" &&
+      value > scheduleDetailsRow?.QtyScheduled
+    ) {
       toast.error("Cleared cannot be greater than Scheduled Quantity", {
         position: toast.POSITION.TOP_CENTER,
       });
-    }
-    
-    else {
+    } else {
       const updatedDwgdata = [...newState];
       // Update the specific item's field with the new value
       updatedDwgdata[index] = {
@@ -1144,7 +1154,6 @@ const proceedWithScheduling = (validRows) => {
   const [selectedMtrlDimenId, setSelectedMtrlDimenId] = useState(0);
 
   const fnSchCreateWS = async () => {
-  
     if (formdata[0]?.Schedule_Status != "Created") {
       alert("Cannot check material requirement once scheduled");
       return;
@@ -1154,7 +1163,7 @@ const proceedWithScheduling = (validRows) => {
     let Task_PartsList = [];
     let nctasklist1 = [];
     console.log(DwgNameList[0].ScheduleId);
-   // setisLoading(true)
+    // setisLoading(true)
     await postRequest(
       endpoints.getScheduleDetails,
       { ScheduleId: DwgNameList[0].ScheduleId },
@@ -1391,15 +1400,14 @@ const proceedWithScheduling = (validRows) => {
       { TaskNo: item.TaskNo, ScheduleId: item.ScheduleID },
       (partDetails1) => {
         //    console.log("Part Data");
-        console.log("partDetails :--",partDetails1.length);
-       
+        console.log("partDetails :--", partDetails1.length);
+
         setPartDetails(partDetails1);
 
         // if (partDetails1.length > 0) {
         //   setisLoading(false)
-            
+
         //   }
-        
       }
     );
     console.log(item.ScheduleID);
@@ -1487,7 +1495,7 @@ const proceedWithScheduling = (validRows) => {
   //   }
   // };
 
-    const [isLoading, setisLoading] = useState(false);
+  const [isLoading, setisLoading] = useState(false);
 
   return (
     <div>

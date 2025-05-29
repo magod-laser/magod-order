@@ -346,18 +346,34 @@ export default function FormHeader(props) {
             onClick={() => {
               const orderNo = props.OrderData?.Order_No;
               const fromPath = props.fromPath;
-
+              console.log("clicked close button");
+             
+              const sharedState = {
+                Order_No: props.FabOrderNo,
+                Type: "Fabrication",
+                Cust_Code: props.Cust_Code,
+              };
+              console.log("sharedState", sharedState);
+              
               if (
                 (orderNo?.startsWith("6") || orderNo?.startsWith("7")) &&
                 (fromPath === "/Orders/Profile/ProfileOpenSchedule" ||
                   fromPath === "/Orders/Service/ServiceOpenSchedule")
               ) {
+                console.log("6,7--2");
+                // alert("Please check with Fabrication Order")
                 navigate(-2);
+                // navigate("/Orders/Fabrication/FabricationOpenSchedule", {
+                //   state: sharedState,
+                // });
               } else if (orderNo?.startsWith("6") || orderNo?.startsWith("7")) {
+                console.log("6,7--1");
                 navigate(-1);
-              } else if (orderNo?.startsWith("2")) {
+                // navigate("/Orders/Fabrication/FabricationOpenSchedule");
+              } else if (props.OrderData?.Order_No.startsWith('2')) {
                 navigate("/Orders");
               } else {
+                console.log("--/");
                 navigate("/"); // optional fallback
               }
             }}
