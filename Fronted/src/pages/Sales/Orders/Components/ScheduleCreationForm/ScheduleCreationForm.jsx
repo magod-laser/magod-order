@@ -81,14 +81,23 @@ export default function ScheduleCreationForm(props) {
 
   const location = useLocation();
 
+  // console.log("location.state---", location.state);
+  const FabOrderNo = location.state.FabOrderNo;
+  console.log("FabOrderNo", FabOrderNo);
+  
+  
+   const fromPath = location.state?.from;
+
+  console.log("Came from:", fromPath);
+
   const orderNUmber =
     location.state?.Order_No || props.OrersData || location?.state;
   const orderType = location.state?.Type || props.Type;
   const Cust_Code = location.state?.Cust_Code;
 
-  // console.log("0", orderNUmber);
-  // console.log("0", orderType);
-  // console.log("0", Cust_Code);
+  console.log("0", orderNUmber);
+  console.log("0", orderType);
+  console.log("0", Cust_Code);
 
   const [intSchStatus, setIntSchStatus] = useState(0);
   const [mtrldata, setMtrldata] = useState([]);
@@ -1722,6 +1731,11 @@ export default function ScheduleCreationForm(props) {
           openModal={openModal}
           closeModal={closeModal}
           updateOrdrData={updateOrdrData}
+          fromPath={fromPath}
+          orderNUmber={orderNUmber}
+          orderType={orderType}
+          Cust_Code={Cust_Code}
+          FabOrderNo={FabOrderNo}
           // saveJWMRChanges={saveJWMRChanges}
           saveJWMRChanges={
             editedData && Object.keys(editedData).length > 0
