@@ -316,12 +316,14 @@ export default function OrderDetails(props) {
   let blkCngCheckBoxx = blkCngCheckBox;
 
   let updateblkcngOrdrData = () => {
+    console.log("sssselectedItems-------",selectedItems);
+    
     handleClosesetBulkChnangMdl();
 
     selectedItems.forEach((element, index) => {
-      element.DwgName = blkCngCheckBoxx[0]
-        ? blkChange.DwgName
-        : element.DwgName;
+      // element.DwgName = blkCngCheckBoxx[0]
+      //   ? blkChange.DwgName
+      //   : element.DwgName;
       element.Mtrl_Code = blkCngCheckBoxx[1]
         ? LastSlctedRow?.Mtrl_Code
         : element.Mtrl_Code;
@@ -362,7 +364,7 @@ export default function OrderDetails(props) {
         if (blkChngData.affectedRows !== 0) {
           // toast.success("Updated successfully");
           alert("Updated successfully");
-          fetchData();
+         fetchData();
           handleClosesetBulkChnangMdl();
         } else {
           toast.warning("Serial not updated, check once");

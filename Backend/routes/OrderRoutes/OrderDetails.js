@@ -1174,125 +1174,204 @@ OrderDetailsRouter.post(
 );
 
 //BULK CHANGE
+// OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
+//   const orderSrlArray = req.body.OrderSrl;
+//   const selectedItems = req.body.selectedItems;
+//   console.log("selectedItems---",selectedItems);
+  
+  
+//   const orderNo = req.body.OrderNo;
+//   for (let index = 0; index < selectedItems.length; index++) {
+//     const element = selectedItems[index];
+//     const result = {
+//       OrderDetailIds: [],
+//       OrderSrls: []
+//     };
+//     result.OrderDetailIds.push(element.OrderDetailId);
+//     result.OrderSrls.push(element.Order_Srl);
+//     console.log("result.OrderDetailIds",result.OrderDetailIds);
+    
+//   }
+  
+//    // Collect all OrderDetailIds from selectedItems
+//   const orderDetailIds = selectedItems.map(item => item.OrderDetailId);
+//   const orderDetailIdsStr = orderDetailIds.join(",");
+
+//   let completedUpdates = 0;
+//   const executeUpdate = (
+//     orderSrl,
+//     qtyOrdered,
+//     DwgName,
+//     JWCost,
+//     MtrlCost,
+//     UnitPrice,
+//     Operation,
+//     InspLevel,
+//     PackingLevel,
+//     Mtrl_Source,
+//     Mtrl_Code,
+//     OrderDetailIds
+    
+//   ) => {
+//          //  DwgName = '${DwgName}',
+//          console.log("orderSrl---",orderSrl);
+         
+//     const updateQuery = `
+//       UPDATE magodmis.order_details
+//       SET
+//     Qty_Ordered = ${qtyOrdered}, 
+//     JWCost = ${JWCost},
+// 		MtrlCost = ${MtrlCost},
+// 		UnitPrice = ${UnitPrice},
+// 		Operation = '${Operation}',
+// 		InspLevel = '${InspLevel || "Insp1"}',
+// 		PackingLevel = '${PackingLevel || "Pkng1"}',
+// 		Mtrl_Source='${Mtrl_Source || "Customer"}',
+// 		 Mtrl_Code='${Mtrl_Code}'
+//       WHERE Order_No = ${orderNo} 
+//       AND OrderDetailId = ${orderDetailIdsStr}
+//     `;
+
+//     console.log(`Executing query for Order_Srl: ${orderDetailIdsStr}`);
+//     // console.log(`Query: ${updateQuery}`);
+
+//     return new Promise((resolve, reject) => {
+//       misQueryMod(updateQuery, (err, blkcngdata) => {
+//         if (err) {
+//           logger.error(err);
+//           reject(err);
+//         } else {
+//           // console.log(`Update result for Order_Srl ${orderSrl}:`, blkcngdata);
+//           resolve(blkcngdata);
+//         }
+//       });
+//     });
+//   };
+
+//   try {
+//     for (let i = 0; i < orderSrlArray.length; i++) {
+//       const orderSrl = orderSrlArray[i];
+//       const oldValues = selectedItems[i];
+
+//       // console.log("oldValues", oldValues);
+//       let qtyOrdered; // Define variable to hold the value
+
+//       if (typeof oldValues?.quantity !== "undefined") {
+//         qtyOrdered = parseInt(oldValues?.quantity); // Assuming quantity is numeric
+//       } else {
+//         qtyOrdered = oldValues?.Qty_Ordered; // Use oldValues.Qty_Ordered if quantity is undefined
+//       }
+//       // console.log("qtyOrdered...", qtyOrdered);
+//       const DwgName = oldValues?.DwgName;
+//       const JWCost = parseInt(oldValues.JWCost);
+//       const MtrlCost = parseInt(oldValues.MtrlCost);
+//       const UnitPrice = parseInt(oldValues.UnitPrice);
+//       const Operation = oldValues.Operation;
+//       const InspLevel = oldValues.InspLevel;
+//       const PackingLevel = oldValues.PackingLevel;
+
+//       let Mtrl_Source;
+//       if (req.body.MtrlSrc !== "") {
+//         Mtrl_Source = req.body.MtrlSrc;
+//       } else {
+//         Mtrl_Source = oldValues.Mtrl_Source;
+//       }
+//       // console.log("Mtrl_Source", Mtrl_Source);
+//       // console.log("oldValues.Mtrl_Source", oldValues.Mtrl_Source);
+//       const Mtrl_Code = oldValues.Mtrl_Code;
+//       await executeUpdate(
+//         orderSrl,
+//         qtyOrdered,
+//         DwgName,
+//         JWCost,
+//         MtrlCost,
+//         UnitPrice,
+//         Operation,
+//         InspLevel,
+//         PackingLevel,
+//         Mtrl_Source,
+//         Mtrl_Code
+//       );
+
+//       completedUpdates++;
+//       if (completedUpdates === orderSrlArray.length) {
+//         res.send({ message: "Updates completed successfully." });
+//       }
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+//==--
 OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
-  const orderSrlArray = req.body.OrderSrl;
   const selectedItems = req.body.selectedItems;
-  
   const orderNo = req.body.OrderNo;
-  for (let index = 0; index < selectedItems.length; index++) {
-    const element = selectedItems[index];
-    const result = {
-      OrderDetailIds: [],
-      OrderSrls: []
-    };
-    result.OrderDetailIds.push(element.OrderDetailId);
-  result.OrderSrls.push(element.Order_Srl);
+
+  if (!selectedItems || selectedItems.length === 0) {
+    return res.status(400).send({ message: "No selected items provided." });
   }
-  
 
-  let completedUpdates = 0;
-  const executeUpdate = (
-    orderSrl,
-    qtyOrdered,
-    DwgName,
-    JWCost,
-    MtrlCost,
-    UnitPrice,
-    Operation,
-    InspLevel,
-    PackingLevel,
-    Mtrl_Source,
-    Mtrl_Code,
-    
-  ) => {
-    
-    const updateQuery = `
-      UPDATE magodmis.order_details
-      SET
-        Qty_Ordered = ${qtyOrdered},
-        DwgName = '${DwgName}',
-        JWCost = ${JWCost},
-		MtrlCost = ${MtrlCost},
-		UnitPrice = ${UnitPrice},
-		Operation = '${Operation}',
-		InspLevel = '${InspLevel || "Insp1"}',
-		PackingLevel = '${PackingLevel || "Pkng1"}',
-		Mtrl_Source='${Mtrl_Source || "Customer"}',
-		 Mtrl_Code='${Mtrl_Code}'
-      WHERE Order_No = ${orderNo} 
-      AND OrderDetailId = ${orderSrl}
-    `;
+  // Collect all OrderDetailIds from selectedItems
+  const orderDetailIds = selectedItems.map(item => item.OrderDetailId).filter(Boolean);
+  if (orderDetailIds.length === 0) {
+    return res.status(400).send({ message: "Invalid OrderDetailIds." });
+  }
 
-    console.log(`Executing query for Order_Srl: ${orderSrl}`);
-    // console.log(`Query: ${updateQuery}`);
+  // Convert to comma-separated string
+  const orderDetailIdsStr = orderDetailIds.join(",");
 
-    return new Promise((resolve, reject) => {
-      misQueryMod(updateQuery, (err, blkcngdata) => {
-        if (err) {
-          logger.error(err);
-          reject(err);
-        } else {
-          // console.log(`Update result for Order_Srl ${orderSrl}:`, blkcngdata);
-          resolve(blkcngdata);
-        }
-      });
-    });
-  };
+  // Use first item for update values (if all rows get same values)
+  const firstItem = selectedItems[0];
+
+  const qtyOrdered = typeof firstItem?.quantity !== "undefined"
+    ? parseInt(firstItem.quantity)
+    : parseInt(firstItem.Qty_Ordered);
+
+  const JWCost = parseInt(firstItem.JWCost) || 0;
+  const MtrlCost = parseInt(firstItem.MtrlCost) || 0;
+  const UnitPrice = parseInt(firstItem.UnitPrice) || 0;
+  const Operation = firstItem.Operation || "";
+  const InspLevel = firstItem.InspLevel || "Insp1";
+  const PackingLevel = firstItem.PackingLevel || "Pkng1";
+  const Mtrl_Source = req.body.MtrlSrc !== "" ? req.body.MtrlSrc : (firstItem.Mtrl_Source || "Customer");
+  const Mtrl_Code = firstItem.Mtrl_Code || "";
+
+  const updateQuery = `
+    UPDATE magodmis.order_details
+    SET
+      Qty_Ordered = ${qtyOrdered}, 
+      JWCost = ${JWCost},
+      MtrlCost = ${MtrlCost},
+      UnitPrice = ${UnitPrice},
+      Operation = '${Operation}',
+      InspLevel = '${InspLevel}',
+      PackingLevel = '${PackingLevel}',
+      Mtrl_Source = '${Mtrl_Source}',
+      Mtrl_Code = '${Mtrl_Code}'
+    WHERE Order_No = ${orderNo}
+      AND OrderDetailId IN (${orderDetailIdsStr})
+  `;
+
+  console.log("Executing bulk update query:");
+  console.log(updateQuery);
 
   try {
-    for (let i = 0; i < orderSrlArray.length; i++) {
-      const orderSrl = orderSrlArray[i];
-      const oldValues = selectedItems[i];
-
-      // console.log("oldValues", oldValues);
-      let qtyOrdered; // Define variable to hold the value
-
-      if (typeof oldValues?.quantity !== "undefined") {
-        qtyOrdered = parseInt(oldValues?.quantity); // Assuming quantity is numeric
-      } else {
-        qtyOrdered = oldValues?.Qty_Ordered; // Use oldValues.Qty_Ordered if quantity is undefined
+    misQueryMod(updateQuery, (err, result) => {
+      if (err) {
+        logger.error(err);
+        return res.status(500).send({
+          message: "Database update failed",
+          error: err.sqlMessage || err.message,
+        });
       }
-      // console.log("qtyOrdered...", qtyOrdered);
-      const DwgName = oldValues?.DwgName;
-      const JWCost = parseInt(oldValues.JWCost);
-      const MtrlCost = parseInt(oldValues.MtrlCost);
-      const UnitPrice = parseInt(oldValues.UnitPrice);
-      const Operation = oldValues.Operation;
-      const InspLevel = oldValues.InspLevel;
-      const PackingLevel = oldValues.PackingLevel;
 
-      let Mtrl_Source;
-      if (req.body.MtrlSrc !== "") {
-        Mtrl_Source = req.body.MtrlSrc;
-      } else {
-        Mtrl_Source = oldValues.Mtrl_Source;
-      }
-      // console.log("Mtrl_Source", Mtrl_Source);
-      // console.log("oldValues.Mtrl_Source", oldValues.Mtrl_Source);
-      const Mtrl_Code = oldValues.Mtrl_Code;
-      await executeUpdate(
-        orderSrl,
-        qtyOrdered,
-        DwgName,
-        JWCost,
-        MtrlCost,
-        UnitPrice,
-        Operation,
-        InspLevel,
-        PackingLevel,
-        Mtrl_Source,
-        Mtrl_Code
-      );
-
-      completedUpdates++;
-      if (completedUpdates === orderSrlArray.length) {
-        res.send({ message: "Updates completed successfully." });
-      }
-    }
+      res.send({ message: "Bulk update completed successfully.", result });
+    });
   } catch (error) {
     next(error);
   }
 });
+
 
 OrderDetailsRouter.post("/ordertablevaluesupdate", async (req, res, next) => {
   console.log("ordertablevaluesupdate");

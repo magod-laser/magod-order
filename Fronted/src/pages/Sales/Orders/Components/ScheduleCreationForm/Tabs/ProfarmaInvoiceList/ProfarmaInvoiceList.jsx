@@ -55,22 +55,22 @@ export default function ProfarmaInvoiceList(props) {
       );
       return;
     }
-    // -------
-    const hasZeroMtrlValue = props.selectedItems.some(
-      (item) =>
-        item.MtrlCost === 0 ||
-        item.MtrlCost === "" ||
-        item.MtrlCost === 0.00 ||
-        item.MtrlCost === "0.00" ||
-        item.MtrlCost === ""
-    );
+    // --
+    // const hasZeroMtrlValue = props.selectedItems.some(
+    //   (item) =>
+    //     item.MtrlCost === 0 ||
+    //     item.MtrlCost === "" ||
+    //     item.MtrlCost === 0.0 ||
+    //     item.MtrlCost === "0.00" ||
+    //     item.MtrlCost === ""
+    // );
 
-    if (hasZeroMtrlValue) {
-      alert(
-        "Invoice cannot be created as Mtrl Cost has a value of 0 for Sales."
-      );
-      return;
-    }
+    // if (hasZeroMtrlValue) {
+    //   alert(
+    //     "Invoice cannot be created as Mtrl Cost has a value of 0 for Sales."
+    //   );
+    //   return;
+    // }
 
     if (props.selectedItems.length > 0) {
 
@@ -88,69 +88,84 @@ console.log("CA",custArr);
 
 
 if (magodArr?.length>0) {
-  let netTotal=0;
-let InvType = "Sales";
+console.log("magodArr", magodArr);
 
- 
+// -- checking mtrl cost 
+const hasZeroMtrlValue = magodArr.some(
+  (item) =>
+    item.MtrlCost === 0 ||
+    item.MtrlCost === "0" ||
+    item.MtrlCost === 0.00 ||
+    item.MtrlCost === "0.00" ||
+    item.MtrlCost === ""
+);
+
+if (hasZeroMtrlValue) {
+  alert("Invoice cannot be created as Mtrl Cost has a value of 0 for Sales.");
+  // return;
+}
+else{
+  let netTotal = 0;
+  let InvType = "Sales";
   for (let i = 0; i < magodArr.length; i++) {
     const element = magodArr[i];
-    console.log("element--",element.Mtrl_Source);
 
-   
-    
     netTotal = (
-      parseFloat(netTotal||0) +
-      parseFloat(element.Qty_Ordered||0) *
-      (parseFloat(element.JWCost||0) + parseFloat(element.MtrlCost||0))
+      parseFloat(netTotal || 0) +
+      parseFloat(element.Qty_Ordered || 0) *
+        (parseFloat(element.JWCost || 0) + parseFloat(element.MtrlCost || 0))
     ).toFixed(2);
-
-
   }
 
-     const profarmaMainDataForMagod = {
-        InvType: InvType,
-        OrderNo: props.OrderData.Order_No,
-        OrderDate: props.OrderData.Order_Date,
-        Cust_Code: props.OrderCustData.Cust_Code,
-        Cust_Name: props.OrderCustData.Cust_name || "",
-        Cust_Address: props.OrderCustData.Address || "",
-        Cust_Place: props.OrderCustData.City || "",
-        Cust_State: props.OrderCustData.State || "",
-        Cust_StateId: props.OrderCustData.StateId || "",
-        PIN_Code: props.OrderCustData.Pin_Code || "",
-        DelAddress: props.OrderCustData.Delivery || "",
-        GSTNo: props.OrderCustData.GSTNo || "Unregistered",
-        PO_No: props.OrderData.Purchase_Order || "",
-        PO_Date: props.OrderData.Order_Date || "",
-        Net_Total: netTotal || 0,
-        AssessableValue: netTotal || 0,
-        InvTotal: netTotal || 0,
-        GrandTotal: netTotal || 0,
-        Status: "Draft",
-      };
+  const profarmaMainDataForMagod = {
+    InvType: InvType,
+    OrderNo: props.OrderData.Order_No,
+    OrderDate: props.OrderData.Order_Date,
+    Cust_Code: props.OrderCustData.Cust_Code,
+    Cust_Name: props.OrderCustData.Cust_name || "",
+    Cust_Address: props.OrderCustData.Address || "",
+    Cust_Place: props.OrderCustData.City || "",
+    Cust_State: props.OrderCustData.State || "",
+    Cust_StateId: props.OrderCustData.StateId || "",
+    PIN_Code: props.OrderCustData.Pin_Code || "",
+    DelAddress: props.OrderCustData.Delivery || "",
+    GSTNo: props.OrderCustData.GSTNo || "Unregistered",
+    PO_No: props.OrderData.Purchase_Order || "",
+    PO_Date: props.OrderData.Order_Date || "",
+    Net_Total: netTotal || 0,
+    AssessableValue: netTotal || 0,
+    InvTotal: netTotal || 0,
+    GrandTotal: netTotal || 0,
+    Status: "Draft",
+  };
 
-      postRequest(
-        endpoints.postCreateInvoice,
-        {
-          profarmaMainData: profarmaMainDataForMagod,
-          profarmaDetailsData: magodArr,
-        },
-        (resp) => {
-          if (resp) {
-            if (resp.flag) {
-              flag=true
-              toast.success(resp.message);
-              // props.fetchData();
-              // console.log("resp", resp);
-            } else {
-              toast.error(resp.message);
-            }
-          } else {
-            toast.error("uncaught error in frontend");
-          }
+  postRequest(
+    endpoints.postCreateInvoice,
+    {
+      profarmaMainData: profarmaMainDataForMagod,
+      profarmaDetailsData: magodArr,
+    },
+    (resp) => {
+      if (resp) {
+        if (resp.flag) {
+          flag = true;
+          toast.success(resp.message);
+          // props.fetchData();
+          // console.log("resp", resp);
+        } else {
+          toast.error(resp.message);
         }
-      );
-   
+      } else {
+        toast.error("uncaught error in frontend");
+      }
+    }
+  );
+     
+
+}
+
+
+
    
 
        
