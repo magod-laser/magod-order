@@ -123,137 +123,247 @@ OrderDetailsRouter.post(`/insertnewsrldata`, async (req, res, next) => {
     } catch (error) {
       logger.error(error);
     }
-  } else if (req.body.requestData.flag === 2) {
+  }
+   else if (req.body.requestData.flag === 2) {
 
-    try {
-      const requestData = req.body.requestData.imprtDwgData;
+    // try {
+    //   const requestData = req.body.requestData.imprtDwgData;
       
-      const orderNo = requestData.OrderNo;
+    //   const orderNo = requestData.OrderNo;
 
    
-      let ordno = req.body.requestData.imprtDwgData["OrderNo"];
+    //   let ordno = req.body.requestData.imprtDwgData["OrderNo"];
+    //   misQueryMod(
+    //     `SELECT * FROM magodmis.order_details where Order_No=${ordno} `,
+    //     (err, data1) => {
+    //       if (err) {
+    //         logger.error(err);
+    //       } else {
+         
+    //         try {
+    //           let j = data1.length || 0;
+    //           for (
+    //             let i = 0;
+    //             i < req.body.requestData.imprtDwgData.impDwgFileData.length;
+    //             i++
+    //           ) {
+               
+    //             const orderNo = req.body.requestData.imprtDwgData.OrderNo;
+    //             const newOrderSrl = j + 1; 
+
+    //             const custcode = req.body.requestData.imprtDwgData.custcode;
+    //             const dwgName =
+    //               req.body.requestData.imprtDwgData.impDwgFileData[i].file;
+    //             const dwgCode =
+    //               req.body.requestData.imprtDwgData.Dwg_Code || "";
+    //             const strmtrlcode =
+    //               req.body.requestData.imprtDwgData.strmtrlcode || "";
+    //             const operation =
+    //               req.body.requestData.imprtDwgData.Operation || "";
+    //             const mtrlSrc =
+    //               req.body.requestData.imprtDwgData.NewSrlFormData.MtrlSrc;
+    //             const qtyOrdered =
+    //               parseInt(req.body.requestData.imprtDwgData.Qty_Ordered) || 0;
+    //             const inspLvl =
+    //               req.body.requestData.imprtDwgData.NewSrlFormData.InspLvl;
+    //             const pkngLvl =
+    //               req.body.requestData.imprtDwgData.NewSrlFormData.PkngLvl;
+    //             const loc =
+    //               parseFloat(
+    //                 req.body.requestData.imprtDwgData.impDwgFileData[i]
+    //                   .lengthOfCut
+    //               ) || 0;
+    //             const noofpierces =
+    //               parseFloat(
+    //                 req.body.requestData.imprtDwgData.impDwgFileData[i]
+    //                   .noOfPierces
+    //               ) || 0;
+    //             const jwCost =
+    //               parseFloat(
+    //                 req.body.requestData.imprtDwgData.impDwgFileData[i].jwcost
+    //               ) || 0.0;
+    //             const mtrlCost =
+    //               parseFloat(
+    //                 req.body.requestData.imprtDwgData.impDwgFileData[i].mtrlcost
+    //               ) || 0.0;
+    //             const unitPrice =
+    //               parseFloat(
+    //                 req.body.requestData.imprtDwgData.impDwgFileData[i]
+    //                   .unitPrice
+    //               ) || 0.0;
+    //             const dwg = dwgName ? 1 : 0;
+    //             // const dwg = req.body.requestData.imprtDwgData.dwg || 0;
+    //             const tolerance = req.body.requestData.imprtDwgData.tolerance;
+    //             const thickness = req.body.requestData.imprtDwgData.Thickness;
+    //             const mtrl = req.body.requestData.imprtDwgData.mtrl;
+    //             const material = req.body.requestData.imprtDwgData.material;
+    //             const deldate = moment(
+    //               req.body.requestData.imprtDwgData.Delivery_Date,
+    //               "YYYY-MM-DD"
+    //             ).format("YYYY-MM-DD");
+    //             const hasBOM = req.body.requestData.imprtDwgData.HasBOM || 0;
+
+    //             misQueryMod(
+    //               `INSERT INTO magodmis.order_details (
+    //                             Order_No, Order_Srl, Cust_Code, DwgName, Dwg_Code, mtrl_code, Operation, Thickness, Mtrl_Source, Mtrl, Material, Qty_Ordered,
+    //                             InspLevel, PackingLevel, Delivery_Date, UnitPrice, LOC, Holes, JWCost, MtrlCost, Dwg, tolerance, HasBOM
+    //                         ) VALUES (
+    //                             '${orderNo}',
+    //                             ${newOrderSrl},
+    //                             '${custcode}',
+    //                             '${dwgName}',
+    //                             '${dwgCode}',
+    //                             '${strmtrlcode}',
+    //                             '${operation}',
+    //                             '${thickness}',
+    //                             '${mtrlSrc}',
+    //                             '${mtrl}',
+    //                             '${material}',
+    //                             ${qtyOrdered},
+    //                             '${inspLvl}',
+    //                             '${pkngLvl}',
+    //                             '${deldate}',
+    //                             ${unitPrice},
+    //                             '${loc}',
+    //                             ${noofpierces},
+    //                             ${jwCost},
+    //                             ${mtrlCost},
+    //                             ${dwg},
+    //                             '${tolerance}',
+    //                             ${hasBOM}
+    //                         )`,
+    //               (err, srldata) => {
+    //                 if (err) {
+    //                   logger.error(err);
+    //                 } else {
+    //                   console.log("srldata...123", srldata);
+    //                   ressrldata.push(srldata);
+                      
+    //                   //res.send(srldata);
+    //                 }
+    //                 // console.log("srldata...123", srldata);
+    //               }
+    //             );
+    //             j++;
+    //           }
+    //         } catch (error) {
+    //           logger.error(error);
+    //         }
+    //       }
+    //       res.send(ressrldata);
+    //     }
+    //   );
+    // } catch (error) {
+    //   logger.error(error);
+    // }
+
+     try {
+      const requestData = req.body.requestData.imprtDwgData;
+      const orderNo = requestData.OrderNo;
+
+      // Step 1: Fetch existing order value rows
       misQueryMod(
-        `SELECT * FROM magodmis.order_details where Order_No=${ordno} `,
-        (err, data1) => {
+        `SELECT Qty_Ordered, JWCost, MtrlCost FROM magodmis.order_details WHERE Order_No = '${orderNo}'`,
+        async (err, oldRows) => {
           if (err) {
             logger.error(err);
-          } else {
-         
-            try {
-              let j = data1.length || 0;
-              for (
-                let i = 0;
-                i < req.body.requestData.imprtDwgData.impDwgFileData.length;
-                i++
-              ) {
-               
-                const orderNo = req.body.requestData.imprtDwgData.OrderNo;
-                const newOrderSrl = j + 1; 
+            return res.status(500).send("Error fetching existing order details.");
+          }
 
-                const custcode = req.body.requestData.imprtDwgData.custcode;
-                const dwgName =
-                  req.body.requestData.imprtDwgData.impDwgFileData[i].file;
-                const dwgCode =
-                  req.body.requestData.imprtDwgData.Dwg_Code || "";
-                const strmtrlcode =
-                  req.body.requestData.imprtDwgData.strmtrlcode || "";
-                const operation =
-                  req.body.requestData.imprtDwgData.Operation || "";
-                const mtrlSrc =
-                  req.body.requestData.imprtDwgData.NewSrlFormData.MtrlSrc;
-                const qtyOrdered =
-                  parseInt(req.body.requestData.imprtDwgData.Qty_Ordered) || 0;
-                const inspLvl =
-                  req.body.requestData.imprtDwgData.NewSrlFormData.InspLvl;
-                const pkngLvl =
-                  req.body.requestData.imprtDwgData.NewSrlFormData.PkngLvl;
-                const loc =
-                  parseFloat(
-                    req.body.requestData.imprtDwgData.impDwgFileData[i]
-                      .lengthOfCut
-                  ) || 0;
-                const noofpierces =
-                  parseFloat(
-                    req.body.requestData.imprtDwgData.impDwgFileData[i]
-                      .noOfPierces
-                  ) || 0;
-                const jwCost =
-                  parseFloat(
-                    req.body.requestData.imprtDwgData.impDwgFileData[i].jwcost
-                  ) || 0.0;
-                const mtrlCost =
-                  parseFloat(
-                    req.body.requestData.imprtDwgData.impDwgFileData[i].mtrlcost
-                  ) || 0.0;
-                const unitPrice =
-                  parseFloat(
-                    req.body.requestData.imprtDwgData.impDwgFileData[i]
-                      .unitPrice
-                  ) || 0.0;
-                const dwg = dwgName ? 1 : 0;
-                // const dwg = req.body.requestData.imprtDwgData.dwg || 0;
-                const tolerance = req.body.requestData.imprtDwgData.tolerance;
-                const thickness = req.body.requestData.imprtDwgData.Thickness;
-                const mtrl = req.body.requestData.imprtDwgData.mtrl;
-                const material = req.body.requestData.imprtDwgData.material;
-                const deldate = moment(
-                  req.body.requestData.imprtDwgData.Delivery_Date,
-                  "YYYY-MM-DD"
-                ).format("YYYY-MM-DD");
-                const hasBOM = req.body.requestData.imprtDwgData.HasBOM || 0;
+          let totalOldOrderValue = 0;
+          oldRows.forEach((row) => {
+            const oldQty = parseInt(row.Qty_Ordered) || 0;
+            const oldJWCost = parseFloat(row.JWCost) || 0;
+            const oldMtrlCost = parseFloat(row.MtrlCost) || 0;
+            totalOldOrderValue += oldQty * (oldJWCost + oldMtrlCost);
+          });
 
-                misQueryMod(
-                  `INSERT INTO magodmis.order_details (
-                                Order_No, Order_Srl, Cust_Code, DwgName, Dwg_Code, mtrl_code, Operation, Thickness, Mtrl_Source, Mtrl, Material, Qty_Ordered,
-                                InspLevel, PackingLevel, Delivery_Date, UnitPrice, LOC, Holes, JWCost, MtrlCost, Dwg, tolerance, HasBOM
-                            ) VALUES (
-                                '${orderNo}',
-                                ${newOrderSrl},
-                                '${custcode}',
-                                '${dwgName}',
-                                '${dwgCode}',
-                                '${strmtrlcode}',
-                                '${operation}',
-                                '${thickness}',
-                                '${mtrlSrc}',
-                                '${mtrl}',
-                                '${material}',
-                                ${qtyOrdered},
-                                '${inspLvl}',
-                                '${pkngLvl}',
-                                '${deldate}',
-                                ${unitPrice},
-                                '${loc}',
-                                ${noofpierces},
-                                ${jwCost},
-                                ${mtrlCost},
-                                ${dwg},
-                                '${tolerance}',
-                                ${hasBOM}
-                            )`,
-                  (err, srldata) => {
+          // Fetch current number of rows
+          misQueryMod(
+            `SELECT * FROM magodmis.order_details WHERE Order_No='${orderNo}'`,
+            async (err, existingRows) => {
+              if (err) {
+                logger.error(err);
+                return res.status(500).send("Error fetching current order rows.");
+              }
+
+              let newSrl = existingRows.length || 0;
+              let totalNewOrderValue = 0;
+              const ressrldata = [];
+
+              for (let i = 0; i < requestData.impDwgFileData.length; i++) {
+                newSrl++;
+
+                const fileData = requestData.impDwgFileData[i];
+                const qtyOrdered = parseInt(requestData.Qty_Ordered) || 0;
+                const jwCost = parseFloat(fileData.jwcost) || 0.0;
+                const mtrlCost = parseFloat(fileData.mtrlcost) || 0.0;
+                const newRowValue = qtyOrdered * (jwCost + mtrlCost);
+                totalNewOrderValue += newRowValue;
+
+                const insertQuery = `INSERT INTO magodmis.order_details (
+              Order_No, Order_Srl, Cust_Code, DwgName, Dwg_Code, mtrl_code, Operation, Thickness, Mtrl_Source, Mtrl, Material, Qty_Ordered,
+              InspLevel, PackingLevel, Delivery_Date, UnitPrice, LOC, Holes, JWCost, MtrlCost, Dwg, tolerance, HasBOM
+            ) VALUES (
+              '${orderNo}', ${newSrl}, '${requestData.custcode}',
+              '${fileData.file}', '${requestData.Dwg_Code || ""}', '${requestData.strmtrlcode || ""}',
+              '${requestData.Operation || ""}', '${requestData.Thickness || ""}', '${requestData.NewSrlFormData.MtrlSrc || ""}',
+              '${requestData.mtrl}', '${requestData.material}', ${qtyOrdered},
+              '${requestData.NewSrlFormData.InspLvl}', '${requestData.NewSrlFormData.PkngLvl}',
+              '${moment(requestData.Delivery_Date, "YYYY-MM-DD").format("YYYY-MM-DD")}',
+              ${parseFloat(fileData.unitPrice) || 0}, '${parseFloat(fileData.lengthOfCut) || 0}',
+              ${parseFloat(fileData.noOfPierces) || 0}, ${jwCost}, ${mtrlCost},
+              ${fileData.file ? 1 : 0}, '${requestData.tolerance}', ${requestData.HasBOM || 0}
+            )`;
+
+                await new Promise((resolve, reject) => {
+                  misQueryMod(insertQuery, (err, srldata) => {
                     if (err) {
                       logger.error(err);
+                      reject(err);
                     } else {
-                      console.log("srldata...123", srldata);
                       ressrldata.push(srldata);
-                      //res.send(srldata);
+                      resolve();
                     }
-                    // console.log("srldata...123", srldata);
-                  }
-                );
-                j++;
+                  });
+                });
               }
-            } catch (error) {
-              logger.error(error);
+
+              // Final Step: Update total order value
+              misQueryMod(
+                `SELECT ordervalue FROM magodmis.order_list WHERE order_no = '${orderNo}'`,
+                (err, result) => {
+                  if (err) {
+                    logger.error(err);
+                    return res.status(500).send("Error fetching current order value.");
+                  }
+
+                  const currentOrderValue = parseFloat(result[0]?.ordervalue || 0);
+                  const updatedOrderValue = currentOrderValue - totalOldOrderValue + totalNewOrderValue;
+
+                  misQueryMod(
+                    `UPDATE magodmis.order_list SET ordervalue = ${updatedOrderValue} WHERE order_no = '${orderNo}'`,
+                    (err, updateResult) => {
+                      if (err) {
+                        logger.error(err);
+                        return res.status(500).send("Error updating order value.");
+                      }
+
+                      res.send({ ressrldata, updatedOrderValue });
+                    }
+                  );
+                }
+              );
             }
-          }
-          res.send(ressrldata);
+          );
         }
       );
     } catch (error) {
       logger.error(error);
+      res.status(500).send("Unexpected error occurred.");
     }
+
+
   }
 });
 
