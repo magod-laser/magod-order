@@ -38,6 +38,7 @@ function CombinedScheduleDetailsForm() {
       }
     );
   };
+console.log("scheduleListDetailsData---2",scheduleListDetailsData);
 
   const getBackgroundColor = (item) => {
     // console.log("item",item);

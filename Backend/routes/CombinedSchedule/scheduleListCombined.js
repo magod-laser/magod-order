@@ -224,6 +224,8 @@ scheduleListCombined.post(
           }, {});
 
           const mergedDetails = Object.values(mergedMap);
+          console.log("mergedDetails",mergedDetails);
+          
 
   res.json({
     success: true,
@@ -606,45 +608,111 @@ scheduleListCombined.post(
 );
 
 //Print
+// scheduleListCombined.post(`/PrintPdf`, async (req, res, next) => {
+//   try {
+//     let query = `SELECT * FROM magodmis.orderscheduledetails where ScheduleId='${req.body.formdata.ScheduleId}';`;
+
+//     misQueryMod(query, (err, data) => {
+//       if (err) {
+//         console.log("err", err);
+//         res
+//           .status(500)
+//           .send({ error: "An error occurred while fetching data" });
+//       } else {
+//         if (data.length > 0) {
+//           // Group data by task number
+//           const groupedData = {};
+//           data.forEach((item) => {
+//             const TaskNo = item.TaskNo;
+//             if (!groupedData[TaskNo]) {
+//               groupedData[TaskNo] = [];
+//             }
+//             groupedData[TaskNo].push(item);
+//           });
+
+//           // Format grouped data
+//           const formattedData = [];
+//           for (const TaskNo in groupedData) {
+//             formattedData.push({
+//               taskNo: TaskNo,
+//               Mtrl_Code: groupedData[TaskNo][0].Mtrl_Code,
+//               Mtrl_Source: groupedData[TaskNo][0].Mtrl_Source,
+//               Operation: groupedData[TaskNo][0].Operation,
+//               otherdetails: groupedData[TaskNo],
+//             });
+//           }
+
+//           res.send(formattedData);
+//         } else {
+//           res
+//             .status(404)
+//             .send({ error: "No data found for the provided ScheduleId" });
+//         }
+//       }
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+//V06062025
 scheduleListCombined.post(`/PrintPdf`, async (req, res, next) => {
   try {
-    let query = `SELECT * FROM magodmis.orderscheduledetails where ScheduleId='${req.body.formdata.ScheduleId}';`;
+    let query = `SELECT * FROM magodmis.orderscheduledetails WHERE ScheduleId='${req.body.formdata.ScheduleId}';`;
 
     misQueryMod(query, (err, data) => {
       if (err) {
         console.log("err", err);
-        res
-          .status(500)
-          .send({ error: "An error occurred while fetching data" });
+        res.status(500).send({ error: "An error occurred while fetching data" });
       } else {
         if (data.length > 0) {
-          // Group data by task number
+          // Group by TaskNo
           const groupedData = {};
+
           data.forEach((item) => {
-            const TaskNo = item.TaskNo;
-            if (!groupedData[TaskNo]) {
-              groupedData[TaskNo] = [];
+            const taskNo = item.TaskNo;
+            if (!groupedData[taskNo]) {
+              groupedData[taskNo] = [];
             }
-            groupedData[TaskNo].push(item);
+            groupedData[taskNo].push(item);
           });
 
-          // Format grouped data
+          // Format grouped data with merging based on DwgName
           const formattedData = [];
-          for (const TaskNo in groupedData) {
+
+          for (const taskNo in groupedData) {
+            const taskGroup = groupedData[taskNo];
+
+            // Merge rows with same DwgName
+            const dwgMap = taskGroup.reduce((acc, row) => {
+              const key = row.DwgName;
+              if (!acc[key]) {
+                acc[key] = { ...row };
+              } else {
+                acc[key].QtyScheduled += row.QtyScheduled;
+                acc[key].QtyProgrammed += row.QtyProgrammed;
+                acc[key].QtyProduced += row.QtyProduced;
+                acc[key].QtyInspected += row.QtyInspected;
+                acc[key].QtyCleared += row.QtyCleared;
+                acc[key].Rejections += row.Rejections;
+              }
+              return acc;
+            }, {});
+
+            const mergedRows = Object.values(dwgMap);
+
             formattedData.push({
-              taskNo: TaskNo,
-              Mtrl_Code: groupedData[TaskNo][0].Mtrl_Code,
-              Mtrl_Source: groupedData[TaskNo][0].Mtrl_Source,
-              Operation: groupedData[TaskNo][0].Operation,
-              otherdetails: groupedData[TaskNo],
+              taskNo,
+              Mtrl_Code: mergedRows[0]?.Mtrl_Code,
+              Mtrl_Source: mergedRows[0]?.Mtrl_Source,
+              Operation: mergedRows[0]?.Operation,
+              otherdetails: mergedRows,
             });
           }
 
           res.send(formattedData);
         } else {
-          res
-            .status(404)
-            .send({ error: "No data found for the provided ScheduleId" });
+          res.status(404).send({ error: "No data found for the provided ScheduleId" });
         }
       }
     });
@@ -652,6 +720,8 @@ scheduleListCombined.post(`/PrintPdf`, async (req, res, next) => {
     next(error);
   }
 });
+
+
 
 //get customer name
 scheduleListCombined.post(`/getCustomerNamePDF`, async (req, res, next) => {

@@ -82,11 +82,11 @@ export default function ScheduleCreationForm(props) {
   const location = useLocation();
 
   // console.log("location.state---", location.state);
-  const FabOrderNo = location.state.FabOrderNo;
+  const FabOrderNo = location?.state?.FabOrderNo;
   console.log("FabOrderNo", FabOrderNo);
   
   
-   const fromPath = location.state?.from;
+   const fromPath = location?.state?.from;
 
   console.log("Came from:", fromPath);
 
@@ -1441,8 +1441,14 @@ export default function ScheduleCreationForm(props) {
     // DXF File Handling (if applicable)
     if (props.Type === "Profile") {
       let srcpath = `\\Wo\\` + (orderNUmber || Orderno) + "\\DXF\\";
-      let filename = rowData.DwgName;
+      const WOPath = process.env.REACT_APP_SERVER_FILES;
+      // let srcpath = WOPath + "\\" + (orderNUmber || Orderno) + "\\DXF\\";
 
+      console.log("DXFsrcpath",srcpath);
+      
+      let filename = rowData.DwgName;
+      
+        // fetchData();
       if (orderDrawings[window.Buffer.from(filename, "base64")]) {
         const drawingFile = new File(
           [orderDrawings[window.Buffer.from(filename, "base64")]],
@@ -1618,7 +1624,7 @@ export default function ScheduleCreationForm(props) {
 
   // console.log("selectedItems", selectedItems);
   // console.log("selectedSrl", selectedSrl);
-  console.log("ASDFselected", selectedRow);
+  console.log("selectedRow", selectedRow);
   console.log("selectedCheckbox",selectedRows.length);
 
 

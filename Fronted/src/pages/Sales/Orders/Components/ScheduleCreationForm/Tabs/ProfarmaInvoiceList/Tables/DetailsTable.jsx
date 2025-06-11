@@ -2,6 +2,9 @@ import React from "react";
 import { Tab, Table, Tabs, Form } from "react-bootstrap";
 
 export default function DetailsTable(props) {
+
+  console.log("props.filteredDetailsData",props.filteredDetailsData);
+  
   return (
     <>
       <Table striped className="table-data border" style={{ border: "1px" }}>
@@ -31,6 +34,38 @@ export default function DetailsTable(props) {
               <td>{val.Mtrl}</td>
               <td>{val.Qty}</td>
               <td>{parseFloat(val.Unit_Rate).toFixed(2)}</td>
+                 {/* {val.InvType === "JOb Work" ? (
+                    <td
+                      style={{
+                        backgroundColor: "transparent",
+                        border: "none",
+                        textAlign: "end",
+                        paddingLeft: "10px",
+                        justifyContent: "end",
+                        alignItems: "end",
+                      }}
+                    >
+                      
+                      {parseFloat(val.JWCost).toFixed(2)}
+                    </td>
+                  ) : (
+                    <td
+                      style={{
+                        backgroundColor: "transparent",
+                        border: "none",
+                        textAlign: "end",
+                        paddingLeft: "10px",
+                        justifyContent: "end",
+                        alignItems: "end",
+                      }}
+                    >
+                      
+                      {(
+                        parseFloat(val.MtrlCost) +
+                        parseFloat(val.JWCost)
+                      ).toFixed(2)}
+                    </td>
+                  )} */}
               <td>{val.ProfarmaDetailID}</td>
               <td>{val.ProfarmaID}</td>
               <td>{val.ProFarmaSrl}</td>

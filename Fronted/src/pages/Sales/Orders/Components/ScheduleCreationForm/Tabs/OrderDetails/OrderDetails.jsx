@@ -1115,9 +1115,11 @@ export default function OrderDetails(props) {
                   await dxfupload([newdxf], destPath, (res) => {
                     if (res.status === "success") {
                       alert("DXF file updated successfully");
+                      
                       // toast.success("DXF file updated successfully");
                     }
                   });
+                  
                 }
               );
             }

@@ -14,11 +14,656 @@ import { postRequest } from "../../api/apiinstance";
 import { endpoints } from "../../api/constants";
 import magodlogo from "../../../../src/ML-LOGO.png";
 
+// const styles = StyleSheet.create({
+//   page: {
+//     fontSize: 11,
+//     flexDirection: "column",
+//     marginTop: 30,
+//     marginBottom: 50,
+//     paddingBottom: 50,
+//   },
+//   tableContainer: {
+//     flexDirection: "row",
+//     flexWrap: "wrap",
+//   },
+//   row: {
+//     flexDirection: "row",
+//     alignItems: "center",
+//   },
+//   description: {
+//     width: "60%",
+//   },
+//   xyz: {
+//     width: "40%",
+//   },
+//   tableTitle: {
+//     marginLeft: "300px",
+//     marginTop: "20px",
+//     fontSize: 20,
+//     fontWeight: "bold",
+//   },
+//   code1: {
+//     fontFamily: "Helvetica-Bold",
+//     marginTop: "10px",
+//   },
+//   title2: {
+//     marginLeft: "100px",
+//   },
+//   shiftperiod: {
+//     marginLeft: "190px",
+//     marginTop: "10px",
+//   },
+//   boxdata: {
+//     border: "1px",
+//     padding: "10px",
+//     marginTop: "40px",
+//     width: "550px",
+//     marginLeft: "50px",
+//     marginRight: "100px",
+//   },
+//   tableview: {
+//     marginLeft: "30px",
+//     width: "750px",
+//   },
+//   Headingrow: {
+//     flexDirection: "row",
+//     width: "750px",
+//     alignItems: "Center",
+//     marginLeft: "20px",
+//     marginTop: 20,
+//     fontWeight: "bold",
+//   },
+//   Headingrow1: {
+//     flexDirection: "row",
+//     width: "800px",
+//     alignItems: "center",
+//     marginLeft: "20px",
+//     fontWeight: "bold",
+//   },
+//   machineHeading: {
+//     width: "80%",
+//   },
+//   operatorHeading: {
+//     width: "20%",
+//   },
+//   logo: {
+//     width: "36px",
+//     height: "54px",
+//     marginBottom: "10px",
+//   },
+//   logostyle: {
+//     marginTop: "15px",
+//     marginLeft: "40px",
+//   },
+//   code: {
+//     fontSize: "10px",
+//   },
+//   row: {
+//     flexDirection: "row",
+//   },
+//   column: {
+//     flexDirection: "column",
+//   },
+//   codestyle: {
+//     marginLeft: "35px",
+//     marginTop: "15px",
+//   },
+//   MagodTitle: {
+//     width: "70%",
+//     marginTop: "20Px",
+//   },
+//   titleBold: {
+//     fontFamily: "Helvetica-Bold",
+//     textAlign: "center",
+//     fontSize: "13px",
+//     marginTop: "25px",
+//   },
+//   typeofform: {
+//     fontFamily: "Helvetica-Bold",
+//     textAlign: "center",
+//     fontSize: "15px",
+//   },
+//   tableContainer2: {
+//     flexDirection: "column",
+//     flexWrap: "wrap",
+//     marginTop: "15px",
+//     width: "160px",
+//   },
+//   quotationNumview: {
+//     fontSize: 12,
+//     width: "60px",
+//   },
+//   quotationNumDataview: {
+//     width: "100px",
+//   },
+//   quotesize: {
+//     fontSize: 12,
+//   },
+//   quotationNumData: {
+//     fontSize: 12,
+//   },
+//   dateview: {
+//     marginTop: "5px",
+//     fontSize: 12,
+//     width: "60px",
+//   },
+//   dateData: {
+//     width: "100px",
+//     marginTop: "4px",
+//   },
+//   datesize: {
+//     fontSize: 12,
+//   },
+//   validuptoView: {
+//     marginTop: "5px",
+//     fontSize: 12,
+//     width: "60px",
+//   },
+//   validuptodataView: {
+//     width: "100px",
+//     marginTop: "4px",
+//   },
+//   validsize: {
+//     fontSize: 12,
+//   },
+//   column: {
+//     flexDirection: "row",
+//   },
+//   text: {
+//     fontSize: 12,
+//   },
+//   pagenum: {
+//     width: 160,
+//     textAlign: "right",
+//   },
+//   scheduleViewSection: {
+//     marginLeft: "30px",
+//     width: "38%",
+//     borderBottom: 1,
+//     borderTop: 1,
+//     borderLeft: 1,
+//   },
+//   scheduleViewSection1: {
+//     width: "28%",
+//     borderBottom: 1,
+//     borderTop: 1,
+//     borderLeft: 1,
+//   },
+//   scheduleViewSection2: {
+//     width: "28%",
+//     border: 1,
+//     borderRight: 1,
+//   },
+
+//   cornertableWidth: {
+//     width: "25%",
+//   },
+//   POno: {
+//     width: "30%",
+//     paddingBottom: "3px",
+//     flexDirection: "row", // Align items in a row
+//     justifyContent: "space-between", // Space between elements
+//     alignItems: "center", // Vertically align items in the center
+//   },
+//   POnodata: {
+//     width: "70%",
+//     paddingBottom: "3px",
+//   },
+
+//   SalesContact: {
+//     width: "30%",
+//     paddingBottom: "3px",
+//     flexDirection: "row", // Align items in a row
+//     justifyContent: "space-between", // Space between elements
+//     alignItems: "center", // Vertically align items in the center
+//   },
+//   SalesContactData: {
+//     width: "70%",
+//     paddingBottom: "3px",
+//   },
+
+//   ScheduleDate: {
+//     width: "50%",
+//     paddingBottom: "3px",
+//     flexDirection: "row", // Align items in a row
+//     justifyContent: "space-between", // Space between elements
+//     alignItems: "center",
+//     marginLeft: "2%",
+//   },
+//   ScheduleDatedata: {
+//     width: "70%",
+//     paddingBottom: "3px",
+//     marginLeft: "2%",
+//   },
+//   DeliverDate: {
+//     width: "49%",
+//     paddingBottom: "3px",
+//     flexDirection: "row", // Align items in a row
+//     justifyContent: "space-between", // Space between elements
+//     alignItems: "center",
+//     marginLeft: "2%",
+//   },
+//   DeliverDatedata: {
+//     width: "70%",
+//   },
+
+//   TargetDate: {
+//     width: "50%",
+//     paddingBottom: "3px",
+//     flexDirection: "row", // Align items in a row
+//     justifyContent: "space-between", // Space between elements
+//     alignItems: "center",
+//     marginLeft: "2%",
+//   },
+//   TargetDatedata: {
+//     width: "70%",
+//     paddingBottom: "3px",
+//     marginLeft: "2%",
+//   },
+
+//   Instruction: {
+//     width: "33%",
+//     paddingBottom: "3px",
+//     flexDirection: "row", // Align items in a row
+//     justifyContent: "space-between", // Space between elements
+//     alignItems: "center", // Vertically align items in the center
+//     marginLeft: "1%",
+//   },
+//   InstructionData: {
+//     width: "33%",
+//     paddingBottom: "3px",
+//   },
+
+//   targetdateview: {
+//     width: "40%",
+//   },
+//   custScheduleNo: {
+//     width: "30%",
+//   },
+//   custName: {
+//     width: "70%",
+//   },
+//   taskNoStyle: {
+//     width: "30%",
+//   },
+//   custMaterialStyle: {
+//     width: "70%",
+//   },
+//   contactsection: {
+//     width: "25%",
+//     borderBottom: 1,
+//     borderTop: 1,
+//   },
+//   contactview: {
+//     width: "30%",
+//     paddingBottom: "3px",
+//   },
+//   contactdata: {
+//     width: "70%",
+//     paddingBottom: "3px",
+//   },
+//   teleview: {
+//     width: "30%",
+//     paddingBottom: "3px",
+//   },
+//   teledata: {
+//     width: "70%",
+//     paddingBottom: "3px",
+//   },
+
+//   maintableview: {
+//     width: "790px",
+//     marginLeft: "30px",
+//   },
+//   mainsidetableview: {
+//     width: "850px",
+//     marginLeft: "30px",
+//     marginTop: "20px",
+//   },
+//   datawithboldline: {
+//     fontFamily: "Helvetica-Bold",
+//     fontSize: 10,
+//     textDecoration: "underline",
+//   },
+//   datawithoutbline: {
+//     fontFamily: "Helvetica-Bold",
+//     fontSize: 10,
+//   },
+//   taskname: {
+//     marginLeft: "10px",
+//   },
+//   databox: {
+//     marginTop: "10px",
+//     width: "50%",
+//   },
+//   databox2: {
+//     marginTop: "30px",
+//     width: "50%",
+//   },
+//   materialdetailheading: {
+//     marginTop: "10px",
+//   },
+//   subdetails: {
+//     width: "50%",
+//     borderBottom: 1,
+//     borderLeft: 1,
+//     borderTop: 1,
+//   },
+//   subdetails2: {
+//     width: "50%",
+//     borderBottom: 1,
+//     borderRight: 1,
+//     borderTop: 1,
+//   },
+//   section1: {
+//     width: "50%",
+//   },
+//   section2: {
+//     width: "50%",
+//   },
+//   subsection1heading: {
+//     width: "70%",
+//     textAlign: "right",
+//   },
+//   subsection1data: {
+//     width: "30%",
+//     textAlign: "left",
+//   },
+//   subsection2heading: {
+//     width: "70%",
+//     textAlign: "right",
+//   },
+//   subsection2data: {
+//     width: "30%",
+//     textAlign: "left",
+//   },
+//   simtext: {
+//     fontSize: 10,
+//     padding: "3px",
+//   },
+//   simtextdata: {
+//     marginLeft: "5px",
+//     fontSize: 10,
+//     padding: "3px",
+//   },
+//   subsectionlastheading: {
+//     width: "100%",
+//     textAlign: "right",
+//   },
+//   subsectionlastdata: {
+//     width: "100%",
+//     textAlign: "left",
+//   },
+//   subdetailspart2: {
+//     width: "50%",
+//   },
+//   sectionpart2: {
+//     width: "50%",
+//   },
+//   subdetail2part2: {
+//     width: "50%",
+//   },
+//   subsectionpart2: {
+//     width: "50%",
+//   },
+//   jobwordview: {
+//     width: "50%",
+//     textAlign: "right",
+//   },
+//   jobworktext: {
+//     fontFamily: "Helvetica-Bold",
+//     fontSize: "12px",
+//     textAlign: "right",
+//   },
+//   jobworkdataview: {
+//     width: "40%",
+//     textAlign: "left",
+//   },
+//   boldtextbox: {
+//     marginTop: "20px",
+//   },
+//   tableDisplay: {
+//     width: "100%",
+//     marginTop: "10px",
+//     borderBottom: 1,
+//   },
+//   srl: {
+//     width: "10%",
+//     paddingBottom: "3px",
+//     paddingTop: "3px",
+//     textAlign: "center",
+//   },
+//   drawingname: {
+//     width: "25%",
+//     paddingBottom: "3px",
+//     paddingTop: "3px",
+//     textAlign: "center",
+//   },
+//   taksno: {
+//     width: "20%",
+//     paddingBottom: "3px",
+//     paddingTop: "3px",
+//     textAlign: "center",
+//   },
+//   sheetDetails: {
+//     width: "100%",
+//     paddingBottom: "3px",
+//     paddingTop: "3px",
+//     textAlign: "center",
+//   },
+//   Inspection: {
+//     width: "10%",
+//     paddingBottom: "3px",
+//     textAlign: "center",
+//     paddingTop: "3px",
+//   },
+//   Packing: {
+//     width: "10%",
+//     paddingBottom: "3px",
+//     textAlign: "center",
+//     paddingTop: "3px",
+//   },
+//   Scheduled: {
+//     width: "10%",
+//     paddingBottom: "3px",
+//     textAlign: "center",
+//     paddingTop: "3px",
+//   },
+//   Produced: {
+//     width: "10%",
+//     paddingBottom: "3px",
+//     textAlign: "center",
+//     paddingTop: "3px",
+//   },
+//   Delivered: {
+//     width: "20%",
+//     paddingBottom: "3px",
+//     textAlign: "center",
+//     paddingTop: "3px",
+//   },
+
+//   scheduleNotable: {
+//     width: "15%",
+//     paddingBottom: "3px",
+//     textAlign: "center",
+//     paddingTop: "3px",
+//   },
+//   tableDataView: {
+//     width: "100%",
+//     borderBottom: 1,
+//   },
+//   tabletext: {
+//     fontSize: "10px",
+//   },
+
+//   srldata: {
+//     width: "10%",
+//     paddingBottom: "3px",
+//     paddingTop: "3px",
+//     textAlign: "center",
+//   },
+//   drawingnamedata: {
+//     width: "25%",
+//     paddingBottom: "3px",
+//     paddingTop: "3px",
+//     textAlign: "center",
+//   },
+//   taksno: {
+//     width: "20%",
+//     paddingBottom: "3px",
+//     paddingTop: "3px",
+//     textAlign: "center",
+//   },
+//   sheetDetails: {
+//     width: "90%",
+//     paddingBottom: "3px",
+//     paddingTop: "3px",
+//     textAlign: "center",
+//     fontSize: "12px",
+//     paddingBottom: "5px",
+//   },
+//   Inspectiondata: {
+//     width: "10%",
+//     paddingBottom: "3px",
+//     textAlign: "center",
+//     paddingTop: "3px",
+//   },
+//   Packingdata: {
+//     width: "10%",
+//     paddingBottom: "3px",
+//     textAlign: "center",
+//     paddingTop: "3px",
+//   },
+//   Scheduleddata: {
+//     width: "10%",
+//     paddingBottom: "3px",
+//     textAlign: "center",
+//     paddingTop: "3px",
+//   },
+//   Produceddata: {
+//     width: "10%",
+//     paddingBottom: "3px",
+//     textAlign: "center",
+//     paddingTop: "3px",
+//   },
+//   Delivereddata: {
+//     width: "20%",
+//     paddingBottom: "3px",
+//     textAlign: "center",
+//     paddingTop: "3px",
+//   },
+
+//   scheduleNotabledata: {
+//     width: "15%",
+//     paddingBottom: "3px",
+//     textAlign: "center",
+//     paddingTop: "3px",
+//   },
+
+//   PageNumber: {
+//     position: "absolute",
+//     fontSize: 10,
+//     bottom: 10,
+//     left: 270,
+//     textAlign: "center",
+//     color: "gray",
+//   },
+//   totaltext: {
+//     fontFamily: "Helvetica-Bold",
+//     fontSize: "10px",
+//   },
+//   globalfontwithbold: {
+//     fontSize: "11px",
+//     fontFamily: "Helvetica-Bold",
+//     marginLeft: "1%",
+//   },
+//   globalfontwithoutbold: {
+//     fontSize: "11px",
+//   },
+//   titlePlace: {
+//     marginLeft: "50%",
+//   },
+//   ScheduleNO: {
+//     marginTop: "5px",
+//     width: "95%",
+//     marginLeft: "30px",
+//     borderBottom: 1,
+//     // borderLeft:1,
+//     // borderRight:1,
+//     height: "20%",
+//   },
+//   footer: {
+//     width: "80%",
+//     marginLeft: 10,
+//     marginTop: "15px",
+//   },
+//   sales: {
+//     width: "40%",
+//     border: 1,
+//     padding: "5px",
+//   },
+//   ncpgm: {
+//     width: "40%",
+//     borderTop: 1,
+//     borderBottom: 1,
+//     borderRight: 1,
+//     padding: "5px",
+//   },
+//   prod: {
+//     width: "40%",
+//     borderTop: 1,
+//     borderBottom: 1,
+//     borderRight: 1,
+//     padding: "5px",
+//   },
+
+//   salesdata: {
+//     width: "40%",
+//     borderBottom: 1,
+//     borderLeft: 1,
+//     borderRight: 1,
+//     padding: "5px",
+//   },
+//   ncpgmdata: {
+//     width: "40%",
+//     borderBottom: 1,
+//     borderRight: 1,
+//     padding: "5px",
+//   },
+//   proddata: {
+//     width: "40%",
+//     borderBottom: 1,
+//     borderRight: 1,
+//     padding: "5px",
+//   },
+
+//   scheduletime: {
+//     width: "120%",
+//     borderLeft: 1,
+//     borderRight: 1,
+//     borderTop: 1,
+//   },
+
+//   sidebox: {
+//     border: 1,
+//     width: "130px",
+//     marginLeft: "20px",
+//   },
+//   sideboxdata: {
+//     borderBottom: 1,
+//     borderTop: 1,
+//     borderRight: 1,
+//     width: "130px",
+//   },
+//   pospan: {
+//     marginLeft: "3px",
+//   },
+// });
 const styles = StyleSheet.create({
   page: {
     fontSize: 11,
     flexDirection: "column",
-    marginTop: 30,
+    marginTop: 0,
     marginBottom: 50,
     paddingBottom: 50,
   },
@@ -106,7 +751,8 @@ const styles = StyleSheet.create({
   },
   codestyle: {
     marginLeft: "35px",
-    marginTop: "15px",
+    // marginTop: "15px",
+    marginTop: "5px",
   },
   MagodTitle: {
     width: "70%",
@@ -200,14 +846,19 @@ const styles = StyleSheet.create({
   },
   POno: {
     width: "30%",
-    paddingBottom: "3px",
+    padding: "0px 0px 3px 0px",
     flexDirection: "row", // Align items in a row
     justifyContent: "space-between", // Space between elements
-    alignItems: "center", // Vertically align items in the center
+    alignItems: "center",
+    marginLeft: "2%", // Vertically align items in the center
   },
   POnodata: {
     width: "70%",
-    paddingBottom: "3px",
+    // paddingBottom: "3px",
+    margin: "5px 0px 0px 0px",
+    flexWrap: "wrap", // Ensures text wraps within the width
+    whiteSpace: "pre-wrap", // Maintains spacing and line breaks
+    wordBreak: "break-word",
   },
 
   SalesContact: {
@@ -216,10 +867,12 @@ const styles = StyleSheet.create({
     flexDirection: "row", // Align items in a row
     justifyContent: "space-between", // Space between elements
     alignItems: "center", // Vertically align items in the center
+    marginLeft: "2%",
   },
   SalesContactData: {
     width: "70%",
-    paddingBottom: "3px",
+    // paddingBottom: "3px",
+    margin: "5px 0px 0px 0px",
   },
 
   ScheduleDate: {
@@ -232,8 +885,16 @@ const styles = StyleSheet.create({
   },
   ScheduleDatedata: {
     width: "70%",
-    paddingBottom: "3px",
+    // paddingBottom: "3px",
+    margin: "0px 0px 0px 0px",
     marginLeft: "2%",
+  },
+  PoNodata: {
+    width: "75%",
+    // paddingBottom: "3px",
+    margin: "0px 2px 0px 0px",
+    marginLeft: "2%",
+    paddingRight: "2px",
   },
   DeliverDate: {
     width: "49%",
@@ -245,11 +906,13 @@ const styles = StyleSheet.create({
   },
   DeliverDatedata: {
     width: "70%",
+    margin: "0px 0px 0px 0px",
   },
 
   TargetDate: {
     width: "50%",
     paddingBottom: "3px",
+
     flexDirection: "row", // Align items in a row
     justifyContent: "space-between", // Space between elements
     alignItems: "center",
@@ -257,7 +920,8 @@ const styles = StyleSheet.create({
   },
   TargetDatedata: {
     width: "70%",
-    paddingBottom: "3px",
+    // paddingBottom: "3px",
+    margin: "0px 0px 0px 0px",
     marginLeft: "2%",
   },
 
@@ -270,7 +934,7 @@ const styles = StyleSheet.create({
     marginLeft: "1%",
   },
   InstructionData: {
-    width: "33%",
+    width: "70%",
     paddingBottom: "3px",
   },
 
@@ -282,6 +946,8 @@ const styles = StyleSheet.create({
   },
   custName: {
     width: "70%",
+    textAlign: "right",
+    paddingRight: "40px",
   },
   taskNoStyle: {
     width: "30%",
@@ -316,9 +982,10 @@ const styles = StyleSheet.create({
     marginLeft: "30px",
   },
   mainsidetableview: {
-    width: "850px",
+    width: "100%",
+    paddingHorizontal: 30,
     marginLeft: "30px",
-    marginTop: "20px",
+    marginTop: "30px",
   },
   datawithboldline: {
     fontFamily: "Helvetica-Bold",
@@ -424,19 +1091,19 @@ const styles = StyleSheet.create({
   },
   tableDisplay: {
     width: "100%",
-    marginTop: "10px",
+    // marginTop: "5px",
     borderBottom: 1,
   },
   srl: {
     width: "10%",
     paddingBottom: "3px",
-    paddingTop: "3px",
+    paddingTop: "1px",
     textAlign: "center",
   },
   drawingname: {
     width: "25%",
     paddingBottom: "3px",
-    paddingTop: "3px",
+    paddingTop: "1px",
     textAlign: "center",
   },
   taksno: {
@@ -455,38 +1122,38 @@ const styles = StyleSheet.create({
     width: "10%",
     paddingBottom: "3px",
     textAlign: "center",
-    paddingTop: "3px",
+    paddingTop: "1px",
   },
   Packing: {
     width: "10%",
     paddingBottom: "3px",
     textAlign: "center",
-    paddingTop: "3px",
+    paddingTop: "1px",
   },
   Scheduled: {
     width: "10%",
     paddingBottom: "3px",
     textAlign: "center",
-    paddingTop: "3px",
+    paddingTop: "1px",
   },
   Produced: {
     width: "10%",
     paddingBottom: "3px",
     textAlign: "center",
-    paddingTop: "3px",
+    paddingTop: "1px",
   },
   Delivered: {
     width: "20%",
     paddingBottom: "3px",
     textAlign: "center",
-    paddingTop: "3px",
+    paddingTop: "1px",
   },
 
   scheduleNotable: {
     width: "15%",
     paddingBottom: "3px",
     textAlign: "center",
-    paddingTop: "3px",
+    paddingTop: "1px",
   },
   tableDataView: {
     width: "100%",
@@ -588,14 +1255,11 @@ const styles = StyleSheet.create({
     width: "95%",
     marginLeft: "30px",
     borderBottom: 1,
-    // borderLeft:1,
-    // borderRight:1,
     height: "20%",
   },
   footer: {
     width: "80%",
     marginLeft: 10,
-    marginTop: "15px",
   },
   sales: {
     width: "40%",
@@ -658,9 +1322,42 @@ const styles = StyleSheet.create({
   pospan: {
     marginLeft: "3px",
   },
-});
+  footerPage: {
+    fontSize: 11,
+    flexDirection: "column",
+    marginTop: 40,
+    marginBottom: 50,
+    paddingBottom: 70,
+  },
 
-const ServicePDF = ({ formdata }) => {
+  // *********************
+  title1: {
+    width: "100%",
+    marginTop: "10px",
+    fontSize: "15px",
+    fontWeight: "bolder",
+    textDecoration: "underline",
+    fontFamily: "Helvetica-Bold",
+    textAlign: "center", // Center align text
+  },
+
+  title2: {
+    width: "100%",
+    fontSize: "12px",
+    fontWeight: "bold",
+    fontFamily: "Helvetica-Bold",
+    textAlign: "center", // Center align text
+  },
+
+  companyInfo: {
+    marginTop: "3px",
+    width: "100%", // Use full width for better centering
+    fontSize: "9px",
+    textAlign: "center", // Center align text
+    marginBottom: "2px",
+  },
+});
+const ServicePDF = ({ formdata, PDFData  }) => {
   const [Tabledata, setTabledata] = useState([]);
   const [index, setIndex] = useState(0);
 
@@ -685,6 +1382,8 @@ const ServicePDF = ({ formdata }) => {
       setTabledata(response);
     });
   }, []);
+    console.log("Tabledata--- 1",Tabledata[0]);
+    console.log("Tabledata ---2",Tabledata[0]?.otherdetails[0].OrderScheduleNo);
 
   //get customer Name
   const [custname, setCustname] = useState("");
@@ -703,6 +1402,7 @@ const ServicePDF = ({ formdata }) => {
   //     setlocation(response.data);
   //   });
   // },[])
+let serialNumber = 1; // Initialize counter before mapping
 
   return (
     <Document>
@@ -730,7 +1430,7 @@ const ServicePDF = ({ formdata }) => {
                       </View>
                     </View>
 
-                    <View style={styles.MagodTitle}>
+                    {/* <View style={styles.MagodTitle}>
                       <View>
                         <Text
                           style={[styles.titleBold, { marginLeft: "20px" }]}
@@ -770,7 +1470,37 @@ const ServicePDF = ({ formdata }) => {
                           {item.typeofform}
                         </Text>
                       </View>
-                    </View>
+                    </View> */}
+                    {/* 04062025 */}
+                     <View
+                                    style={{
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                      width: "100%",
+                                      marginLeft: "-60px",
+                                      marginBottom: "5px",
+                                      marginTop: "-30px",
+                                    }}
+                                  >
+                                    <Text style={[styles.title1, { textDecoration: "underline" }]}>
+                                      Production Schedule Form
+                                    </Text>
+                    
+                                    <Text style={styles.title2}>{PDFData.RegisteredName}</Text>
+                    
+                                    <Text style={styles.companyInfo}>
+                                      GSTIN: {PDFData.GST_No}, CIN: {PDFData.CIN_No}
+                                    </Text>
+                    
+                                    <Text style={styles.companyInfo}>
+                                      {PDFData.RegistredOfficeAddress}
+                                    </Text>
+                    
+                                    <Text style={styles.companyInfo}>
+                                      {PDFData.PhonePrimary} {PDFData.PhoneSecondary}{" "}
+                                      {PDFData.Email} {PDFData.URL}
+                                    </Text>
+                                  </View>
 
                     <View style={styles.tableContainer2}>
                       <View>
@@ -915,7 +1645,8 @@ const ServicePDF = ({ formdata }) => {
                               { fontSize: "11px" },
                             ]}
                           >
-                            Schedule No: {item.otherdetails[0].ScheduleNo}
+                            {/* Schedule No: {item.otherdetails[0].ScheduleNo} */}
+                            Schedule No: {Tabledata[0]?.otherdetails[0].OrderScheduleNo}
                           </Text>
                         </View>
 
@@ -1041,10 +1772,21 @@ const ServicePDF = ({ formdata }) => {
                   </View>
                   <View key={index} style={styles.tableDataView}>
                     {item.otherdetails.map((detail, subIndex) => (
-                      <View style={styles.row}>
-                        <View style={styles.srldata}>
+                      // <View style={styles.row}>
+                      <View
+                                            key={subIndex}
+                                            style={[
+                                              styles.row,
+                                              { borderBottom: "1px solid black", paddingBottom: 5 },
+                                            ]}
+                                          >
+                        {/* <View style={styles.srldata}>
                           <Text style={styles.tabletext}>{subIndex + 1}</Text>
-                        </View>
+                        </View> */}
+                          <View style={styles.srldata}>
+                              <Text style={styles.tabletext}>{serialNumber++}</Text>
+                          </View>
+                        
 
                         <View style={styles.drawingnamedata}>
                           <Text style={styles.tabletext}>{detail.DwgName}</Text>
@@ -1085,6 +1827,7 @@ const ServicePDF = ({ formdata }) => {
                 </>
               ))}
 
+<View wrap={false}>
               <View style={styles.mainsidetableview}>
                 <View style={styles.column}>
                   <View>
@@ -1408,7 +2151,7 @@ const ServicePDF = ({ formdata }) => {
                   </View>
                 </View>
               </View>
-
+</View>
               <View style={styles.footer}>
                 <View style={{ marginLeft: "40px", marginTop: "10px" }}>
                   <Text style={styles.globalfontwithbold}>
