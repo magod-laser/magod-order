@@ -9,6 +9,7 @@ const {
   mchQueryMod,
   productionQueryMod,
   mchQueryMod1,
+  slsQueryMod,
 } = require("../../helpers/dbconn");
 const { logger } = require("../../helpers/logger");
 var bodyParser = require("body-parser");
@@ -111,6 +112,8 @@ CombinedScheduleCreate.post(
   "/prepareScheduleSales",
   jsonParser,
   async (req, res, next) => {
+    console.log("req-prepared-req", req.body);
+
     try {
       mchQueryMod(
         `SELECT n.NcTaskId, n.TaskNo, o.SchDetailsID, o.ScheduleId, 
@@ -137,13 +140,15 @@ CombinedScheduleCreate.post(
   "/createSchedule",
   jsonParser,
   async (req, res, next) => {
-    console.log("rowselectleft",req.body.rowselectleft);
-    console.log("Operation",req.body.Operation);
-    console.log("Source",req.body.Mtrl_Source);
+    console.log("entering createSchedule- JobWork");
+
+    console.log("rowselectleft", req.body.rowselectleft);
+    console.log("Operation", req.body.Operation);
+    console.log("Source", req.body.Mtrl_Source);
 
     const Operation = req.body.Operation;
     const Mtrl_Source = req.body.Mtrl_Source;
-    
+
     try {
       if (!req.body) {
         return res
@@ -154,8 +159,8 @@ CombinedScheduleCreate.post(
       const cmbSchId = await insertIntoCombinedSchedule(req.body.custCode);
 
       const rowselectleft = req.body.rowselectleft;
-      console.log("rowselectleft",rowselectleft);
-      
+      console.log("rowselectleft", rowselectleft);
+
       const insertPromises = rowselectleft.map((schedule, index) => {
         const { ScheduleId, OrdSchNo } = schedule;
         const rowCont = index + 1;
@@ -234,18 +239,20 @@ CombinedScheduleCreate.post(
 
       const DwgdataArray = await Promise.all(taskDataPromises);
       const Dwgdata = DwgdataArray.flat();
-      console.log("Dwgdata----",Dwgdata);
-        const scheduleIDs = Dwgdata.map((item) => item.ScheduleID);
-        console.log("scheduleIDs----", scheduleIDs);
+      console.log("Dwgdata----", Dwgdata);
+      const scheduleIDs = Dwgdata.map((item) => item.ScheduleID);
+      console.log("scheduleIDs----", scheduleIDs);
 
       const processDwgData = async () => {
         const taskCounters = {};
         let taskNumber = 1; // Initialize task number
 
         // Use a for-loop to ensure sequential processing
+        console.log("Dwgdata----", Dwgdata);
+        const scheduleIDs = Dwgdata.map((item) => item.ScheduleID);
+        console.log("scheduleIDs----", scheduleIDs);
+
         for (const row of Dwgdata) {
-         
-          
           const key = `${row.Mtrl_Code}_${row.MProcess}_${row.Operation}`;
 
           if (!taskCounters[key]) {
@@ -254,7 +261,7 @@ CombinedScheduleCreate.post(
           }
           row.TaskNo = `${combinedScheduleNo} 01 ${taskCounters[key]}`;
 
- console.log("row----123",row);
+          console.log("row----123", row);
 
           // Check if TaskNo already exists in nc_task_list
           const existingTaskQuery = `
@@ -286,6 +293,8 @@ CombinedScheduleCreate.post(
 
             lastInsertTaskId = ncTaskInsertResult.insertId;
           }
+          console.log("row.ScheduleID-----", row.ScheduleID);
+
           let insertTaskPartsListQuery = `INSERT INTO magodmis.task_partslist(NcTaskId, TaskNo, SchDetailsId, DwgName, QtyToNest, OrdScheduleSrl, 
             OrdSch, HasBOM) 
             SELECT
@@ -301,7 +310,7 @@ FROM magodmis.orderscheduledetails o
 WHERE o.ScheduleId IN (${scheduleIDs})
 GROUP BY o.DwgName
             `;
-            
+
           await mchQueryMod1(insertTaskPartsListQuery);
 
           // Fetch existing orderscheduledetails based on lastInsertId
@@ -311,10 +320,10 @@ GROUP BY o.DwgName
             WHERE ScheduleId = '${row.ScheduleID}'`;
           const existingDetails = await mchQueryMod1(selectDetailsQuery);
 
-          console.log("existingDetails",existingDetails);
-          
+          console.log("existingDetails", existingDetails);
+
           // Inserting Operation and mtrl_source to order_sch_details table
-        
+
           // const Operation = req.body.Operation;
           // const Mtrl_Source = req.body.Mtrl_Source;
 
@@ -384,10 +393,6 @@ GROUP BY o.DwgName
   }
 );
 
-
-
-
-
 // 23-04-2025
 // CombinedScheduleCreate.post(
 //   "/createSchedule",
@@ -399,7 +404,7 @@ GROUP BY o.DwgName
 
 //     const Operation = req.body.Operation;
 //     const Mtrl_Source = req.body.Mtrl_Source;
-    
+
 //     try {
 //       if (!req.body) {
 //         return res
@@ -410,11 +415,10 @@ GROUP BY o.DwgName
 //       const cmbSchId = await insertIntoCombinedSchedule(req.body.custCode);
 
 //       console.log("cmbSchId",cmbSchId);
-      
 
 //       const rowselectleft = req.body.rowselectleft;
 //       console.log("rowselectleft",rowselectleft);
-      
+
 //       const insertPromises = rowselectleft.map((schedule, index) => {
 //         const { ScheduleId, OrdSchNo } = schedule;
 //         const rowCont = index + 1;
@@ -527,7 +531,7 @@ GROUP BY o.DwgName
 //             console.log("row.TaskNo is", row.TaskNo);
 //             console.log("row is ", row);
 //             const insertTaskQuery = `
-//               INSERT INTO magodmis.nc_task_list 
+//               INSERT INTO magodmis.nc_task_list
 //               (TaskNo, ScheduleID, DeliveryDate, order_No, ScheduleNo, Cust_Code, Mtrl_Code, MTRL, Thickness, CustMtrl, NoOfDwgs, TotalParts, MProcess)
 //               VALUES (
 //                 '${row.TaskNo}', '${lastInsertId}', '${currentDateTime}', '${combinedScheduleNo}', '${combinedScheduleNo} 01',
@@ -538,15 +542,15 @@ GROUP BY o.DwgName
 
 //             lastInsertTaskId = ncTaskInsertResult.insertId;
 //           }
-//           let insertTaskPartsListQuery = `INSERT INTO magodmis.task_partslist(NcTaskId, TaskNo, SchDetailsId, DwgName, QtyToNest, OrdScheduleSrl, 
-//             OrdSch, HasBOM) 
+//           let insertTaskPartsListQuery = `INSERT INTO magodmis.task_partslist(NcTaskId, TaskNo, SchDetailsId, DwgName, QtyToNest, OrdScheduleSrl,
+//             OrdSch, HasBOM)
 //             SELECT '${lastInsertTaskId}', '${row.TaskNo}', o.SchDetailsID, o.DwgName, o.QtyScheduled, o.Schedule_Srl,
-//             '${combinedScheduleNo} 01', o.HasBOM 
+//             '${combinedScheduleNo} 01', o.HasBOM
 //             FROM magodmis.orderscheduledetails o WHERE o.ScheduleId='${row.ScheduleID}'`;
 //           await mchQueryMod1(insertTaskPartsListQuery);
 
 //           console.log("row.ScheduleID",row.ScheduleID);
-          
+
 //           // Fetch existing orderscheduledetails based on lastInsertId
 //           const selectDetailsQuery = `
 //             SELECT QtyScheduled, QtyProgrammed, QtyProduced, QtyInspected, QtyCleared, QtyPacked, QtyDelivered, QtyRejected, PackingLevel, InspLevel, DwgName
@@ -556,10 +560,9 @@ GROUP BY o.DwgName
 //           const existingDetails = await mchQueryMod1(selectDetailsQuery);
 
 //           console.log("existingDetails",existingDetails);
-          
-        
+
 //           for (const detail of existingDetails) {
-            
+
 //             const insertDetailsQuery = ` INSERT INTO magodmis.orderscheduledetails (OrderDetailID, ScheduleId, OrderScheduleNo, DwgName, Mtrl_Code, MProcess,Mtrl_Source, QtyScheduled,Operation, QtyProgrammed, QtyProduced, QtyInspected, QtyCleared, QtyPacked, QtyDelivered, QtyRejected, PackingLevel, InspLevel, TaskNo, NcTaskId)
 //               VALUES (
 //                 0, '${lastInsertId}', '${combinedScheduleNo} 01', '${detail.DwgName}', '${row.Mtrl_Code}', '${row.MProcess}','${Mtrl_Source}',
@@ -712,14 +715,20 @@ CombinedScheduleCreate.post(
   "/createScheduleforSales",
   jsonParser,
   async (req, res, next) => {
+    console.log("entering createSchedule- Sales");
+    const Operation = req.body.rowselectleftSales[0].Operation;
+    const Mtrl_Source = req.body.Mtrl_Source;
+    console.log("req.body--saless", Operation);
+
     try {
+      console.log("req.body-createScheduleforSales", req.body);
+
       if (!req.body) {
         return res
           .status(400)
           .json({ success: false, message: "Request body is missing" });
       }
 
-      // Step 1: Insert into combined_schedule and get cmbSchId
       const cmbSchId = await insertIntoCombinedSchedule1(req.body.custCode);
       const rowselectleftSales = req.body.rowselectleftSales;
 
@@ -734,11 +743,10 @@ CombinedScheduleCreate.post(
           rowCont
         );
       });
-
       await Promise.all(insertPromises);
+
       const rowCont = await getCountOfCombinedScheduleDetails1(cmbSchId);
 
-      // Step 3: Update orderschedule and nc_task_list
       const updatePromises = rowselectleftSales.map((schedule) => {
         const { ScheduleID } = schedule;
         const scheduleStatus = "Comb/" + cmbSchId;
@@ -753,24 +761,24 @@ CombinedScheduleCreate.post(
       const combinedScheduleNos = await Promise.all(updatePromises);
       const combinedScheduleNo = combinedScheduleNos[0];
 
-      // Insert into magodmis.orderschedule
       const insertResult = await mchQueryMod1(`
-      INSERT INTO magodmis.orderschedule (Order_no, ScheduleNo, Cust_Code, ScheduleDate, schTgtDate, Delivery_date, SalesContact, Dealing_engineer, PO, ScheduleType, ordschno, Type, Schedule_Status)
-      VALUES ('${combinedScheduleNo}', '01', '0000', '${req.body.Date}', '${
+        INSERT INTO magodmis.orderschedule (Order_no, ScheduleNo, Cust_Code, ScheduleDate, schTgtDate, Delivery_date, SalesContact, Dealing_engineer, PO, ScheduleType, ordschno, Type, Schedule_Status)
+        VALUES ('${combinedScheduleNo}', '01', '0000', '${req.body.Date}', '${
         req.body.Date
       }', '${req.body.Date}', '${req.body.selectedSalesContact}', '${
         req.body.selectedSalesContact
-      }', 'Combined', 'Profile', '${
+      }', 'Combined', 'Combined', '${
         combinedScheduleNo + " 01"
-      }', 'Profile', 'Tasked')`);
+      }', 'Profile', 'Tasked')
+      `);
 
       const lastInsertId = insertResult.insertId;
 
-      // Update combined_schedule with lastInsertId
       await mchQueryMod1(`
-      UPDATE magodmis.combined_schedule
-      SET ScheduleID = '${lastInsertId}'
-      WHERE CmbSchID = '${cmbSchId}'`);
+        UPDATE magodmis.combined_schedule
+        SET ScheduleID = '${lastInsertId}'
+        WHERE CmbSchID = '${cmbSchId}'
+      `);
 
       // Step 4: Folder creation
       const baseDir = path.join("C:", "Magod", "Jigani", "Wo");
@@ -796,83 +804,65 @@ CombinedScheduleCreate.post(
         }
       });
 
-      // Step 5: Insert into magodmis.nc_task_list
+      // Step 5: Insert into nc_task_list and task_partslist
       const currentDateTime = new Date()
         .toISOString()
         .replace("T", " ")
         .slice(0, 19);
-      const totalNoOfDwgs = rowselectleftSales.reduce(
-        (sum, item) => sum + item.NoOfDwgs,
-        0
-      );
-      const totalNoOfParts = rowselectleftSales.reduce(
-        (sum, item) => sum + item.TotalParts,
-        0
-      );
-      const TaskNo = combinedScheduleNo + " 01" + " " + "01";
+      let allTaskInsertPromises = [];
+      let allOrderscheduleDetailsPromises = [];
 
-      const ncTaskListResult = await mchQueryMod1(`
-      INSERT INTO magodmis.nc_task_list (TaskNo, ScheduleID, DeliveryDate, order_No, ScheduleNo, Cust_Code, Mtrl_Code, MTRL, Thickness, CustMtrl, NoOfDwgs, TotalParts, MProcess, Operation)
-      VALUES ('${TaskNo}', '${lastInsertId}', '${currentDateTime}', '${combinedScheduleNo}', '${
-        combinedScheduleNo + " 01"
-      }', '0000', '${req.body.rowselectleftSales[0].Mtrl_Code}', '${
-        req.body.rowselectleftSales[0].MTRL
-      }', '${
-        req.body.rowselectleftSales[0].Thickness
-      }', 'Magod', '${totalNoOfDwgs}', '${totalNoOfParts}', '${
-        req.body.rowselectleftSales[0].MProcess
-      }', '${req.body.rowselectleftSales[0].Operation}')`);
+      for (let i = 0; i < rowselectleftSales.length; i++) {
+        const row = rowselectleftSales[i];
+        const scheduleID = row.ScheduleID;
+        const TaskNo = `${combinedScheduleNo} 01 ${String(i + 1).padStart(
+          2,
+          "0"
+        )}`;
 
-      const lastInsertTaskId = ncTaskListResult.insertId;
+        const totalNoOfDwgs = row.NoOfDwgs || 0;
+        const totalNoOfParts = row.TotalParts || 0;
 
-      let insertTaskPartsListQuery = `INSERT INTO magodmis.task_partslist(NcTaskId, TaskNo, SchDetailsId, DwgName, QtyToNest, OrdScheduleSrl, 
-        OrdSch, HasBOM) 
-        SELECT '${lastInsertTaskId}', '${TaskNo}', o.SchDetailsID, o.DwgName, o.QtyScheduled, o.Schedule_Srl,
-        '${combinedScheduleNo + " 01"}', o.HasBOM 
-        FROM magodmis.orderscheduledetails o WHERE o.ScheduleId='${
-          req.body.rowselectleftSales[0].ScheduleID
-        }'`;
-      await mchQueryMod1(insertTaskPartsListQuery);
+        const ncTaskInsertQuery = `
+          INSERT INTO magodmis.nc_task_list 
+          (TaskNo, ScheduleID, DeliveryDate, order_No, ScheduleNo, Cust_Code, Mtrl_Code, MTRL, Thickness, CustMtrl, NoOfDwgs, TotalParts, MProcess, Operation)
+          VALUES 
+          ('${TaskNo}', '${lastInsertId}', '${currentDateTime}', '${combinedScheduleNo}', '${combinedScheduleNo} 01', '0000', '${row.Mtrl_Code}', '${row.MTRL}', '${row.Thickness}', 'Magod', '${totalNoOfDwgs}', '${totalNoOfParts}', '${row.MProcess}', '${row.Operation}')`;
 
-      // Step 6: Fetch existing orderscheduledetails based on lastInsertId
-      const selectDetailsQuery = `
-      SELECT *
-      FROM magodmis.orderscheduledetails WHERE ScheduleId = '${req.body.rowselectleftSales[0].ScheduleID}'`;
-      const existingDetails = await mchQueryMod1(selectDetailsQuery);
+        const ncTaskListResult = await mchQueryMod1(ncTaskInsertQuery);
+        const lastInsertTaskId = ncTaskListResult.insertId;
 
-      // Insert into orderscheduledetails using lastInsertTaskId and fetched existing data
-      const orderscheduledetailsPromises = rowselectleftSales.map(
-        async (row) => {
-          // Assuming existingDetails should match by some criteria
-          // You might need to match the details with specific criteria here
-          const existingDetail = existingDetails.find(
-            (detail) =>
-              detail.Mtrl_Code === row.Mtrl_Code &&
-              detail.MProcess === row.MProcess
-          ) || {
-            QtyScheduled: 0,
-            QtyProgrammed: 0,
-            QtyProduced: 0,
-            QtyInspected: 0,
-            QtyCleared: 0,
-            QtyPacked: 0,
-            QtyDelivered: 0,
-            QtyRejected: 0,
-          };
+        const dwgData = await mchQueryMod1(`
+          SELECT o.SchDetailsID, o.DwgName, o.QtyScheduled, o.Schedule_Srl, o.HasBOM, o.PackingLevel, o.InspLevel 
+          FROM magodmis.orderscheduledetails o 
+          WHERE o.ScheduleId='${scheduleID}'`);
 
-          return mchQueryMod1(`
-        INSERT INTO magodmis.orderscheduledetails 
-        (OrderDetailID, ScheduleId, OrderScheduleNo, DwgName, Mtrl_Code, MProcess, QtyScheduled, QtyProgrammed, QtyProduced, QtyInspected, QtyCleared, QtyPacked, QtyDelivered, QtyRejected, TaskNo, NcTaskId,PackingLevel,InspLevel)
-        VALUES (
-          0, '${lastInsertId}', '${combinedScheduleNo} 01', '${existingDetail.DwgName}', '${row.Mtrl_Code}', '${row.MProcess}',
-          '${existingDetail.QtyScheduled}', '${existingDetail.QtyProgrammed}', '${existingDetail.QtyProduced}', '${existingDetail.QtyInspected}',
-          '${existingDetail.QtyCleared}', '${existingDetail.QtyPacked}', '${existingDetail.QtyDelivered}', '${existingDetail.QtyRejected}',
-          '${row.TaskNo}', '${lastInsertTaskId}', '${existingDetail.PackingLevel}', '${existingDetail.InspLevel}'
-        )`);
-        }
-      );
+        dwgData.forEach((dwg) => {
+          const modifiedDwgName = `${TaskNo} ${dwg.DwgName}`;
+          allTaskInsertPromises.push(
+            mchQueryMod1(`
+              INSERT INTO magodmis.task_partslist 
+              (NcTaskId, TaskNo, SchDetailsId, DwgName, QtyToNest, OrdScheduleSrl, OrdSch, HasBOM) 
+              VALUES 
+              ('${lastInsertTaskId}', '${TaskNo}', '${dwg.SchDetailsID}', '${modifiedDwgName}', '${dwg.QtyScheduled}', '${dwg.Schedule_Srl}', '${combinedScheduleNo} 01', '${dwg.HasBOM}')`)
+          );
 
-      await Promise.all(orderscheduledetailsPromises);
+          allOrderscheduleDetailsPromises.push(
+            mchQueryMod1(`
+              INSERT INTO magodmis.orderscheduledetails 
+              (OrderDetailID, ScheduleId, OrderScheduleNo, DwgName, Mtrl_Code, MProcess, QtyScheduled,Operation, QtyProgrammed, QtyProduced, QtyInspected, QtyCleared, QtyPacked, QtyDelivered, QtyRejected, TaskNo, NcTaskId, PackingLevel, InspLevel)
+              VALUES (
+                0, '${lastInsertId}', '${combinedScheduleNo} 01', '${dwg.DwgName}', '${row.Mtrl_Code}', '${row.MProcess}',
+                '${dwg.QtyScheduled}','${Operation}', 0, 0, 0, 0, 0, 0, 0, '${TaskNo}', '${lastInsertTaskId}', '${dwg.PackingLevel}', '${dwg.InspLevel}'
+              )`)
+          );
+        });
+      }
+
+      await Promise.all([
+        ...allTaskInsertPromises,
+        ...allOrderscheduleDetailsPromises,
+      ]);
 
       res.status(200).json({
         success: true,

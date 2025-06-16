@@ -1511,6 +1511,8 @@ export default function ScheduleCreationForm(props) {
 
   // Handle multi row selection with checkbox
   const handleCheckboxChange = async (rowData) => {
+    console.log("rowData", rowData);
+    
     setSelectedRows((prevSelectedRows) => {
       const updatedRows = prevSelectedRows.some(
         (selectedRow) => selectedRow.OrderDetailId === rowData.OrderDetailId

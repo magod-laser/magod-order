@@ -18,6 +18,7 @@ export default function CombinedScheduleList({ type }) {
     setSortConfig({ key, direction });
   };
 
+
   const sortedData = () => {
     const dataCopy = [...scheduleListOrders];
 
@@ -46,19 +47,25 @@ export default function CombinedScheduleList({ type }) {
 
   //ScheduleList Orders
   const [scheduleListOrders, setScheduleListOrder] = useState([]);
+
+ 
+
   const getScheduleListData = () => {
     if (type === "JobWork") {
       getRequest(endpoints.ScheduleListOrdered, (response) => {
-        console.log(response);
+        console.log("---jw list", response);
         setScheduleListOrder(response);
       });
     } else {
       getRequest(endpoints.ScheduleListOrderedSales, (response) => {
+        console.log("---sales list",response);
+        
         setScheduleListOrder(response);
       });
     }
   };
 
+  
   useEffect(() => {
     getScheduleListData();
   }, []);

@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Form, Table } from "react-bootstrap";
-
+import { postRequest } from "../../api/apiinstance";
+import { endpoints } from "../../api/constants";
+import { ScheduleDataContext } from "../../../context/CmbineSchDetailsTabContext";
 export default function CombinedScheduleDetailsTab({
   beforecombine,
   preapreScheduleData,
@@ -8,20 +10,52 @@ export default function CombinedScheduleDetailsTab({
   custName,
   type,
 }) {
+
+  console.log("preapreScheduleData======", preapreScheduleData);
+  const { scheduleListDetailsData, prepareScheduleData } =
+    useContext(ScheduleDataContext);
+
+  const [scheduleListDetailsDatasales , setScheduleListDetailsDatasales] = useState([])
+// new
+
+  // const getScheduleListDetails = () => {    
+  //   postRequest(
+  //     endpoints.getSchedudleDetailssales,
+  //     {
+  //       // selectedRow,
+  //     },
+  //     (response) => {
+  //       console.log("resss----",response);
+  //       setScheduleListDetailsDatasales(response.data);
+  //     }
+  //   );
+  // };
+  // useEffect(() => {
+  //   getScheduleListDetails();
+  // }, []);
+
+  useEffect(() => {
+    console.log(
+      " AnotherPage - scheduleListDetailsData:",
+      scheduleListDetailsData
+    );
+    console.log(" AnotherPage - prepareScheduleData:", prepareScheduleData);
+  }, [scheduleListDetailsData, prepareScheduleData]);
+
   //date format
   const formatDate = (dateString) => {
     if (!dateString) return "";
-  
+
     try {
       // Parse the date string
       const date = new Date(dateString);
       if (isNaN(date)) throw new Error("");
-  
+
       // Extract the day, month, and year
       const day = date.getUTCDate().toString().padStart(2, "0");
       const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
       const year = date.getUTCFullYear();
-  
+
       // Format the date to dd/mm/yyyy
       const formattedDate = `${day}/${month}/${year}`;
       return formattedDate;
@@ -31,8 +65,8 @@ export default function CombinedScheduleDetailsTab({
     }
   };
 
-  console.log('beforecombine Jobwork', beforecombine);
-  
+  console.log("beforecombine", beforecombine);
+  console.log("preapreScheduleData", preapreScheduleData);
 
   return (
     <>
@@ -77,6 +111,7 @@ export default function CombinedScheduleDetailsTab({
                     type="text"
                     style={{ borderRadius: "0" }}
                     value={beforecombine[0]?.SalesContact}
+                    // value={scheduleListDetailsData[0]?.SalesContact}
                   />
                 </div>
               </div>
@@ -135,13 +170,13 @@ export default function CombinedScheduleDetailsTab({
                   <th>Mtrl_Code</th>
                   <th>MProcess</th>
                   <th>Operation</th>
-                  <th>Mtrl_Source</th>
-                  <th>Insp Level</th>
+                  {/* <th>Mtrl_Source</th>
+                  <th>Insp Level</th> */}
                   <th>Quantity Scheduled</th>
                 </tr>
               </thead>
               <tbody className="tablebody">
-                {preapreScheduleData.map((item, key) => {
+                {scheduleListDetailsData.map((item, key) => {
                   return (
                     <>
                       <tr>
@@ -149,8 +184,8 @@ export default function CombinedScheduleDetailsTab({
                         <td>{item.Mtrl_Code}</td>
                         <td>{item.MProcess}</td>
                         <td>{item.Operation}</td>
-                        <td>{item.Mtrl_Source}</td>
-                        <td>{item.InspLevel}</td>
+                        {/* <td>{item.Mtrl_Source}</td>
+                        <td>{item.InspLevel}</td> */}
                         <td>{item.QtyScheduled}</td>
                       </tr>
                     </>

@@ -179,6 +179,7 @@ scheduleListCombined.post(
   "/scheduleListDetails",
   jsonParser,
   async (req, res, next) => {
+    
     // console.log("req from scheduleList --1",req.body.selectedRow)
     // console.log("req from scheduleList --2",req.body.selectedRow.cmbSchID)
     // console.log("req from create",req.body.selectedRow)
@@ -188,13 +189,8 @@ scheduleListCombined.post(
     ? req.body.selectedRow
     : req.body.selectedRow?.cmbSchID;
   
-  console.log("cmbSchID", cmbSchID);
+  console.log("cmbSchID---", cmbSchID);
     
-
-
-
-
-
     try {
       mchQueryMod(
     //     `SELECT o1.*, c.cmbSchId, o.SchDetailsID, o.Schedule_Srl, o.DwgName, o.Mtrl_Code, o.MProcess, o.Mtrl_Source, o.QtyScheduled, o.QtyProgrammed, o.QtyProduced, o.QtyInspected, o.QtyCleared,o.Rejections, o.Tester, o.LOC, o.Holes, o.Part_Area, o.UnitWt, o.Operation,(SELECT COUNT(*) FROM magodmis.combined_schedule_details c JOIN magodmis.orderschedule o1 ON c.scheduleId = o1.ScheduleID JOIN magodmis.orderscheduledetails o ON c.scheduleId = o.ScheduleID WHERE c.cmbSchId = '${req.body.selectedRow.cmbSchID}') AS TotalRows
@@ -233,6 +229,80 @@ scheduleListCombined.post(
     data: mergedDetails,
   });
 
+        }
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+//ScheduleList Details sales
+scheduleListCombined.post(
+  "/scheduleListDetailssales",
+  jsonParser,
+  async (req, res, next) => {
+    console.log("req.body---sales",req.body);
+    
+    
+    const cmbSchID = req.body.Component === "Create"
+    ? req.body.selectedRow
+    : req.body.selectedRow?.cmbSchID;
+
+    try {
+      mchQueryMod(
+        `SELECT DISTINCT
+  t.DwgName,
+  o1.*, 
+  c.cmbSchId, 
+  o.SchDetailsID, 
+  o.Schedule_Srl, 
+  o.DwgName AS DwgName_Details,
+  o.Mtrl_Code, 
+  o.MProcess, 
+  o.Mtrl_Source, 
+  o.QtyScheduled, 
+  o.QtyProgrammed, 
+  o.QtyProduced, 
+  o.QtyInspected, 
+  o.QtyCleared,
+  o.Rejections, 
+  o.Tester, 
+  o.LOC, 
+  o.Holes, 
+  o.Part_Area, 
+  o.UnitWt, 
+  o.Operation,
+  (
+    SELECT COUNT(*) 
+    FROM magodmis.combined_schedule_details c2 
+    JOIN magodmis.orderschedule o2 ON c2.scheduleId = o2.ScheduleID 
+    JOIN magodmis.orderscheduledetails od ON c2.scheduleId = od.ScheduleID 
+    WHERE c2.cmbSchId = '${cmbSchID}'
+  ) AS TotalRows
+FROM  
+  magodmis.combined_schedule_details c 
+JOIN 
+  magodmis.orderschedule o1 ON c.scheduleId = o1.ScheduleID 
+JOIN 
+  magodmis.orderscheduledetails o ON c.scheduleId = o.ScheduleID 
+LEFT JOIN 
+  magodmis.task_partslist t ON t.SchDetailsID = o.SchDetailsID
+WHERE 
+  c.cmbSchId = '${cmbSchID}'
+    AND t.DwgName LIKE '88%'  
+ORDER BY 
+  SUBSTRING_INDEX(t.DwgName, ' ', 3);`,
+
+        (err, data) => {
+          if (err) logger.error(err);
+          // console.log("saleassssdata", data);
+          // res.send(data);
+          res.json({
+            success: true,
+            totalRows: data.length,
+            data: data,
+          });
         }
       );
     } catch (error) {

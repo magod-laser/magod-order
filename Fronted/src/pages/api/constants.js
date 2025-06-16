@@ -419,6 +419,7 @@ export const endpoints = {
   CreateScheduleforSales: `${API}/CombinedScheduleCreate/createScheduleforSales`,
   afterCombinedSchedule: `${API}/CombinedScheduleCreate/afterCombineSchedule`,
   getSchedudleDetails: `${API}/scheduleListCombined/scheduleListDetails`,
+  getSchedudleDetailssales: `${API}/scheduleListCombined/scheduleListDetailssales`, // veeeeeeeranna
   CombinedTasksTaskTable: `${API}/scheduleListCombined/combinedTaksTaskTable`,
   CombinedTasksShowDwg: `${API}/scheduleListCombined/combinedTaksShowDwgName`,
   OriginalTable: `${API}/scheduleListCombined/OriginalTable1`,
