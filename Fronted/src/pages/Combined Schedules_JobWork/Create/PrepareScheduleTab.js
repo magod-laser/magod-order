@@ -319,7 +319,8 @@ export default function PrepareScheduleTab({
     if (
       selectedSalesContact === "" ||
       selectedSalesContact === null ||
-      selectedSalesContact === "undefined"
+      selectedSalesContact === "undefined" ||
+      selectedSalesContact === undefined
     ) {
       alert("Please Select Sales Contact");
       return;
