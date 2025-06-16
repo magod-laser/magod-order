@@ -76,6 +76,8 @@ export default function Create({ type }) {
     setRowSelectLeft(selectedRows);
   };
 
+  console.log("beforecombine---create",beforecombine);
+  
   //set Customer
   const [custdata, setCustdata] = useState([]);
 
@@ -167,6 +169,9 @@ export default function Create({ type }) {
   const [rowSelectEnable, setRowSelectEnable] = useState(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState({});
   const [preapreScheduleData, setPrepareScheduleData] = useState([]);
+
+
+
   const onclickpreapreScheduleButton = () => {
     setRowSelectEnable(true);
     postRequest(
@@ -181,7 +186,7 @@ export default function Create({ type }) {
     );
   };
 
-  console.log("preapreScheduleData",preapreScheduleData);
+  console.log("preapreScheduleData------",preapreScheduleData);
   
   const [selectedSalesContact, setSelectedSalesContact] = useState("");
   useEffect(() => {
@@ -194,6 +199,11 @@ export default function Create({ type }) {
   //sales
   const [beforecombineSales, setBeforeCombineSales] = useState([]);
 
+  // useEffect(() => {
+  //   if (salesContactList.length > 0 && !selectedSalesContact) {
+  //     setSelectedSalesContact(salesContactList[0].Name);
+  //   }
+  // }, [salesContactList]);
   return (
     <div>
       <h4 className="title">Order Schedule No</h4>

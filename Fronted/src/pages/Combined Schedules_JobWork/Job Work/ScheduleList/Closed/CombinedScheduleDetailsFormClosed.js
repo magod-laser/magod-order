@@ -8,7 +8,7 @@ import { endpoints } from "../../../../api/constants";
 import { getRequest, postRequest } from "../../../../api/apiinstance";
 import PrintModal from "../../../PrintPDF/PrintModal";
 import FolderFilesModal from "../../../FolderFilesModal";
-
+import { style } from "@mui/system";
 
 export default function CombinedScheduleDetailsFormClosed() {
   const location = useLocation();
@@ -110,7 +110,7 @@ export default function CombinedScheduleDetailsFormClosed() {
     postRequest(
       endpoints.CombinedTasksTaskTable,
       {
-        ScheduleId: selectedRow?.ScheduleId
+        ScheduleId: selectedRow?.ScheduleId,
       },
       (response) => {
         // console.log(response.data);
@@ -264,18 +264,18 @@ export default function CombinedScheduleDetailsFormClosed() {
   const [files, setFiles] = useState([]);
 
   const onClickOpenFolder = () => {
-    console.log("clicked")
+    console.log("clicked");
     if (openFolder) {
-      console.log("clicked if part loop")
+      console.log("clicked if part loop");
       // Prepare data to send in the POST request
       const requestData = {
         OrderNo: selectedRow?.Order_No,
       };
-      console.log("requestData is",requestData);
+      console.log("requestData is", requestData);
       // Send POST request to fetch files from the server
       postRequest(endpoints.openFolder, { requestData }, (response) => {
         setFiles(response);
-        console.log("response is",response);
+        console.log("response is", response);
         setOpenFileModal(true);
       });
     } else {
@@ -296,8 +296,7 @@ export default function CombinedScheduleDetailsFormClosed() {
       selectedRow,
       orinalScheudledata,
     };
-    postRequest(endpoints.CopyDwg, { requestData }, (response) => {
-    });
+    postRequest(endpoints.CopyDwg, { requestData }, (response) => {});
   };
 
   //
@@ -357,6 +356,8 @@ export default function CombinedScheduleDetailsFormClosed() {
   const closeButton = () => {
     navigate("/Orders/JobWork/ScheduleList/Order", {});
   };
+
+  console.log("scheduleListDetailsData", scheduleListDetailsData);
 
   return (
     <div>
@@ -526,16 +527,14 @@ export default function CombinedScheduleDetailsFormClosed() {
         <Tab eventKey="" title="Schedule Details">
           <div className="row">
             <div className="col-md-8">
-              <div>
-                <Table
-                  striped
-                  className="table-data border"
-                  style={{
-                    overflowY: "scroll",
-                    overflowX: "scroll",
-                  }}
-                >
-                  <thead className="tableHeaderBGColor ">
+              <div
+                style={{
+                  height: "300px",
+                  overflowY: "scroll",
+                }}
+              >
+                <Table striped className="table-data border">
+                  <thead className="tableHeaderBGColor">
                     <tr>
                       <th>Dwg Name</th>
                       <th>Material</th>
@@ -548,8 +547,8 @@ export default function CombinedScheduleDetailsFormClosed() {
                     </tr>
                   </thead>
 
-                  <tbody className="tablebody">
-                    {scheduleListDetailsData?.map((item, key) => {
+                  <tbody className="tablebody" >
+                    {scheduleListDetailsData?.data?.map((item, key) => {
                       const backgroundColor = getBackgroundColor(item);
                       return (
                         <>
@@ -560,14 +559,22 @@ export default function CombinedScheduleDetailsFormClosed() {
                             }
                             style={{ backgroundColor: backgroundColor }}
                           >
-                            <td>{item.DwgName}</td>
-                            <td>{item.Mtrl_Code}</td>
-                            <td>{item.MProcess}</td>
-                            <td>{item.Operation}</td>
-                            <td>{item.QtyScheduled}</td>
-                            <td>{item.QtyProgrammed}</td>
-                            <td>{item.QtyProgrammed}</td>
-                            <td>{item.QtyCleared}</td>
+                            <td style={{ color: "white" }}>{item.DwgName}</td>
+                            <td style={{ color: "white" }}>{item.Mtrl_Code}</td>
+                            <td style={{ color: "white" }}>{item.MProcess}</td>
+                            <td style={{ color: "white" }}>{item.Operation}</td>
+                            <td style={{ color: "white" }}>
+                              {item.QtyScheduled}
+                            </td>
+                            <td style={{ color: "white" }}>
+                              {item.QtyProgrammed}
+                            </td>
+                            <td style={{ color: "white" }}>
+                              {item.QtyProgrammed}
+                            </td>
+                            <td style={{ color: "white" }}>
+                              {item.QtyCleared}
+                            </td>
                           </tr>
                         </>
                       );

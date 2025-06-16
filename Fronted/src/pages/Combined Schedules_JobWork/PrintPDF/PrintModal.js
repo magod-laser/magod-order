@@ -5,6 +5,8 @@ import PrintPDF from "./PrintPDF";
 import axios from "axios";
 import { baseURL } from "../../../api/baseUrl";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
+import { apipoints } from "../../api/isoForms/pdf";
 
 export default function PrintModal({
   setServiceOpen,
@@ -13,6 +15,26 @@ export default function PrintModal({
   selectedRow,
 }) {
   const [fullscreen, setFullscreen] = useState(true);
+
+// Data need to get from database
+ const [PDFData, setPDFData] = useState({});
+
+  useEffect(() => {
+    axios
+      .get(apipoints.getPDFData)
+      .then((response) => {
+        console.log("getPDFData===", response.data[0]);
+
+        setPDFData(response.data[0]);
+      })
+      .catch((error) => {
+        console.error("Error fetching", error);
+      });
+  }, []);
+
+  console.log("PDFData is", PDFData);
+
+
 
   // Function to save the PDF to the server
   const savePdfToServer = async () => {
@@ -65,6 +87,7 @@ export default function PrintModal({
     <div>
       <Modal
         show={serviceOpen}
+       
         fullscreen={fullscreen}
         onHide={() => setServiceOpen(false)}
       >
@@ -80,7 +103,7 @@ export default function PrintModal({
         </Modal.Header>
         <Modal.Body>
           <PDFViewer width="100%" height="600" filename="GeneratedPDF.pdf">
-            <PrintPDF formdata={selectedRow} />
+            <PrintPDF formdata={selectedRow}   PDFData={PDFData}/>
           </PDFViewer>
         </Modal.Body>
       </Modal>

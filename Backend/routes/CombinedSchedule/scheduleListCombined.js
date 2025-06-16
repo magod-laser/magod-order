@@ -179,6 +179,7 @@ scheduleListCombined.post(
   "/scheduleListDetails",
   jsonParser,
   async (req, res, next) => {
+    
     // console.log("req from scheduleList --1",req.body.selectedRow)
     // console.log("req from scheduleList --2",req.body.selectedRow.cmbSchID)
     // console.log("req from create",req.body.selectedRow)
@@ -188,13 +189,8 @@ scheduleListCombined.post(
     ? req.body.selectedRow
     : req.body.selectedRow?.cmbSchID;
   
-  console.log("cmbSchID", cmbSchID);
+  console.log("cmbSchID---", cmbSchID);
     
-
-
-
-
-
     try {
       mchQueryMod(
     //     `SELECT o1.*, c.cmbSchId, o.SchDetailsID, o.Schedule_Srl, o.DwgName, o.Mtrl_Code, o.MProcess, o.Mtrl_Source, o.QtyScheduled, o.QtyProgrammed, o.QtyProduced, o.QtyInspected, o.QtyCleared,o.Rejections, o.Tester, o.LOC, o.Holes, o.Part_Area, o.UnitWt, o.Operation,(SELECT COUNT(*) FROM magodmis.combined_schedule_details c JOIN magodmis.orderschedule o1 ON c.scheduleId = o1.ScheduleID JOIN magodmis.orderscheduledetails o ON c.scheduleId = o.ScheduleID WHERE c.cmbSchId = '${req.body.selectedRow.cmbSchID}') AS TotalRows
@@ -224,6 +220,8 @@ scheduleListCombined.post(
           }, {});
 
           const mergedDetails = Object.values(mergedMap);
+          console.log("mergedDetails",mergedDetails);
+          
 
   res.json({
     success: true,
@@ -231,6 +229,80 @@ scheduleListCombined.post(
     data: mergedDetails,
   });
 
+        }
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+//ScheduleList Details sales
+scheduleListCombined.post(
+  "/scheduleListDetailssales",
+  jsonParser,
+  async (req, res, next) => {
+    console.log("req.body---sales",req.body);
+    
+    
+    const cmbSchID = req.body.Component === "Create"
+    ? req.body.selectedRow
+    : req.body.selectedRow?.cmbSchID;
+
+    try {
+      mchQueryMod(
+        `SELECT DISTINCT
+  t.DwgName,
+  o1.*, 
+  c.cmbSchId, 
+  o.SchDetailsID, 
+  o.Schedule_Srl, 
+  o.DwgName AS DwgName_Details,
+  o.Mtrl_Code, 
+  o.MProcess, 
+  o.Mtrl_Source, 
+  o.QtyScheduled, 
+  o.QtyProgrammed, 
+  o.QtyProduced, 
+  o.QtyInspected, 
+  o.QtyCleared,
+  o.Rejections, 
+  o.Tester, 
+  o.LOC, 
+  o.Holes, 
+  o.Part_Area, 
+  o.UnitWt, 
+  o.Operation,
+  (
+    SELECT COUNT(*) 
+    FROM magodmis.combined_schedule_details c2 
+    JOIN magodmis.orderschedule o2 ON c2.scheduleId = o2.ScheduleID 
+    JOIN magodmis.orderscheduledetails od ON c2.scheduleId = od.ScheduleID 
+    WHERE c2.cmbSchId = '${cmbSchID}'
+  ) AS TotalRows
+FROM  
+  magodmis.combined_schedule_details c 
+JOIN 
+  magodmis.orderschedule o1 ON c.scheduleId = o1.ScheduleID 
+JOIN 
+  magodmis.orderscheduledetails o ON c.scheduleId = o.ScheduleID 
+LEFT JOIN 
+  magodmis.task_partslist t ON t.SchDetailsID = o.SchDetailsID
+WHERE 
+  c.cmbSchId = '${cmbSchID}'
+    AND t.DwgName LIKE '88%'  
+ORDER BY 
+  SUBSTRING_INDEX(t.DwgName, ' ', 3);`,
+
+        (err, data) => {
+          if (err) logger.error(err);
+          // console.log("saleassssdata", data);
+          // res.send(data);
+          res.json({
+            success: true,
+            totalRows: data.length,
+            data: data,
+          });
         }
       );
     } catch (error) {
@@ -606,45 +678,111 @@ scheduleListCombined.post(
 );
 
 //Print
+// scheduleListCombined.post(`/PrintPdf`, async (req, res, next) => {
+//   try {
+//     let query = `SELECT * FROM magodmis.orderscheduledetails where ScheduleId='${req.body.formdata.ScheduleId}';`;
+
+//     misQueryMod(query, (err, data) => {
+//       if (err) {
+//         console.log("err", err);
+//         res
+//           .status(500)
+//           .send({ error: "An error occurred while fetching data" });
+//       } else {
+//         if (data.length > 0) {
+//           // Group data by task number
+//           const groupedData = {};
+//           data.forEach((item) => {
+//             const TaskNo = item.TaskNo;
+//             if (!groupedData[TaskNo]) {
+//               groupedData[TaskNo] = [];
+//             }
+//             groupedData[TaskNo].push(item);
+//           });
+
+//           // Format grouped data
+//           const formattedData = [];
+//           for (const TaskNo in groupedData) {
+//             formattedData.push({
+//               taskNo: TaskNo,
+//               Mtrl_Code: groupedData[TaskNo][0].Mtrl_Code,
+//               Mtrl_Source: groupedData[TaskNo][0].Mtrl_Source,
+//               Operation: groupedData[TaskNo][0].Operation,
+//               otherdetails: groupedData[TaskNo],
+//             });
+//           }
+
+//           res.send(formattedData);
+//         } else {
+//           res
+//             .status(404)
+//             .send({ error: "No data found for the provided ScheduleId" });
+//         }
+//       }
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+//V06062025
 scheduleListCombined.post(`/PrintPdf`, async (req, res, next) => {
   try {
-    let query = `SELECT * FROM magodmis.orderscheduledetails where ScheduleId='${req.body.formdata.ScheduleId}';`;
+    let query = `SELECT * FROM magodmis.orderscheduledetails WHERE ScheduleId='${req.body.formdata.ScheduleId}';`;
 
     misQueryMod(query, (err, data) => {
       if (err) {
         console.log("err", err);
-        res
-          .status(500)
-          .send({ error: "An error occurred while fetching data" });
+        res.status(500).send({ error: "An error occurred while fetching data" });
       } else {
         if (data.length > 0) {
-          // Group data by task number
+          // Group by TaskNo
           const groupedData = {};
+
           data.forEach((item) => {
-            const TaskNo = item.TaskNo;
-            if (!groupedData[TaskNo]) {
-              groupedData[TaskNo] = [];
+            const taskNo = item.TaskNo;
+            if (!groupedData[taskNo]) {
+              groupedData[taskNo] = [];
             }
-            groupedData[TaskNo].push(item);
+            groupedData[taskNo].push(item);
           });
 
-          // Format grouped data
+          // Format grouped data with merging based on DwgName
           const formattedData = [];
-          for (const TaskNo in groupedData) {
+
+          for (const taskNo in groupedData) {
+            const taskGroup = groupedData[taskNo];
+
+            // Merge rows with same DwgName
+            const dwgMap = taskGroup.reduce((acc, row) => {
+              const key = row.DwgName;
+              if (!acc[key]) {
+                acc[key] = { ...row };
+              } else {
+                acc[key].QtyScheduled += row.QtyScheduled;
+                acc[key].QtyProgrammed += row.QtyProgrammed;
+                acc[key].QtyProduced += row.QtyProduced;
+                acc[key].QtyInspected += row.QtyInspected;
+                acc[key].QtyCleared += row.QtyCleared;
+                acc[key].Rejections += row.Rejections;
+              }
+              return acc;
+            }, {});
+
+            const mergedRows = Object.values(dwgMap);
+
             formattedData.push({
-              taskNo: TaskNo,
-              Mtrl_Code: groupedData[TaskNo][0].Mtrl_Code,
-              Mtrl_Source: groupedData[TaskNo][0].Mtrl_Source,
-              Operation: groupedData[TaskNo][0].Operation,
-              otherdetails: groupedData[TaskNo],
+              taskNo,
+              Mtrl_Code: mergedRows[0]?.Mtrl_Code,
+              Mtrl_Source: mergedRows[0]?.Mtrl_Source,
+              Operation: mergedRows[0]?.Operation,
+              otherdetails: mergedRows,
             });
           }
 
           res.send(formattedData);
         } else {
-          res
-            .status(404)
-            .send({ error: "No data found for the provided ScheduleId" });
+          res.status(404).send({ error: "No data found for the provided ScheduleId" });
         }
       }
     });
@@ -652,6 +790,8 @@ scheduleListCombined.post(`/PrintPdf`, async (req, res, next) => {
     next(error);
   }
 });
+
+
 
 //get customer name
 scheduleListCombined.post(`/getCustomerNamePDF`, async (req, res, next) => {

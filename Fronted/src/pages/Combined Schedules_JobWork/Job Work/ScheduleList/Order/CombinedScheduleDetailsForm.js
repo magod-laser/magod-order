@@ -12,6 +12,7 @@ import FolderFilesModal from "../../../FolderFilesModal";
 function CombinedScheduleDetailsForm() {
   const location = useLocation();
   const { selectedRow } = location?.state || {};
+  console.log("selectedRow", selectedRow);
 
   const [colordisable, setColorDisable] = useState(false);
 
@@ -24,24 +25,58 @@ function CombinedScheduleDetailsForm() {
     });
   };
 
+  console.log("selectedRowasdfghjkl", selectedRow);
+  // console.log("selectedRowasdfghjkl", selectedRow?.Order_No);
+  // console.log("selectedRowasdfghjkl", selectedRow?.Cust_Code);
+
   //SchedueleList Details
   const [scheduleListDetailsData, setScheduleListDetailsData] = useState([]);
   const getScheduleListDetails = () => {
-    postRequest(
-      endpoints.getSchedudleDetails,
-      {
-        selectedRow,
-      },
-      (response) => {
-        console.log("resss----",response);
-        setScheduleListDetailsData(response.data);
-      }
-    );
+    if (
+      selectedRow?.Order_No?.startsWith("88") 
+      // &&      selectedRow.Cust_Code === "0000"
+    ) {
+      console.log("Sales");
+      postRequest(
+        endpoints.getSchedudleDetailssales,
+        {
+          selectedRow,
+        },
+        (response) => {
+          console.log("resss----", response);
+          setScheduleListDetailsData(response.data);
+        }
+      );
+    } else {
+      console.log("Job Work");
+      postRequest(
+        endpoints.getSchedudleDetails,
+        {
+          selectedRow,
+        },
+        (response) => {
+          console.log("resss----", response);
+          setScheduleListDetailsData(response.data);
+        }
+      );
+    }
+
+    // postRequest(
+    //   endpoints.getSchedudleDetails,
+    //   {
+    //     selectedRow,
+    //   },
+    //   (response) => {
+    //     console.log("resss----",response);
+    //     setScheduleListDetailsData(response.data);
+    //   }
+    // );
   };
+  console.log("scheduleListDetailsData---2", scheduleListDetailsData);
 
   const getBackgroundColor = (item) => {
     // console.log("item",item);
-    
+
     if (!colordisable) {
       if (item.QtyScheduled === 0) {
         // return "red";
@@ -216,7 +251,7 @@ function CombinedScheduleDetailsForm() {
             selectedRow,
           },
           (response) => {
-            console.log("----2",response);
+            console.log("----2", response);
             setScheduleListDetailsData(response);
           }
         );
@@ -282,9 +317,8 @@ function CombinedScheduleDetailsForm() {
   const [files, setFiles] = useState([]);
 
   const onClickOpenFolder = () => {
-  
-    setOpenFileModal(true)
-  
+    setOpenFileModal(true);
+
     // if (openFolder) {
     //   // Prepare data to send in the POST request
     //   const requestData = {
@@ -298,8 +332,6 @@ function CombinedScheduleDetailsForm() {
     // } else {
     //   fileInputRef.current.click();
     // }
-
-    
   };
 
   const handleFileChange = (event) => {
@@ -544,7 +576,7 @@ function CombinedScheduleDetailsForm() {
         <Tab eventKey="" title="Schedule Details">
           <div className="row">
             <div className="col-md-8">
-              <div>
+              <div style={{ height: "290px", overflowY: "scroll" }}>
                 <Table
                   striped
                   className="table-data border"

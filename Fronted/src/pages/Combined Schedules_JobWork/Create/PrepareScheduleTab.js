@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 import { getRequest, postRequest } from "../../api/apiinstance";
 import { endpoints } from "../../api/constants";
 import Popup from "../Components/Popup";
-import { style } from '@mui/system';
+import { style } from "@mui/system";
 import { useLocation } from "react-router-dom";
-
+import { ScheduleDataContext } from "../../../context/CmbineSchDetailsTabContext";
 export default function PrepareScheduleTab({
   oderSchedule,
   custCode,
@@ -34,6 +34,7 @@ export default function PrepareScheduleTab({
   disablebutton,
   setDisableButton,
 }) {
+  const { setBothScheduleData } = useContext(ScheduleDataContext);
   const [openCombinedSchedule, setOpenCombinedSchedule] = useState(false);
   const [openTasked, setOpenTasked] = useState(false);
   const [validationpopup, setValidationPopup] = useState();
@@ -41,38 +42,80 @@ export default function PrepareScheduleTab({
   const [openSchedule, setOpenSchedule] = useState(false);
   const [cmbScheId, setcmbScheId] = useState();
 
-  console.log("preapreScheduleData---",preapreScheduleData);
-  console.log("beforecombine---",beforecombine);
-  console.log("rowselectleft---",rowselectleft);
-  console.log("preapreScheduleData---",  preapreScheduleData  );
-  
+  console.log("preapreScheduleData---", preapreScheduleData);
+  console.log("beforecombine---", beforecombine);
+  console.log("rowselectleft---", rowselectleft);
+  console.log("preapreScheduleData---", preapreScheduleData);
+
   // const location = useLocation();
   //   const { selectedRow } = location?.state || {};
 
   //   console.log("selectedRow---",selectedRow);
-    
-  
-   //SchedueleList Details
-    const [scheduleListDetailsData, setScheduleListDetailsData] = useState([]);
 
-    const getScheduleListDetails = () => {
+  //SchedueleList Details
+  const [scheduleListDetailsData, setScheduleListDetailsData] = useState([]);
+  // const [preapreScheduleData, setPrepareScheduleData] = useState([]);
+
+  const getScheduleListDetailssss = () => {
+    postRequest(
+      endpoints.getSchedudleDetails,
+      {
+        selectedRow: cmbScheId,
+        Component: "Create",
+      },
+      (response) => {
+        console.log("resss----create", response);
+        setScheduleListDetailsData(response.data);
+        setPrepareScheduleData(response.data);
+      }
+    );
+  };
+  console.log("type", type);
+  console.log("cmbScheId", cmbScheId);
+
+  const getScheduleListDetails = () => {
+    if (type === "Sales") {
+      console.log("Sales-----", "sales");
+      postRequest(
+        endpoints.getSchedudleDetailssales,
+        {
+          selectedRow: cmbScheId,
+          Component: "Create",
+        },
+        (response) => {
+          console.log("resss----sales", response.data);
+          // setScheduleListDetailsData(response.data);
+          setBothScheduleData(response.data);
+          setScheduleListDetailsData(response.data);
+          setPrepareScheduleData(response.data);
+        }
+      );
+    } else {
+      console.log("Job Work");
       postRequest(
         endpoints.getSchedudleDetails,
         {
-          selectedRow:cmbScheId,
-          Component: "Create"
+          selectedRow: cmbScheId,
+          Component: "Create",
         },
         (response) => {
-          console.log("resss----create",response);
+          console.log("resss----", response);
+          // setScheduleListDetailsData(response.data);
           setScheduleListDetailsData(response.data);
-          setPrepareScheduleData(response.data)
+          setPrepareScheduleData(response.data);
         }
       );
-    };
-  
-useEffect(()=>{
-  getScheduleListDetails();
-},[cmbScheId])
+    }
+  };
+
+  // setPrepareScheduleData(scheduleListDetailsData);
+  console.log("Sales--scheduleListDetailsData", scheduleListDetailsData);
+  console.log("Sales--preapreScheduleData", preapreScheduleData);
+
+  useEffect(() => {
+    getScheduleListDetails();
+    // setPrepareScheduleData(scheduleListDetailsData);
+  }, [cmbScheId]);
   //open CombineSchedule Modal
   const openCombineScheduleModal = () => {
     setOpenCombinedSchedule(true);
@@ -271,8 +314,15 @@ useEffect(()=>{
   //Create Schedule
   const [combinedScheduleNo, setCombinedScheduleNo] = useState("");
   const onClickCreateSchedule = () => {
-    if (selectedSalesContact === "" || null) {
+    console.log("selectedSalesContact---check", selectedSalesContact);
+
+    if (
+      selectedSalesContact === "" ||
+      selectedSalesContact === null ||
+      selectedSalesContact === "undefined"
+    ) {
       alert("Please Select Sales Contact");
+      return;
     } else {
       if (type === "JobWork") {
         if (rowselectleft.length <= 1) {
@@ -288,14 +338,14 @@ useEffect(()=>{
               selectedSalesContact: selectedSalesContact,
               Date: storedDate,
               ScheduleDate: ScheduleDate,
-              Operation :preapreScheduleData[0].Operation,              
-              Mtrl_Source:preapreScheduleData[0].Mtrl_Source
+              Operation: preapreScheduleData[0].Operation,
+              Mtrl_Source: preapreScheduleData[0].Mtrl_Source,
             },
             (response) => {
               // console.log("response----",response);
               // console.log("response----",response.cmbSchId);
-              setcmbScheId(response.cmbSchId)
-              
+              setcmbScheId(response.cmbSchId);
+
               setDisableButton(true);
               console.log(
                 "response after create is",
@@ -323,10 +373,13 @@ useEffect(()=>{
               selectedSalesContact: selectedSalesContact,
               Date: storedDate,
               ScheduleDate: ScheduleDate,
-              Operation :preapreScheduleData[0].Operation,              
-              Mtrl_Source:preapreScheduleData[0].Mtrl_Source
+              Operation: preapreScheduleData[0].Operation,
+              Mtrl_Source: preapreScheduleData[0].Mtrl_Source,
             },
             (response) => {
+              console.log("response.cmbSchId", response.cmbSchId);
+
+              setcmbScheId(response.cmbSchId);
               setDisableButton(true);
               setCombinedScheduleNo(response.combinedScheduleNos[0]);
               openCombineScheduleModal();
@@ -499,56 +552,50 @@ useEffect(()=>{
     setPrepareScheduleData([]);
   }, [selectedCustomerSales]);
 
-
   // ---------------------------------
 
-  
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
-  
-    // sorting function for table headings of the table
-    const requestSort = (key) => {
-      console.log("entering into the request sort");
-      let direction = "asc";
-      if (sortConfig.key === key && sortConfig.direction === "asc") {
-        direction = "desc";
-      }
-      setSortConfig({ key, direction });
-    };
-  
-    const sortedData = () => {
-      const dataCopy = [...oderSchedule];
-  
-      if (sortConfig.key) {
-        dataCopy.sort((a, b) => {
-          let valueA = a[sortConfig.key];
-          let valueB = b[sortConfig.key];
-  
-          // Convert only for the "intiger" columns
-          if (sortConfig.key === "OrdSchNo") {
-            valueA = parseFloat(valueA);
-            valueB = parseFloat(valueB);
-          }
-  
-          // Convert Printable_Order_Date to date object for proper sorting
-          if (
-            sortConfig.key === "schTgtDateFormatted" 
-            
-          ) {
-            valueA = new Date(valueA.split("/").reverse().join("-")); // Convert "DD/MM/YYYY" to "YYYY-MM-DD"
-            valueB = new Date(valueB.split("/").reverse().join("-"));
-          }
-          if (valueA < valueB) {
-            return sortConfig.direction === "asc" ? -1 : 1;
-          }
-          if (valueA > valueB) {
-            return sortConfig.direction === "asc" ? 1 : -1;
-          }
-          return 0;
-        });
-      }
-      return dataCopy;
-    };
-  
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+
+  // sorting function for table headings of the table
+  const requestSort = (key) => {
+    console.log("entering into the request sort");
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedData = () => {
+    const dataCopy = [...oderSchedule];
+
+    if (sortConfig.key) {
+      dataCopy.sort((a, b) => {
+        let valueA = a[sortConfig.key];
+        let valueB = b[sortConfig.key];
+
+        // Convert only for the "intiger" columns
+        if (sortConfig.key === "OrdSchNo") {
+          valueA = parseFloat(valueA);
+          valueB = parseFloat(valueB);
+        }
+
+        // Convert Printable_Order_Date to date object for proper sorting
+        if (sortConfig.key === "schTgtDateFormatted") {
+          valueA = new Date(valueA.split("/").reverse().join("-")); // Convert "DD/MM/YYYY" to "YYYY-MM-DD"
+          valueB = new Date(valueB.split("/").reverse().join("-"));
+        }
+        if (valueA < valueB) {
+          return sortConfig.direction === "asc" ? -1 : 1;
+        }
+        if (valueA > valueB) {
+          return sortConfig.direction === "asc" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return dataCopy;
+  };
 
   return (
     <>
@@ -989,10 +1036,9 @@ useEffect(()=>{
                   <tbody className="tablebody table-space">
                     {beforecombine.map((value, key) => {
                       const date = new Date(value.schTgtDate);
-                      const formattedDate = date.toLocaleDateString('en-GB'); 
-                      console.log("formattedDate",formattedDate);
-                      
-                      
+                      const formattedDate = date.toLocaleDateString("en-GB");
+                      console.log("formattedDate", formattedDate);
+
                       const isChecked = rowselectleft.some(
                         (selectedItem) =>
                           selectedItem.ScheduleId === value.ScheduleId
@@ -1080,19 +1126,24 @@ useEffect(()=>{
                     })}
                   </tbody> */}
 
-
                   {/* // Condtion based table mapping with prepare and sch dtat */}
                   <tbody className="tablebody table-space">
-  {(cmbScheId ? scheduleListDetailsData : preapreScheduleData)?.map((data, key) => (
-    <tr key={key}>
-      <td style={{ textAlign: "center" }}>{data.DwgName}</td>
-      <td style={{ textAlign: "right" }}>{data.QtyScheduled}</td>
-      <td style={{ textAlign: "center" }}>{data.MProcess}</td>
-      <td style={{ textAlign: "center" }}>{data.Operation}</td>
-    </tr>
-  ))}
-</tbody>
-
+                    {(cmbScheId
+                      ? scheduleListDetailsData
+                      : preapreScheduleData
+                    )?.map((data, key) => (
+                      <tr key={key}>
+                        <td style={{ textAlign: "center" }}>{data.DwgName}</td>
+                        <td style={{ textAlign: "right" }}>
+                          {data.QtyScheduled}
+                        </td>
+                        <td style={{ textAlign: "center" }}>{data.MProcess}</td>
+                        <td style={{ textAlign: "center" }}>
+                          {data.Operation}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
                 </Table>
               </div>
             </div>
@@ -1119,19 +1170,20 @@ useEffect(()=>{
                   </button>
                 </div>
               </div>
-              <div className="mt-1" 
-              // style={{ overflowY: "scroll" }}
-              style={{
-                height: "500px",
-                overflowY: "scroll",
-                overflowX: "scroll",
-              }}
+              <div
+                className="mt-1"
+                // style={{ overflowY: "scroll" }}
+                style={{
+                  height: "500px",
+                  overflowY: "scroll",
+                  overflowX: "scroll",
+                }}
               >
                 <Table
                   // striped
                   bordered
                   className="table-data border"
-                  style={{ border: "1px"}}
+                  style={{ border: "1px" }}
                 >
                   <thead
                     className="tableHeaderBGColor"
@@ -1144,16 +1196,19 @@ useEffect(()=>{
                     }}
                   >
                     <tr>
-                      <th >Select</th>
-                      <th onClick={() => requestSort("OrdSchNo")}>Order Schedule No</th>
+                      <th>Select</th>
+                      <th onClick={() => requestSort("OrdSchNo")}>
+                        Order Schedule No
+                      </th>
                       <th onClick={() => requestSort("PO")}>PO</th>
-                      <th onClick={() => requestSort("schTgtDateFormatted")}>Target Date</th>
+                      <th onClick={() => requestSort("schTgtDateFormatted")}>
+                        Target Date
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="tablebody table-space">
                     {/* {oderSchedule.map((item, key) => { */}
                     {sortedData()?.map((item, key) => {
-                   
                       const isChecked = selectedRows.some(
                         (selectedItem) =>
                           selectedItem.ScheduleId === item.ScheduleId

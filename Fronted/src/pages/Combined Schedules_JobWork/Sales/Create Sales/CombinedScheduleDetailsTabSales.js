@@ -12,7 +12,7 @@ export default function CombinedScheduleDetailsTab({
         <div className="ip-box">
           <div className="row">
             <div className="col-md-4 mb-2 col-sm-12">
-              <label className="form-label">No</label>
+              <label className="form-label">No000000</label>
               <input
                 class=""
                 type="text"

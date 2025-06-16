@@ -361,9 +361,11 @@ function OrdrTable(props) {
                         alignItems: "end",
                       }}
                       value={OrdrDetailsItem.MtrlCost}
+                      disabled={OrdrDetailsItem.Mtrl_Source && ordrDetailsChange.MtrlSrc === "Customer"}
                       onChange={(e) => {
                         handleJWMR(i, "MtrlCost", e.target.value, true);
                       }}
+
                     />
                   </td>
                   {OrdrDetailsItem.Mtrl_Source === "Customer" ? (
