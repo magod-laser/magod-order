@@ -13,6 +13,7 @@ function CombinedScheduleDetailsForm() {
   const location = useLocation();
   const { selectedRow } = location?.state || {};
   console.log("selectedRow", selectedRow);
+  // console.log("Comb_Order_No", selectedRow?.Order_No);
 
   const [colordisable, setColorDisable] = useState(false);
 
@@ -33,7 +34,7 @@ function CombinedScheduleDetailsForm() {
   const [scheduleListDetailsData, setScheduleListDetailsData] = useState([]);
   const getScheduleListDetails = () => {
     if (
-      selectedRow?.Order_No?.startsWith("88") 
+      selectedRow?.Order_No?.startsWith("88")
       // &&      selectedRow.Cust_Code === "0000"
     ) {
       console.log("Sales");
@@ -191,7 +192,7 @@ function CombinedScheduleDetailsForm() {
         selectedRow,
       },
       (response) => {
-        // console.log(response.data);
+        console.log("Original Schedules", response.data);
         setOrinalScheduledata(response);
       }
     );
@@ -317,7 +318,20 @@ function CombinedScheduleDetailsForm() {
   const [files, setFiles] = useState([]);
 
   const onClickOpenFolder = () => {
+    
+  //  let Comb_Order_No = selectedRow.Order_No;
+    let docNo = selectedRow.Order_No;
+
     setOpenFileModal(true);
+   // let destPath =  process.env.REACT_APP_SERVER_FILES + `\\` + docNo + "\\" + selectedFolder + "\\"; //"\\DXF\\";
+    let despath = process.env.REACT_APP_SERVER_FILES + `\\Wo\\` + docNo + "\\";
+
+    postRequest(endpoints.getFolders, { docNo, despath }, (folderslist) => {
+      console.log("folderslist : ", folderslist);
+      setFiles(folderslist);
+    });
+
+    // setOpenFileModal(true);
 
     // if (openFolder) {
     //   // Prepare data to send in the POST request
@@ -342,12 +356,42 @@ function CombinedScheduleDetailsForm() {
   const fileInputRef = React.createRef();
 
   const onClickCopyDwg = () => {
+    // console.log("order nos before combine",orderNumbers);
+    // console.log("order nos after combine", selectedRow.Order_No);
+    // console.log("DwgData", DwgData);
+
+    // let Indi_orderNumbers = orderNumbers;
+    let Comb_Order_No = selectedRow.Order_No;
+    let DwgDatas = DwgData;
+
+    //  let custcd = OrderData.Cust_Code;
+    // let custpath = process.env.REACT_APP_SERVER_CUST_PATH;
+    // let orderno = OrderData.Order_No;
+    // let srcfolder = custpath + "\\" + custcd + "\\DXF\\";
+    // let destfolder =
+    //   process.env.REACT_APP_SERVER_FILES + "\\" + orderno + "\\DXF\\";
     // Prepare data to send in the POST request
-    const requestData = {
-      selectedRow,
-      orinalScheudledata,
-    };
-    postRequest(endpoints.CopyDwg, { requestData }, (response) => {});
+
+    //  let dwgelement = [];
+
+    //     // Filter data where Dwg equals 0
+    //     const zerodwgdata = OrdrDetailsData.filter((data) => data.Dwg === 0);
+
+    //     // Extract only the DwgName from filtered data
+    //     dwgelement = zerodwgdata.map((data) => data.DwgName);
+
+    //     console.log("Filtered DWG Names:", dwgelement);
+
+    // const requestData = {
+    //   selectedRow,
+    //   orinalScheudledata,
+    // };
+    //  srcfolder, destfolder, orderdwg: dwgelement
+    postRequest(
+      endpoints.cmbordcopydxf,
+      { Comb_Order_No, DwgDatas },
+      (response) => {}
+    );
   };
 
   //
@@ -407,6 +451,21 @@ function CombinedScheduleDetailsForm() {
   const closeButton = () => {
     navigate("/Orders/JobWork/ScheduleList/Order", {});
   };
+
+  // console.log("orinalScheudledata",orinalScheudledata);
+  // console.log("orinalScheudleTable2",orinalScheudleTable2);
+  // console.log("scheduleListDetailsData",scheduleListDetailsData);
+
+  const orderNumbers = orinalScheudledata.map((item) => item.Order_No);
+  const DwgData = scheduleListDetailsData.map((item) => ({
+    DwgName: item.DwgName,
+    DwgName_Details: item.DwgName_Details,
+    order_no: item.Order_No,
+  }));
+  console.log("DwgData", DwgData);
+  // console.log("Ind_DWgs before combine",Ind_DWgs);
+  // console.log("order nos before combine",orderNumbers);
+  // console.log("order nos after combine", selectedRow.Order_No);
 
   return (
     <div>
@@ -560,7 +619,7 @@ function CombinedScheduleDetailsForm() {
           ) : null}
 
           <button className="button-style" onClick={onClickCopyDwg}>
-            Copy Drawings
+            Copy Drawings 1234
           </button>
           <button className="button-style" onClick={PrintPdf}>
             Print

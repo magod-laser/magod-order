@@ -437,6 +437,8 @@ export const endpoints = {
   ScheduleListClosedSales: `${API}/scheduleListCombined/ScheduleListClosedSales`,
   openFolder: `${API}/scheduleListCombined/files`,
   CopyDwg: `${API}/scheduleListCombined/copyDwg`,
+  cmbordcopydxf: `${API}/file/cmbordcopydxf`,
+  getFolders: `${API}/file/getfoldernames`,
   onClickLoginSchedule: `${API}/ScheduleList/scheduleAfterLogin`,
 
   // suresh sir code
