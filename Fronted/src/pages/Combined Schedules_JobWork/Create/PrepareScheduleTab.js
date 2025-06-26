@@ -41,6 +41,7 @@ export default function PrepareScheduleTab({
   const [rowselectleftSales, setRowSelectLeftSales] = useState([]);
   const [openSchedule, setOpenSchedule] = useState(false);
   const [cmbScheId, setcmbScheId] = useState();
+  const [disableButtonPrep, setDisableButtonPrep] = useState();
 
   console.log("preapreScheduleData---", preapreScheduleData);
   console.log("beforecombine---", beforecombine);
@@ -185,26 +186,40 @@ export default function PrepareScheduleTab({
   //   setSelectedRowsSales(updatedSelectedRows);
   // };
 
+  // const onClickSelectAllRightSales = () => {
+  //   const updatedSelectedRows = [...selectedRowsSales];
+
+  //   oderSchedule.forEach((item) => {
+  //     const selectedItemIndex = updatedSelectedRows.findIndex(
+  //       (selectedItem) => selectedItem.TaskNo === item.TaskNo
+  //     );
+
+  //     if (selectedItemIndex !== -1) {
+  //       // If the item is already selected, remove it
+  //       updatedSelectedRows.splice(selectedItemIndex, 1);
+  //     } else {
+  //       // If the item is not selected, add it
+  //       updatedSelectedRows.push(item);
+  //     }
+  //   });
+
+  //   setSelectedRowsSales(updatedSelectedRows);
+  // };
   const onClickSelectAllRightSales = () => {
-    const updatedSelectedRows = [...selectedRowsSales];
-
-    oderSchedule.forEach((item) => {
-      const selectedItemIndex = updatedSelectedRows.findIndex(
-        (selectedItem) => selectedItem.TaskNo === item.TaskNo
-      );
-
-      if (selectedItemIndex !== -1) {
-        // If the item is already selected, remove it
-        updatedSelectedRows.splice(selectedItemIndex, 1);
-      } else {
-        // If the item is not selected, add it
-        updatedSelectedRows.push(item);
-      }
-    });
+    // Create a new selection that includes all items from oderSchedule
+    const updatedSelectedRows = [
+      ...selectedRowsSales,
+      ...oderSchedule.filter(
+        (item) =>
+          !selectedRowsSales.some(
+            (selectedItem) => selectedItem.TaskNo === item.TaskNo
+          )
+      ),
+    ];
 
     setSelectedRowsSales(updatedSelectedRows);
   };
-
+  
   const onClickReverse1 = () => {
     // Create a reversed array of selected rows
     const reversedSelection1 = oderSchedule
@@ -268,34 +283,92 @@ export default function PrepareScheduleTab({
     setRowSelectLeftSales(updatedSelectedRows1);
   };
 
+  // const onClickReverse = () => {
+  //   // Create a reversed array of selected rows
+  //   const reversedSelection = beforecombine
+  //     .map((value) => {
+  //       const isSelected = rowselectleft.some(
+  //         (selectedItem) => selectedItem.TaskNo === value.TaskNo
+  //       );
+  //       return isSelected ? undefined : value;
+  //     })
+  //     .filter((value) => value !== undefined);
+  //   // Update the rowselectleft state with the reversed selection
+  //   setRowSelectLeft(reversedSelection);
+  // };
+  // const onClickReverse = () => {
+  //   alert("revrse jab work left")
+  //   const reversedSelection = beforecombine.filter(
+  //     (item) =>
+  //       !rowselectleft.some(
+  //         (selectedItem) => selectedItem.TaskNo === item.TaskNo
+  //       )
+  //   );
+  //   setRowSelectLeft(reversedSelection);
+  // };
   const onClickReverse = () => {
-    // Create a reversed array of selected rows
-    const reversedSelection = beforecombine
-      .map((value) => {
-        const isSelected = rowselectleft.some(
-          (selectedItem) => selectedItem.TaskNo === value.TaskNo
-        );
-        return isSelected ? undefined : value;
-      })
-      .filter((value) => value !== undefined);
-    // Update the rowselectleft state with the reversed selection
-    setRowSelectLeft(reversedSelection);
+    // Step 1: Find items that are not selected
+    const reversedSelection = beforecombine.filter((item) => {
+      const isSelected = rowselectleft.some(
+        (selectedItem) => selectedItem.ScheduleId === item.ScheduleId
+      );
+      return !isSelected;
+    });
+
+    // Step 2: Keep selected items not in beforecombine
+    const remainingSelection = rowselectleft.filter((selectedItem) => {
+      const isPartOfCombine = beforecombine.some(
+        (item) => item.ScheduleId === selectedItem.ScheduleId
+      );
+      return !isPartOfCombine;
+    });
+
+    const updatedSelection = [...reversedSelection, ...remainingSelection];
+
+    setRowSelectLeft(updatedSelection);
   };
 
+  // const onClickReverseSales = () => {
+  //   // Create a reversed array of selected rows
+  //   alert("reverse left sales")
+  //   const reversedSelection = beforecombine
+  //     .map((value) => {
+  //       const isSelected = rowselectleftSales.some(
+  //         (selectedItem) => selectedItem.TaskNo === value.TaskNo
+  //       );
+  //       return isSelected ? undefined : value;
+  //     })
+  //     .filter((value) => value !== undefined);
+  //   // Update the rowselectleft state with the reversed selection
+  //   setRowSelectLeftSales(reversedSelection);
+  // };
+
+  
   const onClickReverseSales = () => {
-    // Create a reversed array of selected rows
-    const reversedSelection = beforecombine
-      .map((value) => {
-        const isSelected = rowselectleftSales.some(
-          (selectedItem) => selectedItem.TaskNo === value.TaskNo
-        );
-        return isSelected ? undefined : value;
-      })
-      .filter((value) => value !== undefined);
-    // Update the rowselectleft state with the reversed selection
-    setRowSelectLeftSales(reversedSelection);
-  };
 
+    const reversedSelection = beforecombineSales.filter((value) => {
+      const isSelected = rowselectleftSales.some(
+        (selectedItem) => selectedItem.TaskNo === value.TaskNo
+      );
+      return !isSelected;
+    });
+
+    const remainingSelection = rowselectleftSales.filter((selectedItem) => {
+      const isPartOfCombine = beforecombineSales.some(
+        (item) => item.TaskNo === selectedItem.TaskNo
+      );
+      return !isPartOfCombine;
+    });
+
+    const updatedSelection = [...reversedSelection, ...remainingSelection];
+
+    
+
+    setRowSelectLeftSales(updatedSelection);
+  };
+  
+  
+  
   const getAlldataAfterCombineSchedule = () => {
     postRequest(
       endpoints.afterCombinedSchedule,
@@ -348,6 +421,7 @@ export default function PrepareScheduleTab({
               setcmbScheId(response.cmbSchId);
 
               setDisableButton(true);
+              setDisableButtonPrep(true);
               console.log(
                 "response after create is",
                 response.combinedScheduleNos[0],
@@ -382,6 +456,7 @@ export default function PrepareScheduleTab({
 
               setcmbScheId(response.cmbSchId);
               setDisableButton(true);
+              setDisableButtonPrep(true);
               setCombinedScheduleNo(response.combinedScheduleNos[0]);
               openCombineScheduleModal();
             }
@@ -625,6 +700,7 @@ export default function PrepareScheduleTab({
               <button
                 className="button-style group-button"
                 onClick={onclickpreapreScheduleButtonSales}
+                disabled={disableButtonPrep}
               >
                 Prepare Schedule
               </button>
@@ -998,6 +1074,7 @@ export default function PrepareScheduleTab({
                   <button
                     className="button-style  group-button"
                     onClick={onclickpreapreScheduleButton}
+                    disabled={disableButtonPrep}
                   >
                     Prepare Schedule
                   </button>
