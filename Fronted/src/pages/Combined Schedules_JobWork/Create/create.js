@@ -189,12 +189,12 @@ export default function Create({ type }) {
   console.log("preapreScheduleData------",preapreScheduleData);
   
   const [selectedSalesContact, setSelectedSalesContact] = useState("");
-  useEffect(() => {
-    // Set default value when component mounts
-    if (oderSchedule.length > 0) {
-      setSelectedSalesContact(oderSchedule[0]?.SalesContact);
-    }
-  }, [oderSchedule]);
+  // useEffect(() => {
+  //   // Set default value when component mounts
+  //   if (oderSchedule.length > 0) {
+  //     setSelectedSalesContact(oderSchedule[0]?.SalesContact);
+  //   }
+  // }, [oderSchedule]);
 
   //sales
   const [beforecombineSales, setBeforeCombineSales] = useState([]);

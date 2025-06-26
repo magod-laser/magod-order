@@ -4,11 +4,11 @@ const userRouter = require("express").Router();
 var createError = require("http-errors");
 const CryptoJS = require("crypto-js");
 var bodyParser = require("body-parser");
-
+const { setConfig } = require("../routes/Utils/globalConfig"); // adjust path
 const { setupQuery, setupQueryMod } = require("../helpers/dbconn");
 const { signAccessToken } = require("../helpers/jwt_helper");
 const { logger } = require("../helpers/logger");
-
+const path = require("path");
 const { exec } = require("child_process");
 const fs = require("fs");
 // const subprocess = require("subprocess");
@@ -28,10 +28,10 @@ userRouter.post(`/login`, async (req, res, next) => {
         left join magod_setup.magodlaser_units unt on unt.UnitID = usr.UnitID WHERE usr.UserName = '${username}' and usr.ActiveUser = '1'`,
       async (err, d) => {
         if (err) logger.error(err);
-		logger.error(
-      `Login failed for username '${username}': Invalid username or password.`
-    );
-    // res.status(401).send({ error: "Invalid username or password" });
+        logger.error(
+          `Login failed for username '${username}': Invalid username or password.`
+        );
+        // res.status(401).send({ error: "Invalid username or password" });
         let data = d;
         if (data.length > 0) {
           if (data[0]["Password"] == passwrd) {
@@ -82,7 +82,6 @@ userRouter.post(`/login`, async (req, res, next) => {
 });
 
 userRouter.post(`/savemenurolemapping`, async (req, res, next) => {
-
   let sucs = false;
   let updt = false;
   let nomenu = false;
@@ -516,38 +515,121 @@ userRouter.post(`/addusermenus`, async (req, res, next) => {
 });
 
 // New endpoint to fetch menu URLs (no login)
+// userRouter.post("/fetchMenuUrls", async (req, res, next) => {
+//   try {
+//     const { role, username } = req.body;
+//     // console.log("req.body", req.body);
+//     if (!role || !username) return res.send(createError.BadRequest());
+
+//     setupQueryMod(
+//       `Select usr.Name, usr.UserName,usr.Password,usr.Role, unt.UnitName,usr.ActiveUser from magod_setup.magod_userlist usr
+//         left join magod_setup.magodlaser_units unt on unt.UnitID = usr.UnitID WHERE usr.UserName = '${username}' and usr.ActiveUser = '1'`,
+//       async (err, d) => {
+//         if (err) logger.error(err);
+//         let data = d;
+//         if (data.length > 0) {
+//           setupQueryMod(
+//             `Select m.MenuUrl,ModuleId  from magod_setup.menumapping mm
+//                 left outer join magod_setup.menus m on m.Id = mm.MenuId
+//                 where mm.Role = '${data[0]["Role"]}' and mm.ActiveMenu = '1'`,
+//             async (err, mdata) => {
+//               if (err) logger.error(err);
+//               let menuarray = [];
+//               mdata.forEach((element) => {
+//                 menuarray.push(element["MenuUrl"]);
+//               });
+//               const moduleIds = [
+//                 ...new Set(
+//                   mdata.map((menu) => menu.ModuleId).filter((id) => id !== null)
+//                 ),
+//               ];
+//               res.send({
+//                 data: { ...data, access: menuarray },
+//                 moduleIds: moduleIds,
+//               });
+//             }
+//           );
+//         } else {
+//           res.send(createError.Unauthorized("Invalid Username"));
+//           logger.error(` Failed - ${username} IP : ${req.ip}`);
+//         }
+//       }
+//     );
+//   } catch (error) {
+//     next(error);
+//     logger.error(`Error - ${error}`);
+//   }
+// });
 userRouter.post("/fetchMenuUrls", async (req, res, next) => {
   try {
     const { role, username } = req.body;
-    // console.log("req.body", req.body);
     if (!role || !username) return res.send(createError.BadRequest());
 
     setupQueryMod(
-      `Select usr.Name, usr.UserName,usr.Password,usr.Role, unt.UnitName,usr.ActiveUser from magod_setup.magod_userlist usr
-        left join magod_setup.magodlaser_units unt on unt.UnitID = usr.UnitID WHERE usr.UserName = '${username}' and usr.ActiveUser = '1'`,
+      `SELECT usr.Name, usr.UserName, usr.Password, usr.Role, unt.UnitName, usr.ActiveUser 
+       FROM magod_setup.magod_userlist usr
+       LEFT JOIN magod_setup.magodlaser_units unt ON unt.UnitID = usr.UnitID 
+       WHERE usr.UserName = '${username}' AND usr.ActiveUser = '1'`,
       async (err, d) => {
-        if (err) logger.error(err);
+        if (err) {
+          logger.error(err);
+          return res.status(500).send({ error: "Error fetching user details" });
+        }
+
         let data = d;
         if (data.length > 0) {
+          // Fetch menu URLs
           setupQueryMod(
-            `Select m.MenuUrl,ModuleId  from magod_setup.menumapping mm
-                left outer join magod_setup.menus m on m.Id = mm.MenuId
-                where mm.Role = '${data[0]["Role"]}' and mm.ActiveMenu = '1'`,
+            `SELECT m.MenuUrl, m.ModuleId  
+             FROM magod_setup.menumapping mm
+             LEFT OUTER JOIN magod_setup.menus m ON m.Id = mm.MenuId
+             WHERE mm.Role = '${data[0]["Role"]}' AND mm.ActiveMenu = '1'`,
             async (err, mdata) => {
-              if (err) logger.error(err);
-              let menuarray = [];
-              mdata.forEach((element) => {
-                menuarray.push(element["MenuUrl"]);
-              });
+              if (err) {
+                logger.error(err);
+                return res
+                  .status(500)
+                  .send({ error: "Error fetching menu details" });
+              }
+
+              const menuarray = mdata.map((el) => el.MenuUrl);
               const moduleIds = [
                 ...new Set(
                   mdata.map((menu) => menu.ModuleId).filter((id) => id !== null)
                 ),
               ];
-              res.send({
-                data: { ...data, access: menuarray },
-                moduleIds: moduleIds,
-              });
+              
+              setupQueryMod(
+                `SELECT * FROM magod_setup.setupdetails`,
+                (err, setupDetailsData) => {
+                  if (err) {
+                    logger.error(err);
+                    return res
+                      .status(500)
+                      .send({ error: "Error fetching setup details" });
+                  }
+
+                  const configObject = {};
+                  setupDetailsData.forEach((item) => {
+                    if (item.SetUpPara && item.SetUpValue) {
+                      const key = item.SetUpPara.replace(
+                        /\s+/g,
+                        "_"
+                      ).toUpperCase();
+                      configObject[key] = item.SetUpValue;
+                    }
+                  });
+
+                  // Set globally
+                  setConfig(configObject);
+                   // Final response
+                  res.send({
+                    data: { ...data[0], access: menuarray },
+                    moduleIds: moduleIds,
+                    setupDetails: setupDetailsData,
+                  });
+                }
+              );
             }
           );
         } else {
@@ -586,6 +668,5 @@ userRouter.post("/openexplorer", (req, res) => {
 //   }
 //   console.log(`Output: ${stdout}`);
 // });
-
 
 module.exports = userRouter;
