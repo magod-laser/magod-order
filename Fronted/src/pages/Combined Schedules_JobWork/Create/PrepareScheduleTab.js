@@ -275,12 +275,13 @@ export default function PrepareScheduleTab({
   };
 
   const onClickSelectAllLeftSales = () => {
-    // If no rows are selected, select all rows; otherwise, do nothing
-    const updatedSelectedRows1 =
-      rowselectleftSales.length === 0
-        ? [...beforecombineSales]
-        : [...beforecombineSales];
-    setRowSelectLeftSales(updatedSelectedRows1);
+    // // If no rows are selected, select all rows; otherwise, do nothing
+    // const updatedSelectedRows1 =
+    //   rowselectleftSales.length === 0
+    //     ? [...beforecombineSales]
+    //     : [...beforecombineSales];
+    // setRowSelectLeftSales(updatedSelectedRows1);
+    setRowSelectLeftSales([...beforecombineSales]); // Always select all
   };
 
   // const onClickReverse = () => {
