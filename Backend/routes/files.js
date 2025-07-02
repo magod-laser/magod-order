@@ -13,9 +13,11 @@ const path = require("path");
 const { misQueryMod } = require("../helpers/dbconn");
 const CustomStorageEngine = require("../helpers/storageEngine");
 
+const pathConfig = require("../routes/Utils/globalConfig");
+
+
 // const basefolder='C:\\Magod\\Jigani';
 const basefolder = process.env.FILE_SERVER_PATH;
-console.log("basefolder---", basefolder);
 
 var storage = new CustomStorageEngine({
   destination: function (req, file, cb) {
@@ -28,6 +30,7 @@ var storage = new CustomStorageEngine({
 const upload = multer({ storage: storage });
 
 fileRouter.post("/uploaddxf", upload.array("files"), function (req, res, next) {
+  
   console.log(" Upload DXF ");
   console.log(req.files);
   res.send({ status: "success" });
@@ -47,47 +50,48 @@ fileRouter.post("/getdxf", async (req, res, next) => {
   }
 });
 
-fileRouter.post('/getfoldernames', async (req, res) => {
-    console.log("getfoldernames")
-    try {
-//        process.env.FILE_SERVER_PATH
-        const quoteno = req.body.docNo;
-       
-        let filepath = process.env.FILE_SERVER_PATH+"\\WO\\"; //.replace("/","_");
-        console.log("filepath :", filepath);
-        // const path = basefolder + req.body.filepath + "\\" + quoteno;
+fileRouter.post("/getfoldernames", async (req, res) => {
+  console.log("getfoldernames");
+  try {
+    //        process.env.FILE_SERVER_PATH
+    const quoteno = req.body.docNo;
 
-        //  const directoryPath = path.join(__dirname, 'your-directory');
-        const directoryPath = filepath + quoteno + "\\"; // + quoteno;
-        console.log("directoryPath :", directoryPath);
-        // Step 1: Read the directory
-        // fs.readdir(directoryPath, (err, files) => {
-        //   if (err) {
-        //     return res.status(500).send('Unable to scan directory');
-        //   }
-        //  // const folders = files.filter(file => file.isDirectory()).map(folder => folder.name);
-        //   const folders = files.filter(file => file.type === 'directory').map(folder => folder.name);
-        //   console.log('Folders:', folders);
+    let filepath = process.env.FILE_SERVER_PATH + "\\WO\\"; //.replace("/","_");
+    console.log("filepath :", filepath);
+    // const path = basefolder + req.body.filepath + "\\" + quoteno;
 
-        const files = fs.readdirSync(directoryPath).map(file => {
-            //   const fullPath = path.join(directoryPath, file);
-            //   return { name: file, isDirectory: fs.statSync(fullPath).isDirectory() };
-            return { name: file, isDirectory: fs.statSync(directoryPath).isDirectory() };
-        });
+    //  const directoryPath = path.join(__dirname, 'your-directory');
+    const directoryPath = filepath + quoteno + "\\"; // + quoteno;
+    console.log("directoryPath :", directoryPath);
+    // Step 1: Read the directory
+    // fs.readdir(directoryPath, (err, files) => {
+    //   if (err) {
+    //     return res.status(500).send('Unable to scan directory');
+    //   }
+    //  // const folders = files.filter(file => file.isDirectory()).map(folder => folder.name);
+    //   const folders = files.filter(file => file.type === 'directory').map(folder => folder.name);
+    //   console.log('Folders:', folders);
 
-        const folders = files.filter(file => file.isDirectory).map(folder => folder.name);
-        console.log("Folders:", folders); // Should list only the directories
-        res.json(folders);
-        // });
+    const files = fs.readdirSync(directoryPath).map((file) => {
+      //   const fullPath = path.join(directoryPath, file);
+      //   return { name: file, isDirectory: fs.statSync(fullPath).isDirectory() };
+      return {
+        name: file,
+        isDirectory: fs.statSync(directoryPath).isDirectory(),
+      };
+    });
 
-
-    } catch (error) {
-        console.log(error);
-        //       next(error);
-    }
-
+    const folders = files
+      .filter((file) => file.isDirectory)
+      .map((folder) => folder.name);
+    console.log("Folders:", folders); // Should list only the directories
+    res.json(folders);
+    // });
+  } catch (error) {
+    console.log(error);
+    //       next(error);
+  }
 });
-
 
 fileRouter.get("/orddxf", async (req, res, next) => {
   console.log(" Order DXF ");
@@ -506,12 +510,12 @@ fileRouter.post("/getfolderfilenames", async (req, res) => {
   console.log("req.body-getfolderfilenames", req.body);
   let filedetails = [];
   try {
-    console.log("basefolder from .env : ",process.env.FILE_SERVER_PATH)
-    console.log("destPath before : ",req.body.destPath)
-  //  let strpath = path.join(process.env.FILE_SERVER_PATH,"\\", req.body.destPath);
-   let strpath = req.body.destPath;
+    console.log("basefolder from .env : ", process.env.FILE_SERVER_PATH);
+    console.log("destPath before : ", req.body.destPath);
+    //  let strpath = path.join(process.env.FILE_SERVER_PATH,"\\", req.body.destPath);
+    let strpath = req.body.destPath;
 
-   console.log("destPath after--", strpath);
+    console.log("destPath after--", strpath);
 
     const directoryPath = strpath; // '/path/to/your/directory';
 
@@ -625,70 +629,76 @@ fileRouter.get("/orddxf", async (req, res, next) => {
   }
 });
 
-fileRouter.post('/getfolderfilenames', async (req, res) => {
+fileRouter.post("/getfolderfilenames", async (req, res) => {
+  let filedetails = [];
+  try {
+    let path = basefolder + req.body.destPath;
+    const directoryPath = path; // '/path/to/your/directory';
 
-	let filedetails = [];
-	try {
+    // Step 2: Get all file names in the directory
+    const files = fsSync
+      .readdirSync(directoryPath, { withFileTypes: true })
+      .filter((dirent) => dirent.isFile()) // Only include files, not directories
+      .map((dirent) => {
+        const filePath = directoryPath + dirent.name;
+        const stats = fsSync.statSync(filePath); // Get file information including size
+        return {
+          name: dirent.name,
+          size: stats.size, // Size in bytes
+        };
+      });
+    console.log("Files with sizes:");
+    files.forEach((file) => {
+      ``;
+      console.log(`${file.name}: ${file.size} bytes`);
+    });
 
-		let path = basefolder + req.body.destPath;
-		const directoryPath = path; // '/path/to/your/directory';
+    // Step 3: Read each file's content (optional)
+    files.forEach((file) => {
+      const filePath = directoryPath + file.name;
+      const content = fsSync.readFileSync(filePath, "utf8"); // Read the file content
+      // console.log(`Content of ${file.name}:`);
+      //  console.log(content);
+      filedetails = [
+        ...filedetails,
+        {
+          name: file.name,
+          fcontent: content,
+          size: (file.size / 1024).toFixed(2) + " KB",
+        },
+      ];
+    });
 
-		// Step 2: Get all file names in the directory
-		const files = fsSync.readdirSync(directoryPath, { withFileTypes: true })
-			.filter(dirent => dirent.isFile()) // Only include files, not directories
-			.map(dirent => {
-				const filePath = directoryPath + dirent.name;
-				const stats = fsSync.statSync(filePath); // Get file information including size
-				return {
-					name: dirent.name,
-					size: stats.size // Size in bytes
-				};
-			});
-		console.log('Files with sizes:');
-		files.forEach(file => {
-			``
-			console.log(`${file.name}: ${file.size} bytes`);
-		});
+    //     const directoryPath = path; // '/some/directory/path';
+    //     const files = fs.readdirSync(directoryPath, { withFileTypes: true })
+    //                    .filter(item => !item.isDirectory())
+    //                    .map(item => item.name);
+    //   //  res.json(files);
 
-		// Step 3: Read each file's content (optional)
-		files.forEach(file => {
-			const filePath = directoryPath + file.name;
-			const content = fsSync.readFileSync(filePath, 'utf8'); // Read the file content
-			// console.log(`Content of ${file.name}:`);
-			//  console.log(content);
-			filedetails = [...filedetails, { name: file.name, fcontent: content, size: (file.size / 1024).toFixed(2) + ' KB' }];
-		});
-
-		//     const directoryPath = path; // '/some/directory/path';
-		//     const files = fs.readdirSync(directoryPath, { withFileTypes: true })
-		//                    .filter(item => !item.isDirectory())
-		//                    .map(item => item.name);
-		//   //  res.json(files);
-
-		//     for (let i = 0; i < files.length; i++) {
-		//         let fpath = path + files[i].name;
-		//         await fs.stat(fpath, (err, stats) => {
-		//             if (err) {
-		//                 console.error(err);
-		//                 return;
-		//             }
-		//             //   respdata.push({ name: data[i].name, size: (stats.size / 1024).toFixed(2) + ' KB' });
-		//             //   console.log(data[i].name +'|| ' +(stats.size/1024).toFixed(2) + ' KB');
-		//             filedetails = [...filedetails, { name: files[i].name, size: (stats.size / 1024).toFixed(2) + ' KB' }];
-		//             // stats.isFile(); // true
-		//             // stats.isDirectory(); // false
-		//             // stats.isSymbolicLink(); // false
-		//             // stats.size; // 1024000 //= 1MB
-		//             //   filedetails = [...filedetails, { name: data[i].name, size: (stats.size / 1024).toFixed(2) + ' KB' }];
-		//               console.log(filedetails);
-		//         });
-		//   }
-		console.log(filedetails);
-		res.send(filedetails);
-	} catch (error) {
-		console.log(error);
-		//       next(error);
-	}
+    //     for (let i = 0; i < files.length; i++) {
+    //         let fpath = path + files[i].name;
+    //         await fs.stat(fpath, (err, stats) => {
+    //             if (err) {
+    //                 console.error(err);
+    //                 return;
+    //             }
+    //             //   respdata.push({ name: data[i].name, size: (stats.size / 1024).toFixed(2) + ' KB' });
+    //             //   console.log(data[i].name +'|| ' +(stats.size/1024).toFixed(2) + ' KB');
+    //             filedetails = [...filedetails, { name: files[i].name, size: (stats.size / 1024).toFixed(2) + ' KB' }];
+    //             // stats.isFile(); // true
+    //             // stats.isDirectory(); // false
+    //             // stats.isSymbolicLink(); // false
+    //             // stats.size; // 1024000 //= 1MB
+    //             //   filedetails = [...filedetails, { name: data[i].name, size: (stats.size / 1024).toFixed(2) + ' KB' }];
+    //               console.log(filedetails);
+    //         });
+    //   }
+    console.log(filedetails);
+    res.send(filedetails);
+  } catch (error) {
+    console.log(error);
+    //       next(error);
+  }
 });
 
 //Function to execute database queries
@@ -866,29 +876,39 @@ fileRouter.post("/cmbordcopydxf", async (req, res, next) => {
   console.log(" Cmb Ord Copy Dxf ", req.body);
 
   try {
-
     let SourceOrdno = req.body.DwgDatas;
     let DestinationOrdno = req.body.Comb_Order_No;
 
     let srcfiles = req.body.DwgDatas.DwgName_Details;
     let destfiles = req.body.DwgDatas.DwgName;
 
-    console.log("Length : ",req.body.DwgDatas.length);
+    console.log("Length : ", req.body.DwgDatas.length);
 
     // process.env.FILE_SERVER_PATH
-     
-   //// let sourcefld = path.join(process.env.FILE_SERVER_PATH, "\\WO\\");
-   // let destinationfld = path.join(process.env.FILE_SERVER_PATH, "\\WO\\");
 
+    //// let sourcefld = path.join(process.env.FILE_SERVER_PATH, "\\WO\\");
+    // let destinationfld = path.join(process.env.FILE_SERVER_PATH, "\\WO\\");
 
-     for (let i = 0; i < SourceOrdno.length; i++) {
-     //  sourcefld = path.join(process.env.FILE_SERVER_PATH, "\\WO\\");
-       let sourcefld = path.join(process.env.FILE_SERVER_PATH, "\\WO\\", SourceOrdno[i].order_no,  "\\DXF\\", SourceOrdno[i].DwgName_Details);
-       let destinationfld = path.join(process.env.FILE_SERVER_PATH, "\\WO\\", DestinationOrdno,"\\DXF\\", SourceOrdno[i].DwgName);
+    for (let i = 0; i < SourceOrdno.length; i++) {
+      //  sourcefld = path.join(process.env.FILE_SERVER_PATH, "\\WO\\");
+      let sourcefld = path.join(
+        process.env.FILE_SERVER_PATH,
+        "\\WO\\",
+        SourceOrdno[i].order_no,
+        "\\DXF\\",
+        SourceOrdno[i].DwgName_Details
+      );
+      let destinationfld = path.join(
+        process.env.FILE_SERVER_PATH,
+        "\\WO\\",
+        DestinationOrdno,
+        "\\DXF\\",
+        SourceOrdno[i].DwgName
+      );
 
-       console.log("Sourcefld : ",sourcefld);
-       console.log("Destinationfld : ", destinationfld);
-       fsSync.copyFile(sourcefld, destinationfld, (err) => {
+      console.log("Sourcefld : ", sourcefld);
+      console.log("Destinationfld : ", destinationfld);
+      fsSync.copyFile(sourcefld, destinationfld, (err) => {
         if (err) {
           console.error(
             "Order Drawing folder does not exist. Error during file copy:",

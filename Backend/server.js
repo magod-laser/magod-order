@@ -4,6 +4,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 // const fileUpload = require('express-fileupload');
+const path = require("path");
+// const { setConfig } = require("./routes/Utils/globalConfig");
+
+const pathConfig = require("./routes/Utils/globalConfig");
 
 const app = express();
 const {
@@ -19,9 +23,50 @@ const {
   setupQueryMod,
 } = require("./helpers/dbconn");
 
+require("dotenv").config({ path: path.join(__dirname, "./.env.backend") });
+
+
 setupQuery("SELECT 1", (res) => {
   console.log("Connected to MySQL successfully. ");
 });
+
+let configObject = {};
+// // setup details
+function loadGlobalSetupConfig() {
+  return new Promise((resolve, reject) => {
+    setupQueryMod(
+      `SELECT * FROM magod_setup.setupdetails`,
+      (err, setupDetailsData) => {
+        if (err) {
+          logger.error(err);
+          return reject("Error fetching setup details");
+        }
+
+        setupDetailsData.forEach((item) => {
+          if (item.SetUpPara && item.SetUpValue) {
+            const key = item.SetUpPara.replace(/\s+/g, "_").toUpperCase();
+            configObject[key] = item.SetUpValue;
+          }
+        });
+
+        pathConfig.set(configObject);
+        resolve(); 
+      }
+    );
+  });
+}
+
+loadGlobalSetupConfig()
+  .then(() => {
+    // console.log("CONFIG Loaded:", pathConfig.getAll());   
+  })
+  .catch((err) => {
+    console.error("Failed to load config", err);
+    process.exit(1);
+  });
+
+
+// Call it once
 app.use(cors());
 const userRouter = require("./routes/user");
 
