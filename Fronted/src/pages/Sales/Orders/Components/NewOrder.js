@@ -61,7 +61,7 @@ function NewOrder(props) {
     localStorage.removeItem('importDwgModalValues');
     
     let data = JSON.parse(localStorage.getItem("LazerUser"));
-    setuserName(data.data[0].Name);
+    setuserName(data?.data[0]?.Name);
 
     var currentDate = new Date();
     // console.log("curr date", currentDate);

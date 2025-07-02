@@ -1,11 +1,8 @@
 /** @format */
 
 var mysql = require("mysql2");
-// require("dotenv").config({ path: "./vars/.env" });
 require("dotenv").config();
-// dotenv
 
-// console.log("process.env.DB_HOST", env);
 const dbHost = process.env.DB_HOST;
 const dbUser = process.env.DB_USER;
 const dbPort = process.env.DB_PORT;
@@ -74,52 +71,6 @@ let misQuery = async (q, callback) => {
   });
 };
 
-// let misQueryMod = async (q, callback) => {
-//   misConn.connect();
-//   misConn.query(q, (err, res, fields) => {
-//     if (err) callback(err, null);
-//     else callback(null, res);
-//   });
-// };
-
-// let misQueryMod = async (q, callback) => {
-// 	try {
-// 		misConn.connect((connectErr) => {
-// 			if (connectErr) {
-// 				// Handle connection error
-// 				if (typeof callback === "function") {
-// 					callback(connectErr, null);
-// 				} else {
-// 					console.error("Callback is not a function.");
-// 				}
-// 				return;
-// 			}
-
-// 			misConn.query(q, (err, res, fields) => {
-// 				// misConn.end(); // Close the connection
-
-// 				if (typeof callback === "function") {
-// 					if (err) {
-// 						callback(err, null);
-// 					} else {
-// 						callback(null, res);
-// 					}
-// 				} else {
-// 					console.error("Callback is not a function.");
-// 				}
-// 			});
-// 		});
-// 	} catch (error) {
-// 		// Handle unexpected errors
-// 		console.error("Unexpected error:", error);
-
-// 		if (typeof callback === "function") {
-// 			callback(error, null);
-// 		} else {
-// 			console.error("Callback is not a function.");
-// 		}
-// 	}
-// };
 const misQueryMod = (query, params = []) => {
   return new Promise((resolve, reject) => {
     misConn.query(query, params, (err, results) => {
@@ -141,17 +92,7 @@ let mchQueryMod1 = async (m) => {
   }
 };
 
-// const misQueryMod = async (q, values) => {
-//   misConn.connect();
-//   try {
-//     const [rows, fields] = await misConn.query(q, values);
-//     return rows;
-//   } catch (err) {
-//     throw err;
-//   } finally {
-//     misConn.end(); // Close the connection after the query
-//   }
-// };
+
 
 let mtrlQueryMod = async (m, callback) => {
   mtrlConn.connect();
@@ -178,32 +119,26 @@ let setupQueryMod = async (q, callback) => {
 };
 
 let qtnQuery = (q, callback) => {
-  // console.log(q);
   qtnConn.connect();
   qtnConn.query(q, (err, res, fields) => {
     if (err) throw err;
     callback(res);
-    // return res[0].solution;
   });
 };
 
 let qtnQueryMod = (q, callback) => {
-  // console.log(q);
   qtnConn.connect();
   qtnConn.query(q, (err, res, fields) => {
     if (err) callback(err, null);
     else callback(null, res);
-    // return res[0].solution;
   });
 };
 
 let qtnQueryModv2 = (q, values, callback) => {
-  // console.log(q);
   qtnConn.connect();
   qtnConn.query(q, values, (err, res, fields) => {
     if (err) callback(err, null);
     else callback(null, res);
-    // return res[0].solution;
   });
 };
 
@@ -223,14 +158,7 @@ let mchQueryMod = (m, callback) => {
   });
 };
 
-// let mchQueryMod1 = async (m) => {
-// 	try {
-// 		const [rows, fields] = await mchConn.promise().query(m);
-// 		return rows;
-// 	} catch (error) {
-// 		throw error;
-// 	}
-// };
+
 
 module.exports = {
   misQuery,

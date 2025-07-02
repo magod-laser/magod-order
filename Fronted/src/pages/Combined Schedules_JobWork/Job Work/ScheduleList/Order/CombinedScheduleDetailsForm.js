@@ -44,7 +44,7 @@ function CombinedScheduleDetailsForm() {
           selectedRow,
         },
         (response) => {
-          console.log("resss----", response);
+          console.log("resss----sales", response);
           setScheduleListDetailsData(response.data);
         }
       );
@@ -82,9 +82,20 @@ function CombinedScheduleDetailsForm() {
       if (item.QtyScheduled === 0) {
         // return "red";
         return "#ffb6c1";
-      } else if (item.QtyScheduled === item.QtyScheduled) {
+      }
+      // else if (item.QtyScheduled === item.QtyScheduled) {
+      //   // return "green";
+      //   return "#90ee90";
+      // }
+      else if (
+        item.QtyScheduled !== 0
+         &&
+        item.QtyProgrammed === 0 &&
+        item.QtyCleared === 0 &&
+        item.QtyProduced === 0
+      ) {
         // return "green";
-        return "#90ee90";
+        return "#FF474C";
       } else if (item.QtyScheduled === item.QtyCleared) {
         return "yellow";
       } else if (item.QtyCleared > 0) {
@@ -318,12 +329,11 @@ function CombinedScheduleDetailsForm() {
   const [files, setFiles] = useState([]);
 
   const onClickOpenFolder = () => {
-    
-  //  let Comb_Order_No = selectedRow.Order_No;
+    //  let Comb_Order_No = selectedRow.Order_No;
     let docNo = selectedRow.Order_No;
 
     setOpenFileModal(true);
-   // let destPath =  process.env.REACT_APP_SERVER_FILES + `\\` + docNo + "\\" + selectedFolder + "\\"; //"\\DXF\\";
+    // let destPath =  process.env.REACT_APP_SERVER_FILES + `\\` + docNo + "\\" + selectedFolder + "\\"; //"\\DXF\\";
     let despath = process.env.REACT_APP_SERVER_FILES + `\\Wo\\` + docNo + "\\";
 
     postRequest(endpoints.getFolders, { docNo, despath }, (folderslist) => {
@@ -619,13 +629,13 @@ function CombinedScheduleDetailsForm() {
           ) : null}
 
           <button className="button-style" onClick={onClickCopyDwg}>
-            Copy Drawings 1234
+            Copy Drawings
           </button>
           <button className="button-style" onClick={PrintPdf}>
             Print
           </button>
           <button className="button-style" onClick={closeButton}>
-            close
+            Close
           </button>
           {/* <button className="button-style">NC Programming</button> */}
         </div>
@@ -675,7 +685,7 @@ function CombinedScheduleDetailsForm() {
                             <td>{item.Operation}</td>
                             <td>{item.QtyScheduled}</td>
                             <td>{item.QtyProgrammed}</td>
-                            <td>{item.QtyProgrammed}</td>
+                            <td>{item.QtyInspected}</td>
                             <td>{item.QtyCleared}</td>
                           </tr>
                         </>

@@ -196,7 +196,6 @@ app.use((err, req, res, next) => {
 
 // starting the server
 app.listen(process.env.PORT, () => {
-  // console.log("Server running on port", process.env.PORT);
-  console.log("Running successfully");
+  console.log("Running on Port -", process.env.PORT);
   // logger.info("listening on port", process.env.PORT);
 });

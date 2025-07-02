@@ -179,32 +179,32 @@ scheduleListCombined.post(
   "/scheduleListDetails",
   jsonParser,
   async (req, res, next) => {
-    
     // console.log("req from scheduleList --1",req.body.selectedRow)
     // console.log("req from scheduleList --2",req.body.selectedRow.cmbSchID)
     // console.log("req from create",req.body.selectedRow)
     // console.log("req from create",req.body.Component)
-    
-    const cmbSchID = req.body.Component === "Create"
-    ? req.body.selectedRow
-    : req.body.selectedRow?.cmbSchID;
-  
-  console.log("cmbSchID---", cmbSchID);
-    
+
+    const cmbSchID =
+      req.body.Component === "Create"
+        ? req.body.selectedRow
+        : req.body.selectedRow?.cmbSchID;
+
+    console.log("cmbSchID---", cmbSchID);
+
     try {
       mchQueryMod(
-    //     `SELECT o1.*, c.cmbSchId, o.SchDetailsID, o.Schedule_Srl, o.DwgName, o.Mtrl_Code, o.MProcess, o.Mtrl_Source, o.QtyScheduled, o.QtyProgrammed, o.QtyProduced, o.QtyInspected, o.QtyCleared,o.Rejections, o.Tester, o.LOC, o.Holes, o.Part_Area, o.UnitWt, o.Operation,(SELECT COUNT(*) FROM magodmis.combined_schedule_details c JOIN magodmis.orderschedule o1 ON c.scheduleId = o1.ScheduleID JOIN magodmis.orderscheduledetails o ON c.scheduleId = o.ScheduleID WHERE c.cmbSchId = '${req.body.selectedRow.cmbSchID}') AS TotalRows
-    //  FROM  magodmis.combined_schedule_details c JOIN magodmis.orderschedule o1 ON c.scheduleId = o1.ScheduleID JOIN magodmis.orderscheduledetails o ON c.scheduleId = o.ScheduleID WHERE c.cmbSchId = '${req.body.selectedRow.cmbSchID}'`,
-       
-    `SELECT o1.*, c.cmbSchId, o.SchDetailsID, o.Schedule_Srl, o.DwgName, o.Mtrl_Code, o.MProcess, o.Mtrl_Source, o.QtyScheduled, o.QtyProgrammed, o.QtyProduced, o.QtyInspected, o.QtyCleared,o.Rejections, o.Tester, o.LOC, o.Holes, o.Part_Area, o.UnitWt, o.Operation,(SELECT COUNT(*) FROM magodmis.combined_schedule_details c JOIN magodmis.orderschedule o1 ON c.scheduleId = o1.ScheduleID JOIN magodmis.orderscheduledetails o ON c.scheduleId = o.ScheduleID WHERE c.cmbSchId = '${req.body.selectedRow.cmbSchID}') AS TotalRows
+        //     `SELECT o1.*, c.cmbSchId, o.SchDetailsID, o.Schedule_Srl, o.DwgName, o.Mtrl_Code, o.MProcess, o.Mtrl_Source, o.QtyScheduled, o.QtyProgrammed, o.QtyProduced, o.QtyInspected, o.QtyCleared,o.Rejections, o.Tester, o.LOC, o.Holes, o.Part_Area, o.UnitWt, o.Operation,(SELECT COUNT(*) FROM magodmis.combined_schedule_details c JOIN magodmis.orderschedule o1 ON c.scheduleId = o1.ScheduleID JOIN magodmis.orderscheduledetails o ON c.scheduleId = o.ScheduleID WHERE c.cmbSchId = '${req.body.selectedRow.cmbSchID}') AS TotalRows
+        //  FROM  magodmis.combined_schedule_details c JOIN magodmis.orderschedule o1 ON c.scheduleId = o1.ScheduleID JOIN magodmis.orderscheduledetails o ON c.scheduleId = o.ScheduleID WHERE c.cmbSchId = '${req.body.selectedRow.cmbSchID}'`,
+
+        `SELECT o1.*, c.cmbSchId, o.SchDetailsID, o.Schedule_Srl, o.DwgName, o.Mtrl_Code, o.MProcess, o.Mtrl_Source, o.QtyScheduled, o.QtyProgrammed, o.QtyProduced, o.QtyInspected, o.QtyCleared,o.Rejections, o.Tester, o.LOC, o.Holes, o.Part_Area, o.UnitWt, o.Operation,(SELECT COUNT(*) FROM magodmis.combined_schedule_details c JOIN magodmis.orderschedule o1 ON c.scheduleId = o1.ScheduleID JOIN magodmis.orderscheduledetails o ON c.scheduleId = o.ScheduleID WHERE c.cmbSchId = '${req.body.selectedRow.cmbSchID}') AS TotalRows
     FROM  magodmis.combined_schedule_details c JOIN magodmis.orderschedule o1 ON c.scheduleId = o1.ScheduleID JOIN magodmis.orderscheduledetails o ON c.scheduleId = o.ScheduleID WHERE c.cmbSchId = '${cmbSchID}'`,
 
-    (err, data) => {
+        (err, data) => {
           if (err) logger.error(err);
           //console.log(data)
           // res.send(data);
 
-          // new 
+          // new
           const mergedMap = data.reduce((acc, row) => {
             if (!acc[row.DwgName]) {
               acc[row.DwgName] = { ...row };
@@ -220,15 +220,13 @@ scheduleListCombined.post(
           }, {});
 
           const mergedDetails = Object.values(mergedMap);
-          console.log("mergedDetails",mergedDetails);
-          
+          console.log("mergedDetails", mergedDetails);
 
-  res.json({
-    success: true,
-    totalRows: mergedDetails.length,
-    data: mergedDetails,
-  });
-
+          res.json({
+            success: true,
+            totalRows: mergedDetails.length,
+            data: mergedDetails,
+          });
         }
       );
     } catch (error) {
@@ -242,12 +240,15 @@ scheduleListCombined.post(
   "/scheduleListDetailssales",
   jsonParser,
   async (req, res, next) => {
-    console.log("req.body---sales",req.body);
-    
-    
-    const cmbSchID = req.body.Component === "Create"
-    ? req.body.selectedRow
-    : req.body.selectedRow?.cmbSchID;
+    // console.log("req.body---sales",req.body);
+
+    const cmbSchID =
+      req.body.Component === "Create"
+        ? req.body.selectedRow
+        : req.body.selectedRow?.cmbSchID;
+
+    // let schId = req.body.selectedRow;
+    // console.log("schId-------", schId);
 
     try {
       mchQueryMod(
@@ -276,18 +277,18 @@ scheduleListCombined.post(
   (
     SELECT COUNT(*) 
     FROM magodmis.combined_schedule_details c2 
-    JOIN magodmis.orderschedule o2 ON c2.scheduleId = o2.ScheduleID 
-    JOIN magodmis.orderscheduledetails od ON c2.scheduleId = od.ScheduleID 
+    JOIN magodmis.orderschedule o2 ON c2.scheduleID = o2.ScheduleId
+    JOIN magodmis.orderscheduledetails od ON c2.scheduleID = od.ScheduleId 
     WHERE c2.cmbSchId = '${cmbSchID}'
   ) AS TotalRows
 FROM  
   magodmis.combined_schedule_details c 
 JOIN 
-  magodmis.orderschedule o1 ON c.scheduleId = o1.ScheduleID 
+  magodmis.orderschedule o1 ON c.ScheduleID = o1.scheduleId 
 JOIN 
-  magodmis.orderscheduledetails o ON c.scheduleId = o.ScheduleID 
+  magodmis.orderscheduledetails o ON c.ScheduleID = o.scheduleId 
 LEFT JOIN 
-  magodmis.task_partslist t ON t.SchDetailsID = o.SchDetailsID
+  magodmis.task_partslist t ON t.SchDetailsId = o.SchDetailsID
 WHERE 
   c.cmbSchId = '${cmbSchID}'
     AND t.DwgName LIKE '88%'  
@@ -322,7 +323,7 @@ ORDER BY
 //       // Fetch all detail rows for this combined schedule
 //       const rows = await mchQueryMod1(
 //         `
-//         SELECT 
+//         SELECT
 //           o1.Order_no,
 //           c.cmbSchId,
 //           o.SchDetailsID,
@@ -384,7 +385,6 @@ ORDER BY
 //   }
 // );
 
-
 ///Combined Tasks Table
 scheduleListCombined.post(
   "/combinedTaksTaskTable",
@@ -410,7 +410,7 @@ scheduleListCombined.post(
   "/combinedTaksShowDwgName",
   jsonParser,
   async (req, res, next) => {
-    console.log("req.body",req.body)
+    console.log("req.body", req.body);
     try {
       mchQueryMod(
         `SELECT * from magodmis.task_partslist where TaskNo='${req.body.TaskNo}'`,
@@ -614,12 +614,10 @@ scheduleListCombined.post(
       const scheduleList = req.body.scheduleListDetailsData;
 
       if (!Array.isArray(scheduleList) || scheduleList.length === 0) {
-        return res
-          .status(400)
-          .send({
-            error:
-              "Invalid request: scheduleListDetailsData is missing or not properly structured",
-          });
+        return res.status(400).send({
+          error:
+            "Invalid request: scheduleListDetailsData is missing or not properly structured",
+        });
       }
 
       for (const selectedRow of scheduleList) {
@@ -733,7 +731,9 @@ scheduleListCombined.post(`/PrintPdf`, async (req, res, next) => {
     misQueryMod(query, (err, data) => {
       if (err) {
         console.log("err", err);
-        res.status(500).send({ error: "An error occurred while fetching data" });
+        res
+          .status(500)
+          .send({ error: "An error occurred while fetching data" });
       } else {
         if (data.length > 0) {
           // Group by TaskNo
@@ -782,7 +782,9 @@ scheduleListCombined.post(`/PrintPdf`, async (req, res, next) => {
 
           res.send(formattedData);
         } else {
-          res.status(404).send({ error: "No data found for the provided ScheduleId" });
+          res
+            .status(404)
+            .send({ error: "No data found for the provided ScheduleId" });
         }
       }
     });
@@ -790,8 +792,6 @@ scheduleListCombined.post(`/PrintPdf`, async (req, res, next) => {
     next(error);
   }
 });
-
-
 
 //get customer name
 scheduleListCombined.post(`/getCustomerNamePDF`, async (req, res, next) => {

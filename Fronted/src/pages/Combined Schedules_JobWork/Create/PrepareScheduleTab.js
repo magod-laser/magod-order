@@ -387,7 +387,7 @@ export default function PrepareScheduleTab({
   //Create Schedule
   const [combinedScheduleNo, setCombinedScheduleNo] = useState("");
   const onClickCreateSchedule = () => {
-    console.log("selectedSalesContact---check", selectedSalesContact);
+    // console.log("selectedSalesContact---check", selectedSalesContact);
 
     if (
       selectedSalesContact === "" ||

@@ -34,7 +34,7 @@ export default function CombinedScheduleDetailsFormClosed() {
         selectedRow,
       },
       (response) => {
-        // console.log(response);
+    
         setScheduleListDetailsData(response);
       }
     );

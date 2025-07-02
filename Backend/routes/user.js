@@ -621,7 +621,7 @@ userRouter.post("/fetchMenuUrls", async (req, res, next) => {
                   });
 
                   // Set globally
-                  setConfig(configObject);
+                  // setConfig(configObject);
                    // Final response
                   res.send({
                     data: { ...data[0], access: menuarray },
