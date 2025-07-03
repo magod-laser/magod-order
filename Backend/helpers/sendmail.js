@@ -1,13 +1,13 @@
 const nodemailer = require("nodemailer");
-var html_to_pdf = require("html-pdf-node");
-const { merge } = require("merge-pdf-buffers");
-
+const html_to_pdf = require("html-pdf-node");
+const { PDFDocument } = require("pdf-lib");
+ 
 const {
   quotationStartPage,
   quotationDetails,
   dueReportStartPage,
 } = require("./mailtemplate");
-
+ 
 const genPdf = (content, callback) => {
   html_to_pdf
     .generatePdf(
@@ -26,14 +26,29 @@ const genPdf = (content, callback) => {
       callback(pdfBuffer);
     });
 };
-
+ 
+const mergePdfBuffers = async (pdfBuffers) => {
+  const mergedPdf = await PDFDocument.create();
+ 
+  for (const pdfBuffer of pdfBuffers) {
+    const pdfDoc = await PDFDocument.load(pdfBuffer);
+    const copiedPages = await mergedPdf.copyPages(
+      pdfDoc,
+      pdfDoc.getPageIndices()
+    );
+    copiedPages.forEach((page) => mergedPdf.addPage(page));
+  }
+ 
+  const mergedPdfBytes = await mergedPdf.save();
+  return mergedPdfBytes;
+};
+ 
 const sendQuotation = async (customer, qtnDetails, qtnTC, callback) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
     auth: {
-      //   user: "pranav13100@gmail.com",
-      //   pass: "lgukawauauccnihf",
+      
       user: process.env.MAIL_USER,
       pass: process.env.MAIL_PASS,
     },
@@ -53,14 +68,13 @@ const sendQuotation = async (customer, qtnDetails, qtnTC, callback) => {
     `;
   genPdf(emailcontent, async (pdfBuffer) => {
     genPdf(emailcontent2, async (pdfBuffer2) => {
-      const merged = await merge([pdfBuffer, pdfBuffer2]);
+      const mergedPdfBuffer = await mergePdfBuffers([buffer1, buffer2]);
       let info = await transporter.sendMail({
-        // from: '"Pranav M S" <pranav13100@gmail.com>', // sender address
-        from: process.env.From_EMAIL, // sender address
-        to: "vkbedasur@gmail.com", // list of receivers
-        subject: "Quotation", // Subject line
-        text: emailTextContent.replaceAll("<br/>", "\n"), // plain text body
-        html: emailTextContent, // html body
+        from: process.env.From_EMAIL, 
+        to: "vkbedasur@gmail.com", 
+        subject: "Quotation", 
+        text: emailTextContent.replaceAll("<br/>", "\n"), 
+        html: emailTextContent, 
         attachments: [
           {
             filename: "quotation.pdf",
@@ -76,25 +90,24 @@ const sendQuotation = async (customer, qtnDetails, qtnTC, callback) => {
     });
   });
 };
-
+ 
 const sendDueList = async (customer, duesdata, duedata, callback) => {
   console.log("Send Due List");
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
     auth: {
-      //   user: "magodlaser3@gmail.com",
-      //   pass: "nisxnacwozjtuplp",
+    
       user: process.env.MAIL_USER,
       pass: process.env.MAIL_PASS,
     },
   });
   let emailcontent = await dueReportStartPage(customer, duesdata, duedata);
-
+ 
   let emailTextContent = `
         Dear Sir,<br/><br/>
-    
-        We would like to bring it to your notice that outstandings due of Rs/- ${duesdata[0].overDue} 
+   
+        We would like to bring it to your notice that outstandings due of Rs/- ${duesdata[0].overDue}
         from your side<br/>
         Details are as given in the attachment.<br/><br/>
         Looking forward for your earlier response towards clearing the dues. <br/><br/>
@@ -104,17 +117,14 @@ const sendDueList = async (customer, duesdata, duedata, callback) => {
         Magod Laser Machining Pvt Ltd : Jigani Unit<br/>
     `;
   genPdf(emailcontent, async (pdfBuffer) => {
-    //  genPdf(emailcontent2, async (pdfBuffer2) => {
-    // const merged = await merge([pdfBuffer, pdfBuffer2]);
+    const mergedPdfBuffer = await mergePdfBuffers([buffer1, buffer2]);
     let info = await transporter.sendMail({
-      //   from: '"Magod Laser" <magodlaser3@gmail.com>', // sender address
-      from: process.env.From_EMAIL, // sender address
-      to: "vkbedasur@@gmail.com", // list of receivers
+      from: process.env.From_EMAIL,
+      to: "magodlaser3@gmail.com", 
 
-      //   to: "vkbedasur@gmail.com", // list of receivers
-      subject: `List of Invoices Due for Payment as on ${Date()}`, // Subject line
-      text: emailTextContent.replaceAll("<br/>", "\n"), // plain text body
-      html: emailTextContent, // html body
+      subject: `List of Invoices Due for Payment as on ${Date()}`, 
+      text: emailTextContent.replaceAll("<br/>", "\n"), 
+      html: emailTextContent, 
       attachments: [
         {
           filename: "DueList.pdf",
@@ -127,11 +137,11 @@ const sendDueList = async (customer, duesdata, duedata, callback) => {
     } else {
       callback("Error in sending mail", null);
     }
-    // });
   });
 };
-
+ 
 const sendAttachmails = async (
+  from,
   to,
   cc,
   mailsubject,
@@ -139,35 +149,41 @@ const sendAttachmails = async (
   file,
   callback
 ) => {
-  console.log(mailsubject);
+  console.log("in send mail backend file", mailsubject);
+ 
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
+    host: "mail.magodlaser.in",
+    port: 465,
+    secure: true,
     auth: {
-      //   user: "magodlaser3@gmail.com",
-      //   pass: "nisxnacwozjtuplp",
       user: process.env.MAIL_USER,
       pass: process.env.MAIL_PASS,
     },
   });
+ 
+ 
+ 
   let info = await transporter.sendMail({
-    // from: '"Magod Laser" <magodlaser3@gmail.com>', // sender address
-    from: process.env.From_EMAIL, // sender address
-    to: to, // list of receivers
+    from: from ? `"${from}"` : `<${process.env.MAIL_USER}>`,
+    to: to,
     cc: cc,
-    subject: mailsubject, // Subject line
+    subject: mailsubject,
     text: mailbody,
-    html: mailbody.replaceAll("\n", "<br/>"), // plain text body
+    html: mailbody.replace(/\n/g, "<br/>"),
     attachments: [file],
   });
+ 
   if (info.messageId) {
     callback(null, info.messageId);
   } else {
     callback("Error in sending mail", null);
   }
 };
-
+ 
 module.exports = { sendQuotation, sendDueList, sendAttachmails };
-
-// Account : pranav13100@gmail.com
-// Password : lgukawauauccnihf
+ 
+// // TEST CREDENTIALS FOR MAIL
+// // Account : pranav13100@gmail.com
+// // Password : lgukawauauccnihf
+// // user: "magodlaser3@gmail.com",
+// // pass: "nisxnacwozjtuplp",

@@ -44,7 +44,7 @@ function CombinedScheduleDetailsForm() {
           selectedRow,
         },
         (response) => {
-          console.log("resss----", response);
+          console.log("resss----sales", response.data);
           setScheduleListDetailsData(response.data);
         }
       );
@@ -82,9 +82,19 @@ function CombinedScheduleDetailsForm() {
       if (item.QtyScheduled === 0) {
         // return "red";
         return "#ffb6c1";
-      } else if (item.QtyScheduled === item.QtyScheduled) {
+      }
+      // else if (item.QtyScheduled === item.QtyScheduled) {
+      //   // return "green";
+      //   return "#90ee90";
+      // }
+      else if (
+        item.QtyScheduled !== 0 &&
+        item.QtyProgrammed === 0 &&
+        item.QtyCleared === 0 &&
+        item.QtyProduced === 0
+      ) {
         // return "green";
-        return "#90ee90";
+        return "#FF474C";
       } else if (item.QtyScheduled === item.QtyCleared) {
         return "yellow";
       } else if (item.QtyCleared > 0) {
@@ -109,12 +119,14 @@ function CombinedScheduleDetailsForm() {
   //Date Format
   const formatDeliveryDate = (dateString) => {
     const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.getMonth() + 1; // Month is zero-based
+    // const day = date.getDate();
+    const day = String(date.getDate()).padStart(2, "0"); 
+    // const month = date.getMonth() + 1; // Month is zero-based
+    const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
 
     // Use template literals to format the date
-    return `${day}/${month}/${year}`;
+    return `${day}-${month}-${year}`;
   };
 
   const formatDeliveryDate2 = (dateString) => {
@@ -318,12 +330,11 @@ function CombinedScheduleDetailsForm() {
   const [files, setFiles] = useState([]);
 
   const onClickOpenFolder = () => {
-    
-  //  let Comb_Order_No = selectedRow.Order_No;
+    //  let Comb_Order_No = selectedRow.Order_No;
     let docNo = selectedRow.Order_No;
 
     setOpenFileModal(true);
-   // let destPath =  process.env.REACT_APP_SERVER_FILES + `\\` + docNo + "\\" + selectedFolder + "\\"; //"\\DXF\\";
+    // let destPath =  process.env.REACT_APP_SERVER_FILES + `\\` + docNo + "\\" + selectedFolder + "\\"; //"\\DXF\\";
     let despath = process.env.REACT_APP_SERVER_FILES + `\\Wo\\` + docNo + "\\";
 
     postRequest(endpoints.getFolders, { docNo, despath }, (folderslist) => {
@@ -403,6 +414,7 @@ function CombinedScheduleDetailsForm() {
   );
   const handleDateChange = (e) => {
     // Update the displayDate whenever the user selects a date
+
     setDisplayDate(e.target.value);
   };
 
@@ -463,6 +475,9 @@ function CombinedScheduleDetailsForm() {
     order_no: item.Order_No,
   }));
   console.log("DwgData", DwgData);
+  console.log("selected", selected);
+  console.log("scheduleListDetailsData", scheduleListDetailsData);
+  console.log("displayDate", displayDate);
   // console.log("Ind_DWgs before combine",Ind_DWgs);
   // console.log("order nos before combine",orderNumbers);
   // console.log("order nos after combine", selectedRow.Order_No);
@@ -619,13 +634,13 @@ function CombinedScheduleDetailsForm() {
           ) : null}
 
           <button className="button-style" onClick={onClickCopyDwg}>
-            Copy Drawings 1234
+            Copy Drawings
           </button>
           <button className="button-style" onClick={PrintPdf}>
             Print
           </button>
           <button className="button-style" onClick={closeButton}>
-            close
+            Close
           </button>
           {/* <button className="button-style">NC Programming</button> */}
         </div>
@@ -675,7 +690,7 @@ function CombinedScheduleDetailsForm() {
                             <td>{item.Operation}</td>
                             <td>{item.QtyScheduled}</td>
                             <td>{item.QtyProgrammed}</td>
-                            <td>{item.QtyProgrammed}</td>
+                            <td>{item.QtyInspected}</td>
                             <td>{item.QtyCleared}</td>
                           </tr>
                         </>
@@ -706,6 +721,7 @@ function CombinedScheduleDetailsForm() {
                   <tbody className="tablebody">
                     <tr>
                       <td>{selected?.OrdSchNo}</td>
+                      {/* <td>{selected?.OrderScheduleNo}</td> */}
                       <td>{selected?.QtyScheduled}</td>
                       <td>{selected?.QtyCleared}</td>
                       <td>{selected?.QtyProduced}</td>

@@ -1,6 +1,5 @@
 const winston = require("winston");
 const DailyRotateFile = require("winston-daily-rotate-file");
-// import "winston-daily-rotate-file";
 
 const myFormat = winston.format.printf(
   ({ level, message, label, timestamp }) => {

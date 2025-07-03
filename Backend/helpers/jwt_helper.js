@@ -27,8 +27,6 @@ module.exports = {
         if(!req.headers['authorization']) return next(createError.Unauthorized())
         const authHeader = req.headers['authorization']
         const token = authHeader.split(' ')[1]
-        // var checkblacklist = await Blacklist.findOne({accessToken:token})
-        // if(!checkblacklist){
             JWT.verify(token, access_secret, (err, payload) => {
                 if(err){
                     const message = err.name === 'JsonWebTokenError'? 'Unauthorized' : err.name;
@@ -37,7 +35,6 @@ module.exports = {
                 req.payload = payload
                 next()
             })
-        // }else return next(createError.Unauthorized())   
     },
     signRefreshToken: (uid) => {
         return new Promise((resolve, reject) => {
@@ -58,8 +55,7 @@ module.exports = {
         })
     },
     verifyRefreshToken: async (refreshToken) => {
-        // var checkblacklist = await Blacklist.findOne({refreshToken:refreshToken})
-        // if(!checkblacklist){
+       
             return new Promise((resolve, reject) => {
                 JWT.verify(refreshToken, refresh_secret, (err, payload) => {
                     if (err) return reject(createError.Unauthorized())
@@ -68,7 +64,6 @@ module.exports = {
                     resolve(email)
                 })
             })
-        // }else return createError.Unauthorized() 
     },
     getTokenData: (token) => {
         return new Promise((resolve, reject) => {

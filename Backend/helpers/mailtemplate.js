@@ -1,4 +1,4 @@
-var moment = require('moment'); // require
+var moment = require('moment');
 
 const quotationStartPage = async (customer, qtnDetails, qtnTC) => {
     let TCcontent = "";
