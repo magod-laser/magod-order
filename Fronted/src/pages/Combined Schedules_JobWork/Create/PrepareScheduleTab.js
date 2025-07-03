@@ -536,6 +536,8 @@ export default function PrepareScheduleTab({
       updatedSelection1Sales.push(item);
     }
     setRowSelectLeftSales(updatedSelection1Sales);
+    setDisableButtonPrep(updatedSelection1Sales.length === 0);
+    
   };
 
   //Prepare Schedule for sales
@@ -1075,7 +1077,7 @@ export default function PrepareScheduleTab({
                   <button
                     className="button-style  group-button"
                     onClick={onclickpreapreScheduleButton}
-                    disabled={disableButtonPrep}
+                    disabled={disableButtonPrep || disablebutton}
                   >
                     Prepare Schedule
                   </button>

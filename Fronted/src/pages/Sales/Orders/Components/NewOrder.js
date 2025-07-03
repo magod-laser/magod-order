@@ -58,10 +58,15 @@ function NewOrder(props) {
   useEffect(() => {
     // Clear importDwgModalValues from localStorage when creating a new order
     // This ensures the Import Drawing modal starts fresh without any retained values
-    localStorage.removeItem('importDwgModalValues');
+    localStorage.removeItem("importDwgModalValues");
+    // console.log("123",JSON.parse(localStorage.getItem("LazerUser")));
+  
     
+
     let data = JSON.parse(localStorage.getItem("LazerUser"));
-    setuserName(data?.data[0]?.Name);
+    // setuserName(data?.data[0]?.Name);
+    setuserName(data?.data?.Name);
+    console.log("123", data.data.Name);
 
     var currentDate = new Date();
     // console.log("curr date", currentDate);
@@ -324,7 +329,7 @@ function NewOrder(props) {
         setIsGenerating(true); // Disable button immediately
 
         // toast.success("Order Created with " + Ordno, { autoClose: 2100 });
-        alert("Order Created with " + Ordno, { autoClose: 2100 })
+        alert("Order Created with " + Ordno, { autoClose: 2100 });
         // setModalMessage("Order Created with " + Ordno, { autoClose: 2100 });
         // setSmShow(true);
         setTimeout(() => {

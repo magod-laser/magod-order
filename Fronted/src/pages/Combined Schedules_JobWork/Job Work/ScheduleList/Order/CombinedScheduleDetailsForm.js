@@ -44,7 +44,7 @@ function CombinedScheduleDetailsForm() {
           selectedRow,
         },
         (response) => {
-          console.log("resss----sales", response);
+          console.log("resss----sales", response.data);
           setScheduleListDetailsData(response.data);
         }
       );
@@ -88,8 +88,7 @@ function CombinedScheduleDetailsForm() {
       //   return "#90ee90";
       // }
       else if (
-        item.QtyScheduled !== 0
-         &&
+        item.QtyScheduled !== 0 &&
         item.QtyProgrammed === 0 &&
         item.QtyCleared === 0 &&
         item.QtyProduced === 0
@@ -120,12 +119,14 @@ function CombinedScheduleDetailsForm() {
   //Date Format
   const formatDeliveryDate = (dateString) => {
     const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.getMonth() + 1; // Month is zero-based
+    // const day = date.getDate();
+    const day = String(date.getDate()).padStart(2, "0"); 
+    // const month = date.getMonth() + 1; // Month is zero-based
+    const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
 
     // Use template literals to format the date
-    return `${day}/${month}/${year}`;
+    return `${day}-${month}-${year}`;
   };
 
   const formatDeliveryDate2 = (dateString) => {
@@ -413,6 +414,7 @@ function CombinedScheduleDetailsForm() {
   );
   const handleDateChange = (e) => {
     // Update the displayDate whenever the user selects a date
+
     setDisplayDate(e.target.value);
   };
 
@@ -473,6 +475,9 @@ function CombinedScheduleDetailsForm() {
     order_no: item.Order_No,
   }));
   console.log("DwgData", DwgData);
+  console.log("selected", selected);
+  console.log("scheduleListDetailsData", scheduleListDetailsData);
+  console.log("displayDate", displayDate);
   // console.log("Ind_DWgs before combine",Ind_DWgs);
   // console.log("order nos before combine",orderNumbers);
   // console.log("order nos after combine", selectedRow.Order_No);
@@ -716,6 +721,7 @@ function CombinedScheduleDetailsForm() {
                   <tbody className="tablebody">
                     <tr>
                       <td>{selected?.OrdSchNo}</td>
+                      {/* <td>{selected?.OrderScheduleNo}</td> */}
                       <td>{selected?.QtyScheduled}</td>
                       <td>{selected?.QtyCleared}</td>
                       <td>{selected?.QtyProduced}</td>

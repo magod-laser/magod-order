@@ -20,6 +20,7 @@ const path = require("path");
 // create application/json parser
 var jsonParser = bodyParser.json();
 
+//get allcustomersData
 CombinedScheduleCreate.get(
   "/allcustomersData",
   jsonParser,
@@ -29,7 +30,6 @@ CombinedScheduleCreate.get(
         `Select * from magodmis.cust_data order by Cust_name asc`,
         (err, data) => {
           if (err) logger.error(err);
-          // console.log(data)
           res.send(data);
         }
       );
@@ -47,7 +47,6 @@ CombinedScheduleCreate.get(
     try {
       mchQueryMod(`SELECT * FROM magod_sales.sales_execlist;`, (err, data) => {
         if (err) logger.error(err);
-        // console.log(data)
         res.send(data);
       });
     } catch (error) {
@@ -55,7 +54,7 @@ CombinedScheduleCreate.get(
     }
   }
 );
-
+//CombinedScheduleCreate getRightTableData
 CombinedScheduleCreate.post(
   "/getRightTableData",
   jsonParser,
@@ -79,7 +78,7 @@ CombinedScheduleCreate.post(
   }
 );
 
-//Prepare Schedule Button Click
+//Prepare Schedule Button Job work
 CombinedScheduleCreate.post(
   "/prepareSchedule",
   jsonParser,
@@ -97,9 +96,8 @@ CombinedScheduleCreate.post(
         `,
         (err, data) => {
           if (err) logger.error(err);
-          //console.log(data)
+         
           res.send(data);
-          // console.log("response is",data);
         }
       );
     } catch (error) {
@@ -108,6 +106,7 @@ CombinedScheduleCreate.post(
   }
 );
 
+//Prepare Schedule Button sales
 CombinedScheduleCreate.post(
   "/prepareScheduleSales",
   jsonParser,
@@ -140,12 +139,7 @@ CombinedScheduleCreate.post(
   "/createSchedule",
   jsonParser,
   async (req, res, next) => {
-    console.log("entering createSchedule- JobWork");
-
-    console.log("rowselectleft", req.body.rowselectleft);
-    console.log("Operation", req.body.Operation);
-    console.log("Source", req.body.Mtrl_Source);
-
+       
     const Operation = req.body.Operation;
     const Mtrl_Source = req.body.Mtrl_Source;
 
@@ -157,10 +151,8 @@ CombinedScheduleCreate.post(
       }
 
       const cmbSchId = await insertIntoCombinedSchedule(req.body.custCode);
-
       const rowselectleft = req.body.rowselectleft;
-      console.log("rowselectleft", rowselectleft);
-
+      
       const insertPromises = rowselectleft.map((schedule, index) => {
         const { ScheduleId, OrdSchNo } = schedule;
         const rowCont = index + 1;
@@ -239,19 +231,16 @@ CombinedScheduleCreate.post(
 
       const DwgdataArray = await Promise.all(taskDataPromises);
       const Dwgdata = DwgdataArray.flat();
-      console.log("Dwgdata----", Dwgdata);
       const scheduleIDs = Dwgdata.map((item) => item.ScheduleID);
-      console.log("scheduleIDs----", scheduleIDs);
+      
 
       const processDwgData = async () => {
         const taskCounters = {};
-        let taskNumber = 1; // Initialize task number
+        let taskNumber = 1; 
 
-        // Use a for-loop to ensure sequential processing
-        console.log("Dwgdata----", Dwgdata);
+        // for-loop to ensure sequential processing        
         const scheduleIDs = Dwgdata.map((item) => item.ScheduleID);
-        console.log("scheduleIDs----", scheduleIDs);
-
+        
         for (const row of Dwgdata) {
           const key = `${row.Mtrl_Code}_${row.MProcess}_${row.Operation}`;
 
@@ -259,9 +248,7 @@ CombinedScheduleCreate.post(
             taskCounters[key] = taskNumber.toString().padStart(2, "0");
             taskNumber++;
           }
-          row.TaskNo = `${combinedScheduleNo} 01 ${taskCounters[key]}`;
-
-          console.log("row----123", row);
+          row.TaskNo = `${combinedScheduleNo} 01 ${taskCounters[key]}`;        
 
           // Check if TaskNo already exists in nc_task_list
           const existingTaskQuery = `
@@ -293,8 +280,7 @@ CombinedScheduleCreate.post(
 
             lastInsertTaskId = ncTaskInsertResult.insertId;
           }
-          console.log("row.ScheduleID-----", row.ScheduleID);
-
+          
           let insertTaskPartsListQuery = `INSERT INTO magodmis.task_partslist(NcTaskId, TaskNo, SchDetailsId, DwgName, QtyToNest, OrdScheduleSrl, 
             OrdSch, HasBOM) 
             SELECT
@@ -322,11 +308,6 @@ GROUP BY o.DwgName
 
           console.log("existingDetails", existingDetails);
 
-          // Inserting Operation and mtrl_source to order_sch_details table
-
-          // const Operation = req.body.Operation;
-          // const Mtrl_Source = req.body.Mtrl_Source;
-
           // Insert into orderscheduledetails using lastInsertTaskId and fetched existing data
           for (const detail of existingDetails) {
             const insertDetailsQuery = ` INSERT INTO magodmis.orderscheduledetails (OrderDetailID, ScheduleId, OrderScheduleNo, DwgName, Mtrl_Code, MProcess,Mtrl_Source, QtyScheduled,Operation, QtyProgrammed, QtyProduced, QtyInspected, QtyCleared, QtyPacked, QtyDelivered, QtyRejected, PackingLevel, InspLevel, TaskNo, NcTaskId)
@@ -345,10 +326,10 @@ GROUP BY o.DwgName
       // Execute the processing function
       processDwgData()
         .then(() => {
-          console.log("All operations completed successfully.");
+          // console.log("All operations completed successfully.");
         })
         .catch((err) => {
-          console.error("An error occurred during processing:", err);
+          // console.error("An error occurred during processing:", err);
         });
 
       // Folder creation
