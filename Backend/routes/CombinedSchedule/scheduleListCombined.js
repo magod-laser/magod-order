@@ -235,12 +235,13 @@ scheduleListCombined.post(
   }
 );
 
-//ScheduleList Details sales
+//ScheduleList Details sales sch list page
 scheduleListCombined.post(
   "/scheduleListDetailssales",
   jsonParser,
   async (req, res, next) => {
-    console.log("req.body---sales", req.body?.selectedRow?.ScheduleId);
+    // console.log("req.body---sales", req.body?.selectedRow?.ScheduleId);
+    console.log("req.body---sales", req.body);
     
 
     const ScheduleId = req.body?.selectedRow?.ScheduleId;
@@ -374,6 +375,120 @@ WHERE od.ScheduleId = '${ScheduleId}';`,
 //   c.cmbSchId = 22682;
 
 
+
+        (err, data) => {
+          if (err) logger.error(err);
+          // console.log("saleassssdata", data);
+          // res.send(data);
+          res.json({
+            success: true,
+            totalRows: data.length,
+            data: data,
+          });
+        }
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+//ScheduleList Details sales create page
+scheduleListCombined.post(
+  "/scheduleListDetailssalescreate",
+  jsonParser,
+  async (req, res, next) => {
+    // console.log("req.body---sales", req.body?.selectedRow?.ScheduleId);
+    console.log("req.body---sales", req.body);
+
+    const ScheduleId = req.body?.selectedRow?.ScheduleId;
+
+    const cmbSchID =
+      req.body.Component === "Create"
+        ? req.body.selectedRow
+        : req.body.selectedRow?.cmbSchID;
+    console.log("req.body---sales-cmbSchID", cmbSchID);
+    // let schId = req.body.selectedRow;
+    // console.log("schId-------", schId);
+
+    try {
+      mchQueryMod(
+        `SELECT DISTINCT
+          t.DwgName,
+          o1.*,
+          c.cmbSchId,
+          o.SchDetailsID,
+          o.Schedule_Srl,
+          o.DwgName AS DwgName_Details,
+          o.Mtrl_Code,
+          o.MProcess,
+          o.Mtrl_Source,
+          o.QtyScheduled,
+          o.QtyProgrammed,
+          o.QtyProduced,
+          o.QtyInspected,
+          o.QtyCleared,
+          o.Rejections,
+          o.Tester,
+          o.LOC,
+          o.Holes,
+          o.Part_Area,
+          o.UnitWt,
+          o.Operation,
+          (
+            SELECT COUNT(*)
+            FROM magodmis.combined_schedule_details c2
+            JOIN magodmis.orderschedule o2 ON c2.scheduleID = o2.ScheduleId
+            JOIN magodmis.orderscheduledetails od ON c2.scheduleID = od.ScheduleId
+            WHERE c2.cmbSchId = '${cmbSchID}'
+          ) AS TotalRows
+        FROM
+          magodmis.combined_schedule_details c
+        JOIN
+          magodmis.orderschedule o1 ON c.ScheduleID = o1.scheduleId
+        JOIN
+          magodmis.orderscheduledetails o ON c.ScheduleID = o.scheduleId
+        LEFT JOIN
+          magodmis.task_partslist t ON t.SchDetailsId = o.SchDetailsID
+        WHERE
+          c.cmbSchId = '${cmbSchID}'
+            AND t.DwgName LIKE '88%'
+        ORDER BY
+          SUBSTRING_INDEX(t.DwgName, ' ', 3);`,
+        //         `SELECT
+        //   tp.DwgName ,
+        //   od.DwgName AS DwgName_Details,
+        //   os.Order_No,
+        //   os.OrdSchNo,
+
+        // od.Mtrl_Code,
+        //   od.MProcess,
+        //    od.OrderScheduleNo,
+
+        //   od.QtyScheduled,
+        //   od.QtyProgrammed,
+        //   od.QtyProduced,
+        //   od.QtyInspected,
+        //   od.QtyCleared,
+        //   od.Rejections,
+        //   od.Tester,
+        //   od.LOC,
+        //   od.Holes,
+        //   od.Part_Area,
+        //   od.UnitWt,
+        //   od.Operation
+        // FROM magodmis.orderscheduledetails od
+        // JOIN (
+        //     SELECT NcTaskId, MIN(Task_Part_ID) AS Task_Part_ID
+        //     FROM magodmis.task_partslist
+        //     GROUP BY NcTaskId
+        // ) first_tp_ids
+        //   ON od.NcTaskId = first_tp_ids.NcTaskId
+        // JOIN magodmis.task_partslist tp
+        //   ON tp.Task_Part_ID = first_tp_ids.Task_Part_ID
+        // JOIN magodmis.orderschedule os
+        //   ON od.ScheduleId = os.ScheduleId
+        // WHERE od.ScheduleId = '${ScheduleId}';`,
 
         (err, data) => {
           if (err) logger.error(err);
