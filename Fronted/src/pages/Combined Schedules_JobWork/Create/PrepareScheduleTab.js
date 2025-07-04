@@ -73,12 +73,13 @@ export default function PrepareScheduleTab({
   };
   console.log("type", type);
   console.log("cmbScheId", cmbScheId);
+  // console.log("cmbScheId", selectedRow);
 
   const getScheduleListDetails = () => {
     if (type === "Sales") {
       console.log("Sales-----", "sales");
       postRequest(
-        endpoints.getSchedudleDetailssales,
+        endpoints.scheduleListDetailssalescreate,
         {
           selectedRow: cmbScheId,
           Component: "Create",
@@ -453,7 +454,8 @@ export default function PrepareScheduleTab({
               Mtrl_Source: preapreScheduleData[0].Mtrl_Source,
             },
             (response) => {
-              console.log("response.cmbSchId", response.cmbSchId);
+              // console.log("response.cmbSchId", response.cmbSchId);
+              console.log("response.cmbSchId", response);
 
               setcmbScheId(response.cmbSchId);
               setDisableButton(true);
