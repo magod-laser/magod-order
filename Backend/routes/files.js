@@ -891,13 +891,26 @@ fileRouter.post("/cmbordcopydxf", async (req, res, next) => {
 
     for (let i = 0; i < SourceOrdno.length; i++) {
       //  sourcefld = path.join(process.env.FILE_SERVER_PATH, "\\WO\\");
-      let sourcefld = path.join(
-        process.env.FILE_SERVER_PATH,
-        "\\WO\\",
-        SourceOrdno[i].order_no,
-        "\\DXF\\",
-        SourceOrdno[i].DwgName_Details
-      );
+      // let sourcefld = path.join(
+      //   process.env.FILE_SERVER_PATH,
+      //   "\\WO\\",
+      //   SourceOrdno[i].order_no,
+      //   "\\DXF\\",
+      //   SourceOrdno[i].DwgName_Details
+      // );
+
+             let sourcefld = ''; // path.join(process.env.FILE_SERVER_PATH, "\\WO\\", SourceOrdno[i].order_no,  "\\DXF\\", SourceOrdno[i].DwgName_Details);
+
+
+if(SourceOrdno[i].DwgName_Details != undefined){
+        sourcefld = path.join(process.env.FILE_SERVER_PATH, "\\WO\\", SourceOrdno[i].order_no,  "\\DXF\\", SourceOrdno[i].DwgName_Details);
+
+}
+else {
+    sourcefld = path.join(process.env.FILE_SERVER_PATH, "\\WO\\", SourceOrdno[i].order_no,  "\\DXF\\", SourceOrdno[i].DwgName);
+
+}
+      
       let destinationfld = path.join(
         process.env.FILE_SERVER_PATH,
         "\\WO\\",

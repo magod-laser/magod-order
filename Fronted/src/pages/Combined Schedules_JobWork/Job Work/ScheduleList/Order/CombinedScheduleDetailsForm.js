@@ -390,7 +390,10 @@ function CombinedScheduleDetailsForm() {
     postRequest(
       endpoints.cmbordcopydxf,
       { Comb_Order_No, DwgDatas },
-      (response) => {}
+      (response) => {
+        console.log("res--copy",response);
+        
+      }
     );
   };
 
@@ -619,13 +622,13 @@ function CombinedScheduleDetailsForm() {
           ) : null}
 
           <button className="button-style" onClick={onClickCopyDwg}>
-            Copy Drawings 1234
+            Copy Drawings
           </button>
           <button className="button-style" onClick={PrintPdf}>
             Print
           </button>
           <button className="button-style" onClick={closeButton}>
-            close
+            Close
           </button>
           {/* <button className="button-style">NC Programming</button> */}
         </div>
