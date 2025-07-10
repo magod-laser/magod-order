@@ -3,84 +3,16 @@
 const ProductionSchCreationRouter = require("express").Router();
 const { misQuery, setupQuery, misQueryMod } = require("../../helpers/dbconn");
 
-//Create Schedule
-// ProductionSchCreationRouter.post(`/createProductionSchedule`, async (req, res, next) => {
-//   // console.log("selectedItem is",req.body.selectedItems)
-//   const count = req.body.selectedItems.length; // Assuming selectedItems is an array of items to be scheduled
-
-//   const scheduleType = req.body.OrderData.Type === 'Service' ? req.body.OrderData.Type : req.body.scheduleType;
-
-//   let insertquery1 = `INSERT INTO magodmis.orderschedule(Order_No, PO, Cust_Code, ScheduleDate, Delivery_date,
-//                 SalesContact, Dealing_Engineer, ScheduleType, Type, Internal, Schedule_Status,schTgtDate)
-//                 VALUES ('${req.body.OrderData.Order_No}','${req.body.OrderData.Purchase_Order}','${req.body.OrderData.Cust_Code}',now(),adddate(curdate(), INTERVAL 2 DAY), '${req.body.OrderData.SalesContact}', '${req.body.OrderData.Dealing_Engineer}','${scheduleType}','${req.body.OrderData.Type}','0','Created',now())`;
-
-//   misQuery(insertquery1, (result, err1) => {
-//     if (err1) {
-//       console.log("Error inserting into orderschedule:", err1);
-//       return res
-//         .status(500)
-//         .json({
-//           message: "Error occurred while inserting into orderschedule",
-//         });
-//     } else {
-//       const scheduleId = result.insertId; // Get the insertId
-//       // Loop through selectedItems array
-//       req.body.selectedItems.forEach((selectedItem) => {
-//         // Fetch QtyToSchedule for the current OrderDetailId
-//         let selectQtyToScheduleQuery = `SELECT  CAST(o1.Qty_Ordered AS SIGNED) - CAST(o1.QtyScheduled AS SIGNED) AS QtyToSchedule
-//                           FROM  magodmis.Order_details o1
-//                           WHERE  o1.OrderDetailId='${selectedItem.OrderDetailId}'`;
-
-//         misQuery(selectQtyToScheduleQuery, (resultQty, err) => {
-//           if (err) {
-//             console.log("Error fetching QtyToSchedule:", err);
-//             // Handle error if needed
-//           } else {
-//             if (resultQty.length > 0) {
-//               const QtyToSchedule = resultQty[0].QtyToSchedule;
-//               // Now you have QtyToSchedule, use it in inserquery2
-//               let inserquery2 = `INSERT INTO magodmis.orderscheduledetails(ScheduleId, OrderDetailID, Order_No,
-//                   Schedule_Srl, Cust_Code, Dwg_Code, DwgName, Mtrl_Code, Operation, MProcess,
-//                   Mtrl_Source, PackingLevel, InspLevel, QtyScheduled, Tolerance, JWCost, MtrlCost, HasBOM)
-//                   VALUES('${scheduleId}', '${selectedItem.OrderDetailId}','${selectedItem.Order_No}',
-//                   '${selectedItem.Order_Srl}','${selectedItem.Cust_Code}','${selectedItem.Dwg_Code}', '${selectedItem.DwgName}', '${selectedItem.Mtrl_Code}', '${selectedItem.Operation}','${selectedItem.MProcess}',
-//                   '${scheduleType}','${selectedItem.PackingLevel}', '${selectedItem.InspLevel}','${QtyToSchedule}','${selectedItem.tolerance}','${selectedItem.JWCost}','${selectedItem.MtrlCost}','${selectedItem.HasBOM}')`;
-//               misQuery(inserquery2, (err2, finalresponse) => {
-//                 if (err2) {
-//                   // console.log("Error inserting into orderscheduledetails:", err2);
-//                   // No need to return a response here, as the insertion is part of a loop
-//                   // Simply log the error and continue with the next iteration
-//                 } else {
-//                   //   console.log("Inserted into orderscheduledetails:", finalresponse);
-//                 }
-//               });
-//             }
-//           }
-//         });
-//       });
-//       // Return success response after the loop is finished
-//       return res
-//         .status(200)
-//         .json({ message: "Draft Schedule Created" });
-//     }
-//   });
-// });
+//createProductionSchedule
 ProductionSchCreationRouter.post(
   `/createProductionSchedule`,
   async (req, res, next) => {
-    // console.log("selectedItems operation",req.body.selectedItems[0].Operation);
     
     const count = req.body.selectedItems.length; // Assuming selectedItems is an array of items to be scheduled
 for (let i = 0; i < req.body.selectedItems.length; i++) {
   const element = req.body.selectedItems[i];
-
-   console.log("selectedItems operation",element.Operation)
-   console.log("selectedItems operation",element.Mtrl_Code)
-
-   
   
 }
-    // const scheduleType = req.body.OrderData.Type === 'Service' ? req.body.OrderData.Type : req.body.scheduleType;
 
     let insertquery1 = `INSERT INTO magodmis.orderschedule(Order_No, PO, Cust_Code, ScheduleDate, Delivery_date,
                 SalesContact, Dealing_Engineer, ScheduleType, Type, Internal, Schedule_Status,schTgtDate)
@@ -122,7 +54,6 @@ for (let i = 0; i < req.body.selectedItems.length; i++) {
               if (resultQty.length > 0) {
 // 30-03-25 To Update the Order Details Dwg Field with 1. This field should be 0 till user clicks on Create Schedule Button
                 const QtyToSchedule = resultQty[0].QtyToSchedule;
-                // Now you have QtyToSchedule, use it in inserquery2
                 let inserquery2 = `INSERT INTO magodmis.orderscheduledetails(ScheduleId, OrderDetailID, Order_No,
                 Schedule_Srl, Cust_Code, Dwg_Code, DwgName, Mtrl_Code, Operation, MProcess,
                 Mtrl_Source, PackingLevel, InspLevel, QtyScheduled, Tolerance, JWCost, MtrlCost, HasBOM)
@@ -145,8 +76,7 @@ for (let i = 0; i < req.body.selectedItems.length; i++) {
                 misQuery(inserquery2, (err2, finalresponse) => {
                   if (err2) {
                     // console.log("Error inserting into orderscheduledetails:", err2);
-                    // No need to return a response here, as the insertion is part of a loop
-                    // Simply log the error and continue with the next iteration
+                   
                   } else {
                     //   console.log("Inserted into orderscheduledetails:", finalresponse);
                   }
@@ -162,9 +92,8 @@ for (let i = 0; i < req.body.selectedItems.length; i++) {
   }
 );
 
-///Suspend Order
+//Suspend Order
 ProductionSchCreationRouter.post(`/suspendOrder`, async (req, res, next) => {
-  // console.log("req.body /getFormData is",req.body);
   let query = `UPDATE magodmis.order_list o SET o.Order_Status='Suspended' WHERE o.Order_No='${req.body.OrderData.Order_No}'`;
   try {
     misQueryMod(query, (err, data) => {

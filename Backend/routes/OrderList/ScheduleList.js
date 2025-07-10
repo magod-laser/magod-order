@@ -10,8 +10,8 @@ const {
 	mchQueryMod,
 } = require("../../helpers/dbconn");
 
+//getScheduleListData
 ScheduleListRouter.post(`/getScheduleListData`, async (req, res, next) => {
-	// console.log("req.body /getScheduleListData is",req.body);
 	let query = `SELECT * FROM magodmis.orderschedule WHERE Order_No='${req.body.Order_No}'`;
 
 	try {
@@ -30,8 +30,7 @@ ScheduleListRouter.post(`/getScheduleListData`, async (req, res, next) => {
 
 //DWG table data
 ScheduleListRouter.post(`/getDwgTableData`, async (req, res, next) => {
-	// console.log("req.body /getDwgTableData is",req.body);
-	let query = `SELECT * FROM magodmis.orderscheduledetails o WHERE o.ScheduleId='${req.body.ScheduleId}'`;
+		let query = `SELECT * FROM magodmis.orderscheduledetails o WHERE o.ScheduleId='${req.body.ScheduleId}'`;
 
 	try {
 		misQueryMod(query, (err, data) => {
@@ -64,7 +63,7 @@ ScheduleListRouter.post(`/getTaskandMterial`, async (req, res, next) => {
 	}
 });
 
-///get Form Values in Order Schedule Details
+//get Form Values in Order Schedule Details
 ScheduleListRouter.post(`/getFormDeatils`, async (req, res, next) => {
 	// console.log("req.body /getTaskandMterial is",req.body);
 	let query = `SELECT o.*, c.Cust_name  FROM magodmis.orderschedule AS o JOIN magodmis.cust_data AS c  ON o.Cust_Code = c.Cust_Code WHERE o.Cust_Code = '${req.body.Cust_Code}' AND o.ScheduleId = '${req.body.ScheduleId}'`;

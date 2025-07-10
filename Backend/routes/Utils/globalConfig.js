@@ -1,4 +1,4 @@
-// utils/globalConfig.js
+
 let globalConfig = {};
 
 function set(configObj) {

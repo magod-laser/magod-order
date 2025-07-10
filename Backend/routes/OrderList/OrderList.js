@@ -8,6 +8,7 @@ const {
   mchQueryMod,
 } = require("../../helpers/dbconn");
 
+//getOrderList
 OrderListRouter.post(`/getOrderListByType`, async (req, res, next) => {
   let query = `SELECT 
                   *,
@@ -44,6 +45,7 @@ OrderListRouter.post(`/getOrderListByType`, async (req, res, next) => {
   }
 });
 
+//getOrderListByTypeGroupedCustomer
 OrderListRouter.post(
   `/getOrderListByTypeGroupedCustomer`,
   async (req, res, next) => {
@@ -61,9 +63,7 @@ OrderListRouter.post(
     }
 
     if (req.body.Order_Ref) {
-      // query = query + ` AND Order_Ref = '${req.body.Order_Ref}'`;
-      query = query + " AND `Order-Ref` = '"+ req.body.Order_Ref+"'";
-    
+            query = query + " AND `Order-Ref` = '"+ req.body.Order_Ref+"'";
     }
 
     query =
