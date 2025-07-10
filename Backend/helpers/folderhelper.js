@@ -3,9 +3,14 @@
 const fs = require("fs");
 const path = require("path");
 
+const globalConfig = require("../routes/Utils/globalConfig");
+
+
 let folderBase = process.env.FILE_SERVER_PATH; // "C:/Magod/Jigani";
+console.log("Folder Base Path from .env:", folderBase);
 
 let checkdrawings = async (qtnNo, callback) => {
+ 
   qtnNo = qtnNo.replaceAll("/", "_");
   // await fs.exists(folderBase + `/QtnDwg/`+qtnNo, async (exists) => {
   //     callback(exists);
@@ -44,6 +49,10 @@ let checkdrawings = async (qtnNo, callback) => {
 
 
 let createFolder = async (SrlType, qno, month, callback) => {
+
+  const workOrderPath = globalConfig.get("WORKORDER");
+  const basePath = workOrderPath.replace(/[\\\/]Wo$/, ""); //Remove the last "Wo" from the path
+  console.log("Folder Base Path from database:", basePath);
   try {
     switch (SrlType) {
       case "Quotation": {

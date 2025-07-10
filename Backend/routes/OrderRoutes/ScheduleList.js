@@ -13,9 +13,8 @@ const {
 } = require("../../helpers/dbconn");
 const { log } = require("winston");
 
+//getScheduleListData
 ScheduleListRouter.post(`/getScheduleListData`, async (req, res, next) => {
-  // const scheduleType = req.body.type === 'Service' ? req.body.type : req.body.scheduleType;
-
   let query = `SELECT * FROM magodmis.orderschedule WHERE Order_No='${req.body.Order_No}'`;
 
   try {
@@ -24,7 +23,6 @@ ScheduleListRouter.post(`/getScheduleListData`, async (req, res, next) => {
         console.log("err", err);
       } else {
         res.send(data);
-        //   console.log("data",data)
       }
     });
   } catch (error) {
@@ -52,7 +50,6 @@ ScheduleListRouter.post(`/getDwgTableData`, async (req, res, next) => {
 
 //ShiftDetailsTabData
 ScheduleListRouter.post(`/ScheduleDetails`, async (req, res, next) => {
-  // console.log("req.body", req.body);
   let query = `SELECT o.*, cast(o1.Qty_Ordered As SIGNED)  - cast(o1.QtyScheduled As SIGNED) 
   as QtyToSchedule ,o1.OrderDetailId ,o1.Mtrl
   FROM magodmis.orderscheduledetails o, magodmis.Order_details o1 
@@ -117,7 +114,7 @@ ScheduleListRouter.post(`/getDwgDataListTMTab`, async (req, res, next) => {
   }
 });
 
-///get Form Values in Order Schedule Details
+//get Form Values in Order Schedule Details
 ScheduleListRouter.post(`/getFormDeatils`, async (req, res, next) => {
   let query = `SELECT o.*, c.Cust_name  FROM magodmis.orderschedule AS o JOIN magodmis.cust_data AS c  ON o.Cust_Code = c.Cust_Code WHERE o.Cust_Code = '${req.body.Cust_Code}' AND o.ScheduleId = '${req.body.ScheduleId}'`;
   try {
@@ -135,10 +132,6 @@ ScheduleListRouter.post(`/getFormDeatils`, async (req, res, next) => {
 
 //Button Save
 ScheduleListRouter.post(`/save`, async (req, res, next) => {
-  // Constructing the first query to update orderscheduledetails table
-
-  console.log("req.body.newState", req.body.newState);
-  console.log("testing schedule id ", req.body.formdata[0]?.ScheduleId);
 
   let query = `UPDATE magodmis.orderscheduledetails o,
     (SELECT CASE
@@ -244,7 +237,6 @@ ScheduleListRouter.post(`/save`, async (req, res, next) => {
 
 //Onclick of Suspend
 ScheduleListRouter.post(`/suspendButton`, async (req, res, next) => {
-  // console.log("newState is",req.body.newState[0]);
   let query = `SELECT * FROM magodmis.orderschedule WHERE ScheduleId='${req.body.newState[0].ScheduleId}';`;
 
   try {
@@ -496,94 +488,7 @@ ScheduleListRouter.post(`/taskOnclick`, async (req, res, next) => {
 });
 
 //Onclick of Button Cancel
-// ScheduleListRouter.post(`/onClickCancel`, async (req, res, next) => {
-
-//   console.log('Hello cancel');
-
-//   try {
-//     let query = `SELECT * FROM magodmis.orderscheduledetails WHERE SchDetailsID='${req.body.newState[0].SchDetailsID}';`;
-
-//     misQueryMod(query, (err, data) => {
-//       if (err) {
-//         console.error("Database error:", err);
-//         return res.status(500).json({ error: "Internal Server Error" });
-//       } else {
-//         if (data && data.length > 0) {
-//           const resultQuery = data[0]; // Assuming only one row is returned
-
-//           console.log("Inside if", resultQuery);
-
-//           const QtyProgrammed = resultQuery.QtyProgrammed;
-
-//           console.log("QtyProgrammedmmmm", QtyProgrammed);
-
-//           if (QtyProgrammed > 0) {
-//             // Execute the update queries
-//             const updateQuery1 = `UPDATE magodmis.orderscheduledetails o SET o.QtyScheduled=0 WHERE o.SchDetailsID=${resultQuery.SchDetailsID};`;
-//             const updateQuery2 = `UPDATE order_details o SET o.QtyScheduled=o.QtyScheduled-${resultQuery.QtyScheduled} WHERE o.OrderDetailID=${resultQuery.OrderDetailID};`;
-//             const updateQuery3 = `UPDATE orderschedule SET Schedule_Status='Cancelled' WHERE ScheduleId=${req.body.newState[0].ScheduleId};`;
-//             // const deleteQuery = `DELETE magodmis.t, magodmis.n FROM magodmis.nc_task_list AS n, magodmis.task_partslist AS t WHERE n.ScheduleID='${req.body.newState[0].ScheduleId}' AND t.NcTaskId=n.NcTaskId;`;
-//             const deleteQuery = `DELETE n, t FROM magodmis.nc_task_list AS n JOIN magodmis.task_partslist AS t ON t.NcTaskId = n.NcTaskId
-//                                  WHERE n.ScheduleID = '${req.body.newState[0].ScheduleId}';`;
-
-//             misQueryMod(updateQuery1, (err, result1) => {
-//               if (err) {
-//                 console.error("Database error:", err);
-//                 return res.status(500).json({ error: "Internal Server Error" });
-//               } else {
-//                 misQueryMod(updateQuery2, (err, result2) => {
-//                   if (err) {
-//                     console.error("Database error:", err);
-//                     return res
-//                       .status(500)
-//                       .json({ error: "Internal Server Error" });
-//                   } else {
-//                     misQueryMod(updateQuery3, (err, result3) => {
-//                       if (err) {
-//                         console.error("Database error:", err);
-//                         return res
-//                           .status(500)
-//                           .json({ error: "Internal Server Error" });
-//                       } else {
-//                         misQueryMod(deleteQuery, (err, result4) => {
-//                           if (err) {
-//                             console.error("Database error:", err);
-//                             return res
-//                               .status(500)
-//                               .json({ error: "Internal Server Error" });
-//                           } else {
-//                             return res.status(200).json({
-//                               message: "Schedules cancelled successfully",
-//                             });
-//                           }
-//                         });
-//                       }
-//                     });
-//                   }
-//                 });
-//               }
-//             });
-//           } else {
-//             return res
-//               .status(400)
-//               .json({ message: "Cannot Cancel Schedules Once Programmed" });
-//           }
-//         } else {
-//           return res
-//             .status(404)
-//             .json({ error: "No data found for the given SchDetailsID" });
-//         }
-//       }
-//     });
-//   } catch (error) {
-//     console.error("Server error:", error);
-//     return res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
-
 ScheduleListRouter.post(`/onClickCancel`, async (req, res, next) => {
-  console.log("Received request for onClickCancel");
-  // console.log("Request Body:", JSON.stringify(req.body, null, 2));
 
   try {
     if (
@@ -599,9 +504,6 @@ ScheduleListRouter.post(`/onClickCancel`, async (req, res, next) => {
 
     const schDetailsID = req.body.newState[0]?.SchDetailsID;
     const scheduleId = req.body.newState[0]?.ScheduleId;
-
-    console.log("SchDetailsID:", schDetailsID);
-    console.log("ScheduleId:", scheduleId);
 
     if (!schDetailsID) {
       console.error(" Missing SchDetailsID in request");
@@ -622,7 +524,6 @@ ScheduleListRouter.post(`/onClickCancel`, async (req, res, next) => {
           .status(500)
           .json({ error: "Internal Server Error", details: err.message });
       } else {
-        console.log("📊 Database Query Result:", data);
         if (!data || data.length === 0) {
           console.error("No data found for SchDetailsID:", schDetailsID);
           return res
@@ -633,7 +534,6 @@ ScheduleListRouter.post(`/onClickCancel`, async (req, res, next) => {
         const resultQuery = data[0];
         const QtyProgrammed = Number(resultQuery.QtyProgrammed);
 
-        console.log("🛠️ QtyProgrammed:", QtyProgrammed);
 
         if (QtyProgrammed > 0) {
           return res
@@ -642,13 +542,6 @@ ScheduleListRouter.post(`/onClickCancel`, async (req, res, next) => {
         } else {
           console.log("Proceeding with cancellation...");
 
-          // const updateQuery1 = `UPDATE magodmis.orderscheduledetails o SET o.QtyScheduled=0 WHERE o.SchDetailsID=${resultQuery.SchDetailsID};`;
-          // const updateQuery2 = `UPDATE order_details o SET o.QtyScheduled=o.QtyScheduled-${resultQuery.QtyScheduled} WHERE o.OrderDetailID=${resultQuery.OrderDetailID};`;
-          // const updateQuery3 = `UPDATE orderschedule SET Schedule_Status='Cancelled' WHERE ScheduleId=${req.body.newState[0].ScheduleId};`;
-          // const deleteQuery = `DELETE n, t FROM magodmis.nc_task_list AS n JOIN magodmis.task_partslist AS t ON t.NcTaskId = n.NcTaskId
-          //                      WHERE n.ScheduleID = '${req.body.newState[0].ScheduleId}';`;
-
-          // veeranna 08042025
           const updateQueries = [];
 
           req.body.newState.forEach((item) => {
@@ -675,39 +568,11 @@ ScheduleListRouter.post(`/onClickCancel`, async (req, res, next) => {
               console.error("Error executing queries:", err);
               return res.status(500).send("Update failed");
             }
-            // res.send('All updates applied successfully');
             return res
               .status(200)
               .json({ message: "Schedules cancelled successfully" });
           });
 
-          // misQueryMod(updateQuery1, (err, result1) => {
-          //   if (err)
-          //     return res.status(500).json({ error: "Internal Server Error" });
-
-          //   misQueryMod(updateQuery2, (err, result2) => {
-          //     if (err)
-          //       return res.status(500).json({ error: "Internal Server Error" });
-
-          //     misQueryMod(updateQuery3, (err, result3) => {
-          //       if (err)
-          //         return res
-          //           .status(500)
-          //           .json({ error: "Internal Server Error" });
-
-          //       misQueryMod(deleteQuery, (err, result4) => {
-          //         if (err)
-          //           return res
-          //             .status(500)
-          //             .json({ error: "Internal Server Error" });
-
-          //         return res
-          //           .status(200)
-          //           .json({ message: "Schedules cancelled successfully" });
-          //       });
-          //     });
-          //   });
-          // });
         }
       }
     });
@@ -718,26 +583,22 @@ ScheduleListRouter.post(`/onClickCancel`, async (req, res, next) => {
       .json({ error: "Internal Server Error", details: error.message });
   }
 });
-// 09042025 veer
+
+// deleteZeroScheduledRows
 ScheduleListRouter.post("/deleteZeroScheduledRows", async (req, res) => {
   const { ids } = req.body;
-
-  console.log("IDs received for deletion:", ids);
-
   // Validate input
   if (!Array.isArray(ids) || ids.length === 0) {
     return res.status(400).json({ success: false, message: "No IDs provided" });
   }
 
   try {
-    // Create placeholders (?, ?, ?, ...) for parameterized query
+    // placeholders (?, ?, ?, ...) for parameterized query
     const placeholders = ids.map(() => '?').join(',');
     const query = `DELETE FROM magodmis.orderscheduledetails WHERE SchDetailsID IN (${placeholders})`;
 
     // Execute delete query with IDs
     const result = await misQueryMod(query, ids);
-
-    console.log("Delete result:", result);
 
     res.json({
       success: true,
@@ -754,17 +615,9 @@ ScheduleListRouter.post("/deleteZeroScheduledRows", async (req, res) => {
   }
 });
 
-
-
-
-
+// Schedule Button process
 ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
-  console.log("==== STARTING SCHEDULE BUTTON ENDPOINT ====");
-  console.log("req.body.formdata1", req.body.formdata);
-  console.log("req.body.formdata2", req.body.scheduleDetailsRow);
-  console.log("req.body.formdata3", req.body.OrdrDetailsData);
-  console.log("req.body.formdata4", req.body.newState);
-
+ 
   try {
     console.log("Starting sales overdue check");
     let querySalesOverdue = `SELECT count(d.DC_Inv_No) AS SalesOverdueCount 
@@ -780,34 +633,34 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
         return res.status(500).json({ error: "Internal Server Error" });
       } else {
         const salesOverdueCount = salesOverdueData[0].SalesOverdueCount;
-        console.log("Sales overdue count:", salesOverdueCount);
+        // console.log("Sales overdue count:", salesOverdueCount);
 
         if (salesOverdueCount > 0) {
-          console.log("Sales overdue count > 0, returning warning message");
+          // console.log("Sales overdue count > 0, returning warning message");
           return res.status(200).json({
             message: `${salesOverdueCount} Sales Invoices have PaymentDate Exceeding 30 Days. Get Payment Cleared. Do you wish to proceed Scheduling?`,
           });
         } else {
-          console.log("No sales overdue, proceeding to payment caution check");
+          // console.log("No sales overdue, proceeding to payment caution check");
           let queryPaymentCaution = `SELECT count(d.DC_Inv_No) AS PaymentCautionCount 
                                      FROM magodmis.draft_dc_inv_register d
                                      WHERE d.DCStatus='Despatched' AND datediff(curdate(), d.PaymentDate) > 60 
                                      AND d.Cust_Code='${req.body.formdata[0].Cust_Code}';`;
 
           misQueryMod(queryPaymentCaution, (err, paymentCautionData) => {
-            console.log("Inside payment caution query callback");
+            // console.log("Inside payment caution query callback");
             if (err) {
               console.log("Error executing query for Payment Caution:", err);
               return res.status(500).json({ error: "Internal Server Error" });
             } else {
               const paymentCautionCount =
                 paymentCautionData[0].PaymentCautionCount;
-              console.log("Payment caution count:", paymentCautionCount);
+              // console.log("Payment caution count:", paymentCautionCount);
 
               if (paymentCautionCount > 0) {
-                console.log(
-                  "Payment caution count > 0, returning warning message"
-                );
+                // console.log(
+                //   "Payment caution count > 0, returning warning message"
+                // );
                
                 return res.status(200).json({
                   message: `${paymentCautionCount} Invoices have PaymentDate exceeding by 60 days. Get Payment Cleared. Do you wish to proceed Scheduling?`,
@@ -816,9 +669,9 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
               }
 
               else {
-                console.log(
-                  "No payment caution issues, checking schedule details"
-                );
+                // console.log(
+                //   "No payment caution issues, checking schedule details"
+                // );
                 let selectScheduleDetailsQuery = `SELECT * FROM magodmis.orderscheduledetails WHERE ScheduleId='${req.body.formdata[0].ScheduleId}'`;
 
                 misQueryMod(
@@ -834,32 +687,24 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                         .status(500)
                         .json({ error: "Internal Server Error" });
                     } else {
-                      console.log("Before hasZeroQtyScheduled check");
-                      console.log(
-                        "Schedule details data count:",
-                        scheduleDetailsData.length
-                      );
+                      // console.log("Before hasZeroQtyScheduled check");
+                      // console.log(
+                      //   "Schedule details data count:",
+                      //   scheduleDetailsData.length
+                      // );
 
                       const hasZeroQtyScheduled = scheduleDetailsData.some(
                         (row) => row.QtyScheduled === 0
                       );
-                      console.log(
-                        "hasZeroQtyScheduled result:",
-                        hasZeroQtyScheduled
-                      );
-
+                    
                       if (hasZeroQtyScheduled) {
-                        console.log(
-                          "Zero quantity detected in schedule, returning warning"
-                        );
+                        
                         return res.status(200).json({
                           message: `Cannot Schedule Zero Quantity For ${scheduleDetailsData[0].DwgName}. Do you wish to delete it from the Schedule?`,
                           scheduleDetails: scheduleDetailsData,
                         });
                       } else {
-                        console.log(
-                          "No zero quantities, formatting target date"
-                        );
+                       
                         const originalDate = new Date(
                           req.body.formdata[0].schTgtDate
                         );
@@ -867,13 +712,10 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                           .toISOString()
                           .slice(0, 19)
                           .replace("T", " ");
-                        console.log("Formatted date:", formattedDate);
 
-                        console.log("Getting schedule count");
                         let selectQuery = `SELECT o.ScheduleCount FROM magodmis.order_list o WHERE o.Order_No='${req.body.formdata[0].Order_No}'`;
 
                         misQueryMod(selectQuery, (err, selectData) => {
-                          console.log("Inside schedule count query callback");
                           if (err) {
                             console.log(
                               "Error executing select query for schedule count:",
@@ -884,33 +726,27 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                               .json({ error: "Internal Server Error" });
                           } else {
                             const scheduleCount = selectData[0].ScheduleCount;
-                            console.log(
-                              "Current schedule count:",
-                              scheduleCount
-                            );
+                            
 
                             let newState = req.body.newState;
-                            console.log(
-                              "Starting updates for each item in newState, count:",
-                              newState.length
-                            );
+                            
 
                             // Loop through newState array and execute updateQuery1 for each object
                             newState.forEach((item, index) => {
-                              console.log(
-                                `Processing newState item ${index + 1}/${newState.length
-                                }:`,
-                                item
-                              );
+                              // console.log(
+                              //   `Processing newState item ${index + 1}/${newState.length
+                              //   }:`,
+                              //   item
+                              // );
                               let updateQuery1 = `UPDATE order_details SET QtyScheduled=QtyScheduled+'${item.QtyScheduled}' WHERE OrderDetailID='${item.OrderDetailID}'`;
                               console.log("Update query 1:", updateQuery1);
 
                               // Execute the update query for order_details
                               misQueryMod(updateQuery1, (err, result) => {
-                                console.log(
-                                  `Inside updateQuery1 callback for item ${index + 1
-                                  }`
-                                );
+                                // console.log(
+                                //   `Inside updateQuery1 callback for item ${index + 1
+                                //   }`
+                                // );
                                 if (err) {
                                   console.log(
                                     `Error executing update query 1 for item ${index + 1
@@ -921,38 +757,17 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                     .status(500)
                                     .json({ error: "Internal Server Error" });
                                 } else {
-                                  console.log(
-                                    `UpdateQuery1 result for item ${index + 1
-                                    }:`,
-                                    result
-                                  );
-                                  console.log(
-                                    `Entering into updateQuery2 for item ${index + 1
-                                    }`
-                                  );
-
-                                  console.log(
-                                    "item.SchDetailsID:",
-                                    item.SchDetailsID
-                                  );
-                                  console.log(
-                                    "item.QtyScheduled:",
-                                    item.QtyScheduled
-                                  );
-                                  console.log(
-                                    "item.QtyCleared---:",
-                                    item.QtyCleared
-                                  );
+                                  
                                   //updating  QtyCleared column also
                                   let updateQuery2 = `UPDATE magodmis.orderscheduledetails SET QtyScheduled='${item.QtyScheduled}' ,QtyCleared = '${item.QtyCleared}' WHERE SchDetailsID='${item.SchDetailsID}'`;
-                                  console.log("Update query 2:", updateQuery2);
+                                  // console.log("Update query 2:", updateQuery2);
 
                                   // Execute the update query for magodmis.orderscheduledetails
                                   misQueryMod(updateQuery2, (err, result) => {
-                                    console.log(
-                                      `Inside updateQuery2 callback for item ${index + 1
-                                      }`
-                                    );
+                                    // console.log(
+                                    //   `Inside updateQuery2 callback for item ${index + 1
+                                    //   }`
+                                    // );
                                     if (err) {
                                       console.log(
                                         `Error executing update query 2 for item ${index + 1
@@ -965,30 +780,30 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                           error: "Internal Server Error",
                                         });
                                     }
-                                    console.log(
-                                      `UpdateQuery2 result for item ${index + 1
-                                      }:`,
-                                      result
-                                    );
+                                    // console.log(
+                                    //   `UpdateQuery2 result for item ${index + 1
+                                    //   }:`,
+                                    //   result
+                                    // );
                                   });
                                 }
                               });
                             });
 
-                            console.log(
-                              "Setting up update query 3 for order_list"
-                            );
+                            // console.log(
+                            //   "Setting up update query 3 for order_list"
+                            // );
                             let updateQuery3 = `UPDATE magodmis.order_list o SET o.ScheduleCount='${scheduleCount}' WHERE o.Order_No='${req.body.formdata[0].Order_No}'`;
-                            console.log("Update query 3:", updateQuery3);
+                            // console.log("Update query 3:", updateQuery3);
 
-                            console.log("Getting schedule number");
+                            // console.log("Getting schedule number");
                             let selectSRLQuery = `SELECT ScheduleNo FROM magodmis.orderschedule WHERE Order_No='${req.body.formdata[0].Order_No}'`;
-                            console.log("Select SRL query:", selectSRLQuery);
+                            // console.log("Select SRL query:", selectSRLQuery);
 
                             misQueryMod(
                               selectSRLQuery,
                               (err, selectSRLData) => {
-                                console.log("Inside select SRL query callback");
+                                // console.log("Inside select SRL query callback");
                                 if (err) {
                                   console.log(
                                     "Error executing select query for ScheduleNo:",
@@ -998,16 +813,16 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                     .status(500)
                                     .json({ error: "Internal Server Error" });
                                 } else {
-                                  console.log(
-                                    "Select SRL data:",
-                                    selectSRLData
-                                  );
+                                  // console.log(
+                                  //   "Select SRL data:",
+                                  //   selectSRLData
+                                  // );
                                   let nextSRL;
                                   if (selectSRLData.length === 0) {
                                     nextSRL = "01";
-                                    console.log(
-                                      "No existing schedules, setting nextSRL to 01"
-                                    );
+                                    // console.log(
+                                    //   "No existing schedules, setting nextSRL to 01"
+                                    // );
                                   } else {
                                     const maxSRL = Math.max(
                                       ...selectSRLData.map(
@@ -1019,21 +834,21 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                     )
                                       .toString()
                                       .padStart(2, "0");
-                                    console.log(
-                                      "Calculated nextSRL based on max existing:",
-                                      nextSRL
-                                    );
+                                    // console.log(
+                                    //   "Calculated nextSRL based on max existing:",
+                                    //   nextSRL
+                                    // );
                                   }
 
                                   let neworderSch = `${req.body.formdata[0].Order_No} ${nextSRL}`;
-                                  console.log(
-                                    "Generated new order schedule number:",
-                                    neworderSch
-                                  );
+                                  // console.log(
+                                  //   "Generated new order schedule number:",
+                                  //   neworderSch
+                                  // );
 
-                                  console.log(
-                                    "Setting up update queries for schedule information"
-                                  );
+                                  // console.log(
+                                  //   "Setting up update queries for schedule information"
+                                  // );
                                   let updateSRLQuery = `UPDATE magodmis.orderschedule 
                                   SET OrdSchNo='${neworderSch}', 
                                       ScheduleNo='${nextSRL}', 
@@ -1041,17 +856,17 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                       schTgtDate='${formattedDate}', 
                                       ScheduleDate=now() 
                                   WHERE ScheduleId='${req.body.formdata[0].ScheduleId}'`;
-                                  console.log(
-                                    "Update SRL query:",
-                                    updateSRLQuery
-                                  );
+                                  // console.log(
+                                  //   "Update SRL query:",
+                                  //   updateSRLQuery
+                                  // );
 
                                   let updateQuery2 = `UPDATE orderscheduledetails SET ScheduleNo='${neworderSch}', Schedule_Srl='${nextSRL}' 
                                   WHERE ScheduleId='${req.body.formdata[0].ScheduleId}'`;
-                                  console.log(
-                                    "Update query 2 for schedule details:",
-                                    updateQuery2
-                                  );
+                                  // console.log(
+                                  //   "Update query 2 for schedule details:",
+                                  //   updateQuery2
+                                  // );
 
                                   misQueryMod(
                                     updateSRLQuery,
@@ -1642,16 +1457,11 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
   console.log("==== END OF SCHEDULE BUTTON ROUTE HANDLER ====");
 });
 
-// veeranna 14042025 1715
+// scheduleAfterLogin
 ScheduleListRouter.post(`/scheduleAfterLogin`, async (req, res, next) => {
   try {
 
-    // console.log("SAL-OrdrDetailsData", req.body.OrdrDetailsData);
-    console.log("SAL-OrdrDetailsData-Mtrl", req.body.newState);
-    // console.log("req1404", req.body.formdata);
-    // console.log("req1404", req.body.formdata[0].Type);
-
-    const originalDate = new Date();
+   const originalDate = new Date();
     const formattedDate = originalDate
       .toISOString()
       .slice(0, 19)
@@ -2088,6 +1898,8 @@ console.log("SAL-processTask----",processTask);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+//getSalesContact
 ScheduleListRouter.get(`/getSalesContact`, async (req, res, next) => {
   // console.log("req.body /getFormData is",req.body);
   let query = `SELECT * FROM magod_sales.sales_execlist`;
@@ -2105,56 +1917,7 @@ ScheduleListRouter.get(`/getSalesContact`, async (req, res, next) => {
 });
 
 //OnClick of Performance
-// ScheduleListRouter.post(`/onClickPerformce`, async (req, res, next) => {
-//   console.log("formdata", req.body.TaskMaterialData[0].Machine);
-
-//   try {
-//     const scheduleId = req.body.formdata[0].ScheduleId;
-//     const machine = req.body.TaskMaterialData[0].Machine;
-
-//     // Execute the first query
-//     executeFirstQuery(scheduleId, (err, data) => {
-//       if (err) {
-//         console.log("err", err);
-//         return next(err); // Pass the error to the error handling middleware
-//       }
-//       // Execute the second query
-//       executeSecondQuery(scheduleId, (err, data1) => {
-//         if (err) {
-//           console.log("err", err);
-//           return next(err); // Pass the error to the error handling middleware
-//         }
-
-//         // Create a map of NcTaskId to MachineTime
-//         const machineTimeMap = {};
-//         data1.forEach((row) => {
-//           machineTimeMap[row.NcTaskId] = row.MachineTime;
-//         });
-
-//         // Calculate HourRate and TargetHourRate for each row in data
-//         data.forEach((row) => {
-//           const machineTime = machineTimeMap[row.NcTaskId];
-//           if (machineTime !== undefined) {
-//             row.MachineTime = machineTime;
-//             row.HourRate = row.JWValue / machineTime;
-//             row.TargetHourRate = row.MaterialValue / machineTime;
-//           } else {
-//             row.MachineTime = "Not Processed";
-//             row.HourRate = "Not Invoiced";
-//             row.TargetHourRate = "Not Invoiced";
-//           }
-//         });
-
-//         res.send(data); // Send the resulting data array as response
-//       });
-//     });
-//   } catch (error) {
-//     next(error); // Pass any uncaught errors to the error handling middleware
-//   }
-// });
-
 ScheduleListRouter.post(`/onClickPerformce`, async (req, res, next) => {
-  console.log("formdata", req.body.TaskMaterialData[0].Machine);
 
   try {
     const scheduleId = req.body.formdata[0].ScheduleId;
@@ -2249,6 +2012,7 @@ function executeFirstQuery(scheduleId, callback) {
   // Execute the first query
   misQueryMod(query, callback);
 }
+
 // Function to execute the second query
 function executeSecondQuery(scheduleId, callback) {
   const query = `
@@ -2363,7 +2127,7 @@ ScheduleListRouter.post(`/fixtureOrder`, async (req, res, next) => {
   }
 });
 
-///DELETE SCHEDULE
+//deleteScheduleList
 ScheduleListRouter.post(`/deleteScheduleList`, async (req, res, next) => {
   let query = `Delete  FROM magodmis.orderschedule where ScheduleId='${req.body.rowScheduleList.ScheduleId}'`;
 
@@ -2380,7 +2144,7 @@ ScheduleListRouter.post(`/deleteScheduleList`, async (req, res, next) => {
   }
 });
 
-///Delete Dwg
+//deleteDwgOrderSch
 ScheduleListRouter.post(`/deleteDwgOrderSch`, async (req, res, next) => {
   let query = `Delete  FROM magodmis.orderscheduledetails where ScheduleId='${req.body.rowScheduleList.ScheduleId}'`;
 
@@ -2488,73 +2252,8 @@ ScheduleListRouter.post(`/createProfileOrder`, async (req, res, next) => {
 });
 
 // Print PDF ScheduleList
-// ScheduleListRouter.post(`/PrintPdf`, async (req, res, next) => {
-//   // console.log("===", req.body.formdata[0].ScheduleId);
-
-//   const ScheduleId = req.body?.ScheduleId;
-
-//   console.log("ScheduleId===0204", ScheduleId);
-
-//   try {
-//     let query = `SELECT * FROM magodmis.orderscheduledetails where ScheduleId='${ScheduleId}';`;
-
-//     console.log("query in print pdf:", query);
-
-//     misQueryMod(query, (err, data) => {
-//       if (err) {
-//         console.log("err", err);
-//         res
-//           .status(500)
-//           .send({ error: "An error occurred while fetching data" });
-//       } else {
-//         console.log("data received in print pdf-1 ::", data);
-
-//         if (data.length > 0) {
-//           // Group data by task number
-//           const groupedData = {};
-//           data.forEach((item) => {
-//             const TaskNo = item.TaskNo;
-//             console.log("TaskNo111", TaskNo);
-
-//             if (!groupedData[TaskNo]) {
-//               groupedData[TaskNo] = [];
-//             }
-//             groupedData[TaskNo].push(item);
-
-//           });
-//           console.log("groupedData111", groupedData);
-
-//           // Format grouped data
-//           const formattedData = [];
-//           for (const TaskNo in groupedData) {
-//             formattedData.push({
-//               taskNo: TaskNo,
-//               Mtrl_Code: groupedData[TaskNo][0].Mtrl_Code,
-//               Mtrl_Source: groupedData[TaskNo][0].Mtrl_Source,
-//               Operation: groupedData[TaskNo][0].Operation,
-//               otherdetails: groupedData[TaskNo],
-//             });
-//           }
-//           console.log("formatted data lgged::", formattedData)
-//           res.send(formattedData);
-//         } else {
-          
-//           res
-//             .status(404)
-//             .send({ error: "No data found for the provided ScheduleId" });
-//         }
-//       }
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
-// Print PDF ScheduleList
 ScheduleListRouter.post(`/PrintPdf`, async (req, res, next) => {
   const ScheduleId = req.body?.ScheduleId;
-
-  console.log("ScheduleId for PDF generation:", ScheduleId);
 
   try {
     // First, get the schedule details with the correct task numbers
@@ -2660,27 +2359,7 @@ ScheduleListRouter.post(`/PrintPdf`, async (req, res, next) => {
   }
 });
 
-
 //getCustomerName
-// ScheduleListRouter.post(`/getCustomerName`, async (req, res, next) => {
-// 	// console.log("req.body /getCustomerName is",req.body);
-// 	console.log("req.body /getCustomerName is",req.body.formdata[0].Cust_Code);
-// 	let query = `SELECT Cust_name FROM magodmis.cust_data  where Cust_Code='${req.body.formdata[0].Cust_Code}'
-//   `;
-
-// 	try {
-// 		misQueryMod(query, (err, data) => {
-// 			if (err) {
-// 				console.log("err", err);
-// 			} else {
-// 				res.send(data);
-// 			}
-// 		});
-// 	} catch (error) {
-// 		next(error);
-// 	}
-// });
-
 ScheduleListRouter.post(`/getCustomerName`, async (req, res, next) => {
   // console.log("req.body /getCustomerName is", req.body?.formdata?.[0]?.Cust_Code);
 
@@ -2707,10 +2386,10 @@ ScheduleListRouter.post(`/getCustomerName`, async (req, res, next) => {
 
 //get customer sumary data  (customerinfo table)
 ScheduleListRouter.post(`/getCustomerSummary`, async (req, res, next) => {
-  console.log(
-    "req.body /getCustomerSummary is",
-    req.body.formdata[0].Cust_Code
-  );
+  // console.log(
+  //   "req.body /getCustomerSummary is",
+  //   req.body.formdata[0].Cust_Code
+  // );
   let query = `SELECT 
   ab.Cust_Code,
   ab.Cust_Name, 
@@ -2782,7 +2461,7 @@ GROUP BY
   }
 });
 
-// suresh sir code
+// getScheduleDetails (suresh sir)
 ScheduleListRouter.post(`/getScheduleDetails`, async (req, res, next) => {
   let query = `SELECT * FROM magodmis.orderschedule WHERE ScheduleId='${req.body.ScheduleId}'`;
 
@@ -2799,6 +2478,7 @@ ScheduleListRouter.post(`/getScheduleDetails`, async (req, res, next) => {
   }
 });
 
+//getOrderscheduleDetails
 ScheduleListRouter.post(`/getOrderscheduleDetails`, async (req, res, next) => {
   let query = `SELECT * FROM magodmis.orderscheduledetails WHERE ScheduleId='${req.body.ScheduleId}'`;
 
@@ -2893,6 +2573,7 @@ ScheduleListRouter.post(`/schCreatePartsWS`, async (req, res, next) => {
     });
 });
 
+//readSchWS
 ScheduleListRouter.post(`/readSchWS`, async (req, res, next) => {
   const ordno = req.body.ordNo;
   const schid = req.body.ScheduleId;
@@ -2928,6 +2609,7 @@ ScheduleListRouter.post(`/readSchWS`, async (req, res, next) => {
     });
 });
 
+//getSchNcTaskList
 ScheduleListRouter.post(`/getSchNcTaskList`, async (req, res, next) => {
   console.log("Getting NC Task Data");
   console.log("Schedule ID - req.body", req.body.ScheduleID);
@@ -2948,30 +2630,9 @@ ScheduleListRouter.post(`/getSchNcTaskList`, async (req, res, next) => {
   }
 });
 
+//getTaskData
 ScheduleListRouter.post(`/getTaskData`, async (req, res, next) => {
-  console.log("Getting Task Data");
-  console.log("Order No - req.body", req.body.ScheduleId);
-
-  // try {
-  // 	misQueryMod(
-  // 		`SELECT Distinct part.ScheduleId, part.Mtrl_Code, part.MProcess, part.Operation, part.Mtrl_Source,
-  //                Sum(QtyScheduled) As SumQty, Count(Order_No) as Dwgs,Sum(LOC) as TotLOC,Sum(Holes) as TotHoles, part.NcTaskId
-  //                FROM magodmis.orderscheduledetails part WHERE part.ScheduleId ='${req.body.ScheduleId}'
-  //                Group by part.Mtrl_Code, part.MProcess, part.Operation, part.Mtrl_Source`,
-  // 		(err, data) => {
-  // 			if (err) {
-  // 				logger.error(err);
-  // 				console.log("err", err);
-  // 			}
-  // 			console.log("Initial Task Data B4 TaskNo data is", data);
-  // 			res.send(data);
-  // 		}
-  // 	);
-  // } catch (error) {
-  // 	next(error);
-  // }
-
-  // ALTERED QUERY BECAUSE OF THE SQL MODE PROBLUM FACED
+ 
   try {
     // Step 1: Disable ONLY_FULL_GROUP_BY for the session
     misQueryMod(
@@ -3006,6 +2667,7 @@ ScheduleListRouter.post(`/getTaskData`, async (req, res, next) => {
   }
 });
 
+//saveNcTaskList
 ScheduleListRouter.post(`/saveNcTaskList`, async (req, res, next) => {
   let SchedId = req.body.taskdata[0].ScheduleID;
   if (req.body.taskdata.length === 0) {
@@ -3198,6 +2860,7 @@ ScheduleListRouter.post(`/saveNcTaskList`, async (req, res, next) => {
   }
 });
 
+//getTaskPartDetails
 ScheduleListRouter.post(`/getTaskPartDetails`, async (req, res, next) => {
   console.log("Getting Task Part Details");
   console.log(req.body);
@@ -3238,15 +2901,14 @@ ScheduleListRouter.post(`/getTaskPartDetails`, async (req, res, next) => {
   }
 });
 
+//getTaskMtrlDetails
 ScheduleListRouter.post(`/getTaskMtrlDetails`, async (req, res, next) => {
   console.log("Getting Task Mtrl Details");
   console.log(req.body);
   try {
-    // await misQueryMod(`SELECT * From magodmis.orderscheduledetails Part Where Part.TaskNo = '${req.body.TaskNo}'`,
 
     await misQueryMod(
       `SELECT TaskNo, Length, Width, Quantity, ID From magodmis.task_material_list Where TaskNo = '${req.body.TaskNo}'`,
-      //           And ScheduleID='${req.body.ScheduleId}'`,
       (err, data) => {
         if (err) {
           console.log("err", err);

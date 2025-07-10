@@ -1,6 +1,7 @@
 const ProfarmaInvListRouter = require("express").Router();
 const { misQuery, setupQuery, misQueryMod } = require("../../helpers/dbconn");
 
+//getProfarmaMain
 ProfarmaInvListRouter.post("/getProfarmaMain", async (req, res, next) => {
   try {
     misQueryMod(
@@ -18,6 +19,7 @@ ProfarmaInvListRouter.post("/getProfarmaMain", async (req, res, next) => {
   }
 });
 
+//getProfarmaDetails
 ProfarmaInvListRouter.post("/getProfarmaDetails", async (req, res, next) => {
   try {
     misQueryMod(
@@ -42,10 +44,8 @@ ProfarmaInvListRouter.post("/getProfarmaDetails", async (req, res, next) => {
   }
 });
 
+//postCreateInvoice
 ProfarmaInvListRouter.post("/postCreateInvoice", async (req, res, next) => {
-  // console.log("postCreateInvoice-req.body",req.body);
-  console.log("postCreateInvoice-req.body",req.body.profarmaDetailsData);
-  // console.log("postCreateInvoice-",req.body.profarmaMainData[0].InvType);
   
   let flag;
   try {
@@ -165,8 +165,8 @@ ProfarmaInvListRouter.post("/postCreateInvoice", async (req, res, next) => {
   }
 });
 
+//postDeleteInvoice
 ProfarmaInvListRouter.post("/postDeleteInvoice", async (req, res, next) => {
-  // console.log("delete invoice...", req.body);
   try {
     misQueryMod(
       `DELETE FROM magodmis.profarma_main WHERE (ProfarmaID = '${req.body.ProfarmaID}')`,

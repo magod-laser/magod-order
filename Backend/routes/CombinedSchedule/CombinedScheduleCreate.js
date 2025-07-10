@@ -20,7 +20,7 @@ const path = require("path");
 // create application/json parser
 var jsonParser = bodyParser.json();
 
-//get allcustomersData
+//API FOR get allcustomersData
 CombinedScheduleCreate.get(
   "/allcustomersData",
   jsonParser,
@@ -39,7 +39,7 @@ CombinedScheduleCreate.get(
   }
 );
 
-//get Sales Contact List
+// API FOR get Sales Contact List
 CombinedScheduleCreate.get(
   "/getSalesContactList",
   jsonParser,
@@ -54,7 +54,7 @@ CombinedScheduleCreate.get(
     }
   }
 );
-//CombinedScheduleCreate getRightTableData
+// API FOR CombinedScheduleCreate getRightTableData
 CombinedScheduleCreate.post(
   "/getRightTableData",
   jsonParser,
@@ -78,7 +78,7 @@ CombinedScheduleCreate.post(
   }
 );
 
-//Prepare Schedule Button Job work
+// API FOR Prepare Schedule Button Job work
 CombinedScheduleCreate.post(
   "/prepareSchedule",
   jsonParser,
@@ -106,7 +106,7 @@ CombinedScheduleCreate.post(
   }
 );
 
-//Prepare Schedule Button sales
+// API FOR Prepare Schedule Button sales
 CombinedScheduleCreate.post(
   "/prepareScheduleSales",
   jsonParser,
@@ -134,7 +134,7 @@ CombinedScheduleCreate.post(
   }
 );
 
-// Create Combined  Schedule For JobWoRK
+// API FOR Create Combined  Schedule For JobWoRK
 CombinedScheduleCreate.post(
   "/createSchedule",
   jsonParser,
@@ -374,244 +374,8 @@ GROUP BY o.DwgName
   }
 );
 
-// 23-04-2025
-// CombinedScheduleCreate.post(
-//   "/createSchedule",
-//   jsonParser,
-//   async (req, res, next) => {
-//     console.log("rowselectleft",req.body.rowselectleft);
-//     console.log("Operation",req.body.Operation);
-//     console.log("Source",req.body.Mtrl_Source);
 
-//     const Operation = req.body.Operation;
-//     const Mtrl_Source = req.body.Mtrl_Source;
-
-//     try {
-//       if (!req.body) {
-//         return res
-//           .status(400)
-//           .json({ success: false, message: "Request body is missing" });
-//       }
-
-//       const cmbSchId = await insertIntoCombinedSchedule(req.body.custCode);
-
-//       console.log("cmbSchId",cmbSchId);
-
-//       const rowselectleft = req.body.rowselectleft;
-//       console.log("rowselectleft",rowselectleft);
-
-//       const insertPromises = rowselectleft.map((schedule, index) => {
-//         const { ScheduleId, OrdSchNo } = schedule;
-//         const rowCont = index + 1;
-
-//         return insertIntoCombinedScheduleDetails(
-//           cmbSchId,
-//           ScheduleId,
-//           OrdSchNo,
-//           rowCont
-//         );
-//       });
-
-//       await Promise.all(insertPromises);
-
-//       const rowCont = await getCountOfCombinedScheduleDetails(cmbSchId);
-
-//       const updatePromises = rowselectleft.map((schedule) => {
-//         const { ScheduleId } = schedule;
-//         const scheduleStatus = "Comb/" + cmbSchId;
-
-//         return updateOrderscheduleAndNCTaskList(
-//           scheduleStatus,
-//           ScheduleId,
-//           cmbSchId,
-//           req
-//         );
-//       });
-
-//       const combinedScheduleNos = await Promise.all(updatePromises);
-
-//       const combinedScheduleNo = combinedScheduleNos[0];
-//       const insertResult = await mchQueryMod1(
-//         `
-//       INSERT INTO magodmis.orderschedule (Order_no, ScheduleNo, Cust_Code, ScheduleDate, schTgtDate, Delivery_date, SalesContact, Dealing_engineer, PO, ScheduleType, ordschno, Type, Schedule_Status)
-//       VALUES ('${combinedScheduleNo}', '01', '${req.body.custCode}', '${
-//           req.body.ScheduleDate
-//         }', '${req.body.Date}', '${req.body.Date}', '${
-//           req.body.selectedSalesContact
-//         }', '${req.body.selectedSalesContact}', 'Job Work', 'Combined', '${
-//           combinedScheduleNo + " 01"
-//         }', 'Profile', 'Tasked')`,
-//         [
-//           req.body.selectedSalesContact,
-//           "01",
-//           req.body.custCode,
-//           req.body.ScheduleDate,
-//           req.body.Date,
-//           req.body.Date,
-//           req.body.selectedSalesContact,
-//           req.body.selectedSalesContact,
-//           "Combined",
-//           combinedScheduleNo + " 01",
-//         ]
-//       );
-
-//       const lastInsertId = insertResult?.insertId;
-
-//       await mchQueryMod1(
-//         `
-//       UPDATE magodmis.combined_schedule c
-//       SET c.ScheduleID = '${lastInsertId}'
-//       WHERE c.CmbSchID = '${cmbSchId}'`,
-//         [lastInsertId, cmbSchId]
-//       );
-
-//       // Additional operations: querying for each NcTaskId and generating task numbers
-//       const taskDataPromises = rowselectleft.map((schedule) => {
-//         const { ScheduleId } = schedule;
-//         return mchQueryMod1(
-//           `
-//         SELECT * FROM magodmis.nc_task_list n
-//         WHERE scheduleid = '${ScheduleId}'`,
-//           [ScheduleId]
-//         );
-//       });
-
-//       const DwgdataArray = await Promise.all(taskDataPromises);
-//       const Dwgdata = DwgdataArray.flat();
-
-//       const processDwgData = async () => {
-//         const taskCounters = {};
-//         let taskNumber = 1; // Initialize task number
-
-//         // Use a for-loop to ensure sequential processing
-//         for (const row of Dwgdata) {
-//           const key = `${row.Mtrl_Code}_${row.MProcess}_${row.Operation}`;
-
-//           if (!taskCounters[key]) {
-//             taskCounters[key] = taskNumber.toString().padStart(2, "0");
-//             taskNumber++;
-//           }
-//           row.TaskNo = `${combinedScheduleNo} 01 ${taskCounters[key]}`;
-
-//           // Check if TaskNo already exists in nc_task_list
-//           const existingTaskQuery = `
-//             SELECT NcTaskId FROM magodmis.nc_task_list
-//             WHERE TaskNo = '${row.TaskNo}'`;
-//           const [existingTask] = await mchQueryMod1(existingTaskQuery);
-
-//           let lastInsertTaskId;
-//           if (existingTask) {
-//             // Use existing NcTaskId if TaskNo already exists
-//             lastInsertTaskId = existingTask.NcTaskId;
-//           } else {
-//             // Insert the task into the nc_task_list and get the inserted ID
-//             const currentDateTime = new Date()
-//               .toISOString()
-//               .replace("T", " ")
-//               .split(".")[0];
-//             console.log("row.TaskNo is", row.TaskNo);
-//             console.log("row is ", row);
-//             const insertTaskQuery = `
-//               INSERT INTO magodmis.nc_task_list
-//               (TaskNo, ScheduleID, DeliveryDate, order_No, ScheduleNo, Cust_Code, Mtrl_Code, MTRL, Thickness, CustMtrl, NoOfDwgs, TotalParts, MProcess)
-//               VALUES (
-//                 '${row.TaskNo}', '${lastInsertId}', '${currentDateTime}', '${combinedScheduleNo}', '${combinedScheduleNo} 01',
-//                 '${req.body.custCode}', '${row.Mtrl_Code}', '${row.Mtrl}', '${row.Thickness}', 'Customer',
-//                 '${row.NoOfDwgs}', '${row.TotalParts}', '${row.MProcess}'
-//               )`;
-//             const ncTaskInsertResult = await mchQueryMod1(insertTaskQuery);
-
-//             lastInsertTaskId = ncTaskInsertResult.insertId;
-//           }
-//           let insertTaskPartsListQuery = `INSERT INTO magodmis.task_partslist(NcTaskId, TaskNo, SchDetailsId, DwgName, QtyToNest, OrdScheduleSrl,
-//             OrdSch, HasBOM)
-//             SELECT '${lastInsertTaskId}', '${row.TaskNo}', o.SchDetailsID, o.DwgName, o.QtyScheduled, o.Schedule_Srl,
-//             '${combinedScheduleNo} 01', o.HasBOM
-//             FROM magodmis.orderscheduledetails o WHERE o.ScheduleId='${row.ScheduleID}'`;
-//           await mchQueryMod1(insertTaskPartsListQuery);
-
-//           console.log("row.ScheduleID",row.ScheduleID);
-
-//           // Fetch existing orderscheduledetails based on lastInsertId
-//           const selectDetailsQuery = `
-//             SELECT QtyScheduled, QtyProgrammed, QtyProduced, QtyInspected, QtyCleared, QtyPacked, QtyDelivered, QtyRejected, PackingLevel, InspLevel, DwgName
-//             FROM magodmis.orderscheduledetails
-//             WHERE ScheduleId = '${row.ScheduleID}'`;
-
-//           const existingDetails = await mchQueryMod1(selectDetailsQuery);
-
-//           console.log("existingDetails",existingDetails);
-
-//           for (const detail of existingDetails) {
-
-//             const insertDetailsQuery = ` INSERT INTO magodmis.orderscheduledetails (OrderDetailID, ScheduleId, OrderScheduleNo, DwgName, Mtrl_Code, MProcess,Mtrl_Source, QtyScheduled,Operation, QtyProgrammed, QtyProduced, QtyInspected, QtyCleared, QtyPacked, QtyDelivered, QtyRejected, PackingLevel, InspLevel, TaskNo, NcTaskId)
-//               VALUES (
-//                 0, '${lastInsertId}', '${combinedScheduleNo} 01', '${detail.DwgName}', '${row.Mtrl_Code}', '${row.MProcess}','${Mtrl_Source}',
-//                 '${detail.QtyScheduled}','${Operation}','${detail.QtyProgrammed}', '${detail.QtyProduced}', '${detail.QtyInspected}',
-//                 '${detail.QtyCleared}', '${detail.QtyPacked}', '${detail.QtyDelivered}', '${detail.QtyRejected}', '${detail.PackingLevel}', '${detail.InspLevel}',
-//                 '${row.TaskNo}', '${lastInsertTaskId}'
-//               )`;
-//               const insertResult = await mchQueryMod1(insertDetailsQuery);
-
-//               console.log(` Inserted detail for DwgName: ${detail.DwgName}`, insertResult);
-
-//             await mchQueryMod1(insertDetailsQuery);
-//           }
-//         }
-//       };
-
-//       // Execute the processing function
-//       processDwgData()
-//         .then(() => {
-//           console.log("All operations completed successfully.");
-//         })
-//         .catch((err) => {
-//           console.error("An error occurred during processing:", err);
-//         });
-
-//       // Folder creation
-//       const baseDir = path.join("C:", "Magod", "Jigani", "Wo");
-//       const combinedScheduleDir = path.join(baseDir, combinedScheduleNo);
-
-//       const subfolders = [
-//         "BOM",
-//         "DespInfo",
-//         "DXF",
-//         "NestDXF",
-//         "Parts",
-//         "WO",
-//         "WOL",
-//       ];
-
-//       if (!fs.existsSync(combinedScheduleDir)) {
-//         fs.mkdirSync(combinedScheduleDir, { recursive: true });
-//       }
-
-//       subfolders.forEach((subfolder) => {
-//         const subfolderPath = path.join(combinedScheduleDir, subfolder);
-//         if (!fs.existsSync(subfolderPath)) {
-//           fs.mkdirSync(subfolderPath, { recursive: true });
-//         }
-//       });
-
-//       res.status(200).json({
-//         success: true,
-//         message: "API executed successfully",
-//         cmbSchId,
-//         rowCont,
-//         combinedScheduleNos,
-//         Dwgdata,
-//       });
-//     } catch (error) {
-//       logger.error(error);
-//       res
-//         .status(500)
-//         .json({ success: false, message: "Internal server error" });
-//     }
-//   }
-// );
-
-// Function to insert into combined_schedule and return cmbSchId
+//Function to insert into combined_schedule and return cmbSchId
 const insertIntoCombinedSchedule = async (custCode) => {
   const result = await mchQueryMod1(
     `INSERT INTO magodmis.combined_schedule (Cust_code) VALUES ('${custCode}')`,
@@ -691,7 +455,7 @@ const updateOrderscheduleAndNCTaskList = async (
   }
 };
 
-//Create Combined Schedule for Sales
+// API FOR Create Combined Schedule for Sales
 CombinedScheduleCreate.post(
   "/createScheduleforSales",
   jsonParser,
@@ -884,6 +648,7 @@ const insertIntoCombinedScheduleDetails1 = async (
     [cmbSchId, ScheduleID, ScheduleNo, cssrl]
   );
 };
+
 // Function to get count of combined_schedule_details
 const getCountOfCombinedScheduleDetails1 = async (cmbSchId) => {
   const result = await mchQueryMod1(
@@ -935,11 +700,6 @@ const updateOrderscheduleAndNCTaskList1 = async (
       [ScheduleID]
     );
 
-    // // Update magodmis.orderschedule
-    // await mchQueryMod1(`
-    //   UPDATE magodmis.orderschedule o
-    //   SET o.Schedule_Status = 'Tasked'
-    //   WHERE o.OrdSchNo = '${combinedScheduleNo}'`, ['Comb/' + combinedScheduleNo, scheduleId]);
 
     return combinedScheduleNo;
   } catch (error) {
@@ -947,7 +707,7 @@ const updateOrderscheduleAndNCTaskList1 = async (
   }
 };
 
-//AFTER CREATE COMBINED SCHEDULE
+// API FOR  AFTER CREATE COMBINED SCHEDULE
 CombinedScheduleCreate.post(
   "/afterCombineSchedule",
   jsonParser,
@@ -982,7 +742,7 @@ CombinedScheduleCreate.post(
   }
 );
 
-//get sales Data
+// API FOR get sales Data
 CombinedScheduleCreate.get(
   "/getSalesCustomerData",
   jsonParser,
@@ -1007,7 +767,7 @@ CombinedScheduleCreate.get(
   }
 );
 
-//get Right Table data for customer
+// API FOR  get Right Table data for customer
 CombinedScheduleCreate.post(
   "/getSalesDetailData",
   jsonParser,

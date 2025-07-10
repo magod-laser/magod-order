@@ -1,6 +1,7 @@
 const ProfarmaInvFormRouter = require("express").Router();
 const { misQuery, setupQuery, misQueryMod } = require("../../helpers/dbconn");
 
+//getTaxData
 ProfarmaInvFormRouter.post("/getTaxData", async (req, res, next) => {
   // get the cust details
   try {
@@ -10,12 +11,8 @@ ProfarmaInvFormRouter.post("/getTaxData", async (req, res, next) => {
         if (err) {
           logger.error(err);
         } else {
-          // console.log("Cust_Code", req.body);
-          // console.log("custData[0].StateId", custData[0].StateId);
           let query = "";
-          // console.log("custData", custData[0]);
           if (custData[0].IsGovtOrg) {
-            // console.log("IsGovtOrg");
             query = `SELECT 
                           *
                       FROM
@@ -96,32 +93,8 @@ ProfarmaInvFormRouter.post("/getTaxData", async (req, res, next) => {
   }
 });
 
-// ProfarmaInvFormRouter.get("/getTaxData", async (req, res, next) => {
-//   try {
-//     misQueryMod(
-//       `SELECT
-//             *
-//         FROM
-//             magod_setup.taxdb
-//         WHERE
-//             UnderGroup NOT LIKE '%INCOMETAX%'
-//                 AND IGST = 0
-//                 AND EffectiveTO >= NOW()`,
-//       (err, data) => {
-//         if (err) {
-//           console.log(err);
-//         } else {
-//           res.send(data);
-//         }
-//       }
-//     );
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
+//getProfarmaFormMain
 ProfarmaInvFormRouter.post("/getProfarmaFormMain", async (req, res, next) => {
-  //   console.log("req.body.ProfarmaID", req.body.ProfarmaID);
   try {
     misQueryMod(
       `SELECT *, DATE_FORMAT(ProformaDate, '%d/%m/%Y') AS Printable_ProformaDate FROM magodmis.profarma_main where ProfarmaID = '${req.body.ProfarmaID}'`,
@@ -138,10 +111,10 @@ ProfarmaInvFormRouter.post("/getProfarmaFormMain", async (req, res, next) => {
   }
 });
 
+//getProfarmaFormDetails
 ProfarmaInvFormRouter.post(
   "/getProfarmaFormDetails",
   async (req, res, next) => {
-    //   console.log("req.body.ProfarmaID", req.body.ProfarmaID);
     try {
       misQueryMod(
         `SELECT * FROM magodmis.profarmadetails where ProfarmaID = '${req.body.ProfarmaID}'`,
@@ -159,8 +132,8 @@ ProfarmaInvFormRouter.post(
   }
 );
 
+//getProfarmaFormTaxes
 ProfarmaInvFormRouter.post("/getProfarmaFormTaxes", async (req, res, next) => {
-  //   console.log("req.body.ProfarmaID", req.body.ProfarmaID);
   try {
     misQueryMod(
       `SELECT * FROM magodmis.profarmataxtable WHERE ProfarmaID = '${req.body.ProfarmaID}'`,
@@ -177,10 +150,8 @@ ProfarmaInvFormRouter.post("/getProfarmaFormTaxes", async (req, res, next) => {
   }
 });
 
+//postSaveInvoice
 ProfarmaInvFormRouter.post("/postSaveInvoice", async (req, res, next) => {
-  // console.log("post save invoice", req.body);
-
-  // update main table
 
   try {
     misQueryMod(
@@ -298,31 +269,10 @@ ProfarmaInvFormRouter.post("/postSaveInvoice", async (req, res, next) => {
   }
 });
 
-// ProfarmaInvFormRouter.post(
-//   "/postInvFormCreateInvoice",
-//   async (req, res, next) => {
-//     //   console.log("req.body.ProfarmaID", req.body.ProfarmaID);
-//     try {
-//       misQueryMod(
-//         `UPDATE magodmis.profarma_main SET ProformaInvNo = '${req.body.series}', ProformaDate = now(), Status='Invoiced' WHERE (ProfarmaID = '${req.body.ProfarmaID}')`,
-//         (err, data) => {
-//           if (err) {
-//             console.log(err);
-//           } else {
-//             res.send(data);
-//           }
-//         }
-//       );
-//     } catch (error) {
-//       next(error);
-//     }
-//   }
-// );
-
+//postInvFormCreateInvoice
 ProfarmaInvFormRouter.post(
   "/postInvFormCreateInvoice",
   async (req, res, next) => {
-    // const DCStatus = "Dispatched";
 
     try {
       misQueryMod(

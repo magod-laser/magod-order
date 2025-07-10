@@ -12,9 +12,9 @@ const { logger } = require("../../helpers/logger");
 var bodyParser = require("body-parser");
 const moment = require("moment");
 
-// create application/json parser
 var jsonParser = bodyParser.json();
 
+//allcustomersData
 jobWork.post("/allcustomersData", jsonParser, async (req, res, next) => {
   try {
     mchQueryMod(
@@ -43,6 +43,7 @@ jobWork.get("/getSalesContactList", jsonParser, async (req, res, next) => {
   }
 });
 
+//getRightTableData
 jobWork.post("/getRightTableData", jsonParser, async (req, res, next) => {
   try {
     mchQueryMod(
