@@ -163,6 +163,7 @@ export default function Create({ type }) {
       updatedSelection1.push(item);
     }
     setRowSelectLeft(updatedSelection1);
+    setDisableButton(updatedSelection1.length === 0);
   };
 
   //ONCLICK PrepareSchedule Button

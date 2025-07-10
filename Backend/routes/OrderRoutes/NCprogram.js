@@ -8,6 +8,7 @@ const {
     mchQueryMod,
 } = require("../../helpers/dbconn");
 
+//getFormData
 NCprogramRoter.post(`/getFormData`, async (req, res, next) => {
     let query = `SELECT n.*,t.DwgName as AssyName FROM magodmis.nc_task_list n,magodmis.task_partslist t 
     WHERE n.NcTaskId='${req.body.rowselectTaskMaterial.NcTaskId}' AND t.NcTaskId=n.NcTaskId`;
@@ -25,7 +26,7 @@ NCprogramRoter.post(`/getFormData`, async (req, res, next) => {
     }
 });
 
-
+//getMachines
 NCprogramRoter.post(`/getMachines`, async (req, res, next) => {
     // console.log("req.body /getMachines is",req.body);
     let query = `SELECT m.RefProcess,  m1.* FROM machine_data.machine_process_list m, machine_data.machine_list m1 
@@ -190,10 +191,6 @@ NCprogramRoter.post('/addProgram', async (req, res, next) => {
     }
 });
 
-
-
-
-
 //getNCProgram Data
 NCprogramRoter.post(`/getPrograms`, async (req, res, next) => {
     // console.log(req.body);
@@ -213,7 +210,6 @@ NCprogramRoter.post(`/getPrograms`, async (req, res, next) => {
     }
 });
 
-
 //MTRL ISSUE
 NCprogramRoter.post(`/sendMTrlIssue`, async (req, res, next) => {
     let query = `UPDATE magodmis.ncprograms SET PStatus='Mtrl Issue' WHERE NCProgramNo='${req.body.selectedNCprogram.NCProgramNo}'`;
@@ -230,7 +226,6 @@ NCprogramRoter.post(`/sendMTrlIssue`, async (req, res, next) => {
         next(error);
     }
 });
-
 
 //Button DELETE
 NCprogramRoter.post(`/DeleteNCProgram`, async (req, res, next) => {
@@ -250,8 +245,7 @@ NCprogramRoter.post(`/DeleteNCProgram`, async (req, res, next) => {
     }
 });
 
-
-///Save Button
+//Save Button
 NCprogramRoter.post(`/ButtonSave`, async (req, res, next) => {
     let query = `Update magodmis.nc_task_list set Machine='${req.body.selectedMachine}' WHERE NcTaskId='${req.body.NCprogramForm[0].NcTaskId}'`;
     try {
@@ -270,19 +264,12 @@ NCprogramRoter.post(`/ButtonSave`, async (req, res, next) => {
 
 //getNCProram Parts Data
 NCprogramRoter.post(`/NCProgramPartsData`, async (req, res, next) => {
-    // Log the request body to verify the incoming data
-
-    // Check if NCprogramForm is present and has at least one element
+   
     if (!req.body.NCprogramForm || req.body.NCprogramForm.length === 0) {
         return res.status(400).send("Invalid request body format");
     }
-
     const NcTaskId = req.body.NCprogramForm[0].NcTaskId;
-
-
-  
     let queryCheckBOM = `SELECT t.HasBOM FROM magodmis.task_partslist t WHERE t.NcTaskId = '${NcTaskId}'`;
-  
   
     try {
       misQueryMod(queryCheckBOM, (err, bomData) => {
@@ -305,13 +292,10 @@ NCprogramRoter.post(`/NCProgramPartsData`, async (req, res, next) => {
               console.log("Error executing query:", err);
               return next(err);
             }
-
   
             // Extracting CustBOM_Id from the result
             const custBOMIds = data.map(entry => entry.CustBOM_Id).join("','");
-
-        
-  
+         
             // Additional query to calculate quantity available
             let additionalQuery = `SELECT SUM(CAST(m.QtyAccepted - m.QtyIssued AS SIGNED)) AS QtyAvailable 
                                    FROM magodmis.mtrl_part_receipt_details m 
@@ -324,7 +308,6 @@ NCprogramRoter.post(`/NCProgramPartsData`, async (req, res, next) => {
                 return next(err);
               }
   
-
               // Combining data from both queries
               const responseData = {
                 partsData: data,
@@ -380,9 +363,4 @@ NCprogramRoter.post(`/NCProgramPartsData`, async (req, res, next) => {
     }
   });
   
-  
-  
-
-
-
 module.exports = NCprogramRoter;

@@ -3,9 +3,14 @@
 const fs = require("fs");
 const path = require("path");
 
+const globalConfig = require("../routes/Utils/globalConfig");
+
+
 let folderBase = process.env.FILE_SERVER_PATH; // "C:/Magod/Jigani";
+console.log("Folder Base Path from .env:", folderBase);
 
 let checkdrawings = async (qtnNo, callback) => {
+ 
   qtnNo = qtnNo.replaceAll("/", "_");
   // await fs.exists(folderBase + `/QtnDwg/`+qtnNo, async (exists) => {
   //     callback(exists);
@@ -44,6 +49,10 @@ let checkdrawings = async (qtnNo, callback) => {
 
 
 let createFolder = async (SrlType, qno, month, callback) => {
+
+  const workOrderPath = globalConfig.get("WORKORDER");
+  const basePath = workOrderPath.replace(/[\\\/]Wo$/, ""); //Remove the last "Wo" from the path
+  console.log("Folder Base Path from database:", basePath);
   try {
     switch (SrlType) {
       case "Quotation": {
@@ -67,20 +76,7 @@ let createFolder = async (SrlType, qno, month, callback) => {
         });
         break;
       }
-      // case "Order": {
-      //     await fs.exists(folderBase + `/Wo`, async (exists) => {
-      //         if (!exists) {
-      //             await fs.mkdirSync(folderBase + `/Wo`)
-      //         }
-      //         await fs.exists(folderBase + `/Wo`, async (ex) => {
-      //             if (!ex) {
-      //                 await fs.mkdirSync(folderBase + `/Wo/${qno}`)
-      //             }
-      //             //   await fs.mkdirSync(folderBase + `/Wo/${qno}`)
-      //         })
-      //     })
-      //     break;
-      // }
+    
       case "Order": {
         await fs.exists(folderBase + `/Wo/${qno}`, async (exists) => {
           if (!exists) {
@@ -96,20 +92,10 @@ let createFolder = async (SrlType, qno, month, callback) => {
         });
         break;
       }
-      //   case "Schedule": {
-      //     console.log("==================-------------qno", qno);
-
-      //     await fs.exists(folderBase + `/Wo/${qno}/`, async (exists) => {
-      //       if (!exists) {
-      //         await fs.mkdirSync(folderBase + `/Wo/${qno}/${qno}`);
-      //       }
-      //     });
-      //     break;
-      //   }
+      
       case "Schedule": {
         console.log("==================-------------qno", qno);
 
-        // Extract main folder name and subfolder name
         const parts = qno.split(" "); // Split based on space
         const mainFolder = parts[0]; // e.g., "250544"
         const subFolder = qno; // e.g., "250544 04"
@@ -122,14 +108,14 @@ let createFolder = async (SrlType, qno, month, callback) => {
           // Create the subfolder if it does not exist
           if (!fs.existsSync(subFolderPath)) {
             fs.mkdirSync(subFolderPath, { recursive: true });
-            console.log(`Subfolder created: ${subFolderPath}`);
+            // console.log(`Subfolder created: ${subFolderPath}`);
           } else {
-            console.log(`Subfolder already exists: ${subFolderPath}`);
+            // console.log(`Subfolder already exists: ${subFolderPath}`);
           }
         } else {
-          console.log(
-            `Main folder ${mainFolder} does not exist. Cannot create subfolder.`
-          );
+          // console.log(
+          //   `Main folder ${mainFolder} does not exist. Cannot create subfolder.`
+          // );
         }
 
         break;
@@ -224,29 +210,16 @@ const copyallfiles = async (DocType, source, destination) => {
         });
         break;
       }
-      // case "Quotation": {
-      // }
-      // case "Order": {
-      // }
+      
       default:
         break;
     }
-    // callback(null, true);
   } catch (error) {
     console.log(error);
-    //  callback(error, null);
   }
 };
 
-// const removefiles = async (source, callback) => {
-//     try {
-//         var files = fs.readdirSync(source);
-//         for (var i = 0; i < files.length; i++) {
-//             var filename = path.join(startPath, files[i]);
-//             if (filename.endsWith(".dxf")) {
-//                 fs.rename()    .rmdir(filename);
 
-//             };
 
 const writetofile = async (qtnNo, filename, content, callback) => {
   fs.appendFile(folderBase + `/QtnDwg/${month}/${qtnNo}/${filename}`, content)

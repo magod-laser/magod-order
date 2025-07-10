@@ -12,11 +12,10 @@ const fs = require("fs");
 const path = require("path");
 const dotenv = require("dotenv");
 
-dotenv.config(); // Load environment variables from .env file
-
+dotenv.config(); 
 const app = express();
-// app.use(express.json({ limit: "50mb" })); // To handle large payloads
 
+// getPDFData
 PDFRouter.post("/getPDFData", async (req, res, next) => {
   try {
     setupQueryMod(
@@ -25,8 +24,6 @@ PDFRouter.post("/getPDFData", async (req, res, next) => {
         if (err) {
           console.log("err", err);
         } else {
-          //   console.log("pdfData", pdfData);
-
           res.send(pdfData);
         }
       }
@@ -36,7 +33,7 @@ PDFRouter.post("/getPDFData", async (req, res, next) => {
   }
 });
 
-// Define the API endpoint
+// upload-pdf
 PDFRouter.post("/upload-pdf", async (req, res) => {
   try {
     const { pdfData, fileName } = req.body;

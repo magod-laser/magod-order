@@ -4,10 +4,9 @@ const { misQuery, setupQuery, misQueryMod, mchQueryMod, productionQueryMod, mchQ
 const { logger } = require('../../helpers/logger')
 var bodyParser = require('body-parser')
 const moment = require('moment')
-
-// create application/json parser
 var jsonParser = bodyParser.json();
 
+// allcustomersData
 jobWork.post('/allcustomersData', jsonParser, async (req, res, next) => {
   try {
 
@@ -36,6 +35,7 @@ jobWork.get('/getSalesContactList', jsonParser, async (req, res, next) => {
   }
 });
 
+//getRightTableData
 jobWork.post('/getRightTableData', jsonParser, async (req, res, next) => {
   try {
     mchQueryMod(`SELECT o.* FROM magodmis.orderschedule o WHERE  o.Schedule_Status = 'Tasked' AND o.ScheduleType NOT LIKE 'Combined' AND o.Cust_code = '${req.body.custCode}'`, (err, data) => {
@@ -68,8 +68,6 @@ jobWork.post('/prepareSchedule', jsonParser, async (req, res, next) => {
   }
 });
 
-
-
 // Create Schedule
 jobWork.post('/createSchedule', jsonParser, async (req, res, next) => {
   try {
@@ -90,7 +88,7 @@ jobWork.post('/createSchedule', jsonParser, async (req, res, next) => {
     await Promise.all(insertPromises);
 
     const rowCont = await getCountOfCombinedScheduleDetails(cmbSchId);
-    console.log("Count of combined_schedule_details:", rowCont);
+    // console.log("Count of combined_schedule_details:", rowCont);
 
     // Update magodmis.orderschedule and magodmis.nc_task_list
     const updatePromises = rowselectleft.map((schedule) => {
@@ -113,7 +111,7 @@ const insertResult = await mchQueryMod1(`
   ]);
 
 const lastInsertId = insertResult.insertId;
-console.log("lastInsertId", lastInsertId);
+// console.log("lastInsertId", lastInsertId);
 
  // Execute additional update query
  await mchQueryMod1(`
@@ -165,7 +163,7 @@ const updateOrderscheduleAndNCTaskList = async (scheduleStatus, scheduleId, cmbS
       SELECT Running_No FROM magod_setup.magod_runningno WHERE SrlType='CombinedSchedule_JW'`);
     
     let runningNo = parseInt(runningNoResult[0].Running_No, 10);
-    console.log(runningNo);
+    // console.log(runningNo);
 
     // Increment Running_No by 1
     const updatedRunningNo = runningNo + 1;
@@ -203,9 +201,7 @@ const updateOrderscheduleAndNCTaskList = async (scheduleStatus, scheduleId, cmbS
 };
 
 
-
-
-//AFTER CREATE COMBINED SCHEDULE
+//After creating combined schedule
 jobWork.post('/afterCombineSchedule', jsonParser, async (req, res, next) => {
   try {
     mchQueryMod(`SELECT * FROM magodmis.orderschedule  WHERE Order_No= '${req.body.combinedScheduleNo}'`, (err, data) => {

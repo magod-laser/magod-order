@@ -1,10 +1,10 @@
 const PackingNoteAndInvoiceRouter = require("express").Router();
 const { misQuery, setupQuery, misQueryMod } = require("../../helpers/dbconn");
 
+//getAllPNAndInvRegisterbyOrderNo
 PackingNoteAndInvoiceRouter.post(
   "/getAllPNAndInvRegisterbyOrderNo",
   async (req, res, next) => {
-    // console.log("reqqqq", req.body.Order_No);
     try {
       misQueryMod(
         `SELECT *, DATE_FORMAT(Dc_inv_Date, '%d/%m/%Y') AS Printable_Dc_inv_Date, DATE_FORMAT(Inv_Date, '%d/%m/%Y') AS Printable_Inv_Date FROM magodmis.draft_dc_inv_register where OrderNo = '${
@@ -14,7 +14,6 @@ PackingNoteAndInvoiceRouter.post(
           if (err) {
             console.log(err);
           } else {
-            // console.log("registerData", registerData);
 
             try {
               misQueryMod(
@@ -25,7 +24,6 @@ PackingNoteAndInvoiceRouter.post(
                   if (err) {
                     console.log(err);
                   } else {
-                    // console.log("detailsData", detailsData);
                     res.send({
                       registerData: registerData,
                       detailsData: detailsData,
@@ -45,6 +43,7 @@ PackingNoteAndInvoiceRouter.post(
   }
 );
 
+// aboutInvoicePN
 PackingNoteAndInvoiceRouter.post("/aboutInvoicePN", async (req, res, next) => {
   try {
     misQueryMod(
@@ -109,6 +108,7 @@ PackingNoteAndInvoiceRouter.post("/aboutInvoicePN", async (req, res, next) => {
   }
 });
 
+//getSetRateConsumerData
 PackingNoteAndInvoiceRouter.post(
   "/getSetRateConsumerData",
   async (req, res, next) => {
@@ -139,8 +139,8 @@ PackingNoteAndInvoiceRouter.post(
   }
 );
 
+//getTaxData
 PackingNoteAndInvoiceRouter.post("/getTaxData", async (req, res, next) => {
-  // get the cust details
   try {
     misQueryMod(
       `SELECT * FROM magodmis.cust_data where Cust_Code =${req.body.Cust_Code}`,
@@ -234,6 +234,7 @@ PackingNoteAndInvoiceRouter.post("/getTaxData", async (req, res, next) => {
   }
 });
 
+//getAllStates
 PackingNoteAndInvoiceRouter.get("/getAllStates", async (req, res, next) => {
   try {
     misQueryMod(
@@ -247,6 +248,7 @@ PackingNoteAndInvoiceRouter.get("/getAllStates", async (req, res, next) => {
   }
 });
 
+//cancelPN button process
 PackingNoteAndInvoiceRouter.post("/cancelPN", async (req, res, next) => {
   try {
     misQueryMod(
@@ -294,6 +296,7 @@ PackingNoteAndInvoiceRouter.post("/cancelPN", async (req, res, next) => {
   }
 });
 
+//updatePNProfileData
 PackingNoteAndInvoiceRouter.post(
   "/updatePNProfileData",
   async (req, res, next) => {
@@ -425,6 +428,7 @@ PackingNoteAndInvoiceRouter.post(
   }
 );
 
+//createInvoice
 PackingNoteAndInvoiceRouter.post("/createInvoice", async (req, res, next) => {
   const DCStatus = "Dispatched";
   try {
@@ -522,6 +526,7 @@ PackingNoteAndInvoiceRouter.post("/createInvoice", async (req, res, next) => {
   }
 });
 
+//updateRatesPN
 PackingNoteAndInvoiceRouter.post("/updateRatesPN", async (req, res, next) => {
   for (let i = 0; i < req.body.newRates.length; i++) {
     const element = req.body.newRates[i];

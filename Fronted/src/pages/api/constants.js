@@ -49,9 +49,6 @@ export const endpoints = {
   testttttt: `${API}/OrderDetails/testttttt`,
   compareCustDwg: `${API}/file/compareCustDwg`,
 
-
-
-
   // profarma inv list...............
   getProfarmaMain: `${API}/profarmaInvList/getProfarmaMain`,
   getProfarmaDetails: `${API}/profarmaInvList/getProfarmaDetails`,
@@ -85,11 +82,11 @@ export const endpoints = {
   dxfCopy: `${API}/file/copydxf`,
   checkDxf: `${API}/file/checkdxf`,
   checkmultiDxf: `${API}/file/checkmultidxf`,
-  orderCopyDxf:`${API}/file/ordcopydxf`,
+  orderCopyDxf: `${API}/file/ordcopydxf`,
   getOrdDxf: `${API}/file/orddxf`,
   saveToCustDwg: `${API}/file/saveToCustDwg`,
   checkdxffilesimportoldorder: `${API}/file/checkdxffilesimportoldorder`,
-  orddxffilesimporttocombsch:`${API}/file/orddxffilesimporttocombsch`,
+  orddxffilesimporttocombsch: `${API}/file/orddxffilesimporttocombsch`,
   getStates: `${API}/states/allstates`,
   getStateCode: `${API}/states/getstatecode`,
   getStateName: `${API}/states/getstatename`,
@@ -256,7 +253,6 @@ export const endpoints = {
   AllotAndTaskCombinedSchedule: `${API}/order/allotandtaskcombinedschedule`,
   updateUploadFiles: `${API}/order/updateuploadfiles`,
   CheckDwgFileStatus: `${API}/order/checkdwgfilestatus`,
-  
 
   InsertCombinedSchedule: `${API}/order/insertcombinedschedule`,
 
@@ -400,7 +396,7 @@ export const endpoints = {
 
   postDeleteDetailsByOrderNo: `${API}/orderDetails/postDeleteDetailsByOrderNo`,
   postDetailsDataInImportQtn: `${API}/orderDetails/postDetailsDataInImportQtn`,
-  UpdateOrdDWG:`${API}/orderDetails/updateOrdDWG`,
+  UpdateOrdDWG: `${API}/orderDetails/updateOrdDWG`,
 
   // IMPORT EXCEL
   postDetailsDataInImportExcel: `${API}/orderDetails/postDetailsDataInImportExcel`,
@@ -420,6 +416,7 @@ export const endpoints = {
   afterCombinedSchedule: `${API}/CombinedScheduleCreate/afterCombineSchedule`,
   getSchedudleDetails: `${API}/scheduleListCombined/scheduleListDetails`,
   getSchedudleDetailssales: `${API}/scheduleListCombined/scheduleListDetailssales`, // veeeeeeeranna
+  scheduleListDetailssalescreate: `${API}/scheduleListCombined/scheduleListDetailssalescreate`, // veeeeeeeranna
   CombinedTasksTaskTable: `${API}/scheduleListCombined/combinedTaksTaskTable`,
   CombinedTasksShowDwg: `${API}/scheduleListCombined/combinedTaksShowDwgName`,
   OriginalTable: `${API}/scheduleListCombined/OriginalTable1`,

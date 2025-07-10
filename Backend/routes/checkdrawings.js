@@ -13,6 +13,4 @@ checkdrawingsRouter.post("/chkdrawings", async (req, res, next) => {
   }
 });
 
-// Select * from magodmis.cust_data
-
 module.exports = checkdrawingsRouter;

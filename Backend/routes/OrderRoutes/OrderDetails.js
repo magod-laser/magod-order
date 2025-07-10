@@ -14,7 +14,7 @@ const fs = require('fs');
 const fsSync = require("fs");
 const fsAsync = require('fs').promises;
 
-
+// insert into orders_details table from import and ad new serial buttons
 OrderDetailsRouter.post(`/insertnewsrldata`, async (req, res, next) => {
   
   let ressrldata = [];
@@ -367,6 +367,7 @@ OrderDetailsRouter.post(`/insertnewsrldata`, async (req, res, next) => {
   }
 });
 
+//get BOM data
 OrderDetailsRouter.post(`/getbomdata`, async (req, res, next) => {
   
   try {
@@ -406,6 +407,7 @@ ORDER BY UniqueData.UniqueColumn DESC`,
   } catch (error) { }
 });
 
+//get data for FIND OLD PART tab
 OrderDetailsRouter.post(`/getfindoldpartdata`, async (req, res, next) => {
   try {
     misQueryMod(
@@ -422,6 +424,7 @@ OrderDetailsRouter.post(`/getfindoldpartdata`, async (req, res, next) => {
   }
 });
 
+// button click loadStockPosition
 OrderDetailsRouter.post(`/loadStockPosition`, async (req, res, next) => {
 
   try {
@@ -519,6 +522,8 @@ OrderDetailsRouter.post(`/loadStockPosition`, async (req, res, next) => {
     );
   } catch (error) { }
 });
+
+//Tab LoadArrival data
 OrderDetailsRouter.post(`/LoadArrival`, async (req, res, next) => {
  
   try {
@@ -540,19 +545,16 @@ OrderDetailsRouter.post(`/LoadArrival`, async (req, res, next) => {
     );
   } catch (error) { }
 });
-
+// Table LoadArrival2 data
 OrderDetailsRouter.post(`/LoadArrival2`, async (req, res, next) => {
-  // console.log("reqqqqqqqq", req.body);
   try {
     misQueryMod(
       `SELECT m.rvID, m.Mtrl_Code, m.DynamicPara1, m.DynamicPara2, m.Qty, m.updated 
       FROM magodmis.mtrlreceiptdetails m WHERE m.rvID = "${req.body.RVID}"`,
       (err, data1) => {
         if (err) {
-          //console.log("error", err);
           res.status(500).send("Internal Server Error");
         } else {
-          // console.log("data1", data1);
           res.send(data1);
         }
       }
@@ -560,12 +562,10 @@ OrderDetailsRouter.post(`/LoadArrival2`, async (req, res, next) => {
   } catch (error) { }
 });
 
+// get getQtnList Data
 OrderDetailsRouter.post(`/getQtnList`, async (req, res, next) => {
-  // console.log("entering getQtnList");
-
-  // console.log(req.body);
+ 
   let QtnFormat = req.body.QtnFormat;
-  // console.log("QtnFormat", QtnFormat);
 
   try {
     qtnQueryMod(
@@ -584,7 +584,7 @@ OrderDetailsRouter.post(`/getQtnList`, async (req, res, next) => {
   }
 });
 
-
+// getQtnDataByQtnID
 OrderDetailsRouter.post("/getQtnDataByQtnID", async (req, res, next) => {
   try {
     const { qtnId, QtnFormat } = req.body;
@@ -624,13 +624,13 @@ OrderDetailsRouter.post("/getQtnDataByQtnID", async (req, res, next) => {
   }
 });
 
+//getOldOrderByCustCodeAndOrderNo
 OrderDetailsRouter.post(
   `/getOldOrderByCustCodeAndOrderNo`,
   async (req, res, next) => {
     console.log("OLD-ORDER-req.body", req.body);
     try {
       misQueryMod(
-        // `SELECT * FROM magodmis.order_list WHERE Cust_Code = '${req.body.Cust_Code}' AND Order_No != '${req.body.Order_No}' ORDER BY Order_No DESC`,
         `SELECT * FROM magodmis.order_list WHERE Cust_Code = '${req.body.Cust_Code}' AND Type = '${req.body.orderType}' ORDER BY Order_No DESC`,
         (err, orderListData) => {
           if (err) {
@@ -643,8 +643,6 @@ OrderDetailsRouter.post(
                   if (err) {
                     res.status(500).send("Internal Server Error");
                   } else {
-                    // console.log("orderListData", orderListData);
-                    // console.log("orderDetailsData", orderDetailsData);
                     res.send({
                       orderListData: orderListData,
                       orderDetailsData: orderDetailsData,
@@ -664,7 +662,7 @@ OrderDetailsRouter.post(
   }
 );
 
-// import delete
+//postDeleteDetailsByOrderNo
 OrderDetailsRouter.post(
   `/postDeleteDetailsByOrderNo`,
   async (req, res, next) => {
@@ -674,7 +672,6 @@ OrderDetailsRouter.post(
       let filespath = path.join(process.env.FILE_SERVER_PATH, "/WO//", req.body.Order_No, "//DXF//"); //, deletedwgsinfolder[i].DwgName);
       fsSync.readdir(filespath, (err, files) => {
         if (err) {
-          // return res.status(500).send("Failed to read directory");
         }
         files.forEach((file) => {
           const fpath = path.join(filespath, file);
@@ -705,11 +702,10 @@ OrderDetailsRouter.post(
   }
 );
 
-
+//postDeleteDetailsByOrderNo
 OrderDetailsRouter.post(
   `/postDeleteDetailsByOrderNo`,
   async (req, res, next) => {
-    // console.log("req.body", req.body.Order_No);
     try {
       // Suresh 08-04-25
       let filespath = path.join(process.env.FILE_SERVER_PATH, "/WO//", req.body.Order_No, "//DXF//"); //, deletedwgsinfolder[i].DwgName);
@@ -746,11 +742,13 @@ OrderDetailsRouter.post(
   }
 );
 
+//Function for get months
 const getMonthName = (monthNumber) => {
   const date = new Date(2020, monthNumber - 1); 
   return date.toLocaleString('default', { month: 'long' }); 
 };
 
+//postDetailsDataInImportQtn
 OrderDetailsRouter.post(
   `/postDetailsDataInImportQtn`,
   async (req, res, next) => {
@@ -932,14 +930,13 @@ OrderDetailsRouter.post(
   }
 );
 
+//postDetailsDataInImportExcel
 OrderDetailsRouter.post(
   `/postDetailsDataInImportExcel`,
   async (req, res, next) => {
-    // console.log("Entering Into postDetailsDataInImportExcel");
-    // console.log("req.body", req.body);
-
+   
     try {
-      const db = require("../../helpers/dbconn"); // Import DB connection
+      const db = require("../../helpers/dbconn");
 
       let totalNewOrderValue = 0;
       let totalOldOrderValue = 0;
@@ -1076,11 +1073,9 @@ OrderDetailsRouter.post(
   }
 );
 
-//Import old order dxf files
+//Import old order dxf files checkdxffilesimportoldorder
 OrderDetailsRouter.post(`/checkdxffilesimportoldorder`, async (req, res, next) => {
-  // console.log("checking the import old order dxf files");
-  // console.log("request", req.body);
-
+ 
   let Old_Order_No = req.body.Old_Order_No;
   let New_Order_No = req.body.New_Order_No
   let srcfilepth = path.join(process.env.FILE_SERVER_PATH, "//Wo//", Old_Order_No, '//DXF//');
@@ -1138,6 +1133,7 @@ OrderDetailsRouter.post(`/checkdxffilesimportoldorder`, async (req, res, next) =
 
 })
 
+//postDetailsDataInImportOldOrder
 OrderDetailsRouter.post(
   `/postDetailsDataInImportOldOrder`,
   async (req, res, next) => {
@@ -1283,136 +1279,7 @@ OrderDetailsRouter.post(
   }
 );
 
-//BULK CHANGE
-// OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
-//   const orderSrlArray = req.body.OrderSrl;
-//   const selectedItems = req.body.selectedItems;
-//   console.log("selectedItems---",selectedItems);
-  
-  
-//   const orderNo = req.body.OrderNo;
-//   for (let index = 0; index < selectedItems.length; index++) {
-//     const element = selectedItems[index];
-//     const result = {
-//       OrderDetailIds: [],
-//       OrderSrls: []
-//     };
-//     result.OrderDetailIds.push(element.OrderDetailId);
-//     result.OrderSrls.push(element.Order_Srl);
-//     console.log("result.OrderDetailIds",result.OrderDetailIds);
-    
-//   }
-  
-//    // Collect all OrderDetailIds from selectedItems
-//   const orderDetailIds = selectedItems.map(item => item.OrderDetailId);
-//   const orderDetailIdsStr = orderDetailIds.join(",");
-
-//   let completedUpdates = 0;
-//   const executeUpdate = (
-//     orderSrl,
-//     qtyOrdered,
-//     DwgName,
-//     JWCost,
-//     MtrlCost,
-//     UnitPrice,
-//     Operation,
-//     InspLevel,
-//     PackingLevel,
-//     Mtrl_Source,
-//     Mtrl_Code,
-//     OrderDetailIds
-    
-//   ) => {
-//          //  DwgName = '${DwgName}',
-//          console.log("orderSrl---",orderSrl);
-         
-//     const updateQuery = `
-//       UPDATE magodmis.order_details
-//       SET
-//     Qty_Ordered = ${qtyOrdered}, 
-//     JWCost = ${JWCost},
-// 		MtrlCost = ${MtrlCost},
-// 		UnitPrice = ${UnitPrice},
-// 		Operation = '${Operation}',
-// 		InspLevel = '${InspLevel || "Insp1"}',
-// 		PackingLevel = '${PackingLevel || "Pkng1"}',
-// 		Mtrl_Source='${Mtrl_Source || "Customer"}',
-// 		 Mtrl_Code='${Mtrl_Code}'
-//       WHERE Order_No = ${orderNo} 
-//       AND OrderDetailId = ${orderDetailIdsStr}
-//     `;
-
-//     console.log(`Executing query for Order_Srl: ${orderDetailIdsStr}`);
-//     // console.log(`Query: ${updateQuery}`);
-
-//     return new Promise((resolve, reject) => {
-//       misQueryMod(updateQuery, (err, blkcngdata) => {
-//         if (err) {
-//           logger.error(err);
-//           reject(err);
-//         } else {
-//           // console.log(`Update result for Order_Srl ${orderSrl}:`, blkcngdata);
-//           resolve(blkcngdata);
-//         }
-//       });
-//     });
-//   };
-
-//   try {
-//     for (let i = 0; i < orderSrlArray.length; i++) {
-//       const orderSrl = orderSrlArray[i];
-//       const oldValues = selectedItems[i];
-
-//       // console.log("oldValues", oldValues);
-//       let qtyOrdered; // Define variable to hold the value
-
-//       if (typeof oldValues?.quantity !== "undefined") {
-//         qtyOrdered = parseInt(oldValues?.quantity); // Assuming quantity is numeric
-//       } else {
-//         qtyOrdered = oldValues?.Qty_Ordered; // Use oldValues.Qty_Ordered if quantity is undefined
-//       }
-//       // console.log("qtyOrdered...", qtyOrdered);
-//       const DwgName = oldValues?.DwgName;
-//       const JWCost = parseInt(oldValues.JWCost);
-//       const MtrlCost = parseInt(oldValues.MtrlCost);
-//       const UnitPrice = parseInt(oldValues.UnitPrice);
-//       const Operation = oldValues.Operation;
-//       const InspLevel = oldValues.InspLevel;
-//       const PackingLevel = oldValues.PackingLevel;
-
-//       let Mtrl_Source;
-//       if (req.body.MtrlSrc !== "") {
-//         Mtrl_Source = req.body.MtrlSrc;
-//       } else {
-//         Mtrl_Source = oldValues.Mtrl_Source;
-//       }
-//       // console.log("Mtrl_Source", Mtrl_Source);
-//       // console.log("oldValues.Mtrl_Source", oldValues.Mtrl_Source);
-//       const Mtrl_Code = oldValues.Mtrl_Code;
-//       await executeUpdate(
-//         orderSrl,
-//         qtyOrdered,
-//         DwgName,
-//         JWCost,
-//         MtrlCost,
-//         UnitPrice,
-//         Operation,
-//         InspLevel,
-//         PackingLevel,
-//         Mtrl_Source,
-//         Mtrl_Code
-//       );
-
-//       completedUpdates++;
-//       if (completedUpdates === orderSrlArray.length) {
-//         res.send({ message: "Updates completed successfully." });
-//       }
-//     }
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-//==--
+//BULK_CHANGE button process
 OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
   const selectedItems = req.body.selectedItems;
   const orderNo = req.body.OrderNo;
@@ -1482,20 +1349,17 @@ OrderDetailsRouter.post("/bulkChangeUpdate", async (req, res, next) => {
   }
 });
 
-
+// ordertablevaluesupdate (from table editing)
 OrderDetailsRouter.post("/ordertablevaluesupdate", async (req, res, next) => {
-  console.log("ordertablevaluesupdate");
 
   if (
     !Array.isArray(req.body.updatedRows) ||
     req.body.updatedRows.length === 0
   ) {
-    console.log("updatedRows is empty or not an array");
     return res.status(400).send("Invalid updatedRows data.");
   }
 
   const orderNo = req.body.orderNo;
-  console.log("orderNo:", orderNo);
 
   try {
     let updateQueries = [];
@@ -1508,11 +1372,7 @@ OrderDetailsRouter.post("/ordertablevaluesupdate", async (req, res, next) => {
       const jwRate = parseFloat(JWCost) || 0.0;
       const UnitPrice = jwRate + materialRate || 0.0;
 
-      console.log(
-        `Processing Order_Srl: ${Order_Srl}, Qty_Ordered: ${qtyOrdered}`
-      );
-
-      const updateQuery = `
+           const updateQuery = `
         UPDATE magodmis.order_details
         SET
           Qty_Ordered = ${qtyOrdered},
@@ -1537,7 +1397,6 @@ OrderDetailsRouter.post("/ordertablevaluesupdate", async (req, res, next) => {
 
     // Wait for all updates to complete
     await Promise.all(updatePromises);
-    console.log("All rows updated successfully");
 
     // Fetch the total recalculated order value from order_details
     const fetchTotalOrderValueQuery = `
@@ -1558,7 +1417,6 @@ OrderDetailsRouter.post("/ordertablevaluesupdate", async (req, res, next) => {
 
       const totalOrderValue = parseFloat(result[0].totalOrderValue) || 0;
 
-      console.log("Updated Total Order Value:", totalOrderValue);
 
       // Update the ordervalue in order_list
       const updateOrderListQuery = `
@@ -1585,6 +1443,7 @@ OrderDetailsRouter.post("/ordertablevaluesupdate", async (req, res, next) => {
   }
 });
 
+// single row edit from order_details tab singleChangeUpdate
 OrderDetailsRouter.post("/singleChangeUpdate", async (req, res, next) => {  
   try {
     const qtyOrdered = parseInt(req.body.quantity) || 0;
@@ -1684,6 +1543,7 @@ OrderDetailsRouter.post("/singleChangeUpdate", async (req, res, next) => {
   }
 });
 
+//updateOrdDWG
 OrderDetailsRouter.post(`/updateOrdDWG`, async (req, res, next) => {
   try {  
 
@@ -1706,7 +1566,7 @@ OrderDetailsRouter.post(`/updateOrdDWG`, async (req, res, next) => {
   }
 });
 
-
+//postDeleteDetailsBySrl
 OrderDetailsRouter.post(`/postDeleteDetailsBySrl`, async (req, res, next) => {
   try {
     const { Order_No, selectedItems } = req.body;    
@@ -1765,6 +1625,7 @@ OrderDetailsRouter.post(`/postDeleteDetailsBySrl`, async (req, res, next) => {
   }
 });
 
+//getDwgData
 OrderDetailsRouter.post("/getDwgData", async (req, res) => {
   const custCode = req.body.Cust_Code;
   const importedExcelData = req.body.importedExcelData;
@@ -1790,17 +1651,14 @@ OrderDetailsRouter.post("/getDwgData", async (req, res) => {
   }
 });
 
+//saveToCustDrawgs
 OrderDetailsRouter.post("/saveToCustDrawgs", async (req, res) => {
-  console.log(" saveToCustDrawgs req.body", req.body);
   try {
-    console.log("req.body.dwgcode", req.body.dwgcode)
     let dwgcode = ''
    
-
      await misQueryMod(`Select count(*) FROM magodmis.dwg_data where Cust_Code = '${req.body.ccode}'`, (err, custcount) => {
       if (err) console.log(err)
         const count = parseInt(custcount[0]) || 0;  
-  console.log("custcount :", count);
 
         let addsrl = String("0000" + count+1).slice(-4);
         dwgcode = String(req.body.ccode) + addsrl;

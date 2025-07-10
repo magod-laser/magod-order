@@ -73,7 +73,7 @@ const userRouter = require("./routes/user");
 const unitRouter = require("./routes/units");
 const quoteRouter = require("./routes/quotations");
 const customerRouter = require("./routes/customer");
-const employeeRouter = require("./routes/employee");
+const employeeRouter = require("./routes/employee"); // not in use
 const materialRouter = require("./routes/material");
 const processlistRouter = require("./routes/processlist");
 const termsconditionsRouter = require("./routes/termsconditions");
@@ -86,7 +86,7 @@ const statesRouter = require("./routes/states");
 const credittermsRouter = require("./routes/creditterms");
 const mtrlsourceRouter = require("./routes/mtrlsource");
 const salesexeclistRouter = require("./routes/salesexecutives");
-const checkdrawingsRouter = require("./routes/checkdrawings");
+const checkdrawingsRouter = require("./routes/checkdrawings"); // not in use
 const mailRouter = require("./routes/mailer");
 const ordersRouter = require("./routes/orders");
 const sigmancRouter = require("./routes/sigmanc");
@@ -94,7 +94,7 @@ const machineRouter = require("./routes/machines");
 const productionRouter = require("./routes/production");
 const stocksRouter = require("./routes/stocks");
 const packinvRouter = require("./routes/packinv");
-const analysisRouter = require("./routes/analysis");
+const analysisRouter = require("./routes/analysis"); // not in use
 const accountsRouter = require("./routes/accounts");
 const fileRouter = require("./routes/files");
 const orderListRouter = require("./routes/OrderList/OrderList");
@@ -108,7 +108,7 @@ const ProductionSchCreationRouter = require("./routes/OrderRoutes/ProductionSchC
 const NCProgramRouter = require("./routes/OrderRoutes/NCprogram");
 const taskSheet = require("./routes/taskSheet");
 const solidState = require("./routes/solidState");
-const co2 = require("./routes/co2");
+const co2 = require("./routes/co2"); // not in use
 const pdf = require("./routes/pdf");
 
 app.use(bodyParser.json());
@@ -196,7 +196,6 @@ app.use((err, req, res, next) => {
 
 // starting the server
 app.listen(process.env.PORT, () => {
-  // console.log("Server running on port", process.env.PORT);
-  console.log("Running successfully");
+  console.log("Running on Port -", process.env.PORT);
   // logger.info("listening on port", process.env.PORT);
 });

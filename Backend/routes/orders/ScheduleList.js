@@ -5,9 +5,9 @@ const { logger } = require('../../helpers/logger')
 var bodyParser = require('body-parser')
 const moment = require('moment')
 
-// create application/json parser
 var jsonParser = bodyParser.json();
 
+//ScheduleListOrdered
 scheduleList.post('/ScheduleListOrdered', jsonParser, async (req, res, next) => {
     try {
   
@@ -27,6 +27,7 @@ scheduleList.post('/ScheduleListOrdered', jsonParser, async (req, res, next) => 
     }
   });
 
+//ScheduleListClosed
   scheduleList.post('/ScheduleListClosed', jsonParser, async (req, res, next) => {
     try {
   
@@ -44,8 +45,7 @@ scheduleList.post('/ScheduleListOrdered', jsonParser, async (req, res, next) => 
     }
   });
 
-
-  //ScheduleList Details
+//ScheduleList Details
   scheduleList.post('/scheduleListDetails', jsonParser, async (req, res, next) => {
     // console.log("req.ody",req.body)
     try {
@@ -60,9 +60,7 @@ scheduleList.post('/ScheduleListOrdered', jsonParser, async (req, res, next) => 
     }
   });
 
-
-
-  ///Combined Tasks Table 
+//Combined Tasks Table 
   scheduleList.post('/combinedTaksTaskTable', jsonParser, async (req, res, next) => {
     try {
       mchQueryMod(`SELECT * FROM magodmis.nc_task_list n WHERE n.ScheduleID='${req.body.ScheduleId}'`, (err, data) => {
@@ -75,8 +73,7 @@ scheduleList.post('/ScheduleListOrdered', jsonParser, async (req, res, next) => 
     }
   });
 
-
-  //Combined Taks After Selecting a Row in table 
+//Combined Taks After Selecting a Row in table 
   scheduleList.post('/combinedTaksShowDwgName', jsonParser, async (req, res, next) => {
     // console.log("req.body",req.body)
     try {
@@ -90,8 +87,7 @@ scheduleList.post('/ScheduleListOrdered', jsonParser, async (req, res, next) => 
     }
   });
 
-
-  //Original Schedule Table 1
+//Original Schedule Table 1
   scheduleList.post('/OriginalTable1', jsonParser, async (req, res, next) => {
     // console.log("req.body",req.body.selectedRow.cmbSchId);
     try {
@@ -107,7 +103,6 @@ scheduleList.post('/ScheduleListOrdered', jsonParser, async (req, res, next) => 
     }
   });
 
-
 //Origanl Schedule Table2
 scheduleList.post('/OriginalTable2', jsonParser, async (req, res, next) => {
     // console.log("req.body",req.body.list);
@@ -122,8 +117,7 @@ scheduleList.post('/OriginalTable2', jsonParser, async (req, res, next) => {
     }
   });
 
-  //Save Button
-
+//Save Button
  scheduleList.post('/save', jsonParser, async (req, res, next) => {
     // console.log("req.body",req.body.list);
     try {
@@ -136,7 +130,6 @@ scheduleList.post('/OriginalTable2', jsonParser, async (req, res, next) => {
       next(error)
     }
   });
-
 
 //Onclick of Update To Original Schedule
 scheduleList.post('/updateToOriganalSchedule', jsonParser, async (req, res, next) => {
@@ -210,8 +203,6 @@ scheduleList.post('/updateToOriganalSchedule', jsonParser, async (req, res, next
     }
 });
 
-
-
 //OnClick of Update Task
 scheduleList.post('/updateTask', jsonParser, async (req, res, next) => {
     // console.log("req.body",req.body.DwgSelect)
@@ -253,9 +244,7 @@ scheduleList.post('/updateTask', jsonParser, async (req, res, next) => {
     }
   });
   
-
-
-  ///Distribute Parts
+//Distribute Parts
   scheduleList.post('/distributeParts', jsonParser, async (req, res, next) => {
     // console.log(req.body,"req.ody");
     try {
