@@ -168,22 +168,56 @@ CombinedScheduleCreate.post(
       await Promise.all(insertPromises);
 
       const rowCont = await getCountOfCombinedScheduleDetails(cmbSchId);
+      
+      // const updatePromises = rowselectleft.map((schedule) => {
+      //   const { ScheduleId } = schedule;
+      //   // const scheduleStatus = "Comb/" + cmbSchId;
+      //   const scheduleStatus = "Comb/" + cmbSchId;
 
+      //   return updateOrderscheduleAndNCTaskList(
+      //     scheduleStatus,
+      //     ScheduleId,
+      //     cmbSchId,
+      //     req
+      //   );
+      // });
+
+      // const combinedScheduleNos = await Promise.all(updatePromises);
+      // const combinedScheduleNo = combinedScheduleNos[0];
+      // console.log("combinedScheduleNo",combinedScheduleNo);
+      
       const updatePromises = rowselectleft.map((schedule) => {
-        const { ScheduleId } = schedule;
-        const scheduleStatus = "Comb/" + cmbSchId;
+  const { ScheduleId } = schedule;
 
-        return updateOrderscheduleAndNCTaskList(
-          scheduleStatus,
-          ScheduleId,
-          cmbSchId,
-          req
-        );
-      });
+  return updateOrderscheduleAndNCTaskList(
+    null, // temporary placeholder
+    ScheduleId,
+    cmbSchId,
+    req
+  );
+});
 
-      const combinedScheduleNos = await Promise.all(updatePromises);
+const combinedScheduleNos = await Promise.all(updatePromises);
+const combinedScheduleNo = combinedScheduleNos[0];
+console.log("combinedScheduleNo", combinedScheduleNo);
 
-      const combinedScheduleNo = combinedScheduleNos[0];
+// Now update each schedule again using the actual combinedScheduleNo
+const finalUpdatePromises = rowselectleft.map((schedule) => {
+  const { ScheduleId } = schedule;
+  const scheduleStatus = "Comb/" + combinedScheduleNo;
+
+  return updateOrderscheduleAndNCTaskList(
+    scheduleStatus,
+    ScheduleId,
+    cmbSchId,
+    combinedScheduleNo,
+    req
+  );
+});
+
+await Promise.all(finalUpdatePromises);
+
+
       const insertResult = await mchQueryMod1(
         `
       INSERT INTO magodmis.orderschedule (Order_no, ScheduleNo, Cust_Code, ScheduleDate, schTgtDate, Delivery_date, SalesContact, Dealing_engineer, PO, ScheduleType, ordschno, Type, Schedule_Status)
@@ -191,7 +225,7 @@ CombinedScheduleCreate.post(
           req.body.ScheduleDate
         }', '${req.body.Date}', '${req.body.Date}', '${
           req.body.selectedSalesContact
-        }', '${req.body.selectedSalesContact}', 'Job Work', 'Combined', '${
+        }', '${req.body.selectedSalesContact}', 'Combined', 'Combined', '${
           combinedScheduleNo + " 01"
         }', 'Profile', 'Tasked')`,
         [
@@ -442,10 +476,15 @@ const updateOrderscheduleAndNCTaskList = async (
 
     // Update magodmis.nc_task_list
     await mchQueryMod1(
-      `
-      UPDATE magodmis.nc_task_list o1
-      SET o1.TStatus = 'Combined'
-      WHERE o1.scheduleId = '${scheduleId}'`,
+      // `
+      // UPDATE magodmis.nc_task_list o1
+      // SET o1.TStatus = 'Combined'
+      // WHERE o1.scheduleId = '${scheduleId}'`,
+      `UPDATE magodmis.orderschedule o
+JOIN magodmis.nc_task_list o1 ON o.ScheduleID = o1.scheduleId
+SET o.Schedule_Status = '${scheduleStatus}',
+    o1.TStatus = 'Combined'
+WHERE o.ScheduleID = ${scheduleId};`,
       [scheduleId]
     );
 

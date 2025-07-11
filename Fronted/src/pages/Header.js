@@ -159,7 +159,7 @@ function Header() {
             }}
             onClick={logout}
           >
-            Sign Out(200125181208)
+            Sign Out
           </button>
         </div>
       </nav>

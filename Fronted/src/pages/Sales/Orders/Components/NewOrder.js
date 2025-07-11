@@ -64,8 +64,8 @@ function NewOrder(props) {
     
 
     let data = JSON.parse(localStorage.getItem("LazerUser"));
-    // setuserName(data?.data[0]?.Name);
-    setuserName(data?.data?.Name);
+    setuserName(data?.data[0]?.Name);
+    // setuserName(data?.data?.Name);
     console.log("123", data.data.Name);
 
     var currentDate = new Date();

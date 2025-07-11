@@ -465,12 +465,18 @@ function CombinedScheduleDetailsForm() {
   //close button
   const navigate = useNavigate();
   const closeButton = () => {
+    // if (scheduleListDetailsData[0].ScheduleType === "Job Work") {
     navigate("/Orders/JobWork/ScheduleList/Order", {});
+      
+    // } else {
+    // navigate("/Orders/Sales/ScheduleList/Order", {});
+      
+    // }
   };
 
   // console.log("orinalScheudledata",orinalScheudledata);
   // console.log("orinalScheudleTable2",orinalScheudleTable2);
-  // console.log("scheduleListDetailsData",scheduleListDetailsData);
+  // console.log("scheduleListDetailsData",scheduleListDetailsData[0].ScheduleType); //Job Work
 
   const orderNumbers = orinalScheudledata.map((item) => item.Order_No);
   const DwgData = scheduleListDetailsData.map((item) => ({
