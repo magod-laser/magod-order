@@ -285,8 +285,6 @@ function CombinedScheduleDetailsForm() {
     setDwgSelect(list);
   };
 
-  // console.log("DwgSelect",DwgSelect);
-  // console.log(selectedTaskNo);
 
   const updateTask = () => {
     postRequest(
@@ -465,12 +463,15 @@ function CombinedScheduleDetailsForm() {
   //close button
   const navigate = useNavigate();
   const closeButton = () => {
-    navigate("/Orders/JobWork/ScheduleList/Order", {});
+    // navigate("/Orders/JobWork/ScheduleList/Order", {});
+    if (selectedRow?.Order_No?.startsWith("88")) {
+      navigate("/Orders/Sales/ScheduleList/Order", {});
+    } else {
+      navigate("/Orders/JobWork/ScheduleList/Order", {});
+    }
   };
 
-  // console.log("orinalScheudledata",orinalScheudledata);
-  // console.log("orinalScheudleTable2",orinalScheudleTable2);
-  // console.log("scheduleListDetailsData",scheduleListDetailsData);
+
 
   const orderNumbers = orinalScheudledata.map((item) => item.Order_No);
   const DwgData = scheduleListDetailsData.map((item) => ({
