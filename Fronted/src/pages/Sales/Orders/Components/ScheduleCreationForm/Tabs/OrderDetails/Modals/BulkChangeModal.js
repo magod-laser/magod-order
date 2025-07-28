@@ -74,21 +74,6 @@ function BulkChangeModal(props) {
     setChecked(newCheckedValue);
   };
 
-
-
-// console.log("blkChange", blkChange);
-// console.log("inspdata", inspdata);
-// console.log("packdata", packdata);
-// console.log(
-//   "1 :",
-//   blkChange.PkngLevel,
-//   "2 :",
-//   packdata[0]?.PkngLevel,
-//   "3 :",
-//   "Pkng1"
-// );
-// console.log("insp :", blkChange.InspLvl , inspdata[0]?.InspLevel , "Insp1");
-
   useEffect(() => {
     if (inspdata.length > 0 && !blkChange.InspLvl) {
       setBlkChange((prev) => ({
@@ -138,38 +123,7 @@ function BulkChangeModal(props) {
             {/* <Form onSubmit={importdrawings} style={{ overflowY: "scroll" }}> */}
             <div className="row mb-1">
               <div className="col">
-                {/* <div className="col-md-3"></div>
-                  <div className="col-md-3"></div> */}
-                {/* <Form.Group controlId="strmtrlcode"> */}
-                {/* <div className="md-col-2"> */}
-                {/* <div className="row">
-                    <div className="col-md-2">
-                      <label className="form-label">Dwg / Part Name</label>
-                    </div>
-                    <div className="col-md-8 mt-2">
-                      <input
-                        className="in-field"
-                        name="blkCngDwgname"
-                        // value={DwgName}
-                        value={blkChange.DwgName}
-                        // onChange={handleDwgInputChange}
-                        onChange={handleChange}
-                        required
-                        disabled={!blkCngCheckBox[0]}
-                      />
-                    </div>
-                    <div className="col-md-2 mt-3">
-                      <input
-                        name="blkCngDwgname"
-                        type="checkbox"
-                        onChange={() => handleblkCngCheckBox(0)}
-                        checked={blkCngCheckBox[0]}
-                      />
-                    </div>
-                  </div> */}
-
-                {/* </div> */}
-                {/* </Form.Group> */}
+                
 
                 <Form.Group controlId="strmtrlcode">
                   <div className="row">
@@ -263,44 +217,7 @@ function BulkChangeModal(props) {
                         >
                           ** Select **
                         </option>
-                        {/* {procdata.map((proc) => {
-                          // Check if "Service" column has non-zero values
-                          if (props.OrderData?.Type === "Service") {
-                            if (proc["Service"] !== 0) {
-                              return (
-                                <option
-                                  key={proc["ProcessDescription"]}
-                                  value={proc["ProcessDescription"]}
-                                >
-                                  {proc["ProcessDescription"]}
-                                </option>
-                              );
-                            }
-                          } else if (props.OrderData?.Type === "Fabrication") {
-                            if (proc["MultiOperation"] !== 0) {
-                              return (
-                                <option
-                                  key={proc["ProcessDescription"]}
-                                  value={proc["ProcessDescription"]}
-                                >
-                                  {proc["ProcessDescription"]}
-                                </option>
-                              );
-                            }
-                          } else {
-                            if (proc["Profile"] !== 0) {
-                              return (
-                                <option
-                                  key={proc["ProcessDescription"]}
-                                  value={proc["ProcessDescription"]}
-                                >
-                                  {proc["ProcessDescription"]}
-                                </option>
-                              );
-                            }
-                          }
-                          return null;
-                        })} */}
+                        
                         {procdata.map((proc) => {
                           // Check for the Type and map options based on that
                           if (props.OrderData?.Type === "Service") {
@@ -348,12 +265,10 @@ function BulkChangeModal(props) {
                             }
                           }
 
-                          return null; // Exclude options with zero values or mismatched type
+                          return null; 
                         })}
                       </select>
-                      {/* ) : (
-                        ""
-                      )} */}
+                      
                     </div>
                     <div className="col-md-2 mt-3">
                       <input
@@ -367,22 +282,7 @@ function BulkChangeModal(props) {
 
                 <div className="row">
                   <div className="d-flex col-md-6" style={{ gap: "8px" }}>
-                    {/* <InputField
-                      className="ip-select in-fields" 
-                      label="Quantity"
-                      id="Qty"
-                      name="blkCngQty"
-                      value={quantity}
-                      onChangeCallback={setQuantity}
-                      value={blkChange.quantity}
-                      onChange={handleChange}
-                      required
-                      disabled={!blkCngCheckBox[4]}
-                      onCheckboxChange={() => handleblkCngCheckBox(4)}
-                      isChecked={blkCngCheckBox[4]}
-                      checkboxIndex={4}
-                      showCheckbox={true}
-                    /> */}
+                   
                     <div className="col-md-4">
                       <label className="form-label">Quantity</label>
                     </div>
@@ -405,41 +305,10 @@ function BulkChangeModal(props) {
                       />
                     </div>
 
-                    {/* <div className="col-md-2 mt-3">
-                      <input
-                        type="checkbox"
-                        onChange={() => handleblkCngCheckBox(4)}
-                        checked={blkCngCheckBox[4]}
-                      />
-                    </div> */}
-                    {/* <input
-                      className="ip-select in-fields"
-                      id="Qty"
-                      name="blkCngQty"
-                      value={blkChange.quantity}
-                      onChange={handleChange}
-                      required
-                      disabled={!blkCngCheckBox[4]}
-                    /> */}
+                    
                   </div>
                   <div className="d-flex col-md-6">
-                    {/* <Form.Group controlId="rates">
-                      <InputField
-                        className="ip-select in-fields"
-                        label="JW Rate"
-                        id="JWRate"
-                        name="blkCngJWRate"
-                        // value={jwRate}
-                        // onChangeCallback={setJwRate}
-                        value={blkChange.jwRate}
-                        onChange={handleChange}
-                        disabled={!blkCngCheckBox[5]}
-                        onCheckboxChange={() => handleblkCngCheckBox(5)}
-                        isChecked={blkCngCheckBox[5]}
-                        checkboxIndex={5}
-                        showCheckbox={true}
-                      /> */}
-                    {/* </Form.Group> */}
+                    
                     <div className="col-md-4">
                       <label className="form-label">JW Rate</label>
                     </div>
@@ -469,23 +338,7 @@ function BulkChangeModal(props) {
 
                 <div className="row">
                   <div className="d-flex col-md-6" style={{ gap: "8px" }}>
-                    {/* <Form.Group controlId="rates">
-                      <InputField
-                        className="ip-select in-fields"
-                        label="UnitPrice"
-                        id="UnitPrice"
-                        name="blkCngUnitPrice"
-                        // value={unitPrice}
-                        // onChangeCallback={setUnitPrice}
-                        value={blkChange.unitPrice}
-                        onChange={handleChange}
-                        disabled={!blkCngCheckBox[6]}
-                        onCheckboxChange={() => handleblkCngCheckBox(6)}
-                        isChecked={blkCngCheckBox[6]}
-                        checkboxIndex={6}
-                        showCheckbox={true}
-                      />
-                    </Form.Group> */}
+                    
                     <div className="col-md-4">
                       <label className="form-label">UnitPrice</label>
                     </div>
@@ -514,23 +367,7 @@ function BulkChangeModal(props) {
                   </div>
                   <div className="d-flex col-md-6">
                     {" "}
-                    {/* <Form.Group controlId="rates">
-                      <InputField
-                        className="ip-select in-fields"
-                        label="Material Rate"
-                        id="Mrate"
-                        name="blkCngMrate"
-                        // value={materialRate}
-                        // onChangeCallback={setMaterialRate}
-                        value={blkChange.materialRate}
-                        onChange={handleChange}
-                        disabled={!blkCngCheckBox[7]}
-                        onCheckboxChange={() => handleblkCngCheckBox(7)}
-                        isChecked={blkCngCheckBox[7]}
-                        checkboxIndex={7}
-                        showCheckbox={true}
-                      />
-                    </Form.Group> */}
+                    
                     <div className="col-md-4">
                       <label className="form-label">Material Rate</label>
                     </div>
