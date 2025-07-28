@@ -7,9 +7,7 @@ import Parentroute from "./Layout/Parentroute";
 import Login from "./pages/Auth/Login";
 import Home from "./pages/Home";
 import HomeOne from "./pages/HomeOne";
-// import UserRolesModules from "./pages/admin/userrolesmodules";
-// import CreateUsers from "./pages/admin/createusers";
-// import MenuRoleMapping from "./pages/admin/menurolemapping";
+
 import SendMail from "./pages/sendmail/sendmails";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -133,15 +131,12 @@ function App() {
               <ToastContainer position="top-center" />
               <Routes>
                 <Route element={<Login />} path="/" />
-                {/* <Route element={<RequireAuth />}> */}
                 <Route path="/home" element={<Home />} />
                 <Route path="/salesHome" element={<HomeOne />} />
-                {/* </Route> */}
-                {/* <Route element={<RequireAuth />}> */}
-                {/* <ScheduleProvider> */}
+               
                 <Route element={<WithNav />}>
                   <Route path="/Orders" element={<Parentroute />}>
-                    {/* Prakruthis */}
+                    
                     <Route index element={<Order />} />
                     <Route path="/Orders/JobWork" element={<CreateJW />} />
                     <Route
@@ -201,7 +196,7 @@ function App() {
                       path="/Orders/Sales/ScheduleList/Closed/OpenDetailForm"
                       element={<CombinedScheduleDetailsFormClosed />}
                     />
-                    {/* Prakruthis */}
+                 
 
                     <Route index={true} />
 
@@ -431,20 +426,8 @@ function App() {
                     </Route>
                   </Route>
                 </Route>
-                {/* </ScheduleProvider> */}
-                {/* </Route> */}
-                {/* Catch-all route for any other paths */}
-                {/* <Route
-							path="*"
-							element={
-								<Navigate
-									to="/"
-									replace
-								/>
-							}
-						/> */}
+               
               </Routes>
-              {/* </OrderProvider> */}
             </QuotationProvider>
           </ScheduleProvider>
         </ScheduleDataProvider>

@@ -194,7 +194,7 @@ app.use((err, req, res, next) => {
   logger.error(`Status Code : ${err.status}  - Error : ${err.message}`);
 });
 
-// starting the server
+// Starting the server
 app.listen(process.env.PORT, () => {
   console.log("Running on Port -", process.env.PORT);
   // logger.info("listening on port", process.env.PORT);

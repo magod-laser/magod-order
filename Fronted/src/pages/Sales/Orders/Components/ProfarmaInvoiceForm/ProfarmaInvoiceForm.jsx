@@ -24,9 +24,34 @@ export default function ProfarmaInvoiceForm(props) {
 
   const [runningNo, setRunningNo] = useState({});
 
+ 
   const [formData, setFormData] = useState({
-    unitName: "Jigani",
+    //unitName: "Jigani",
+    unitName: "",
   });
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("userData");
+
+    if (storedData) {
+      try {
+        const parsedData = JSON.parse(storedData);
+        const unitName = parsedData.UnitName;
+
+        if (unitName) {
+          setFormData((prev) => ({
+            ...prev,
+            unitName: unitName,
+          }));
+        }
+      } catch (err) {
+        console.error("Error parsing userData from localStorage:", err);
+      }
+    } else {
+      console.log("No userData in localStorage.");
+    }
+  }, []);
+
   const [profarmaMainData, setProfarmaMainData] = useState({});
   const [profarmaDetailsData, setProfarmaDetailsData] = useState([]);
   const [profarmaTaxData, setProfarmaTaxData] = useState([]);

@@ -21,65 +21,37 @@ import { baseURL } from "../../../../../api/baseUrl";
 
 export default function ModalProfarmaInvoice(props) {
   const [PDFData, setPDFData] = useState({});
+  const [UnitName, setUnitName] = useState();
 
   const handleClose = () => props.setPrintInvoiceModal(false);
 
+  useEffect(() => {
+      const storedData = localStorage.getItem("userData");
+  
+      if (storedData) {
+        try {
+          const parsedData = JSON.parse(storedData);
+          const AppunitName = parsedData.UnitName;
+  
+          if (AppunitName) {
+            setUnitName(AppunitName);
+          }
+        } catch (err) {
+          console.error("Error parsing userData from localStorage:", err);
+        }
+      } else {
+        console.log("No userData in localStorage.");
+      }
+    }, []);
+
   function fetchPDFData() {
-    Axios.post(endpoints.getPDFData, {}).then((res) => {
+    Axios.post(endpoints.getPDFData, { UnitName: UnitName }).then((res) => {
       console.log(" axios response ::", res.data[0]);
       setPDFData(res.data[0]);
     });
   }
 
-  // const base64String = PDFData.split(",")[1];
-
-  // // Send the base64 string to the backend
-  //     await axios.post('http://localhost:6000/pdf/upload-pdf', {
-  //       pdfData: base64String,
-  //       fileName: `invoice_${Date.now()}.pdf`,
-  //     });
-
-  // useEffect(() => {
-  //   fetchPDFData();
-  // }, []);
-
-  // const savePdfToServer = async () => {
-  //   try {
-  //     // Generate the Blob from PdfAdjustment
-  //     const blob = await pdf(
-  //       <PrintProfarmaInvoice
-  //         PDFData={PDFData}
-  //         rowLimit={props.rowLimit}
-  //         profarmaMainData={props.profarmaMainData}
-  //         profarmaDetailsData={props.profarmaDetailsData}
-  //         profarmaTaxData={props.profarmaTaxData}
-  //       />
-  //     ).toBlob();
-
-  //     // Convert Blob to File
-  //     const file = new File([blob], "GeneratedPDF.pdf", {
-  //       type: "application/pdf",
-  //     });
-
-  //     // Create a FormData object
-  //     const formData = new FormData();
-
-  //     const adjustment = "Adjustment_Invoices"; // Replace with the actual name you want to send
-  //     formData.append("file", file);
-  //     formData.append("adjustment", adjustment);
-
-  //     // Send the PDF to the backend
-  //     const response = await axios.post(baseURL + `/PDF/save-pdf`, formData, {
-  //       headers: { "Content-Type": "multipart/form-data" },
-  //     });
-
-  //     if (response.status === 200) {
-  //       toast.success("PDF saved successfully!");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error saving PDF to server:", error);
-  //   }
-  // };
+  
 
   useEffect(() => {
     if (props.printInvoiceModal) {
@@ -89,7 +61,7 @@ export default function ModalProfarmaInvoice(props) {
 
   const savePdfToServer = async () => {
     try {
-      const adjustment = "Performa_Invoice"; // Replace with the actual name you want to send
+      const adjustment = "Performa_Invoice"; 
 
       // Step 1: Call the API to set the adjustment name
       await axios.post(baseURL + `/PDF/set-adjustment-name`, { adjustment });

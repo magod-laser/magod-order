@@ -24,22 +24,8 @@ function Home() {
         Previous Menu
       </button>
       <div className="card-container">
-        {/* {lazerUser.data.access.includes("/customer") ? (
-          <Link
-            to="/Customer"
-            // onClick={customerMenu}
-            style={{ textDecoration: "none", color: "black" }}
-          >
-            <div className="dashboard-card">
-              <div className="card-item">
-                <BsGraphUp size={60} color="#283E81" />
-                <span className="dashboard-link"> Customer Info</span>
-              </div>
-            </div>
-          </Link>
-        ) : null} */}
+        
 
-        {/* {lazerUser.data.access.includes("/sales") ? ( */}
         <Link to="/Orders" style={{ textDecoration: "none", color: "black" }}>
           <div className="dashboard-card">
             <div className="card-item">
@@ -48,7 +34,6 @@ function Home() {
             </div>
           </div>
         </Link>
-        {/* ) : null} */}
       </div>
     </>
   );

@@ -6,8 +6,8 @@ const path = require("path");
 const globalConfig = require("../routes/Utils/globalConfig");
 
 
-let folderBase = process.env.FILE_SERVER_PATH; // "C:/Magod/Jigani";
-console.log("Folder Base Path from .env:", folderBase);
+// let folderBase = process.env.FILE_SERVER_PATH; 
+// console.log("Folder Base Path from .env:", folderBase);
 
 let checkdrawings = async (qtnNo, callback) => {
  
@@ -48,66 +48,297 @@ let checkdrawings = async (qtnNo, callback) => {
 
 
 
-let createFolder = async (SrlType, qno, month, callback) => {
+// let createFolder = async (SrlType, qno, month, callback) => {
 
-  const workOrderPath = globalConfig.get("WORKORDER");
-  const basePath = workOrderPath.replace(/[\\\/]Wo$/, ""); //Remove the last "Wo" from the path
-  console.log("Folder Base Path from database:", basePath);
-  try {
-    switch (SrlType) {
-      case "Quotation": {
-        await fs.exists(folderBase + `/QtnDwg`, async (exists) => {
-          if (!exists) {
-            await fs.mkdirSync(folderBase + `/QtnDwg`);
-          }
-          await fs.exists(folderBase + `/QtnDwg/${month}`, async (ex) => {
-            if (!ex) {
-              await fs.mkdirSync(folderBase + `/QtnDwg/${month}`);
-            }
-            await fs.exists(
-              folderBase + `/QtnDwg/${month}/${qno}`,
-              async (exist) => {
-                if (!exist) {
-                  await fs.mkdirSync(folderBase + `/QtnDwg/${month}/${qno}`);
-                }
-              }
-            );
-          });
-        });
-        break;
-      }
+//   const workOrderPath = globalConfig.get("WORKORDER");
+//   // const basePath = workOrderPath.replace(/[\\\/]Wo$/, ""); //Remove the last "Wo" from the path
+//   console.log("Folder Base Path from database:", workOrderPath);
+//   try {
+//     switch (SrlType) {
+//       case "Quotation": {
+//         await fs.exists(folderBase + `/QtnDwg`, async (exists) => {
+//           if (!exists) {
+//             await fs.mkdirSync(folderBase + `/QtnDwg`);
+//           }
+//           await fs.exists(folderBase + `/QtnDwg/${month}`, async (ex) => {
+//             if (!ex) {
+//               await fs.mkdirSync(folderBase + `/QtnDwg/${month}`);
+//             }
+//             await fs.exists(
+//               folderBase + `/QtnDwg/${month}/${qno}`,
+//               async (exist) => {
+//                 if (!exist) {
+//                   await fs.mkdirSync(folderBase + `/QtnDwg/${month}/${qno}`);
+//                 }
+//               }
+//             );
+//           });
+//         });
+//         break;
+//       }
     
+//       case "Order": {
+//         await fs.exists(folderBase + `/Wo/${qno}`, async (exists) => {
+//           if (!exists) {
+//             await fs.mkdirSync(folderBase + `/Wo/${qno}`);
+//             await fs.mkdirSync(folderBase + `/Wo/${qno}/BOM`);
+//             await fs.mkdirSync(folderBase + `/Wo/${qno}/DespInfo`);
+//             await fs.mkdirSync(folderBase + `/Wo/${qno}/DXF`);
+//             await fs.mkdirSync(folderBase + `/Wo/${qno}/NestDXF`);
+//             await fs.mkdirSync(folderBase + `/Wo/${qno}/Parts`);
+//             await fs.mkdirSync(folderBase + `/Wo/${qno}/WO`);
+//             await fs.mkdirSync(folderBase + `/Wo/${qno}/WOL`);
+//           }
+//         });
+//         break;
+//       }
+      
+//       case "Schedule": {
+//         console.log("==================-------------qno", qno);
+
+//         const parts = qno.split(" "); // Split based on space
+//         const mainFolder = parts[0]; // e.g., "250544"
+//         const subFolder = qno; // e.g., "250544 04"
+
+//         const mainFolderPath = `${folderBase}/Wo/${mainFolder}`;
+//         const subFolderPath = `${mainFolderPath}/${subFolder}`;
+
+//         // Check if the main folder exists
+//         if (fs.existsSync(mainFolderPath)) {
+//           // Create the subfolder if it does not exist
+//           if (!fs.existsSync(subFolderPath)) {
+//             fs.mkdirSync(subFolderPath, { recursive: true });
+//             // console.log(`Subfolder created: ${subFolderPath}`);
+//           } else {
+//             // console.log(`Subfolder already exists: ${subFolderPath}`);
+//           }
+//         } else {
+//           // console.log(
+//           //   `Main folder ${mainFolder} does not exist. Cannot create subfolder.`
+//           // );
+//         }
+
+//         break;
+//       }
+
+//       case "Customer": {
+//         await fs.exists(folderBase + `/CustDwg`, async (exists) => {
+//           if (!exists) {
+//             await fs.mkdirSync(folderBase + `/CustDwg`);
+//           }
+//           await fs.exists(folderBase + `/CustDwg/${qno}`, async (ex) => {
+//             if (!ex) {
+//               await fs.mkdirSync(folderBase + `/CustDwg/${qno}`);
+//               await fs.mkdirSync(folderBase + `/CustDwg/${qno}/Accts`);
+//               await fs.mkdirSync(folderBase + `/CustDwg/${qno}/BOM`);
+//               await fs.mkdirSync(folderBase + `/CustDwg/${qno}/DWG`);
+//               await fs.mkdirSync(folderBase + `/CustDwg/${qno}/DXF`);
+//               await fs.mkdirSync(folderBase + `/CustDwg/${qno}/Material`);
+//               await fs.mkdirSync(folderBase + `/CustDwg/${qno}/Parts`);
+//               await fs.mkdirSync(folderBase + `/CustDwg/${qno}/Qtn`);
+//               await fs.mkdirSync(folderBase + `/CustDwg/${qno}/WOL`);
+//               callback(null, "success");
+//             } else {
+//               callback("Already Exists", null);
+//             }
+//           });
+//         });
+//         break;
+//       }
+//       default:
+//         break;
+//     }
+//   } catch (error) {
+//     callback(error, null);
+//   }
+// };
+
+
+
+
+let createFolder = async (SrlType, qno, month, callback) => {
+  const workOrderPath = globalConfig.getAll();
+
+  // const basePath = workOrderPath.replace(/[\\\/]Wo$/, ""); //Remove the last "Wo" from the path
+  // console.log("Folder Base Path from database:", workOrderPath.WORKORDER);
+
+  let folderBase = workOrderPath.WORKORDER;
+
+  try {
+    console.log("folderBase", folderBase);
+    console.log("SrlType", SrlType);
+
+    switch (SrlType) {
+      // case "Quotation": {
+
+      //   await fs.exists(folderBase + `/QtnDwg`, async (exists) => {
+
+      //     if (!exists) {
+
+      //       await fs.mkdirSync(folderBase + `/QtnDwg`);
+
+      //     }
+
+      //     await fs.exists(folderBase + `/QtnDwg/${month}`, async (ex) => {
+
+      //       if (!ex) {
+
+      //         await fs.mkdirSync(folderBase + `/QtnDwg/${month}`);
+
+      //       }
+
+      //       await fs.exists(
+
+      //         folderBase + `/QtnDwg/${month}/${qno}`,
+
+      //         async (exist) => {
+
+      //           if (!exist) {
+
+      //             await fs.mkdirSync(folderBase + `/QtnDwg/${month}/${qno}`);
+
+      //           }
+
+      //         }
+
+      //       );
+
+      //     });
+
+      //   });
+
+      //   break;
+
+      // }
+
+      // case "Order": {
+
+      //   await fs.exists(folderBase + `/Wo/${qno}`, async (exists) => {
+
+      //     if (!exists) {
+
+      //       await fs.mkdirSync(folderBase + `/Wo/${qno}`);
+
+      //       await fs.mkdirSync(folderBase + `/Wo/${qno}/BOM`);
+
+      //       await fs.mkdirSync(folderBase + `/Wo/${qno}/DespInfo`);
+
+      //       await fs.mkdirSync(folderBase + `/Wo/${qno}/DXF`);
+
+      //       await fs.mkdirSync(folderBase + `/Wo/${qno}/NestDXF`);
+
+      //       await fs.mkdirSync(folderBase + `/Wo/${qno}/Parts`);
+
+      //       await fs.mkdirSync(folderBase + `/Wo/${qno}/WO`);
+
+      //       await fs.mkdirSync(folderBase + `/Wo/${qno}/WOL`);
+
+      //     }
+
+      //   });
+
+      //   break;
+
+      // }
+
+      //  case "Order": {
+
+      //   console.log("qno",qno);
+
+      //   await fs.existsSync(folderBase + `\\${qno}`, async (exists) => {
+
+      //     if (!exists) {
+
+      //       console.log("!exists");
+
+      //       await fs.mkdirSync(folderBase + `\\${qno}`);
+
+      //       console.log("folderBase + `\\${qno}");
+
+      //       await fs.mkdirSync(folderBase + `\\${qno}\\BOM`);
+
+      //       await fs.mkdirSync(folderBase + `\\${qno}\\DespInfo`);
+
+      //       await fs.mkdirSync(folderBase + `\\${qno}\\DXF`);
+
+      //       await fs.mkdirSync(folderBase + `\\${qno}\\NestDXF`);
+
+      //       await fs.mkdirSync(folderBase + `\\${qno}\\Parts`);
+
+      //       await fs.mkdirSync(folderBase + `\\${qno}\\WO`);
+
+      //       await fs.mkdirSync(folderBase + `\\${qno}\\WOL`);
+
+      //     }
+
+      //     console.log("else is worked");
+
+      //   });
+
+      //   break;
+
+      // }
+
       case "Order": {
-        await fs.exists(folderBase + `/Wo/${qno}`, async (exists) => {
-          if (!exists) {
-            await fs.mkdirSync(folderBase + `/Wo/${qno}`);
-            await fs.mkdirSync(folderBase + `/Wo/${qno}/BOM`);
-            await fs.mkdirSync(folderBase + `/Wo/${qno}/DespInfo`);
-            await fs.mkdirSync(folderBase + `/Wo/${qno}/DXF`);
-            await fs.mkdirSync(folderBase + `/Wo/${qno}/NestDXF`);
-            await fs.mkdirSync(folderBase + `/Wo/${qno}/Parts`);
-            await fs.mkdirSync(folderBase + `/Wo/${qno}/WO`);
-            await fs.mkdirSync(folderBase + `/Wo/${qno}/WOL`);
+        console.log("qno", qno);
+
+        const baseFolder = path.join(folderBase, qno);
+
+        try {
+          await fs.access(baseFolder);
+          // console.log("Folder already exists");
+        } catch {
+          // console.log("Folder does not exist, creating...");
+          try {
+            // console.log("Folder does not exist, creating...");
+            await fs.mkdir(baseFolder, { recursive: true });
+          } catch (err) {
+            console.error("Failed to create folder:", err.message);
           }
-        });
+
+          const subfolders = [
+            "BOM",
+            "DespInfo",
+            "DXF",
+            "NestDXF",
+            "Parts",
+            "WO",
+            "WOL",
+          ];
+
+          for (const sub of subfolders) {
+            const subPath = path.join(baseFolder, sub);
+
+            await fs.mkdir(subPath);
+
+            console.log(`Created: ${subPath}`);
+          }
+        }
+
         break;
       }
-      
+
       case "Schedule": {
         console.log("==================-------------qno", qno);
 
         const parts = qno.split(" "); // Split based on space
+
         const mainFolder = parts[0]; // e.g., "250544"
+
         const subFolder = qno; // e.g., "250544 04"
 
         const mainFolderPath = `${folderBase}/Wo/${mainFolder}`;
+
         const subFolderPath = `${mainFolderPath}/${subFolder}`;
 
         // Check if the main folder exists
+
         if (fs.existsSync(mainFolderPath)) {
           // Create the subfolder if it does not exist
+
           if (!fs.existsSync(subFolderPath)) {
             fs.mkdirSync(subFolderPath, { recursive: true });
+
             // console.log(`Subfolder created: ${subFolderPath}`);
           } else {
             // console.log(`Subfolder already exists: ${subFolderPath}`);
@@ -126,33 +357,45 @@ let createFolder = async (SrlType, qno, month, callback) => {
           if (!exists) {
             await fs.mkdirSync(folderBase + `/CustDwg`);
           }
+
           await fs.exists(folderBase + `/CustDwg/${qno}`, async (ex) => {
             if (!ex) {
               await fs.mkdirSync(folderBase + `/CustDwg/${qno}`);
+
               await fs.mkdirSync(folderBase + `/CustDwg/${qno}/Accts`);
+
               await fs.mkdirSync(folderBase + `/CustDwg/${qno}/BOM`);
+
               await fs.mkdirSync(folderBase + `/CustDwg/${qno}/DWG`);
+
               await fs.mkdirSync(folderBase + `/CustDwg/${qno}/DXF`);
+
               await fs.mkdirSync(folderBase + `/CustDwg/${qno}/Material`);
+
               await fs.mkdirSync(folderBase + `/CustDwg/${qno}/Parts`);
+
               await fs.mkdirSync(folderBase + `/CustDwg/${qno}/Qtn`);
+
               await fs.mkdirSync(folderBase + `/CustDwg/${qno}/WOL`);
+
               callback(null, "success");
             } else {
               callback("Already Exists", null);
             }
           });
         });
+
         break;
       }
+
       default:
         break;
     }
   } catch (error) {
-    callback(error, null);
+    // callback(error, null);
   }
 };
-
+ 
 const copyfiles = async (source, destination, callback) => {
   try {
     var files = fs.readdirSync(source);

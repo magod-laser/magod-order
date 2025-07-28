@@ -4,22 +4,17 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Buffer } from "buffer";
 
 const {
-  // getRequest,
-  // postRequest,
+ 
   postRequestFormData,
 } = require("../api/apiinstance");
 const { endpoints } = require("../api/constants");
 
 function SendMail() {
-  // const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  // let history = useHistory();
-  // let [formMessageBody, setFormMessageBody] = useState("");
-  // let [formSubject, setFormSubject] = useState("");
+  
 
   useEffect(() => {
     console.log(searchParams.get("mlbody"));
-    // setFormMessageBody(searchParams.get("mlbody"));
     document.getElementById("formMessageBody").value = Buffer.from(
       searchParams.get("mlbody"),
       "base64"
@@ -51,7 +46,6 @@ function SendMail() {
       if (data != null) {
         alert("Email Sent Successfully..");
         window.close();
-        //  window.close();
       }
     });
   };
@@ -74,10 +68,7 @@ function SendMail() {
               onSubmit={sendmaildetails}
               autoComplete="off"
             >
-              {/* <Row>
-                                        <Form.Label style={{ width: '100px', height: '30px', fontFamily: 'Roboto', fontSize: '14px' }}>From</Form.Label>
-                                        <Form.Control type="text" controlId="fromaddress" value={fromaddress} style={{ width: '200px', height: '30px', fontFamily: 'Roboto', fontSize: '14px' }} />
-                                    </Row> */}
+             
               <Form.Group className="row" controlId="formToAddress">
                 <div className="col-md-4">
                   <label className="form-label">To</label>
