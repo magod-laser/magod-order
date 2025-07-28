@@ -20,7 +20,6 @@ jobWork.post('/allcustomersData', jsonParser, async (req, res, next) => {
   }
 });
 
-
 //get Sales Contact List
 jobWork.get('/getSalesContactList', jsonParser, async (req, res, next) => {
   try {

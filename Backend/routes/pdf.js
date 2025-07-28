@@ -11,9 +11,11 @@ const {
 const { logger } = require("../helpers/logger");
 
 pdf.get("/getPDFData", async (req, res, next) => {
+  const { UnitName } = req.body;
   try {
     setupQueryMod(
-      `SELECT * FROM magod_setup.magodlaser_units`,
+      // `SELECT * FROM magod_setup.magodlaser_units`,
+      `SELECT * FROM magod_setup.magodlaser_units where UnitName = ${UnitName}`,
       (err, pdfData) => {
         if (err) {
           console.log("err", err);

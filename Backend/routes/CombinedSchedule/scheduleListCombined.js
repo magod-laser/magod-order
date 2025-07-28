@@ -844,17 +844,22 @@ scheduleListCombined.post("/copyDwg", async (req, res, next) => {
 
     const { selectedRow, orinalScheudledata } = requestData;
 
+  const workOrderPath = globalConfig.getAll();
+  let folderBase = workOrderPath.WORKORDER;    
+
     const sourceDirs = orinalScheudledata.map((data) =>
-      path.join("C:", "Magod", "Jigani", "Wo", data.Order_No, "DXF")
+      // path.join("C:", "Magod", "Jigani", "Wo", data.Order_No, "DXF")
+      path.join(folderBase, data.Order_No, "DXF")
     );
-    const targetDir = path.join(
-      "C:",
-      "Magod",
-      "Jigani",
-      "Wo",
-      selectedRow.Order_No,
-      "DXF"
-    );
+    // const targetDir = path.join(
+    //   "C:",
+    //   "Magod",
+    //   "Jigani",
+    //   "Wo",
+    //   selectedRow.Order_No,
+    //   "DXF"
+    // );
+    const targetDir = path.join(folderBase, selectedRow.Order_No, "DXF");
 
     if (!fs.existsSync(targetDir)) {
       fs.mkdirSync(targetDir, { recursive: true });

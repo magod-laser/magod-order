@@ -16,7 +16,7 @@ const CustomStorageEngine = require("../helpers/storageEngine");
 const pathConfig = require("../routes/Utils/globalConfig");
 
 
-// const basefolder='C:\\Magod\\Jigani';
+;
 const basefolder = process.env.FILE_SERVER_PATH;
 
 var storage = new CustomStorageEngine({

@@ -104,16 +104,13 @@ a {
 
 .sidebar-child {
   display: flex;
-  /* width: 250px !important; */
 }
 
 .content-child {
   display: flex;
   flex-direction: column;
   width: 100vw;
-  /* height: 85vh; */
-  /* overflow-y: hidden;
-  overflow-x: hidden; */
+ 
   overflow: hidden;
 }
 
@@ -146,7 +143,6 @@ a {
   background-color: #2b3a55;
   color: #ffffff;
   border-radius: 5px;
-  /* padding: 3px; */
   margin-top: 10px;
   font-size: 18px;
 }
@@ -157,12 +153,9 @@ a {
 }
 
 .input-disabled {
-  /* color: white !important; */
-  /* background-color: rgb(224, 224, 224) !important; */
 
   cursor: no-drop;
 }
-/* width for buttons  */
 
 .contact-details-tbl {
   display: flex;
@@ -202,10 +195,7 @@ a {
 }
 
 .submenu_links {
-  /* border: 1px solid black; */
-  /* display: flex; */
-  /* margin-left: 30px; */
-  /* text-decoration: none; */
+  
   gap: 10px;
   display: flex;
   justify-content: space-between;
@@ -217,10 +207,7 @@ a {
   font-size: 13px;
 }
 .submenu_links:hover {
-  /* background: #707075; */
-  /* background: #3c3cff; */
-
-  /* border-left: 4px solid #707075; */
+  
   cursor: pointer;
   color: #ffffff;
 }
@@ -234,9 +221,7 @@ a {
   color: #000000;
   gap: 10px;
   align-items: center;
-  /* padding: 5px 10px; */
-  /* border-right: 4px solid transparent; */
-  /* transition: 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045); */
+ 
   text-decoration: none !important;
 }
 
@@ -332,26 +317,11 @@ label {
   border-right: 4px solid transparent;
   background: rgba(111, 115, 126, 0.3);
 
-  /* background-color: #707075; */
-  /* background-color: green; */
-
-  /* transition: 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045); */
-  /* align-items: center; */
-  /* justify-content: space-around; */
-  /* border: 1px solid black; */
+  
 }
 .submenu_link:hover {
-  /* background: #707075; */
-  /* background: #7d7dc4; */
-  /* width: 100%; */
-  /* border-right: 4px solid #000000; */
-  /* transition: 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045); */
-  /* background-color: #495579; */
-  /* border-left: 4px solid #707075; */
-  /* background-color: #6c9bcf; */
-  /* background-color: #6b69ca !important; */
+  
   background-color: #5956f3 !important;
-
   cursor: pointer;
   color: #ffffff;
   text-decoration: none;
@@ -366,13 +336,11 @@ label {
   font-size: 1.2rem;
   background-color: #ffffff;
   opacity: 1;
-  /* padding-bottom: -10px; */
 }
 
 .table-header {
   font-size: 14px;
 }
-/* table items font size */
 td {
   font-size: 14px;
 }
@@ -382,29 +350,24 @@ td {
   font-size: 1rem;
 }
 
-/* .table-data {
-  margin-top: 5px;
-} */
+
 
 .tab_font {
   font-weight: 600;
 }
 
 .tableHeaderBGColor {
-  /* background-color: rgb(43, 43, 43); */
   font-size: 17px;
   background-color: gray;
   color: white;
   position: sticky;
   top: -1px;
   text-transform: capitalize;
-  /* z-index: 100; */
 }
 
 td {
   font-size: 14px !important;
 }
-/* checkbox style */
 .checkBoxStyle {
   top: 0px;
 }
@@ -413,7 +376,6 @@ td {
   margin-bottom: 10px !important;
 }
 
-/* media query for buttons only */
 @media screen and (max-width: 479px) {
   .button-style {
     width: 100%;
@@ -441,8 +403,6 @@ li.nav-item {
   background-color: #ffffff;
 }
 
-/* rbt-input-main form-control rbt-input */
-
 .tbody {
   font-size: 14px !important;
 }
@@ -458,20 +418,14 @@ li.nav-item {
 .form-bg {
   background-color: #e6e6e6;
   padding: 6px 1px 2px 15px;
-  /* border-radius: 10px; */
 }
-/* remove arrow from number type input */
-/* Chrome, Safari, Edge, Opera */
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-/* Firefox */
-/* input[type=number] {
-  -moz-appearance: textfield;
-} */
 
 .rowColor {
   background-color: lightcoral !important;
@@ -506,10 +460,6 @@ input::-webkit-inner-spin-button {
   display: inline-block;
 }
 
-/* .button-style {
-  padding: 10px;
-  font-size: 16px;
-} */
 
 .tooltip {
   position: absolute;
@@ -539,7 +489,7 @@ input::-webkit-inner-spin-button {
   background-color: transparent !important;
   border: none !important;
 }
-/* used in bulk change modal qty, jwrate ,unit prise, mtrl rate,  */
+
 .custom-checkbox {
   width: 13px;
   height: 13px;
@@ -551,7 +501,6 @@ input::-webkit-inner-spin-button {
   color: "#ffffff";
 }
 
-/*------------------------------------------NEW CSS 11-03-2024------------------------------------ */
 
 .input-field {
   font-size: 12px;
@@ -571,7 +520,6 @@ input::-webkit-inner-spin-button {
   background-color: #2b3a55;
   color: #ffffff;
   border-radius: 5px;
-  /* padding: 1px; */
   margin-top: 8px;
   font-size: 12px;
 }
@@ -589,7 +537,7 @@ td {
 .in-field {
   font-size: 12px;
   height: 22px;
-  /* border-radius: 5px; */
+  
 }
 
 .ip-select {
@@ -599,7 +547,6 @@ td {
   width: 100%;
   height: 22px;
   border: none;
-  /* border-radius: 6px; */
   border-bottom: 1px solid #757575;
 }
 
@@ -639,7 +586,7 @@ input::-webkit-inner-spin-button {
 }
 
 .tab_font {
-  /* font-weight: 600; */
+  
   font-size: 12px;
   font-weight: 600;
 }
@@ -666,8 +613,6 @@ li.nav-item {
 .label-space {
   white-space: nowrap;
 }
-
-/* LOADING */
 
 .loading-container {
   display: flex;
@@ -712,20 +657,14 @@ li.nav-item {
 /* DXF CSS */
 
 .dxf-content-container {
-  /* max-width: 800px; */
   width: 100%;
   max-height: 370px;
   border-radius: 10px;
-  /* border: 1px solid #283e81; */
   padding: 25px;
   transform-origin: 0% 50%;
   overflow: auto;
   background-color: #000000;
-  /* max-zoom: 300%;
-  min-zoom: 20%;
-  zoom: 100%;
-  user-zoom: 100%;
-  zoom:initial; */
+  
 }
 
 .dxf-content-container > svg > g > g {
@@ -756,7 +695,6 @@ li.nav-item {
   overflow: hidden;
 }
 
-/* Ensure the text wraps dynamically */
 .dwg-name {
   word-wrap: break-word;
   white-space: normal;

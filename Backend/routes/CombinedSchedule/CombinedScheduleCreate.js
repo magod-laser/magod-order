@@ -17,6 +17,9 @@ const moment = require("moment");
 const fs = require("fs");
 const path = require("path");
 
+const globalConfig = require("../Utils/globalConfig");
+
+
 // create application/json parser
 var jsonParser = bodyParser.json();
 
@@ -298,7 +301,6 @@ GROUP BY o.DwgName
             `;
 
           await mchQueryMod1(insertTaskPartsListQuery);
-
           // Fetch existing orderscheduledetails based on lastInsertId
           const selectDetailsQuery = `
             SELECT QtyScheduled, QtyProgrammed, QtyProduced, QtyInspected, QtyCleared, QtyPacked, QtyDelivered, QtyRejected, PackingLevel, InspLevel, DwgName
@@ -332,8 +334,14 @@ GROUP BY o.DwgName
           // console.error("An error occurred during processing:", err);
         });
 
+        const workOrderPath = globalConfig.getAll();
+
+        let folderBase = workOrderPath.WORKORDER;
+
+        console.log("folderBase", folderBase);
       // Folder creation
-      const baseDir = path.join("C:", "Magod", "Jigani", "Wo");
+      // const baseDir = path.join("C:", "Magod", "Jigani", "Wo");
+      const baseDir = folderBase;
       const combinedScheduleDir = path.join(baseDir, combinedScheduleNo);
 
       const subfolders = [
@@ -373,7 +381,6 @@ GROUP BY o.DwgName
     }
   }
 );
-
 
 //Function to insert into combined_schedule and return cmbSchId
 const insertIntoCombinedSchedule = async (custCode) => {
@@ -544,8 +551,17 @@ CombinedScheduleCreate.post(
         WHERE CmbSchID = '${cmbSchId}'
       `);
 
+        const workOrderPath = globalConfig.getAll();
+      
+        let folderBase = workOrderPath.WORKORDER;
+
+        console.log("folderBase", folderBase);
+        
+      
+
       // Step 4: Folder creation
-      const baseDir = path.join("C:", "Magod", "Jigani", "Wo");
+      // const baseDir = path.join("C:", "Magod", "Jigani", "Wo");
+      const baseDir = folderBase;
       const combinedScheduleDir = path.join(baseDir, combinedScheduleNo);
       const subfolders = [
         "BOM",
@@ -806,5 +822,6 @@ CombinedScheduleCreate.post(
     }
   }
 );
+
 
 module.exports = CombinedScheduleCreate;

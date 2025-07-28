@@ -103,72 +103,8 @@ export const customerSidebar = [
           },
         ],
       },
-      // {
-      // 	title: "Fixtures Order List",
-      // 	icon: <FiCpu />,
-      // 	iconClosed: <RiIcons.RiArrowDownSFill />,
-      // 	iconOpened: <RiIcons.RiArrowUpSFill />,
-      // 	subNav: [
-      // 		{
-      // 			title: "Recorded",
-      // 			icon: <AiIcons.AiOutlineArrowRight />,
-      // 			path: "/Orders/Profile/FixturesOrderList/Recorded",
-      // 		},
-      // 		{
-      // 			title: "Processing",
-      // 			icon: <AiIcons.AiOutlineArrowRight />,
-      // 			path: "/Orders/Profile/FixturesOrderList/Processing",
-      // 		},
-      // 		{
-      // 			title: "Completed",
-      // 			icon: <AiIcons.AiOutlineArrowRight />,
-      // 			path: "/Orders/Profile/FixturesOrderList/Completed",
-      // 		},
-      // 		{
-      // 			title: "Ready",
-      // 			icon: <AiIcons.AiOutlineArrowRight />,
-      // 			path: "/Orders/Profile/FixturesOrderList/Ready",
-      // 		},
-      // 		{
-      // 			title: "Handed Over",
-      // 			icon: <AiIcons.AiOutlineArrowRight />,
-      // 			path: "/Orders/Profile/FixturesOrderList/HandedOver",
-      // 		},
-      // 	],
-      // },
-    //   {
-    //     title: "Internal Order List",
-    //     icon: <FiCpu />,
-    //     iconClosed: <RiIcons.RiArrowDownSFill />,
-    //     iconOpened: <RiIcons.RiArrowUpSFill />,
-    //     subNav: [
-    //       {
-    //         title: "Recorded",
-    //         path: "/Orders/Profile/InternalOrderList/Recorded",
-    //       },
-    //       {
-    //         title: "Processing",
-    //         path: "/Orders/Profile/InternalOrderList/Processing",
-    //       },
-    //       {
-    //         title: "Completed",
-    //         path: "/Orders/Profile/InternalOrderList/Completed",
-    //       },
-    //       {
-    //         title: "Ready",
-    //         path: "/Orders/Profile/InternalOrderList/Ready",
-    //       },
-    //       {
-    //         title: "Handed Over",
-    //         path: "/Orders/Profile/InternalOrderList/HandedOver",
-    //       },
-    //     ],
-    //   },
-      // {
-      //   title: "Print Lable",
-      //   // path: "/production/setup/process",
-      //   icon: <VscServerProcess />,
-      // },
+      
+      
     ],
   },
   {
@@ -186,11 +122,7 @@ export const customerSidebar = [
             path: "/Orders/JobWork/CREATE",
             icon: <AiIcons.AiOutlineArrowRight />,
           },
-          // {
-          //   title: "Open",
-          //   path: "/Orders/JobWork/OPEN",
-          //   icon: <AiIcons.AiOutlineArrowRight />,
-          // },
+          
           {
             title: "ScheduleList",
             icon: <AiIcons.AiOutlineArrowRight />,
@@ -219,14 +151,9 @@ export const customerSidebar = [
             path: "/Orders/Sales/Create",
             icon: <AiIcons.AiOutlineArrowRight />,
           },
-          // {
-          //   title: "Open",
-          //   path: "/Orders/Sales/Open",
-          //   icon: <AiIcons.AiOutlineArrowRight />,
-          // },
+          
           {
             title: "ScheduleList",
-            // path: "/Orders/Sales/ScheduleList",
             icon: <AiIcons.AiOutlineArrowRight />,
             subNav: [
               {

@@ -4,11 +4,6 @@ import Typography from "@mui/material/Typography";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import { Link, useLocation } from "react-router-dom";
 
-// MemoryRouter,    //assign initilal state
-
-{
-  /* <MemoryRouter initialEntries={['/inbox']} initialIndex={0}></MemoryRouter> */
-} //this will wrap whole return
 
 const BreadcrumbsComponent = () => {
   const location = useLocation();
