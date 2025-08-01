@@ -531,19 +531,38 @@ CombinedScheduleCreate.post(
 
       const rowCont = await getCountOfCombinedScheduleDetails1(cmbSchId);
 
-      const updatePromises = rowselectleftSales.map((schedule) => {
-        const { ScheduleID } = schedule;
-        const scheduleStatus = "Comb/" + cmbSchId;
-        return updateOrderscheduleAndNCTaskList1(
+      // const updatePromises = rowselectleftSales.map((schedule) => {
+      //   const { ScheduleID } = schedule;
+      //   const scheduleStatus = "Comb/" + cmbSchId;
+      //   return updateOrderscheduleAndNCTaskList1(
+      //     scheduleStatus,
+      //     ScheduleID,
+      //     cmbSchId,
+      //     req
+      //   );
+      // });
+
+      // const combinedScheduleNos = await Promise.all(updatePromises);
+      // const combinedScheduleNo = combinedScheduleNos[0];
+
+      const combinedScheduleNos = await Promise.all(updatePromises);
+      const combinedScheduleNo = combinedScheduleNos[0];
+      console.log("combinedScheduleNo", combinedScheduleNo);
+
+      // Now update each schedule again using the actual combinedScheduleNo
+      const finalUpdatePromises = rowselectleft.map((schedule) => {
+        const { ScheduleId } = schedule;
+        const scheduleStatus = "Comb/" + combinedScheduleNo;
+
+        return updateOrderscheduleAndNCTaskList(
           scheduleStatus,
-          ScheduleID,
-          cmbSchId,
+          ScheduleId,
+          combinedScheduleNo,
           req
         );
       });
 
-      const combinedScheduleNos = await Promise.all(updatePromises);
-      const combinedScheduleNo = combinedScheduleNos[0];
+      await Promise.all(finalUpdatePromises);
 
       const insertResult = await mchQueryMod1(`
         INSERT INTO magodmis.orderschedule (Order_no, ScheduleNo, Cust_Code, ScheduleDate, schTgtDate, Delivery_date, SalesContact, Dealing_engineer, PO, ScheduleType, ordschno, Type, Schedule_Status)
