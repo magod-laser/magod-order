@@ -10,6 +10,7 @@ import {
 } from "@react-pdf/renderer";
 import { Button, Modal } from "react-bootstrap";
 import PrintPackingNote from "./PrintPackingNote";
+import { useEffect } from "react";
 // import PrintInvoiceAndAnnexure from "./PrintInvoiceAndAnnexure";
 // import MLLogo from "../../../../../../../ML-LOGO.png";
 // PrintInvoiceAndAnnexure
@@ -17,6 +18,26 @@ import PrintPackingNote from "./PrintPackingNote";
 // PrintPackingNote
 export default function ModalPackingNote(props) {
   const handleClose = () => props.setPrintCopyModal(false);
+   const [UnitName, setUnitName] = useState();
+  
+    useEffect(() => {
+        const storedData = localStorage.getItem("userData");
+    
+        if (storedData) {
+          try {
+            const parsedData = JSON.parse(storedData);
+            const AppunitName = parsedData.UnitName;
+    
+            if (AppunitName) {
+              setUnitName(AppunitName);
+            }
+          } catch (err) {
+            console.error("Error parsing userData from localStorage:", err);
+          }
+        } else {
+          console.log("No userData in localStorage.");
+        }
+      }, []);
 
   // console.log("props... in modal", props);
   const rowLimit = 20;
