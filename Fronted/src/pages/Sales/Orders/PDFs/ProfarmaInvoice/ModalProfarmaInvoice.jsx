@@ -44,6 +44,8 @@ export default function ModalProfarmaInvoice(props) {
       }
     }, []);
 
+     
+
   function fetchPDFData() {
     Axios.post(endpoints.getPDFData, { UnitName: UnitName }).then((res) => {
       console.log(" axios response ::", res.data[0]);

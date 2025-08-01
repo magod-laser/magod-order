@@ -11,11 +11,33 @@ export default function SolidStateModal({
   formData,
 }) {
   const [fullscreen, setFullscreen] = useState(true);
+   // Data need to get from local storage
+       const [UnitName, setUnitName] = useState();
+        
+        useEffect(() => {
+            const storedData = localStorage.getItem("userData");
+        
+            if (storedData) {
+              try {
+                const parsedData = JSON.parse(storedData);
+                const AppunitName = parsedData.UnitName;
+        
+                if (AppunitName) {
+                  setUnitName(AppunitName);
+                }
+              } catch (err) {
+                console.error("Error parsing userData from localStorage:", err);
+              }
+            } else {
+              console.log("No userData in localStorage.");
+            }
+          }, []);
   const [PDFData, setPDFData] = useState({});
 
   useEffect(() => {
-    Axios
-      .get(apipoints.getPDFData)
+    Axios.get(apipoints.getPDFData, {
+      unitName: UnitName,
+    })
       .then((response) => {
         setPDFData(response.data[0]);
       })

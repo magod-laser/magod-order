@@ -584,7 +584,7 @@ ScheduleListRouter.post(`/onClickCancel`, async (req, res, next) => {
   }
 });
 
-// deleteZeroScheduledRows
+// DeleteZeroScheduledRows
 ScheduleListRouter.post("/deleteZeroScheduledRows", async (req, res) => {
   const { ids } = req.body;
   // Validate input

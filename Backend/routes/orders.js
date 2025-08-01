@@ -15,6 +15,8 @@ const {
 const { createFolder } = require("../helpers/folderhelper");
 const { logger } = require("../helpers/logger");
 
+
+// This API is used to create a new order in the system
 ordersRouter.post(`/savecreateorder`, async (req, res, next) => {
   ////console.log("Creating new order - I");
   try {
@@ -151,6 +153,7 @@ ordersRouter.post(`/savecreateorder`, async (req, res, next) => {
   }
 });
 
+//This API is used to get the list of quotation numbers sent
 ordersRouter.post(`/getqtnnossentdata`, async (req, res, next) => {
   try {
     const ordtype = req.body.ordtype;
@@ -167,6 +170,7 @@ ordersRouter.post(`/getqtnnossentdata`, async (req, res, next) => {
   }
 });
 
+// This API is used to get the order data based on order number and type
 ordersRouter.post(`/getorderdata`, async (req, res, next) => {
   try {
     ////console.log("Getting order data");
@@ -187,6 +191,7 @@ ordersRouter.post(`/getorderdata`, async (req, res, next) => {
   }
 });
 
+//
 ordersRouter.get(`/getcombinedschdata`, async (req, res, next) => {
   try {
     misQueryMod(
@@ -205,6 +210,7 @@ ordersRouter.get(`/getcombinedschdata`, async (req, res, next) => {
   }
 });
 
+// This API is used to get the order schedule data based on customer code
 ordersRouter.post(`/getorderscheduledata`, async (req, res, next) => {
   try {
     let ccode = req.body.custcode;
@@ -220,6 +226,8 @@ ordersRouter.post(`/getorderscheduledata`, async (req, res, next) => {
     next(error);
   }
 });
+
+// This API is used to get the selected schedule drawing data based on schedule ID
 ordersRouter.post(`/getselectedschdwgdata`, async (req, res, next) => {
   try {
     let scheduleid = req.body.schid;
@@ -236,6 +244,7 @@ ordersRouter.post(`/getselectedschdwgdata`, async (req, res, next) => {
   }
 });
 
+// This API is used to get the sales tasks data
 ordersRouter.post(`/getsalestasksdata`, async (req, res, next) => {
   try {
     //  let scheduleid = req.body.schid;
@@ -255,8 +264,9 @@ ordersRouter.post(`/getsalestasksdata`, async (req, res, next) => {
     next(error);
   }
 });
-//Sureshj
 
+//Suresh
+// This API is used to get the selected sales task list based on material code and operation
 ordersRouter.post(`/getselectedsalestasklist`, async (req, res, next) => {
   try {
     ////console.log("Getting selected sales task list");
@@ -281,6 +291,7 @@ ordersRouter.post(`/getselectedsalestasklist`, async (req, res, next) => {
   }
 });
 
+// This API is used to prepare schedule details based on NC Task ID
 ordersRouter.post(`/preparescheduledetails`, async (req, res, next) => {
   try {
     ////console.log("Preparing schedule details");
@@ -299,6 +310,7 @@ FROM magodmis.orderscheduledetails o,magodmis.nc_task_list n WHERE  o.NcTaskId=n
   }
 });
 
+// This API is used to get the order drawing data based on order number
 ordersRouter.post(`/getorderdwgdata`, async (req, res, next) => {
   try {
     ////console.log("Getting order data");
@@ -315,6 +327,7 @@ ordersRouter.post(`/getorderdwgdata`, async (req, res, next) => {
   }
 });
 
+// This API is used to get the order details data based on order number
 ordersRouter.post(`/getorddetailsdata`, async (req, res, next) => {
   try {
     ////console.log("Getting order data");
@@ -331,6 +344,7 @@ ordersRouter.post(`/getorddetailsdata`, async (req, res, next) => {
   }
 });
 
+// This API is used to get the order list data based on order type and status
 ordersRouter.post(`/getorderlistdata`, async (req, res, next) => {
   ////console.log("Getting order list data");
   try {
@@ -386,6 +400,7 @@ ordersRouter.post(`/getorderlistdata`, async (req, res, next) => {
   }
 });
 
+// This API is used to get the order status list
 ordersRouter.post(`/getorderstatuslist`, async (req, res, next) => {
   try {
     ////console.log("Getting order status list");
@@ -402,8 +417,7 @@ ordersRouter.post(`/getorderstatuslist`, async (req, res, next) => {
   }
 });
 
-//-------------------------Veeranna---------------------------------
-
+// This API is used to get the order data for finding orders based on order type
 ordersRouter.post("/getOrderDataforFindOrder", async (req, res) => {
   // console.log("req.body -", req.body);
   // console.log("req.body -", req.body.ordtype);
@@ -423,6 +437,7 @@ ordersRouter.post("/getOrderDataforFindOrder", async (req, res) => {
   } catch (error) {}
 });
 
+// This API is used to get the order details by order number and type
 ordersRouter.post(`/getOrderDetailsByOrdrNoAndType`, async (req, res, next) => {
   // console.log("req 123", req.body);
   try {
@@ -466,6 +481,8 @@ ordersRouter.post(`/getOrderDetailsByOrdrNoAndType`, async (req, res, next) => {
     next(error);
   }
 });
+
+// This API is used to update order details like delivery date and dealing engineer
 ordersRouter.post(`/updateOrderDetails`, async (req, res, next) => {
   // console.log("req", req.body);
 
@@ -490,6 +507,7 @@ ordersRouter.post(`/updateOrderDetails`, async (req, res, next) => {
   }
 });
 
+// This API is used to post new schedule details data based on order number
 ordersRouter.post(`/postnewsrldata`, async (req, res, next) => {
   ////console.log("req", req.body);
 
@@ -513,6 +531,7 @@ ordersRouter.post(`/postnewsrldata`, async (req, res, next) => {
   }
 });
 
+// This API is used to register an order by updating the order status
 ordersRouter.post("/registerOrder", async (req, res, next) => {
   try {
     misQueryMod(
@@ -531,6 +550,7 @@ ordersRouter.post("/registerOrder", async (req, res, next) => {
   }
 });
 
+// This API is used to update the upload files in the order schedule details
 ordersRouter.post("/updateuploadfiles", async (req,res, next) => {
   try {
     console.log(req.body);
@@ -550,6 +570,7 @@ ordersRouter.post("/updateuploadfiles", async (req,res, next) => {
   }
 });
 
+// This API is used to check the drawing file status based on drawing name and schedule ID
 ordersRouter.post("/checkdwgfilestatus", async (req, res, next)=> {
   try {
     let dwgname = req.body.uploadfiles;
