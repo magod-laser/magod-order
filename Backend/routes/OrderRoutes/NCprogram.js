@@ -297,9 +297,13 @@ NCprogramRoter.post(`/NCProgramPartsData`, async (req, res, next) => {
             const custBOMIds = data.map(entry => entry.CustBOM_Id).join("','");
          
             // Additional query to calculate quantity available
-            let additionalQuery = `SELECT SUM(CAST(m.QtyAccepted - m.QtyIssued AS SIGNED)) AS QtyAvailable 
-                                   FROM magodmis.mtrl_part_receipt_details m 
-                                   WHERE m.CustBOM_Id IN ('${custBOMIds}')`;
+            // let additionalQuery = `SELECT SUM(CAST(m.QtyAccepted - m.QtyIssued AS SIGNED)) AS QtyAvailable 
+            //                        FROM magodmis.mtrl_part_receipt_details m 
+            //                        WHERE m.CustBOM_Id IN ('${custBOMIds}')`;
+
+            let additionalQuery = `SELECT m.QtyAccepted AS QtyAvailable 
+            FROM magodmis.mtrl_part_receipt_details m 
+            WHERE m.CustBOM_Id IN ('${custBOMIds}')`;
   
   
             misQueryMod(additionalQuery, (err, additionalData) => {
@@ -311,7 +315,11 @@ NCprogramRoter.post(`/NCProgramPartsData`, async (req, res, next) => {
               // Combining data from both queries
               const responseData = {
                 partsData: data,
-                availableQty: additionalData[0]?.QtyAvailable || 0
+                // availableQty: additionalData[0]?.QtyAvailable || 0
+                availableQtyList: additionalData.map((item, index) => ({
+                  index: index,
+                  qtyAvailable: item?.QtyAvailable || 0,
+                })),
               };
               res.send(responseData);
             });
@@ -332,6 +340,8 @@ NCprogramRoter.post(`/NCProgramPartsData`, async (req, res, next) => {
   
             // Extracting CustBOM_Id from the result
             const custBOMIds = data.map(entry => entry.CustBOM_Id).join("','");
+            console.log("custBOMIds", custBOMIds);
+            
   
             // Additional query to calculate quantity available
             let additionalQuery = `SELECT SUM(CAST(m.QtyAccepted - m.QtyIssued AS SIGNED)) AS QtyAvailable 

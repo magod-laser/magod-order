@@ -42,6 +42,8 @@ function ServiceNCProgram() {
 	const getPartsData = () => {
 		if (NCprogramForm) {
 			postRequest(endpoints.getPartsData, { NCprogramForm }, (response) => {
+				console.log("response-----", response);
+				
 				setPartsData(response);
 			});
 		}
@@ -196,96 +198,92 @@ function ServiceNCProgram() {
 	};
 
 	console.log("selectedNCprogram is", selectedNCprogram);
+	console.log("partsData is---", partsData);
 
 	return (
-		<div>
-			<div className="row">
-				<h4 className="title">Production Program No Allotment Form</h4>
+    <div>
+      <div className="row">
+        <h4 className="title">Production Program No Allotment Form</h4>
 
-				<h4 style={{ fontSize: "14px" }}>Production Program No Manager</h4>
-			</div>
-			{/* //---------- */}
+        <h4 style={{ fontSize: "14px" }}>Production Program No Manager</h4>
+      </div>
+      {/* //---------- */}
 
-			<div className="row mt-1">
-				<div className="d-flex col-md-2 sm-12 field-gap">
-					<label className="form-label label-space">Task No</label>
-					<input
-						className="in-field"
-						type="text"
-						value={NCprogramForm[0]?.TaskNo}
-					/>
-				</div>
-				<div className="d-flex col-md-2 sm-12 field-gap">
-					<label className="form-label label-space">Status</label>
-					<input
-						className="in-field"
-						type="text"
-						value={NCprogramForm[0]?.TStatus}
-					/>
-				</div>
-				<div className="d-flex col-md-3 sm-12 field-gap">
-					<label className="form-label label-space">Assy Name</label>
-					<input
-						className="in-field"
-						type="text"
-						value={NCprogramForm[0]?.AssyName}
-					/>
-				</div>
+      <div className="row mt-1">
+        <div className="d-flex col-md-2 sm-12 field-gap">
+          <label className="form-label label-space">Task No</label>
+          <input
+            className="in-field"
+            type="text"
+            value={NCprogramForm[0]?.TaskNo}
+          />
+        </div>
+        <div className="d-flex col-md-2 sm-12 field-gap">
+          <label className="form-label label-space">Status</label>
+          <input
+            className="in-field"
+            type="text"
+            value={NCprogramForm[0]?.TStatus}
+          />
+        </div>
+        <div className="d-flex col-md-3 sm-12 field-gap">
+          <label className="form-label label-space">Assy Name</label>
+          <input
+            className="in-field"
+            type="text"
+            value={NCprogramForm[0]?.AssyName}
+          />
+        </div>
 
-				<div className="d-flex col-md-3 sm-12 field-gap">
-					<label className="form-label label-space">Operation</label>
-					<input
-						className="in-field"
-						type="text"
-						value={NCprogramForm[0]?.Operation}
-					/>
-				</div>
-				<div className="d-flex col-md-2 sm-12 field-gap ">
-					<label className="form-label label-space">Task Quantity</label>
-					<input
-						className="in-field"
-						type="text"
-						value={NCprogramForm[0]?.TotalParts}
-					/>
-				</div>
-			</div>
-			<div className="row mt-2">
-				<div className="d-flex col-md-4 sm-12 field-gap">
-					<label className="form-label label-space">Material</label>
-					<input
-						className="in-field"
-						type="text"
-						value={`${NCprogramForm[0]?.CustMtrl}/${NCprogramForm[0]?.Mtrl_Code}`}
-					/>
-				</div>
+        <div className="d-flex col-md-3 sm-12 field-gap">
+          <label className="form-label label-space">Operation</label>
+          <input
+            className="in-field"
+            type="text"
+            value={NCprogramForm[0]?.Operation}
+          />
+        </div>
+        <div className="d-flex col-md-2 sm-12 field-gap ">
+          <label className="form-label label-space">Task Quantity</label>
+          <input
+            className="in-field"
+            type="text"
+            value={NCprogramForm[0]?.TotalParts}
+          />
+        </div>
+      </div>
+      <div className="row mt-2">
+        <div className="d-flex col-md-4 sm-12 field-gap">
+          <label className="form-label label-space">Material</label>
+          <input
+            className="in-field"
+            type="text"
+            value={`${NCprogramForm[0]?.CustMtrl}/${NCprogramForm[0]?.Mtrl_Code}`}
+          />
+        </div>
 
-				<div className="d-flex col-md-4 sm-12 field-gap">
-					<label className="form-label">Machine</label>
-					<select
-						id=""
-						className="ip-select"
-						onChange={handleChangeMachine}>
-						<option>Select Machine</option>
-						{machineList.map((item, key) => {
-							return (
-								<>
-									<option value={item.refName}>{item.refName}</option>
-								</>
-							);
-						})}
-					</select>
-				</div>
-			</div>
-			{/* ------------------------ */}
+        <div className="d-flex col-md-4 sm-12 field-gap">
+          <label className="form-label">Machine</label>
+          <select id="" className="ip-select" onChange={handleChangeMachine}>
+            <option>Select Machine</option>
+            {machineList.map((item, key) => {
+              return (
+                <>
+                  <option value={item.refName}>{item.refName}</option>
+                </>
+              );
+            })}
+          </select>
+        </div>
+      </div>
+      {/* ------------------------ */}
 
-			<div className="row justify-content-left mt-3">
-				<div className="col-md-12">
-					<button
-						className="button-style"
-						onClick={OnclickAddNCProgram}>
-						Add Program
-					</button>
-					{/* <button
+      <div className="row justify-content-left mt-3">
+        <div className="col-md-12">
+          <button className="button-style" onClick={OnclickAddNCProgram}>
+            Add Program
+          </button>
+          {/* <button
             className="button-style"
             onClick={openDeleteModal}
             disabled={selectedNCprogram?.PStatus !== "Created"}
@@ -294,81 +292,75 @@ function ServiceNCProgram() {
           </button>
            */}
 
-					<button
-						className="button-style"
-						onClick={OnclickButtonSave}>
-						Save
-					</button>
+          <button className="button-style" onClick={OnclickButtonSave}>
+            Save
+          </button>
 
-					<button
-						className="button-style"
-						// style={{ width: "250px" }}
-						onClick={openMtrlIssueModal}
-						disabled={selectedNCprogram.PStatus !== "Created"}>
-						Send to Material Issue
-					</button>
+          <button
+            className="button-style"
+            // style={{ width: "250px" }}
+            onClick={openMtrlIssueModal}
+            disabled={selectedNCprogram.PStatus !== "Created"}
+          >
+            Send to Material Issue
+          </button>
 
-					<button
-						className="button-style"
-						onClick={onClickTaskSheet}>
-						TaskSheet
-					</button>
+          <button className="button-style" onClick={onClickTaskSheet}>
+            TaskSheet
+          </button>
 
-					<button
-						className="button-style"
-						onClick={onClickSolidState}>
-						Solid State
-					</button>
+          <button className="button-style" onClick={onClickSolidState}>
+            Solid State
+          </button>
 
-					<button
-						className="button-style"
-						onClick={onClickCo2State}>
-						Co2 Form
-					</button>
-					<Link
-						to={
-							Type === "Profile"
-								? `/Orders/Profile/ProfileOpenSchedule`
-								: Type === "Service"
-								? `/Orders/Service/ServiceOpenSchedule`
-								: Type === "Fabrication"
-								? `/Orders/Fabrication/FabricationOpenSchedule`
-								: null
-						}
-						state={{ DwgNameList, Type: Type }}>
-						<button className="button-style">Close</button>
-					</Link>
-				</div>
-			</div>
-			{/* --------- */}
+          <button className="button-style" onClick={onClickCo2State}>
+            Co2 Form
+          </button>
+          <Link
+            to={
+              Type === "Profile"
+                ? `/Orders/Profile/ProfileOpenSchedule`
+                : Type === "Service"
+                ? `/Orders/Service/ServiceOpenSchedule`
+                : Type === "Fabrication"
+                ? `/Orders/Fabrication/FabricationOpenSchedule`
+                : null
+            }
+            state={{ DwgNameList, Type: Type }}
+          >
+            <button className="button-style">Close</button>
+          </Link>
+        </div>
+      </div>
+      {/* --------- */}
 
-			<div className="row">
-				{/* <div className="col-md-8 sm-12"> */}
-				{/* <div className="row mt-2"> */}
-				{/* <div className="col-md-6 sm-12 ">
+      <div className="row">
+        {/* <div className="col-md-8 sm-12"> */}
+        {/* <div className="row mt-2"> */}
+        {/* <div className="col-md-6 sm-12 ">
               <label className="form-label">Task No</label>
               <input type="text" value={NCprogramForm[0]?.TaskNo} />
             </div> */}
 
-				{/* <div className="col-md-6 sm-12">
+        {/* <div className="col-md-6 sm-12">
               <label className="form-label">Status</label>
               <input type="text" value={NCprogramForm[0]?.TStatus} />
             </div> */}
-				{/* </div> */}
+        {/* </div> */}
 
-				{/* <div className="row mt-2"> */}
-				{/* <div className="col-md-6 sm-12 ">
+        {/* <div className="row mt-2"> */}
+        {/* <div className="col-md-6 sm-12 ">
               <label className="form-label">Assy Name</label>
               <input type="text" value={NCprogramForm[0]?.AssyName} />
             </div> */}
 
-				{/* <div className="col-md-6 sm-12">
+        {/* <div className="col-md-6 sm-12">
               <label className="form-label">Operation</label>
               <input type="text" value={NCprogramForm[0]?.Operation} />
             </div> */}
-				{/* </div> */}
+        {/* </div> */}
 
-				{/* <div className="row mt-2">
+        {/* <div className="row mt-2">
             <div className="col-md-6 sm-12 ">
               <label className="form-label">Task Quantity</label>
               <input type="text" value={NCprogramForm[0]?.TotalParts} />
@@ -383,8 +375,8 @@ function ServiceNCProgram() {
             </div>
           </div> */}
 
-				{/* <div className="row mt-2"> */}
-				{/* <div className="col-md-6 sm-12 ">
+        {/* <div className="row mt-2"> */}
+        {/* <div className="col-md-6 sm-12 ">
               <label className="form-label">Machine</label>
               <select
                 id=""
@@ -402,21 +394,21 @@ function ServiceNCProgram() {
               </select>
             </div> */}
 
-				{/* <div className="col-md-6 sm-12 mt-3">
+        {/* <div className="col-md-6 sm-12 mt-3">
               <Link to="/Orders/Service/OrderSchedule">
                 <button className="button-style">Close</button>
               </Link>
             </div> */}
-				{/* </div> */}
-				{/* </div> */}
+        {/* </div> */}
+        {/* </div> */}
 
-				{/* <div className="row mt-3"> */}
-				{/* <div className="col-md-2">
+        {/* <div className="row mt-3"> */}
+        {/* <div className="col-md-2">
             <button className="button-style" onClick={OnclickAddNCProgram}>
               Add Program
             </button>
           </div> */}
-				{/* <div className="col-md-2">
+        {/* <div className="col-md-2">
             <button
               className="button-style"
               onClick={openDeleteModal}
@@ -436,13 +428,13 @@ function ServiceNCProgram() {
             )}
           </div> */}
 
-				{/* <div className="col-md-2">
+        {/* <div className="col-md-2">
             <button className="button-style" onClick={OnclickButtonSave}>
               Save
             </button>
           </div> */}
 
-				{/* <div className="col-md-3">
+        {/* <div className="col-md-3">
             <button
               className="button-style"
               style={{ width: "250px" }}
@@ -463,19 +455,19 @@ function ServiceNCProgram() {
             )}
           </div> */}
 
-				{/* <div className="col-md-3">
+        {/* <div className="col-md-3">
             <Link to={"/Orders/Service/OrderSchedule"} state={NCprogramForm}>
               <button className="button-style">Close</button>
             </Link>
           </div> */}
 
-				{/* <div className="col-md-2">
+        {/* <div className="col-md-2">
             <button className="button-style" onClick={onClickTaskSheet}>
               TaskSheet
             </button>
           </div> */}
 
-				{/* <div className="col-md-2">
+        {/* <div className="col-md-2">
             <button className="button-style" onClick={onClickSolidState}>
               Solid State
             </button>
@@ -486,53 +478,60 @@ function ServiceNCProgram() {
               Co2 Form
             </button>
           </div> */}
-				{/* </div> */}
+        {/* </div> */}
 
-				{/* <div className="row "> */}
-				<div className="col-md-5 col-sm-12">
-					<br></br>
-					<h9>BOM Material Availablity :</h9>
+        {/* <div className="row "> */}
+        <div className="col-md-5 col-sm-12">
+          <br></br>
+          <h9>BOM Material Availablity :</h9>
 
-					<div
-						className=""
-						style={{
-							overflowX: "scroll",
-							overflowY: "scroll",
-							height: "300px",
-						}}>
-						<Table
-							striped
-							className="table-data border"
-							style={{ border: "1px" }}>
-							<thead className="tableHeaderBGColor">
-								<tr>
-									<th style={{ whiteSpace: "nowrap" }}>PartId</th>
-									<th style={{ whiteSpace: "nowrap" }}>Qty/Assy</th>
-									<th style={{ whiteSpace: "nowrap" }}>Required</th>
-									<th style={{ whiteSpace: "nowrap" }}>Available</th>
-								</tr>
-							</thead>
-							<tbody className="tablebody">
-								{partsData?.partsData?.length > 0 ? (
-									partsData.partsData.map((item, key) => (
-										<tr key={key}>
-											<td>{item?.PartId}</td>
-											<td>{item?.QtyPerAssy}</td>
-											<td>{item?.QtyRequired}</td>
-											<td>{partsData?.availableQty}</td>
-										</tr>
-									))
-								) : (
-									<tr>
-										<td colSpan={4}>No data to show</td>{" "}
-										{/* Ensure colSpan matches the number of columns */}
-									</tr>
-								)}
-							</tbody>
-						</Table>
-					</div>
-				</div>
-				{/* <div className="col-md-4 sm-12 mt-3" style={{ overflowY: "scroll" }}>
+          <div
+            className=""
+            style={{
+              overflowX: "scroll",
+              overflowY: "scroll",
+              height: "300px",
+            }}
+          >
+            <Table
+              striped
+              className="table-data border"
+              style={{ border: "1px" }}
+            >
+              <thead className="tableHeaderBGColor">
+                <tr>
+                  <th style={{ whiteSpace: "nowrap" }}>PartId</th>
+                  <th style={{ whiteSpace: "nowrap" }}>Qty/Assy</th>
+                  <th style={{ whiteSpace: "nowrap" }}>Required</th>
+                  <th style={{ whiteSpace: "nowrap" }}>Available</th>
+                </tr>
+              </thead>
+              <tbody className="tablebody">
+                {partsData?.partsData?.length > 0 ? (
+                  partsData.partsData.map((item, key) => {
+                    const qtyAvailable =
+                      partsData.availableQtyList?.find((q) => q.index === key)
+                        ?.qtyAvailable || 0;
+
+                    return (
+                      <tr key={key}>
+                        <td>{item?.PartId}</td>
+                        <td>{item?.QtyPerAssy}</td>
+                        <td>{item?.QtyRequired}</td>
+                        <td>{qtyAvailable}</td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={4}>No data found</td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+          </div>
+        </div>
+        {/* <div className="col-md-4 sm-12 mt-3" style={{ overflowY: "scroll" }}>
             <Table
               striped
               className="table-data border"
@@ -564,60 +563,63 @@ function ServiceNCProgram() {
               </tbody>
             </Table>
           </div> */}
-				<div className="col-md-7 col-sm-12">
-					<br></br>
-					<div
-						className=""
-						style={{
-							overflowX: "scroll",
-							overflowY: "scroll",
-							height: "300px",
-						}}>
-						<Table
-							striped
-							className="table-data border mt-4"
-							style={{ border: "1px" }}>
-							<thead className="tableHeaderBGColor">
-								<tr>
-									<th style={{ whiteSpace: "nowrap" }}>Program No</th>
-									<th style={{ whiteSpace: "nowrap" }}>Machine</th>
-									<th style={{ whiteSpace: "nowrap" }}>Source</th>
-									<th style={{ whiteSpace: "nowrap" }}>Quantity</th>
-									<th style={{ whiteSpace: "nowrap" }}>Estimated Time</th>
-									<th style={{ whiteSpace: "nowrap" }}>Total LOC</th>
-									<th style={{ whiteSpace: "nowrap" }}>Total Holes</th>
-									<th style={{ whiteSpace: "nowrap" }}>Status</th>
-								</tr>
-							</thead>
-							<tbody className="tablebody">
-								{NCProramData.map((item, key) => {
-									return (
-										<>
-											<tr
-												onClick={() => onClickSelectedNCprogram(item, key)}
-												className={
-													key === selectedNCprogram?.index
-														? "selcted-row-clr"
-														: ""
-												}>
-												{" "}
-												<td>{item.NCProgramNo}</td>
-												<td>{item.Machine}</td>
-												<td>{item.CustMtrl}</td>
-												<td>{item.Qty}</td>
-												<td>{item.EstimatedTime}</td>
-												<td>{item.TotalLOC}</td>
-												<td>{item.TotalHoles}</td>
-												<td style={{ whiteSpace: "nowrap" }}>{item.PStatus}</td>
-											</tr>
-										</>
-									);
-								})}
-							</tbody>
-						</Table>
-					</div>
-				</div>
-				{/* <div
+        <div className="col-md-7 col-sm-12">
+          <br></br>
+          <div
+            className=""
+            style={{
+              overflowX: "scroll",
+              overflowY: "scroll",
+              height: "300px",
+            }}
+          >
+            <Table
+              striped
+              className="table-data border mt-4"
+              style={{ border: "1px" }}
+            >
+              <thead className="tableHeaderBGColor">
+                <tr>
+                  <th style={{ whiteSpace: "nowrap" }}>Program No</th>
+                  <th style={{ whiteSpace: "nowrap" }}>Machine</th>
+                  <th style={{ whiteSpace: "nowrap" }}>Source</th>
+                  <th style={{ whiteSpace: "nowrap" }}>Quantity</th>
+                  <th style={{ whiteSpace: "nowrap" }}>Estimated Time</th>
+                  <th style={{ whiteSpace: "nowrap" }}>Total LOC</th>
+                  <th style={{ whiteSpace: "nowrap" }}>Total Holes</th>
+                  <th style={{ whiteSpace: "nowrap" }}>Status</th>
+                </tr>
+              </thead>
+              <tbody className="tablebody">
+                {NCProramData.map((item, key) => {
+                  return (
+                    <>
+                      <tr
+                        onClick={() => onClickSelectedNCprogram(item, key)}
+                        className={
+                          key === selectedNCprogram?.index
+                            ? "selcted-row-clr"
+                            : ""
+                        }
+                      >
+                        {" "}
+                        <td>{item.NCProgramNo}</td>
+                        <td>{item.Machine}</td>
+                        <td>{item.CustMtrl}</td>
+                        <td>{item.Qty}</td>
+                        <td>{item.EstimatedTime}</td>
+                        <td>{item.TotalLOC}</td>
+                        <td>{item.TotalHoles}</td>
+                        <td style={{ whiteSpace: "nowrap" }}>{item.PStatus}</td>
+                      </tr>
+                    </>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </div>
+        </div>
+        {/* <div
             className="col-md-4 mt-3"
             style={{
               overflowX: "scroll",
@@ -670,34 +672,34 @@ function ServiceNCProgram() {
               </tbody>
             </Table>
           </div> */}
-				{/* </div> */}
-			</div>
+        {/* </div> */}
+      </div>
 
-			{/* Send  MTrlIssue Modal */}
-			<AlertModal
-				show={showModal}
-				onHide={(e) => setShowModal(e)}
-				firstbutton={OnclickMtrlIssueYes}
-				secondbutton={(e) => setShowModal(e)}
-				title="magod_Order"
-				message={`Do you wish to release program no ${selectedNCprogram.NCProgramNo} to Material Issue?`}
-				firstbuttontext="Yes"
-				secondbuttontext="No"
-			/>
+      {/* Send  MTrlIssue Modal */}
+      <AlertModal
+        show={showModal}
+        onHide={(e) => setShowModal(e)}
+        firstbutton={OnclickMtrlIssueYes}
+        secondbutton={(e) => setShowModal(e)}
+        title="magod_Order"
+        message={`Do you wish to release program no ${selectedNCprogram.NCProgramNo} to Material Issue?`}
+        firstbuttontext="Yes"
+        secondbuttontext="No"
+      />
 
-			{/* Delete NCProgram Button */}
-			<AlertModal
-				show={openDelete}
-				onHide={(e) => setOpenDelete(e)}
-				firstbutton={OnclickDeleteNCProgram}
-				secondbutton={(e) => setOpenDelete(e)}
-				title="magod_Order"
-				message={`Do you wish to Delete program no ${selectedNCprogram.NCProgramNo}?`}
-				firstbuttontext="Yes"
-				secondbuttontext="No"
-			/>
-		</div>
-	);
+      {/* Delete NCProgram Button */}
+      <AlertModal
+        show={openDelete}
+        onHide={(e) => setOpenDelete(e)}
+        firstbutton={OnclickDeleteNCProgram}
+        secondbutton={(e) => setOpenDelete(e)}
+        title="magod_Order"
+        message={`Do you wish to Delete program no ${selectedNCprogram.NCProgramNo}?`}
+        firstbuttontext="Yes"
+        secondbuttontext="No"
+      />
+    </div>
+  );
 }
 
 export default ServiceNCProgram;
