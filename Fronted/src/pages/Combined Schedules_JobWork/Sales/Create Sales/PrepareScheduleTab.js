@@ -214,7 +214,7 @@ export default function PrepareScheduleTab({
                 style={{ width: "120px" }}
                 onClick={onClickReverse}
               >
-                Revers
+                Reverse
               </button>
             </div>
             <div className="col-md-2 col-sm-12">
@@ -355,7 +355,7 @@ export default function PrepareScheduleTab({
                 style={{ width: "110px" }}
                 onClick={onClickReverse1}
               >
-                Revers
+                Reverse
               </button>
             </div>
           </div>

@@ -17,9 +17,13 @@ const app = express();
 
 // getPDFData
 PDFRouter.post("/getPDFData", async (req, res, next) => {
+  const { UnitName } = req.body;
+
+  console.log("UnitName", UnitName);
   try {
     setupQueryMod(
       `SELECT * FROM magod_setup.magodlaser_units`,
+      // `SELECT * FROM magod_setup.magodlaser_units where UnitName = ${UnitName}`,
       (err, pdfData) => {
         if (err) {
           console.log("err", err);

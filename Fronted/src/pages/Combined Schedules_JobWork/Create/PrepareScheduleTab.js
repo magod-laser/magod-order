@@ -1068,7 +1068,7 @@ export default function PrepareScheduleTab({
                     className="button-style  group-button"
                     onClick={onClickReverse}
                   >
-                    Revers
+                    Reverse
                   </button>
                   <button
                     className="button-style  group-button"
@@ -1249,7 +1249,7 @@ export default function PrepareScheduleTab({
                     className="button-style group-button"
                     onClick={onClickReverse1}
                   >
-                    Revers
+                    Reverse
                   </button>
                 </div>
               </div>

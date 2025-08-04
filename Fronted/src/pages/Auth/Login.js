@@ -26,6 +26,16 @@ function Login() {
 	console.log("User Data:", userData);
 	// Set userData into localStorage
 	localStorage.setItem("userData", JSON.stringify(userData));
+
+	const storedData = localStorage.getItem("userData");
+
+  if (storedData) {
+    const parsedData = JSON.parse(storedData);
+    const unitName = parsedData.UnitName;
+    console.log("UnitName-----", unitName);
+  } else {
+    console.log("No userData in localStorage.");
+  }
 	useEffect(() => {
 		if (userData) {
 			const fetchMenuUrls = async () => {

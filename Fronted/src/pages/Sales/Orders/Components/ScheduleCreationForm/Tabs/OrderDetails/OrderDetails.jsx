@@ -563,7 +563,7 @@ export default function OrderDetails(props) {
 
     if (hasScheduled) {
       toast.warning(
-        "The selected DWGs are already scheduled, do you want to get them back?"
+        "The selected DWGs are already scheduled."
       );
       setBulkChnangMdl(false);
     } else {
@@ -605,143 +605,7 @@ export default function OrderDetails(props) {
   // const [refresh, setRefresh] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  //DELETE BUTTON
-  // function deleteRowsBySrl() {
-  //   setisLoading(true);
-  //   setRefresh(!refresh)
-  //   postRequest(
-  //     endpoints.postDeleteDetailsBySrl,
-  //     {
-  //       Order_No: props.OrderData.Order_No,
-  //       selectedSrl: selectedSrl,
-  //       selectedItems: selectedItems,
-  //     },
-  //     (deleteData) => {
-  //       if (deleteData.flag > 0) {
-  //         toast.success("Serial Deleted sucessfully");
-  //         fetchData();
-  //         console.log("Deleted sucessfully");
-
-  //         clearSelections();
-  //         // setSelectedItems([]);
-  //         // setSelectedSrl([]);
-  //         // setLastSlctedRow([])
-
-  //         window.location.reload();
-  //       } else {
-  //         // toast.warning("Not Deleted Please Check Once");
-  //         toast.success("Serial Deleted sucessfully");
-  //         fetchData();
-  //     //     setSelectedItems([]);
-  //     // setSelectedSrl([]);
-  //     // setLastSlctedRow([])
-  //     console.log("Deleted sucessfully ---2");
-
-  //     clearSelections();
-  //     setLastSlctedRow(null)
-  //     setordrDetailsChange([])
-  //     console.log(LastSlctedRow)
-  //     setRefresh(prev => !prev);
-  //     window.location.reload();
-  //       }
-
-  //     }
-  //   );
-  //   setisLoading(false);
-  // }
-
-  // commented after refactoring the function on 4 april 2025 : Bodheesh
-
-  // function deleteRowsBySrl() {
-  //   // setRefresh(prev => !prev); // Toggle refresh
-
-  //   postRequest(
-  //     endpoints.postDeleteDetailsBySrl,
-  //     {
-  //       Order_No: props.OrderData.Order_No,
-  //       selectedSrl: selectedSrl,
-  //       selectedItems: selectedItems,
-  //     },
-  //     (deleteData) => {
-  //       // console.log("deleteData", deleteData);
-
-  //       // if (deleteData.flag > 0) {
-  //       if (deleteData.success === true) {
-  //         // toast.success("Serial Deleted successfully");
-  //         toast.success("Serial Deleted successfully");
-
-  //         // After successful deletion, re-index the serial numbers in the frontend
-  //         postRequest(
-  //           endpoints.getOrdDetailsData,
-  //           { Order_No: props.OrderData.Order_No },
-  //           (updatedData) => {
-  //             if (updatedData && updatedData.length > 0) {
-  //               console.log("updated data found:", updatedData)
-  //               // Sort the data by existing Order_Srl to maintain relative order
-  //               const sortedData = [...updatedData].sort((a, b) => a.Order_Srl - b.Order_Srl);
-  //               console.log("sorted data logged in::", sortedData)
-
-  //               // Re-index the serial numbers starting from 1
-  //               const reIndexedData = sortedData.map((item, idx) => ({
-  //                 ...item,
-  //                 Order_Srl: idx + 1
-  //               }));
-
-  //               console.log("reIndexedData", reIndexedData)
-
-  //               // Update the state with the re-indexed data
-  //               setOrdrDetailsData(reIndexedData);
-
-  //               // Update the database with the re-indexed serial numbers
-  //               const updatePromises = reIndexedData.map((item) => {
-  //                 return new Promise((resolve, reject) => {
-  //                   postRequest(
-  //                     endpoints.ordertablevaluesupdate,
-  //                     {
-  //                       Order_No: props.OrderData.Order_No,
-  //                       Order_Srl: item.Order_Srl,
-  //                       OrderDetailID: item.OrderDetailID,
-  //                       field: "Order_Srl",
-  //                       value: item.Order_Srl
-  //                     },
-  //                     (updateResult) => {
-  //                       resolve(updateResult);
-  //                     }
-  //                   );
-  //                 });
-  //               });
-
-  //               // After all updates are done
-  //               Promise.all(updatePromises)
-  //                 .then(() => {
-  //                   console.log("All serial numbers updated in database");
-  //                   // Clear selections
-  //                   clearSelections();
-  //                   setLastSlctedRow(null);
-  //                   setordrDetailsChange([]);
-  //                 })
-  //                 .catch((error) => {
-  //                   console.error("Error updating serial numbers in database:", error);
-  //                   // Even if database update fails, keep the UI updated
-  //                   clearSelections();
-  //                   setLastSlctedRow(null);
-  //                   setordrDetailsChange([]);
-  //                 });
-  //             } else {
-  //               // If no data is returned, just refresh the data without page reload
-  //               fetchData();
-  //             }
-  //           }
-  //         );
-  //       } else {
-  //         toast.warning("Not Deleted, Please Check Once");
-  //       }
-  //     }
-  //   );
-  // }
-
-  // Refactored deleteRowsBySrl function to improve readability and maintainability
-  // Bug fixed No:159, 163
+  //DELETE BUTTON 
   function deleteRowsBySrl() {
     // Avoid unnecessary state updates
     const orderNo = props.OrderData.Order_No;
@@ -775,8 +639,6 @@ export default function OrderDetails(props) {
                   ...item,
                   Order_Srl: idx + 1,
                 }));
-
-                // console.log("Re-indexed data:", reIndexedData);
 
                 // Step 5: Update the state and database in parallel
                 // Update state with new order details
@@ -836,14 +698,12 @@ export default function OrderDetails(props) {
   // }, []);
 
   function clearSelections() {
-    // console.log("clearSelections");
 
     setSelectedRows([]); // Clear multi-selection
     setSelectedItems([]); // Clear selected item list
     setSelectedSrl([]); // Clear selected serial numbers
     setLastSlctedRow(null); // Reset last selected row
-    setSelectedRow(null);
-    // Reset single selected row
+    setSelectedRow(null);    // Reset single selected row
   }
 
   function deleteRowsByOrderNoFunc() {
@@ -1264,12 +1124,7 @@ export default function OrderDetails(props) {
       let specificwt;
       console.log(" entring into the flag 2");
 
-      // console.log("Cutting : ", imprtDwgObj.dblCuttingRate);
-      // console.log("Piercing : ", imprtDwgObj.dblPierceRate);
-      // console.log("FileName 1 : " + imprtDwgObj.dgfiles.files[0].name);
-      // console.log("flag : ", flag);
-      // console.log("imprtDwgObj : ", imprtDwgObj);
-
+      
       let impDwgFileData = [];
       let dwgnamefiles = imprtDwgObj.dgfiles.files;
       console.log("strmtrlcode===4", imprtDwgObj.strmtrlcode);

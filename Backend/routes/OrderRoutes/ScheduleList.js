@@ -584,7 +584,7 @@ ScheduleListRouter.post(`/onClickCancel`, async (req, res, next) => {
   }
 });
 
-// deleteZeroScheduledRows
+// DeleteZeroScheduledRows
 ScheduleListRouter.post("/deleteZeroScheduledRows", async (req, res) => {
   const { ids } = req.body;
   // Validate input
@@ -1200,7 +1200,18 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                                                   "Holes:",
                                                                   Holes
                                                                 );
+// Split the string into words
+const words = row.Mtrl_Code.trim().split(/\s+/);
 
+// Get the second word (like 'SS')
+const code = words[1];
+
+// Find the last number (could be decimal)
+const numberMatch = row.Mtrl_Code.match(/(\d+(\.\d+)?)(?!.*\d)/);
+const number = numberMatch ? parseFloat(numberMatch[0]) : null;
+
+console.log("Code:", code);     
+console.log("Number:", number); 
                                                                 // Check if the Operation Type is "Profile"
                                                                 if (
                                                                   req.body
@@ -1235,13 +1246,14 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                                                       0
                                                                     ) {
                                                                       console.log("Existing Material found, updating it. Material:", row.MtrlGradeID );
+                                                                      console.log("Existing Material found, updating it. Material---2:", row );
                                                                     }
                                                                     // Suresh 30-04-25
                                                                     // Entry exists, so update it
                                                                     let updateNcTaskListQuery = `UPDATE magodmis.nc_task_list
                                                                              SET TaskNo='${row.TaskNo}', NoOfDwgs='${noOfDwgs}', TotalParts='${totalParts}', 
                                                                                  MProcess='${MProcess}', Operation='${row.Operation}', ScheduleNo='${neworderSch}',
-                                                                                 Mtrl ='${row.Mtrl}
+                                                                                 Mtrl ='${row.Mtrl}, Thickness ='${row.Thickness}
                                                                              WHERE ScheduleID='${row.ScheduleId}' AND Mtrl_Code='${row.Mtrl_Code}'`;
                                                                     await queryDatabase(
                                                                       updateNcTaskListQuery
@@ -1283,7 +1295,7 @@ ScheduleListRouter.post(`/ScheduleButton`, async (req, res, next) => {
                                                                               VALUES('${row.TaskNo}', '${row.ScheduleId}', '${formattedDate}',
                                                                               '${row.Order_No}', '${neworderSch}', 
                                                                               '${req.body.formdata[0].Cust_Code}', '${row.Mtrl_Code}',
-                                                                              '${existingTaskMtrlData[0].MtrlGradeID}', '${thicknessValue}', '${row.Mtrl_Source}', '${noOfDwgs}',
+                                                                              '${code}', '${number}', '${row.Mtrl_Source}', '${noOfDwgs}',
                                                                               '${totalParts}', '${MProcess}', '${row.Operation}')`;
                                                                     const insertResult =
                                                                       await queryDatabase(
@@ -1753,7 +1765,22 @@ console.log("item---",item);
 
                                     const existingTaskData =
                                       await queryDatabase(selectTaskQuery);
+console.log("row---123",row.Mtrl_Code);
+// const text = "Sheet SS 304 0.2";
 
+// Split the string into words
+const words = row.Mtrl_Code.trim().split(/\s+/);
+
+// Get the second word (like 'SS')
+const code = words[1];
+
+// Find the last number (could be decimal)
+const numberMatch = row.Mtrl_Code.match(/(\d+(\.\d+)?)(?!.*\d)/);
+const number = numberMatch ? parseFloat(numberMatch[0]) : null;
+
+console.log("Code:", code);     
+console.log("Number:", number); 
+ 
                                     if (existingTaskData.length > 0) {
                                       // Entry exists, so update it
                                       let updateNcTaskListQuery = `UPDATE magodmis.nc_task_list
@@ -1787,7 +1814,7 @@ console.log("item---",item);
                                                                   '${row.TaskNo}', '${row.ScheduleId}', '${formattedDate}',
                                                                   '${row.Order_No}', '${neworderSch}', 
                                                                   '${req.body.formdata[0].Cust_Code}', '${row.Mtrl_Code}',
-                                                                  '${row.Mtrl}', '${thicknessValue}', '${row.Mtrl_Source}', 
+                                                                  '${code}', '${number}', '${row.Mtrl_Source}', 
                                                                   '${noOfDwgs}', '${totalParts}', '${MProcess}', '${row.Operation}'
                                                                   )`;
                                       const insertResult = await queryDatabase(

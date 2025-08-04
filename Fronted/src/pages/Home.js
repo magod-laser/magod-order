@@ -13,31 +13,10 @@ function Home() {
   return (
     <>
       <Header user={false} />
-      {/* <div className="card-container">
-        <Link
-          to="/salesHome"
-          style={{ textDecoration: "none", color: "black" }}
-        >
-          <div className="dashboard-card">
-            <div className="card-item">
-              <RiUserSettingsFill size={60} color="#283E81" />
-              <span className="dashboard-link"> Sales</span>
-            </div>
-          </div>
-        </Link>
-        <Link to="/admin" style={{ textDecoration: "none", color: "black" }}>
-          <div className="dashboard-card">
-            <div className="card-item">
-              <RiUserSettingsFill size={60} color="#283E81" />
-              <span className="dashboard-link"> Admin</span>
-            </div>
-          </div>
-        </Link>
-      </div> */}
+      
 
       <div className="card-container">
-        {/* {lazerUser.data.access.includes("/customer/custorders") ? ( */}
-        {/* {lazerUser.data.access.includes("/sales") ? ( */}
+        
         <Link
           to="/salesHome"
           style={{ textDecoration: "none", color: "black" }}
@@ -49,18 +28,7 @@ function Home() {
             </div>
           </div>
         </Link>
-        {/* ) : null} */}
-
-        {/* {lazerUser.data.access.includes("/admin") ? ( */}
-        {/* <Link to="/admin" style={{ textDecoration: "none", color: "black" }}>
-          <div className="dashboard-card">
-            <div className="card-item">
-              <RiUserSettingsFill size={60} color="#283E81" />
-              <span className="dashboard-link"> Admin</span>
-            </div>
-          </div>
-        </Link> */}
-        {/* ) : null} */}
+       
       </div>
     </>
   );

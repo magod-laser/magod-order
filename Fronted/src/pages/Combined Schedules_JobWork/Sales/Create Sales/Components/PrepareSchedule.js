@@ -10,7 +10,7 @@ function PrepareSchedule() {
             Select All
           </button>
           <button className="button-style  " style={{ width: "90px" }}>
-            Revers
+            Reverse
           </button>
           <button className="button-style  " style={{ width: "50px" }}>
             {">>"}
@@ -108,7 +108,7 @@ function PrepareSchedule() {
           </button>
 
           <button className="button-style  " style={{ width: "100px" }}>
-            Revers
+            Reverse
           </button>
         </div>
 

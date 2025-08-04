@@ -26,7 +26,6 @@ const SidebarLabel = styled.span`
 
 const ActiveLinkStyle = {
 	color: "white",
-	// background: "rgba(111, 115, 126, 0.3)",
 	background: "#263159",
 	textdecoration: "none",
 };
@@ -39,13 +38,11 @@ const SubNavComp = ({ item, sidebar }) => {
 	const showSubnav = () => setSubnav(!subnav);
 
 	useEffect(() => {
-		// Disable active style if navigating away from "Previous Menu"
 		if (location.pathname !== "/salesHome") {
 			setClickedPreviousMenu(false);
 		}
 	}, [location]);
 	const previousMenuUrl = process.env.REACT_APP_PREVIOUS_MENU_URL;
-	// console.log("previousMenuUrl", previousMenuUrl);
 	const handlePreviousMenuClick = () => {
 		setClickedPreviousMenu(true);
 		// window.location.href = "http://172.16.20.61:3000/salesHome";

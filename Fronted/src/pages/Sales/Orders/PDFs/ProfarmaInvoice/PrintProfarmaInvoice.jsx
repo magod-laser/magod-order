@@ -9,7 +9,7 @@ import {
 	Text,
 	Image,
 } from "@react-pdf/renderer";
-// import MLLogo from "../../../../../ML-LOGO.png";
+
 import MLLogo from "../../../../../ML-LOGO.png";
 
 export default function PrintProfarmaInvoice(props) {

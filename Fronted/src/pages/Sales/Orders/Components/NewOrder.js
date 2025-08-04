@@ -297,6 +297,8 @@ function NewOrder(props) {
         Transportcharges,
       },
       async (resp) => {
+        console.log("resp---000",resp);
+        
         setOrderno(resp.orderno);
         // postRequest(endpoints.getCustomerDets, { CustCode }, (custdata) => {
         //   //Console.log(custdata[0]["Cust_name"]

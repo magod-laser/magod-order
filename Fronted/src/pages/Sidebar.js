@@ -13,10 +13,8 @@ const Sidebar = ({ children }) => {
   return (
     <div className="main-container">
       <div className={`${isSidebarOpen ? "sidebar sidebar_open" : "sidebar"}`}>
-        {/* logo */}
         <div className="top_section">
           {isSidebarOpen && (
-            // <img className="logo" src={require("../ML-LOGO.png")} />
             <h5 className="title_name">M A G O D</h5>
           )}
 
@@ -29,7 +27,7 @@ const Sidebar = ({ children }) => {
           </div>
         </div>
 
-        {/* paths */}
+        
 
         <div>
           <div className="routes">
