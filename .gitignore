@@ -17,7 +17,10 @@
 .env.development.local
 .env.test.local
 .env.production.local
-**/.env              #  Ignore .env files in all folders
+**/.env   
+.env
+backend/.env
+frontend/.env            #  Ignore .env files in all folders
 backend/logs/        #  Ignore logs folder in backend
 
 npm-debug.log*
