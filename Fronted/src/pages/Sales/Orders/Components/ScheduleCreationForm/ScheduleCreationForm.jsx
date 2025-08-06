@@ -233,9 +233,7 @@ export default function ScheduleCreationForm(props) {
     formData.append("file", drwfile); //files[i]);
     formData.append("thickness", thickness);
     formData.append("specficWeight", specificwt); // resp[0].Specific_Wt);
-    //  setSpecificWt(resp[0].Specific_Wt);
-    // const getCalcReq = await fetch('http://127.0.0.1:21341/getCalc', {
-    // const getCalcReq = await fetch("http://localhost:21341/getCalc", {
+   
     const getCalcReq = await fetch(`${REACT_APP_GETCALCREQ_URL}/getCalc`, {
       method: "POST",
       headers: {
@@ -276,7 +274,6 @@ export default function ScheduleCreationForm(props) {
   //   for (let i = 0; i < files.length; i++) {
   //     data.append("files", files[i]);
   //   }
-  //   // let API = "http://localhost:6001";
   //   // let API = API;
   //   const rawResponse = await fetch(`${API}/file/uploaddxf`, {
   //     method: "POST",

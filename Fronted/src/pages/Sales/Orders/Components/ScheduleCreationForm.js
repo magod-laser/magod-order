@@ -1,3 +1,5 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 //import FindOrderHeaderTabs from "./Header Tabs/FindOrderHeaderTabs";
 //import FindOrderBodyTabs from "./Body Tabs/FindOrderBodyTabs";
@@ -18,7 +20,13 @@ const { getRequest, postRequest } = require("../../../api/apiinstance");
 const { endpoints } = require("../../../api/constants");
 
 export default function ScheduleCreationForm(props) {
-  console.log("propssss", props.Type);
+
+   let REACT_APP_GETCALCREQ_URL = process.env.REACT_APP_GETCALCREQ_URL;
+   let API = process.env.REACT_APP_API_KEY;
+
+   console.log("REACT_APP_GETCALCREQ_URL", REACT_APP_GETCALCREQ_URL);
+   console.log("REACT_APP_API", API);
+  // console.log("propssss", props.Type);
   const [alertModal, setAlertModal] = useState(false);
   const [registerOrder, setRegisterOrder] = useState(false);
   let navigate = useNavigate();
@@ -226,6 +234,7 @@ export default function ScheduleCreationForm(props) {
       });
     }
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [importdwgshow, setImportDwgShow] = useState(false);
@@ -304,9 +313,8 @@ export default function ScheduleCreationForm(props) {
     formData.append("thickness", thickness);
     formData.append("specficWeight", specificwt); // resp[0].Specific_Wt);
     //  setSpecificWt(resp[0].Specific_Wt);
-    //Console.log("Sending to Service");
-    // const getCalcReq = await fetch('http://127.0.0.1:21341/getCalc', {
-    const getCalcReq = await fetch("http://localhost:21341/getCalc", {
+    
+    const getCalcReq = await fetch(`${REACT_APP_GETCALCREQ_URL}/getCalc`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -355,8 +363,7 @@ export default function ScheduleCreationForm(props) {
     for (let i = 0; i < files.length; i++) {
       data.append("files", files[i]);
     }
-    //Console.log(data);
-    let API = "http://localhost:6001";
+    
     const rawResponse = await fetch(`${API}/file/uploaddxf`, {
       method: "POST",
       headers: {
@@ -667,6 +674,7 @@ alert("Scchedule Creation Form.jsx - Open Folder");
                 <button className="button-style mt-2 ">Cancel Order</button>
                 <button
                   className="button-style mt-2 "
+                  // eslint-disable-next-line no-undef
                   onClick={onClickShortClose}
                 >
                   Short Close

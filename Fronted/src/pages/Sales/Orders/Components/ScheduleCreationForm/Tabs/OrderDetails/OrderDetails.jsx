@@ -803,8 +803,7 @@ export default function OrderDetails(props) {
       data.append("files", files[i]);
     }
     // let API = process.env.REACT_APP_API_KEY;
-    // let API = "http://localhost:6001";
-    // let API = "http://localhost:4011";
+   
 
     const rawResponse = await fetch(`${API}/file/uploaddxf`, {
       method: "POST",
@@ -1314,7 +1313,7 @@ export default function OrderDetails(props) {
   };
 
   const PostSrlData = () => {};
-  console.log("PostSrlData - material : ", materia);
+  // console.log("PostSrlData - material : ", materia);
   //SURESH SIR CODE REALATED TO DXF
   let locCalc = async (drwfile, material, grade, thickness, cb) => {
     // console.log("123",drwfile, material, grade, thickness, cb);
@@ -1328,8 +1327,7 @@ export default function OrderDetails(props) {
     formData.append("specficWeight", specificw); // resp[0].Specific_Wt);
 
     console.log("Sending to Service");
-    // const getCalcReq = await fetch('http://127.0.0.1:21341/getCalc', {
-    // const getCalcReq = await fetch("http://localhost:21341/getCalc", {
+  
     const getCalcReq = await fetch(`${REACT_APP_GETCALCREQ_URL}/getCalc`, {
       //const getCalcReq = await fetch(process.env.GETCALC_API, {
       method: "POST",
@@ -1339,14 +1337,12 @@ export default function OrderDetails(props) {
       body: formData,
     });
 
-    console.log("getCalcReq", getCalcReq);
+    // console.log("getCalcReq", getCalcReq);
 
     const res = await getCalcReq.json();
     setLengthOfCut(res.data.lengthOfCut);
     setNoofPierces(res.data.noOfPierces);
 
-    // console.log("Length of Cut 1: ", res.data.lengthOfCut);
-    // console.log("No of Pierces 2 : ", res.data.noOfPierces);
 
     cb({
       lengthOfCut: res.data.lengthOfCut,
@@ -1354,101 +1350,7 @@ export default function OrderDetails(props) {
     });
   };
 
-  //24-03-2025
-  // const PostSrlData = () => { };
-
-  // SURESH SIR CODE RELATED TO DXF
-  // const locCalc = async (drwfile, material, grade, thickness, specificwt, cb) => {
-  //   const formData = new FormData();
-  //   formData.append("file", drwfile);
-  //   formData.append("thickness", thickness);
-  //   formData.append("specificWeight", specificwt);
-
-  //   console.log("Sending to Service");
-
-  //   let response;
-  //   for (let attempt = 0; attempt < 3; attempt++) {
-  //     alert("2403entering to the http://localhost:21341/getCalc")
-  //     try {
-  //       const getCalcReq = await fetch("http://localhost:21341/getCalc", {
-  //         method: "POST",
-  //         headers: {
-  //           Accept: "application/json",
-  //         },
-  //         body: formData,
-  //       });
-  //       console.log("2403getCalcReq", getCalcReq);
-
-  //       if (!getCalcReq.ok) throw new Error(`HTTP error! status: ${getCalcReq.status}`);
-
-  //       response = await getCalcReq.json();
-  //       console.log("2403response", response);
-
-  //       break; // Exit loop if successful
-  //     } catch (err) {
-  //       console.log("2403err");
-
-  //       if (attempt === 2) throw err;
-  //       await new Promise(resolve => setTimeout(resolve, 1000)); // Retry after delay
-  //     }
-  //   }
-
-  //   cb({
-  //     lengthOfCut: response.data.lengthOfCut,
-  //     noOfPierces: response.data.noOfPierces,
-  //   });
-  // };
-
-  // const locCalc = async (drwfile, material, grade, thickness, specificwt, cb) => {
-  //   console.log("123", drwfile, material, grade, thickness, specificwt, cb);
-
-  //   const formData = new FormData();
-  //   formData.append("file", drwfile);
-  //   formData.append("thickness", thickness);
-  //   formData.append("specificWeight", specificwt);
-
-  //   console.log("Sending to Service");
-
-  //   let response;
-  //   const TIMEOUT = 5000; // 5 seconds timeout
-
-  //   for (let attempt = 0; attempt < 3; attempt++) {
-  //     alert("2403 entering http://localhost:21341/getCalc, attempt: " + (attempt + 1));
-  //     console.log("form data:::", formData);
-
-  //     const controller = new AbortController(); // Create an AbortController instance
-  //     const timeoutId = setTimeout(() => controller.abort(), TIMEOUT); // Set timeout to abort request
-
-  //     try {
-  //       const getCalcReq = await fetch("http://localhost:21341/getCalc", {
-  //         method: "POST",
-  //         headers: { Accept: "application/json" },
-  //         body: formData,
-  //         signal: controller.signal, // Attach abort signal
-  //       });
-
-  //       clearTimeout(timeoutId); // Clear timeout if request completes successfully
-
-  //       console.log("2403 getCalcReq", getCalcReq);
-  //       if (!getCalcReq.ok) throw new Error(`HTTP error! status: ${getCalcReq.status}`);
-
-  //       response = await getCalcReq.json();
-  //       console.log("2403 response", response);
-
-  //       break; // Exit loop if successful
-  //     } catch (err) {
-  //       console.log("2403 Error", err.message);
-  //       if (attempt === 2) throw err; // Throw error if all attempts fail
-  //     }
-
-  //     await new Promise(resolve => setTimeout(resolve, 500)); // Short delay before retry
-  //   }
-
-  //   cb({
-  //     lengthOfCut: response?.data?.lengthOfCut || 0,
-  //     noOfPierces: response?.data?.noOfPierces || 0,
-  //   });
-  // };
+  
 
   // Drawing/Part Name	Material	Operation	Source	Insp Level	Tolerance	Packing Level	LOC	Pierces	JW Cost	Mtrl Cost	Unit Rate	Qty Ordered	Total
   const PrintXLOrderTable = () => {
