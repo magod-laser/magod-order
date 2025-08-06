@@ -1,35 +1,41 @@
+/* eslint-disable no-unused-vars */
 /** @format */
 
 import React, { useEffect, useState, useRef } from "react";
 import { Form } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { ToastContainer, toast, useToastContainer } from "react-toastify";
-import { useOrderContext } from "../../../../context/OrderContext";
+import { useNavigate } from "react-router-dom";
+import { toast  } from "react-toastify";
 import AlertModal from "./Components/Alert";
 import OkayModal from "../../../components/OkayModal";
-
-const { getRequest, postRequest } = require("../../../api/apiinstance");
+const { postRequest } = require("../../../api/apiinstance");
 const { endpoints } = require("../../../api/constants");
 
 function NewOrder(props) {
   // const [searchParams] = useSearchParams();
   const [smShow, setSmShow] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [modalMessage, setModalMessage] = useState("");
   let navigate = useNavigate();
-  let { orders, setOrderState } = useOrderContext() || {};
+  // let { orders, setOrderState } = useOrderContext() || {};
   let [orderno, setOrderno] = useState("");
 
   let [formPaymentTerms, setFormPaymentTerms] = useState("");
   let [salesExecdata, setSalesExecdata] = useState([]);
   //let [selectCust, setSelectCust] = useState("");
   let [custdata, setCustdata] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   let [statesdata, setStatesdata] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   let [creditTermsdata, setCreditTermsdata] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   let [qtnnossentdata, setQtnNosSentData] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   let [selectedqtnno, setSelectedqtnno] = useState([]);
 
+  // eslint-disable-next-line no-unused-vars
   let [quotationNo, setQuotationNo] = useState("");
+  // eslint-disable-next-line no-unused-vars
   let [CustomerName, setCustomerName] = useState("");
   let [CustCode, setCustCode] = useState("");
   let [formOrderDate, setFormOrderDate] = useState("");
@@ -42,6 +48,7 @@ function NewOrder(props) {
   let [formMagodDelivery, setFormMagodDelivery] = useState(false);
   let [formShippingAddress, setFormShippingAddress] = useState("Ex Factory");
   let [formGSTTaxState, setFormGSTTaxState] = useState("");
+  // eslint-disable-next-line no-unused-vars
   let [formTransportCharges, setFormTransportCharges] = useState("");
   let [formquotationNo, setFormQuotationNo] = useState("");
   let [purchaseorder, setPurchaseorder] = useState("");
@@ -65,28 +72,22 @@ function NewOrder(props) {
 
     let data = JSON.parse(localStorage.getItem("LazerUser"));
     setuserName(data?.data[0]?.Name);
-    // setuserName(data?.data?.Name);
-    console.log("123", data.data.Name);
 
     var currentDate = new Date();
-    // console.log("curr date", currentDate);
 
     currentDate.setDate(currentDate.getDate() + 2);
     var formattedDate = currentDate.toISOString().slice(0, 10);
     setformDeliveryDate(formattedDate);
-
-    // console.log("second", formattedDate);
-
     setFormOrderDate(new Date().toISOString().slice(0, 10));
-    // console.log("first", new Date().toISOString().slice(0, 10));
 
     async function fetchData() {
       await postRequest(endpoints.getCustomers, {}, (cdata) => {
-        console.log("cdata", cdata);
+        // console.log("cdata", cdata);
         setCustdata(cdata);
       });
 
       await postRequest(endpoints.getSalesExecLists, {}, (sdata) => {
+        // eslint-disable-next-line no-lone-blocks
         {
           // console.log(sdata);
         }
@@ -110,17 +111,21 @@ function NewOrder(props) {
       );
     }
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     toggleSelectDisabled();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isChecked]);
   // alert modals for register and save
+  // eslint-disable-next-line no-unused-vars
   const openModal = (e) => {
     e.preventDefault();
     setAlertModal(true);
     // SaveOrder(e);
   };
+  // eslint-disable-next-line no-unused-vars
   const closeModal = () => {
     setAlertModal(false);
   };
@@ -128,7 +133,7 @@ function NewOrder(props) {
   let selectQtns = (selectedqtnno) => {
     setQuotationNo(selectedqtnno[0].QtnNo);
     setFormQuotationNo(selectedqtnno[0].QtnNo);
-    if (selectedqtnno.length == 0 || selectedqtnno[0].QtnID == undefined)
+    if (selectedqtnno.length === 0 || selectedqtnno[0].QtnID === undefined)
       return;
     setQuotationNo(selectedqtnno[0].QtnNo);
     setFormQuotationNo(selectedqtnno[0].QtnNo);
@@ -167,7 +172,7 @@ function NewOrder(props) {
     //setCustCode(e.target.value);
     //  setCustomerName(e.target.elements.Cust_name.value);
     for (let i = 0; i < custdata.length; i++) {
-      if (custdata[i].Cust_Code == e[0].Cust_Code) {
+      if (custdata[i].Cust_Code === e[0].Cust_Code) {
         document.getElementById("formPaymentTerms").value = cust.CreditTerms;
         document.getElementById("formBillingAddress").value = cust.Address;
         // document.getElementById("formGSTNNo").value = cust?.GSTNo;

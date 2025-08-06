@@ -1,14 +1,13 @@
 /** @format */
 
 import React, { useEffect, useState } from "react";
-import { Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { postRequest } from "../../../../../../api/apiinstance";
 import { endpoints } from "../../../../../../api/constants";
 import FirstTable from "./Tables/FirstTable";
 import SecondTable from "./Tables/SecondTable";
 import AlertModal from "../../../../Menus/Service/Components/Alert";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 
 export default function ScheduleList({
   OrderData,

@@ -1,14 +1,11 @@
 /** @format */
 
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Tab, Table, Tabs, Form } from "react-bootstrap";
 import { endpoints } from "../../../../../../api/constants";
 import { getRequest, postRequest } from "../../../../../../api/apiinstance";
 import AlertModal from "../../../../Menus/Service/Components/Alert";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 import OkayModal from "../../../../../../components/OkayModal";
-import { use } from "react";
 
 export default function ProductionScheduleCreation({
   OrderData,
@@ -43,11 +40,13 @@ export default function ProductionScheduleCreation({
   };
   const [smShow, setSmShow] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  // eslint-disable-next-line no-unused-vars
   const [ProfileDatatoSch, SetProfileDatatoSch] = useState();
   useEffect(() => {
     if (OrderData && scheduleType) {
       fetchScheduleList(scheduleType);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [OrderData, scheduleType]);
 
   useEffect(() => {
@@ -57,6 +56,7 @@ export default function ProductionScheduleCreation({
     setSelectedSrl([]);
     setLastSlctedRow(null);
     setSelectedRow(null);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scheduleType]);
 
   //onclick Refresh Status
@@ -355,6 +355,7 @@ export default function ProductionScheduleCreation({
     // clearAllSelections();
     // window.location.reload();
   };
+  // eslint-disable-next-line no-unused-vars
   const clearAllSelections = () => {
     setSelectedRows([]);
     setSelectedRowItems([]);
@@ -398,7 +399,7 @@ export default function ProductionScheduleCreation({
       endpoints.orderCopyDxf,
       { srcfolder, destfolder, orderdwg: dwgelement }, // custdwgname },
       (copydata) => {
-        if (copydata.status == "success") {
+        if (copydata.status === "success") {
           alert("Files Copied Sucessfully..");
         }
       }
@@ -514,9 +515,6 @@ export default function ProductionScheduleCreation({
       });
     });
   };
-
-  //open Folder
-  const openFolder = () => {};
 
   return (
     <>

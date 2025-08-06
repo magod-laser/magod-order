@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
-import Axios from "axios";
-import { Form, Table } from "react-bootstrap";
+import React, { useState } from "react";
+import { Table } from "react-bootstrap";
 
 export default function OLTable(props) {
   console.log("props.FilteredOrderListData", props.FilteredOrderListData);

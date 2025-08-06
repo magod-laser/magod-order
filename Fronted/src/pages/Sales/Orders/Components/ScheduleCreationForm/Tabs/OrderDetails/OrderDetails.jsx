@@ -1,9 +1,8 @@
 /** @format */
 
 import React, { useEffect, useState } from "react";
-import { useOrderContext } from "../../../../../../../context/OrderContext";
+// import { useOrderContext } from "../../../../../../../context/OrderContext";
 import OrdrTable from "./Table/OrdrTable";
-import Drawings from "./Tabs/Drawings";
 import OrdrDtls from "./Tabs/OrdrDtls";
 import { Tab, Tabs } from "react-bootstrap";
 import ImportDwgModal from "./Modals/ImportDwgModal";
@@ -13,8 +12,6 @@ import { toast } from "react-toastify";
 import ImportExcelModal from "./Modals/ImportExcelModal/ImportExcelModal";
 import BulkChangeModal from "./Modals/BulkChangeModal";
 import ConfirmationModal from "../../../../Modal/ConfirmationModal";
-import Loading from "../../Loading";
-import { Profiler } from "react";
 import moment from "moment";
 import * as XLSX from "xlsx";
 import { Helper } from "dxf";
@@ -25,6 +22,7 @@ const {
 const { endpoints } = require("../../../../../../api/constants");
 
 export default function OrderDetails(props) {
+ 
   const {
     OrderData,
     OrderCustData,
@@ -40,7 +38,6 @@ export default function OrderDetails(props) {
     handleReverseSelection,
     LastSlctedRow,
     setLastSlctedRow,
-    handleBulkCngBtn,
     selectedSrl,
 
     // handleMtrlCodeTypeaheadChange,
@@ -63,7 +60,6 @@ export default function OrderDetails(props) {
     filteredData,
     setFilteredData,
     selectedRowItem,
-    Dwglist,
     handleJWMR,
     handleRowClick,
     handleCheckboxChange,
@@ -77,8 +73,6 @@ export default function OrderDetails(props) {
     sortConfig,
     setSortConfig,
     sortedData,
-    OrdrDetailsItem,
-
     // hande arrow keys
     currentIndex,
     setCurrentIndex,
@@ -88,15 +82,22 @@ export default function OrderDetails(props) {
     goToLast,
     FindOldOrderButtonData,
     OdrDtlMtrlSrc,
+    REACT_APP_GETCALCREQ_URL,
+    API
   } = props;
 
-  console.log("list--1", selectedItems);
-  console.log("list--2", selectedRows);
+  // console.log("list--1", selectedItems);
+  // console.log("list--2", selectedRows);
+  console.log("REACT_APP_GETCALCREQ_URL", REACT_APP_GETCALCREQ_URL);
+  console.log("API", API);
+
+
   useEffect(() => {
     setSelectedItems(selectedRows);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedRows]);
 
-  const [groupBoxAddSrlVisible, setGroupBoxAddSrlVisible] = useState(true);
+  // const [groupBoxAddSrlVisible, setGroupBoxAddSrlVisible] = useState(true);
 
   const [buttonClicked, setButtonClicked] = useState("");
   // confirmation modal413
@@ -111,10 +112,10 @@ export default function OrderDetails(props) {
   console.log("filteredData - asdf", filteredData);
   // console.log("LastSlctedRow", LastSlctedRow);
   // console.log("LastSlctedRow", LastSlctedRow);
-
-  function importExcelFunc() {
-    setImportExcelModal(true);
-  }
+   
+  // function importExcelFunc() {
+  //   setImportExcelModal(true);
+  // }
 
   let lastOrderSrl = 0;
 
@@ -131,20 +132,22 @@ export default function OrderDetails(props) {
   var Cust_Code = props.OrderCustData?.Cust_Code;
   var OrderNo = props.OrderData?.Order_No;
   var Type = props.OrderData?.Type;
-  var QtnNo = props.OrderData?.QtnNo;
+  // var QtnNo = props.OrderData?.QtnNo;
   var SalesContact = props.OrderData?.SalesContact;
   var Delivery_Date = props.OrderData?.Delivery_Date;
-  var RecordedBy = props.OrderData?.RecordedBy;
+  // var RecordedBy = props.OrderData?.RecordedBy;
   var Order_Received_By = props.OrderData?.Order_Received_By;
-  var Purchase_Order = props.OrderData?.Purchase_Order;
-  var Payment = props.OrderData?.Payment;
+  // var Purchase_Order = props.OrderData?.Purchase_Order;
+  // var Payment = props.OrderData?.Payment;
 
   const [mtrldata, setMtrldata] = useState([]);
   const [procdata, setProcdata] = useState([]);
   const [inspdata, setInspdata] = useState([]);
   const [packdata, setPackdata] = useState([]);
   const [tolerancedata, setTolerancedata] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [salesExecdata, setSalesExecdata] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [strtolerance, setStrTolerance] = useState("");
   const [gradeid, setGradeID] = useState("");
   const [strmtrlcode, setStrMtrlCode] = useState("");
@@ -157,11 +160,15 @@ export default function OrderDetails(props) {
   const [unitPrice, setUnitPrice] = useState(0.0);
   const [Operation, setOperation] = useState("");
   //25032025
+  // eslint-disable-next-line no-unused-vars
   const [thicknes, setThickness] = useState("");
   const [specificw, setSpecificWt] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [grad, setGrade] = useState("");
   const [HasBOM, setHasBOM] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [Dwg, setDwg] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [selectedFile, setSelectedFile] = useState(null);
   const [blkCngCheckBox, setBlkCngCheckBox] = useState([
     false,
@@ -177,13 +184,17 @@ export default function OrderDetails(props) {
   ]);
 
   // SURESH SIR
+  // eslint-disable-next-line no-unused-vars
   let [dxfFileData, setDxfFileData] = useState("");
-  let [selectedDwgId, setSelectedDwgId] = useState(0);
+  // let [selectedDwgId, setSelectedDwgId] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   let [lengthOfCut, setLengthOfCut] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   let [noOfPierces, setNoofPierces] = useState(0);
-  let [imprtDwgData, setImprtDwgData] = useState([]);
+  // let [imprtDwgData, setImprtDwgData] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   let [process, setProcess] = useState("");
-  let [dxfmaterial, setDxfMaterial] = useState("");
+  // let [dxfmaterial, setDxfMaterial] = useState("");
 
   const [NewSrlFormData, setNewSrlFormData] = useState({
     DrawingName: "",
@@ -257,11 +268,9 @@ export default function OrderDetails(props) {
     getRequest(endpoints.getPackingLevels, (pckdata) => {
       setPackdata(pckdata);
     });
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
 
   const handleDwgInputChange = (event) => {
     const newValue = event.target.value;
@@ -301,7 +310,7 @@ export default function OrderDetails(props) {
         NewSrlFormData: NewSrlFormData,
       },
       (InsertedNewSrlData) => {
-        if (InsertedNewSrlData.affectedRows != 0) {
+        if (InsertedNewSrlData.affectedRows !== 0) {
           fetchData();
           alert("Added serial successfully");
           handleCloseImportDwg();
@@ -316,8 +325,8 @@ export default function OrderDetails(props) {
   let blkCngCheckBoxx = blkCngCheckBox;
 
   let updateblkcngOrdrData = () => {
-    console.log("sssselectedItems-------",selectedItems);
-    
+    console.log("sssselectedItems-------", selectedItems);
+
     handleClosesetBulkChnangMdl();
 
     selectedItems.forEach((element, index) => {
@@ -364,7 +373,7 @@ export default function OrderDetails(props) {
         if (blkChngData.affectedRows !== 0) {
           // toast.success("Updated successfully");
           alert("Updated successfully");
-         fetchData();
+          fetchData();
           handleClosesetBulkChnangMdl();
         } else {
           toast.warning("Serial not updated, check once");
@@ -388,29 +397,29 @@ export default function OrderDetails(props) {
 
   // console.log("blukchangeSelectedItems", selectedItems);
   // console.log("AAfter bulkchange SelectedSrl", selectedSrl);
-  let singleupdateOrdrData = () => {
-    postRequest(
-      endpoints.singleChangeUpdate,
-      {
-        OrderNo: OrderNo,
-        custcode: Cust_Code,
-        quantity: quantity,
-        OrderSrl: selectedSrl,
-        JwCost: jwRate,
-        mtrlcost: materialRate,
-      },
-      (singleChngData) => {
-        ////// //console.log(" blkChngData", blkChngData);
-        if (singleChngData.affectedRows != 0) {
-          alert("Updated successfully");
-          // toast.success("Updated successfully");
-          fetchData();
-        } else {
-          toast.warning("Serial not updated check once");
-        }
-      }
-    );
-  };
+  // let singleupdateOrdrData = () => {
+  //   postRequest(
+  //     endpoints.singleChangeUpdate,
+  //     {
+  //       OrderNo: OrderNo,
+  //       custcode: Cust_Code,
+  //       quantity: quantity,
+  //       OrderSrl: selectedSrl,
+  //       JwCost: jwRate,
+  //       mtrlcost: materialRate,
+  //     },
+  //     (singleChngData) => {
+  //       ////// //console.log(" blkChngData", blkChngData);
+  //       if (singleChngData.affectedRows != 0) {
+  //         alert("Updated successfully");
+  //         // toast.success("Updated successfully");
+  //         fetchData();
+  //       } else {
+  //         toast.warning("Serial not updated check once");
+  //       }
+  //     }
+  //   );
+  // };
   const handleMtrlCodeTypeaheadChangeeee = (selectedOptions) => {
     setSelectedItems(selectedOptions);
 
@@ -475,6 +484,7 @@ export default function OrderDetails(props) {
     let toltype;
     for (let i = 0; i < tolerancedata.length; i++) {
       if (tolerancedata[i]["ToleranceType"] === e.target.value) {
+        // eslint-disable-next-line no-unused-vars
         toltype = tolerancedata[i];
         break;
       }
@@ -542,6 +552,7 @@ export default function OrderDetails(props) {
   };
   useEffect(() => {
     FindOldOrderButtonData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleImportFromExcelModal = () => {
@@ -552,9 +563,9 @@ export default function OrderDetails(props) {
     }
   };
 
-  const handleCloseImportOldOrdrMdl = () => {
-    setImportOldOrdrMdl(false);
-  };
+  // const handleCloseImportOldOrdrMdl = () => {
+  //   setImportOldOrdrMdl(false);
+  // };
   // BULK CHANGE MODAL
   const [bulkChnangMdl, setBulkChnangMdl] = useState(false);
 
@@ -562,9 +573,7 @@ export default function OrderDetails(props) {
     const hasScheduled = selectedItems?.some((item) => item.QtyScheduled !== 0);
 
     if (hasScheduled) {
-      toast.warning(
-        "The selected DWGs are already scheduled."
-      );
+      toast.warning("The selected DWGs are already scheduled.");
       setBulkChnangMdl(false);
     } else {
       setBulkChnangMdl(true);
@@ -603,9 +612,10 @@ export default function OrderDetails(props) {
   };
 
   // const [refresh, setRefresh] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [refreshKey, setRefreshKey] = useState(0);
 
-  //DELETE BUTTON 
+  //DELETE BUTTON
   function deleteRowsBySrl() {
     // Avoid unnecessary state updates
     const orderNo = props.OrderData.Order_No;
@@ -698,12 +708,11 @@ export default function OrderDetails(props) {
   // }, []);
 
   function clearSelections() {
-
     setSelectedRows([]); // Clear multi-selection
     setSelectedItems([]); // Clear selected item list
     setSelectedSrl([]); // Clear selected serial numbers
     setLastSlctedRow(null); // Reset last selected row
-    setSelectedRow(null);    // Reset single selected row
+    setSelectedRow(null); // Reset single selected row
   }
 
   function deleteRowsByOrderNoFunc() {
@@ -748,7 +757,7 @@ export default function OrderDetails(props) {
   //NEW CODE
   const handleSelectChange = (selected) => {
     const selectedPartId = selected[0]?.label;
-    const magodCodee = selected[0]?.magodCode;
+    // const magodCodee = selected[0]?.magodCode;
     setMagodCode(selected[0]?.magodCode);
     // Filter the BomData to get the array of objects matching the selected part ID
     const arr = BomData.filter((obj) => obj.AssyCust_PartId === selectedPartId);
@@ -764,6 +773,7 @@ export default function OrderDetails(props) {
     setHasBOM(hasBOM);
 
     // Get the MagodCode for the selected part ID
+    // eslint-disable-next-line no-unused-vars
     const selectedMagodCode = BomData.find(
       (obj) => obj.AssyCust_PartId === selectedPartId
     )?.Magod;
@@ -794,7 +804,7 @@ export default function OrderDetails(props) {
     }
     // let API = process.env.REACT_APP_API_KEY;
     // let API = "http://localhost:6001";
-    let API = "http://localhost:4011";
+    // let API = "http://localhost:4011";
 
     const rawResponse = await fetch(`${API}/file/uploaddxf`, {
       method: "POST",
@@ -809,6 +819,7 @@ export default function OrderDetails(props) {
     response(content);
   }
 
+  // eslint-disable-next-line no-unused-vars
   async function copydxf(files, destPath, response) {
     // console.log("DXF Copy files path : " + destPath);
     const data = new FormData();
@@ -841,6 +852,7 @@ export default function OrderDetails(props) {
     svgContainer.innerHTML = svg;
   };
 
+  // eslint-disable-next-line no-unused-vars
   let displaydrawing = (file) => {
     let reader = new FileReader();
     reader.onload = function (event) {
@@ -850,7 +862,7 @@ export default function OrderDetails(props) {
     //  reader.readAsText(file.asInstanceOf[Blob]);
     reader.readAsText(file);
   };
-  const [svgContent, setSvgContent] = useState(null);
+  // const [svgContent, setSvgContent] = useState(null);
 
   const ShowDfxForm = async () => {
     if (!window.dxffile) {
@@ -875,6 +887,7 @@ export default function OrderDetails(props) {
 
       // If service responds successfully, load the DXF file
       if (launchservice.status === 200) {
+        // eslint-disable-next-line no-unused-vars
         let svgContainer = document.getElementById("dxf-content-container");
 
         // Step 3: Fetch the processed file (assuming it returns as SVG or DXF data)
@@ -888,6 +901,7 @@ export default function OrderDetails(props) {
           }),
         });
 
+        // eslint-disable-next-line no-unused-vars
         const fileResponse = await fileRequest.json(); // Assuming the response is in JSON format
 
         // Step 4: Set the SVG content into the state
@@ -936,7 +950,7 @@ export default function OrderDetails(props) {
         },
       });
       const response = await request.json();
-      if (response.status == "Service is running") {
+      if (response.status === "Service is running") {
         let launchservice = await filetoService(window.dxffile);
         setSelectedDwg(window.dxffile.name);
         // console.log(launchservice);
@@ -975,11 +989,10 @@ export default function OrderDetails(props) {
                   await dxfupload([newdxf], destPath, (res) => {
                     if (res.status === "success") {
                       alert("DXF file updated successfully");
-                      
+
                       // toast.success("DXF file updated successfully");
                     }
                   });
-                  
                 }
               );
             }
@@ -1121,10 +1134,10 @@ export default function OrderDetails(props) {
       let material;
       let grade;
       let gradeIdd;
+      // eslint-disable-next-line no-unused-vars
       let specificwt;
       console.log(" entring into the flag 2");
 
-      
       let impDwgFileData = [];
       let dwgnamefiles = imprtDwgObj.dgfiles.files;
       console.log("strmtrlcode===4", imprtDwgObj.strmtrlcode);
@@ -1149,7 +1162,9 @@ export default function OrderDetails(props) {
             thickness = mtrldata1[0]["Thickness"];
             specificwt = mtrldata1[0]["Specific_Wt"];
 
+            // eslint-disable-next-line no-unused-vars
             let thck = mtrldata1[0]["Thickness"];
+            // eslint-disable-next-line no-unused-vars
             let spwt = mtrldata1[0]["Specific_Wt"];
           }
         }
@@ -1173,6 +1188,7 @@ export default function OrderDetails(props) {
           material + " " + grade + " " + thickness
         );
 
+        // eslint-disable-next-line no-loop-func
         await locCalc(dwgnamefiles[i], material, grade, thickness, (output) => {
           impDwgFileData = [
             ...impDwgFileData,
@@ -1275,7 +1291,7 @@ export default function OrderDetails(props) {
 
       { requestData: requestData },
       (InsertedNewSrlData) => {
-        if (InsertedNewSrlData.affectedRows != 0) {
+        if (InsertedNewSrlData.affectedRows !== 0) {
           setisLoading(false);
           // toast.success("Added serial successfully");
           alert("Added serial successfully");
@@ -1313,7 +1329,8 @@ export default function OrderDetails(props) {
 
     console.log("Sending to Service");
     // const getCalcReq = await fetch('http://127.0.0.1:21341/getCalc', {
-    const getCalcReq = await fetch("http://localhost:21341/getCalc", {
+    // const getCalcReq = await fetch("http://localhost:21341/getCalc", {
+    const getCalcReq = await fetch(`${REACT_APP_GETCALCREQ_URL}/getCalc`, {
       //const getCalcReq = await fetch(process.env.GETCALC_API, {
       method: "POST",
       headers: {
@@ -1798,7 +1815,7 @@ export default function OrderDetails(props) {
                     {LastSlctedRow !== null && LastSlctedRow !== undefined ? (
                       <table
                         style={{
-                          backgroundColor: "#f0f0f7", //#5aa8e0",
+                          backgroundColor: "#f0f0f7",
                           width: "100%",
                           padding: "10px",
                           fontSize: "12px",
@@ -1853,28 +1870,7 @@ export default function OrderDetails(props) {
                       id="dxf-content-container"
                       className="dxf-content-container"
                     ></div>
-                    {/* </iframe> */}
                   </div>
-                  {/* <button className="button-style" onClick={ShowDfxForm}>
-                    Go to DxfView
-                  </button> */}
-                  {/* <div
-                    id="dxf-content-container"
-                    className="dxf-content-container"
-                  > */}
-                  {/* <iframe
-                      src="http://localhost:5000" // URL of the VB.NET app
-                      title="VBScript Frame"
-                      style={{ width: '50%', height: '300px' }}
-                    /> */}
-
-                  {/* {svgContent ? (
-                      <div dangerouslySetInnerHTML={{ __html: svgContent }} />
-                    ) : (
-                      <p>No file loaded yet.</p>
-                    )} */}
-                  {/* </div> */}
-                  {/* <Drawings /> */}
                 </Tab>
               ) : null}
               <Tab eventKey="orderDetailsForm" title="Order Details">

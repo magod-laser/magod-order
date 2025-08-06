@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Typeahead } from "react-bootstrap-typeahead";
-const { getRequest, postRequest } = require("../../../../api/apiinstance");
+const {  postRequest } = require("../../../../api/apiinstance");
 const { endpoints } = require("../../../../api/constants");
 export default function FindOrder(props) {
   console.log("Type", props.Type);
@@ -14,14 +14,12 @@ export default function FindOrder(props) {
         endpoints.getOrderDataforFindOrder,
         { ordtype: props.Type },
         (FindOrderData) => {
-          //console.log(FindOrderData);
           setorderNoData(FindOrderData);
         }
       );
     }
     fetchData();
-  }, []);
-  //console.log("orderNoData", orderNoData);
+  }, [props.Type]);
 
   return (
     <div>
@@ -31,7 +29,6 @@ export default function FindOrder(props) {
         <div className="row">
           <div className="d-flex col-md-4 sm-12 mt-2" style={{gap:'10px'}}>
             <label className="form-label" style={{whiteSpace:'nowrap'}}>Order No</label>
-            {/* <input type="text" /> */}
             {orderNoData?.length > 0 ? (
               <Typeahead
                 className="ip-select"
@@ -42,8 +39,7 @@ export default function FindOrder(props) {
                 }))}
                 placeholder="Select ..."
                 onChange={(selected) => {
-                  // Handle the selected item
-                  //console.log("Selected order No", selected[0]?.value);
+                  
                   setSelectedorderNo(selected[0]?.value);
                 }}
               />

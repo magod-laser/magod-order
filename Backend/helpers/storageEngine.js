@@ -45,8 +45,6 @@ class CustomStorageEngine {
     }
 }
 
-
-
 module.exports = function (opts) {
     return new CustomStorageEngine(opts)
 }

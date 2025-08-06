@@ -32,6 +32,7 @@ const ActiveLinkStyle = {
 
 const SubNavComp = ({ item, sidebar }) => {
 	const [subnav, setSubnav] = useState(false);
+	// eslint-disable-next-line no-unused-vars
 	const [clickedPreviousMenu, setClickedPreviousMenu] = useState(false);
 	const location = useLocation();
 
@@ -45,7 +46,6 @@ const SubNavComp = ({ item, sidebar }) => {
 	const previousMenuUrl = process.env.REACT_APP_PREVIOUS_MENU_URL;
 	const handlePreviousMenuClick = () => {
 		setClickedPreviousMenu(true);
-		// window.location.href = "http://172.16.20.61:3000/salesHome";
 		window.location.href = previousMenuUrl;
 	};
 

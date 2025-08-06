@@ -12,24 +12,6 @@ export const getRequest = async (url, callback) => {
 	callback(content);
 };
 
-// export const postRequest = async (url, body, callback) => {
-// 	let urls = url.split("/");
-// 	if (urls.includes("undefined")) {
-// 		alert("route not defined");
-// 		return;
-// 	}
-// 	let response = await fetch(url, {
-// 		method: "POST",
-// 		headers: {
-// 			Accept: "application/json",
-// 			"Content-Type": "application/json",
-// 		},
-// 		body: JSON.stringify(body),
-// 	});
-// 	let content = await response.json();
-// 	callback(content);
-// };
-
 export const postRequest = async (url, body, callback = null) => {
   try {
     // Validate the URL

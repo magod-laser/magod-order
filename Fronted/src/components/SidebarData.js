@@ -8,28 +8,13 @@ import * as MdIcon from "react-icons/md";
 import { VscTypeHierarchySub } from "react-icons/vsc";
 import { BiFoodMenu } from "react-icons/bi";
 import { HiUsers } from "react-icons/hi";
-import { BsPersonFill, BsFillGearFill, BsScrewdriver } from "react-icons/bs";
-import { AiFillCreditCard } from "react-icons/ai";
-import { DiOpenshift } from "react-icons/di";
-import { MdReport } from "react-icons/md";
 import { MdHomeRepairService } from "react-icons/md";
-import { BsListCheck } from "react-icons/bs";
-import { BiGitMerge } from "react-icons/bi";
-import { SiGoogletagmanager, SiRedhatopenshift } from "react-icons/si";
+import {  SiRedhatopenshift } from "react-icons/si";
 import { BsServer } from "react-icons/bs";
 import { FiCpu } from "react-icons/fi";
 import { VscServerProcess } from "react-icons/vsc";
-import { FiGitPullRequest } from "react-icons/fi";
-import { AiOutlineOrderedList } from "react-icons/ai";
-import { FiEdit } from "react-icons/fi";
 import { FaDropbox } from "react-icons/fa";
-import { GoReport } from "react-icons/go";
-import { AiOutlineSchedule } from "react-icons/ai";
-import { GiLaserPrecision } from "react-icons/gi";
-import { HiCubeTransparent } from "react-icons/hi";
-import { AiFillSchedule } from "react-icons/ai";
-import { Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+
 
 const previousMenuUrl = process.env.REACT_APP_PREVIOUS_MENU_URL;
 

@@ -280,7 +280,7 @@ const quotationDetails = async (qtnDetails) => {
     `)
 }
 
-// // Due Report
+//Due Report
 const dueReportStartPage = async (custdata, duesdata, duedata) => {
    
     const custname = custdata.custname;
