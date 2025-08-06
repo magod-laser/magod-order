@@ -8,6 +8,7 @@ const req = require("express/lib/request");
 const { sendDueList } = require("../helpers/sendmail");
 const { logger } = require("../helpers/logger");
 
+//This API is for allcustomers
 customerRouter.post("/allcustomers", async (req, res, next) => {
 	console.log(" all customersss");
 	
@@ -24,6 +25,7 @@ customerRouter.post("/allcustomers", async (req, res, next) => {
 	}
 });
 
+//This API is for allcustcodename
 customerRouter.post("/allcustcodename", async (req, res, next) => {
 	try {
 		misQueryMod(
@@ -39,6 +41,7 @@ customerRouter.post("/allcustcodename", async (req, res, next) => {
 	}
 });
 
+//This API is for getcustomerdetails
 customerRouter.post("/getcustomerdetails", async (req, res, next) => {
 	try {
 		let custid = req.body.custcode;
@@ -54,6 +57,7 @@ customerRouter.post("/getcustomerdetails", async (req, res, next) => {
 	}
 });
 
+//This API is for customer
 customerRouter.post("/customer", async (req, res, next) => {
 	try {
 		//  const custcode = req.body.Cust_Code;
@@ -133,6 +137,7 @@ customerRouter.post("/customer", async (req, res, next) => {
 	}
 });
 
+//This API is for customerupdate
 customerRouter.post(`/customerupdate`, async (req, res, next) => {
 	// console.log("customerupdate - Yes");
 	try {
@@ -304,6 +309,7 @@ customerRouter.post(`/customerupdate`, async (req, res, next) => {
 	}
 });
 
+//This API is for getcustomercontactdets
 customerRouter.post("/getcustomercontactdets", async (req, res, next) => {
 	// console.log("get contact dets");
 	try {
@@ -323,43 +329,8 @@ customerRouter.post("/getcustomercontactdets", async (req, res, next) => {
 	}
 });
 
-// customerRouter.post('/getcustomercontactteledets', async (req, res, next) => {
-//     console.log("teledets - 1")
-//     try {
-//         //  let contid = req.body.contid;
-//         let custid = req.body.custcode;
-//         let tdata = "";
-//         misQueryMod(`Select ContactID from magodmis.cust_contacts where Cust_Code='${custid}'`, (err, contdata) => {
-//             console.log(contdata);
-//             if (contdata.length > 0) {
-//                 console.log("contdata > 0")
-//                 let contdatas = "('";
-//                 for (let i = 0; i < contdata.length; i++) {
-//                     contdatas = contdatas + contdata[i]["ContactID"] + "','";
-
-//                 }
-
-//                 contdatas = contdatas.substr(0, contdatas.length - 2);
-//                 console.log(contdatas)
-//                 //  let contid = contdata[i].ContactID;
-//                 // misQueryMod(`Select ContactID,TeleNo as conteleno, Type as conteletype from magodmis.contact_telenos where ContactID='${contdata[i].ContactID}'`, (err, teledata) => {
-//                 misQueryMod(`Select ContactID,TeleNo as 'conteleno', Type as 'conteletype'  from magodmis.contact_telenos where ContactID in ${contdatas + ')'}`, (err, teledata) => {
-//                     if (err) console.log(err);
-//                     console.log("Tele Data - after contact query " + teledata);
-//                     // tdata[i]= tdata[i] + teledata;
-//                     res.send(teledata);
-//                 })
-//             }
-
-//         })
-//     } catch (error) {
-//         next(error)
-//     }
-// });
-
-// Existing Assembly Data for a Customer
+//This API is for customerassy
 customerRouter.post(`/customerassy`, async (req, res, next) => {
-	// console.log(req.body);
 	try {
 		const custcode = req.body.custcode;
 		if (!custcode) res.send(createError.BadRequest());
@@ -375,7 +346,7 @@ customerRouter.post(`/customerassy`, async (req, res, next) => {
 	}
 });
 
-// Inserting Customer Assembly data
+//This API is for Inserting Customer Assembly data
 customerRouter.post("/customerinsassembly", async (req, res, next) => {
 	// console.log("Customer Assembly Insertion");
 	try {
@@ -425,7 +396,7 @@ customerRouter.post("/customerinsassembly", async (req, res, next) => {
 		next(error);
 	}
 });
-// Checking Duplicate Customer Assembly data
+//This API is for Checking Duplicate Customer Assembly data
 customerRouter.post("/chkassydupl", async (req, res, next) => {
 	// console.log("Checking Duplicate Customer Assembly data");
 	try {
@@ -449,7 +420,7 @@ customerRouter.post("/chkassydupl", async (req, res, next) => {
 	}
 });
 
-// Inserting Customer BOM PArts data
+//This API is for Inserting Customer BOM PArts data
 customerRouter.post("/custbomparts", async (req, res, next) => {
 	// console.log("Customer BOM Parts Insertion");
 	try {
@@ -513,6 +484,7 @@ customerRouter.post("/custbomparts", async (req, res, next) => {
 	}
 });
 
+//This API is for getcustomercontactdets
 customerRouter.post("/getcustomercontactdets", async (req, res, next) => {
 	// console.log("Existing Customer Contact");
 	try {
@@ -529,19 +501,8 @@ customerRouter.post("/getcustomercontactdets", async (req, res, next) => {
 	}
 });
 
-// customerRouter.post("/getcustomercontactteledets", async (req,res,next) => {
-//     console.log("Existing Customer Contact")
-//     try {
-//         const {contid} = req.body.contid;
-//         misQuery(`SELECT * FROM magodmis.contact_tele_data where Contact_Id = '${contid}'`, (data) => {
-//             res.send(data)
-//         })
-//     } catch (error) {
-//         next(error)
-//     }
-// });
 
-// sending data to Customer Part Receipt
+//This API is for sending data to Customer Part Receipt
 customerRouter.post(`/getcustomerbomparts`, async (req, res, next) => {
 	// console.log("getcustomerbomparts");
 	try {
@@ -560,7 +521,7 @@ customerRouter.post(`/getcustomerbomparts`, async (req, res, next) => {
 	}
 });
 
-// Bom Assembly Parts
+//This API is for Bom Assembly Parts
 customerRouter.post("/bomassemblyparts", async (req, res) => {
 	// console.log("Bom Assembly Parts");
 	try {
@@ -599,7 +560,7 @@ customerRouter.post("/bomassemblyparts", async (req, res) => {
 	}
 });
 
-// Get Customer BOM Parts
+//This API is for Get Customer BOM Parts
 customerRouter.post("/getcustpartdetails", async (req, res, next) => {
 	//  console.log("Customer Part details" + req.body.custcode)
 	try {
@@ -617,7 +578,7 @@ customerRouter.post("/getcustpartdetails", async (req, res, next) => {
 	}
 });
 
-// Get Customer BOM Assembly Parts
+//This API is for Get Customer BOM Assembly Parts
 customerRouter.post("/custbomassemblyparts", async (req, res, next) => {
 	//   console.log("Customer BOM Assembly Parts" + req.body.custcode)
 
@@ -642,8 +603,7 @@ customerRouter.post("/custbomassemblyparts", async (req, res, next) => {
 	}
 });
 
-// Get Existing Customer
-
+//This API is for Get Existing Customer
 customerRouter.post(`/getcustomer`, async (req, res, next) => {
 	//   console.log("Cust Code received");
 	try {
@@ -663,16 +623,13 @@ customerRouter.post(`/getcustomer`, async (req, res, next) => {
 	}
 });
 
-// geting customer drawing data
-//SELECT * FROM magodmis.dwg_data d WHERE d.`Cust_Code`=@Cust_Code;
+//This API is for geting customer drawing data
 customerRouter.post(`/customersdrawings`, async (req, res, next) => {
-	//    console.log(req.body);
 	try {
 		const custcode = req.body.custcode;
 
 		if (!custcode) res.send(createError.BadRequest());
 
-		// misQuery("SELECT Dwg_Code,Cust_Code,DwgName,Mtrl_Code,DxfLoc,Operation,MtrlCost,JobWorkCost,LOC,Holes,Weight FROM magodmis.dwg_data; where Cust_Code = '" + custcode + "'", (data) => {
 		misQueryMod(
 			`SELECT Dwg_Code,Cust_Code,DwgName,Mtrl_Code,DxfLoc,Operation,MtrlCost,JobWorkCost,LOC,Holes,FORMAT(Part_Wt,3) as Weight FROM magodmis.dwg_data where Cust_Code = '${custcode}'`,
 			(err, data) => {
@@ -685,9 +642,8 @@ customerRouter.post(`/customersdrawings`, async (req, res, next) => {
 	}
 });
 
-// geting customer Order data
+//This API is for geting customer Order data
 customerRouter.post(`/customerorders`, async (req, res, next) => {
-	// console.log("customerorders");
 	try {
 		const custcode = req.body.custcode;
 		const ordstatus = req.body.orderstatus;
@@ -754,10 +710,9 @@ customerRouter.post(`/customerorders`, async (req, res, next) => {
 	}
 });
 
-// geting customer Order Status data
+//This API is for geting customer Order Status data
 customerRouter.post(`/orderstatus`, async (req, res, next) => {
 	try {
-		//   if (!doctype) res.send(createError.BadRequest())
 		setupQuery(
 			`SELECT * FROM magod_setup.magod_statuslist s where s.Function = 'Order' order by Seniority asc`,
 			(data) => {
@@ -769,9 +724,8 @@ customerRouter.post(`/orderstatus`, async (req, res, next) => {
 	}
 });
 
-// geting customer Order Schedule data
+//This API is for geting customer Order Schedule data
 customerRouter.post(`/orderschedule`, async (req, res, next) => {
-	// console.log(req.body);
 	try {
 		const orderno = req.body.orderno;
 
@@ -787,7 +741,7 @@ customerRouter.post(`/orderschedule`, async (req, res, next) => {
 	}
 });
 
-// geting customer Order Schedule Tasks data
+//This API is for geting customer Order Schedule Tasks data
 customerRouter.post(`/orderschtasks`, async (req, res, next) => {
 	// console.log(req.body);
 	try {
@@ -807,7 +761,7 @@ customerRouter.post(`/orderschtasks`, async (req, res, next) => {
 	}
 });
 
-// geting customer Order Details data
+//This API is for geting customer Order Details data
 customerRouter.post(`/orderdetails`, async (req, res, next) => {
 	// console.log(req.body);
 	try {
@@ -823,7 +777,7 @@ customerRouter.post(`/orderdetails`, async (req, res, next) => {
 		next(error);
 	}
 });
-// getting Customer ORder Invoice data
+//This API is for getting Customer ORder Invoice data
 customerRouter.post(`/orderinvoices`, async (req, res, next) => {
 	try {
 		// console.log(req.body);
@@ -842,6 +796,7 @@ customerRouter.post(`/orderinvoices`, async (req, res, next) => {
 	}
 });
 
+//This API is for orderinvdwg
 customerRouter.post(`/orderinvdwg`, async (req, res, next) => {
 	// console.log(req.body);
 	// console.log("Order Invoices DWG");
@@ -859,6 +814,7 @@ customerRouter.post(`/orderinvdwg`, async (req, res, next) => {
 		next(error);
 	}
 });
+//This API is for schdets
 customerRouter.post(`/schdets`, async (req, res, next) => {
 	// console.log(req.body);
 
@@ -876,7 +832,7 @@ customerRouter.post(`/schdets`, async (req, res, next) => {
 		next(error);
 	}
 });
-
+//This API is for schtasksdets
 customerRouter.post(`/schtasksdets`, async (req, res, next) => {
 	try {
 		const nctaskid = req.body.nctaskid;
@@ -891,7 +847,7 @@ customerRouter.post(`/schtasksdets`, async (req, res, next) => {
 		next(error);
 	}
 });
-
+//This API is for printduereport
 customerRouter.post(`/printduereport`, async (req, res, next) => {
 	// console.log("Print Due Report ");
 	try {
@@ -957,7 +913,7 @@ customerRouter.post(`/customermtrlstock`, async (req, res, next) => {
 		next(error);
 	}
 });
-
+//This API is for getmtrlrvlist
 customerRouter.post(`/getmtrlrvlist`, async (req, res, next) => {
 	try {
 		const type = req.body.Type;
@@ -1013,8 +969,7 @@ customerRouter.post(`/getmtrlrvlist`, async (req, res, next) => {
 	}
 });
 
-// geting customer material Receipts data
-
+//This API is for geting customer material Receipts data
 customerRouter.post(`/customermtrlreceipts`, async (req, res, next) => {
 	try {
 		const custcode = req.body.custcode;
@@ -1034,7 +989,7 @@ customerRouter.post(`/customermtrlreceipts`, async (req, res, next) => {
 	}
 });
 
-// geting customer material Receipts Details data
+//This API is for geting customer material Receipts Details data
 customerRouter.post(`/customermtrlrectdetails`, async (req, res, next) => {
 	try {
 		const rvid = req.body.rvid;
@@ -1053,7 +1008,7 @@ customerRouter.post(`/customermtrlrectdetails`, async (req, res, next) => {
 	}
 });
 
-// geting customer material Parts Returned data
+//This API is for geting customer material Parts Returned data
 customerRouter.post(`/customermtrlpartsreturned`, async (req, res, next) => {
 	try {
 		const custcode = req.body.custcode;
@@ -1072,6 +1027,7 @@ customerRouter.post(`/customermtrlpartsreturned`, async (req, res, next) => {
 	}
 });
 
+//This API is for updatebomassembly
 customerRouter.post(`/updatebomassembly`, async (req, res, next) => {
 	// console.log("Update Assm details");
 	try {
@@ -1100,6 +1056,7 @@ customerRouter.post(`/updatebomassembly`, async (req, res, next) => {
 	}
 });
 
+//This API is for deletebomassmparts
 customerRouter.post(`/deletebomassmparts`, async (req, res, next) => {
 	// console.log("Deleting Parts ");
 	try {
@@ -1132,7 +1089,7 @@ customerRouter.post(`/deletebomassmparts`, async (req, res, next) => {
 	}
 });
 
-// geting customer material Parts Returned data
+//This API is for geting customer material Parts Returned data
 customerRouter.post(
 	`/customermtrlscrapUnusedreturned`,
 	async (req, res, next) => {
@@ -1158,7 +1115,7 @@ customerRouter.post(
 	}
 );
 
-// Customer Invoice and Payment Receipts data
+//This API is for Customer Invoice and Payment Receipts data
 customerRouter.post(`/customerduelist`, async (req, res, next) => {
 	// console.log(req.body);
 	try {
@@ -1186,6 +1143,7 @@ customerRouter.post(`/customerduelist`, async (req, res, next) => {
 	}
 });
 
+//This API is forcustomeroverduelist
 customerRouter.post(`/customeroverduelist`, async (req, res, next) => {
 	// console.log(req.body);
 	try {
@@ -1214,17 +1172,11 @@ customerRouter.post(`/customeroverduelist`, async (req, res, next) => {
 	}
 });
 
-// Customer - Dues and overdues data
+//This API is for Customer - Dues and overdues data
 customerRouter.post(`/customerduesoverdues`, async (req, res, next) => {
 	try {
 		const custcode = req.body.custcode;
 		if (!custcode) return res.send(createError.BadRequest());
-
-		// misQueryMod(`Select  case when DueDays > 365 then Sum(Balance) else 0 end as overDue,
-		// case when DueDays < 356 then Sum(Balance) else 0 end as dueamount
-		// from (SELECT DateDiff(Curdate(),d.Inv_Date) as DueDays,d.PymtAmtRecd,Cust_Code,(d.GrandTotal - d.PymtAmtRecd) as Balance
-		// FROM magodmis.draft_dc_inv_register d  WHERE  d.DCStatus='Despatched' AND d.Cust_Code='${custcode}'
-		// and d.GrandTotal > d.PymtAmtRecd ) a`, (err, data) => {
 		misQueryMod(
 			`Select  case when DueDays > crdays then Sum(Balance) else 0 end as overDue,
             case when DueDays > 0 then Sum(Balance) else 0 end as dueAmount
@@ -1243,7 +1195,7 @@ customerRouter.post(`/customerduesoverdues`, async (req, res, next) => {
 	}
 });
 
-// Customer - Part Payment Duelist data
+//This API is for Customer - Part Payment Duelist data
 customerRouter.post(`/pprcustomerduelist`, async (req, res, next) => {
 	// console.log(req.body);
 	try {
@@ -1271,8 +1223,7 @@ customerRouter.post(`/pprcustomerduelist`, async (req, res, next) => {
 	}
 });
 
-//Sned mails
-
+//This API is forSend mails
 customerRouter.post(`/sendmailwithattachment`, async (req, res, next) => {
 	// console.log("Send Mails with Attachment");
 	try {
@@ -1291,7 +1242,7 @@ customerRouter.post(`/sendmailwithattachment`, async (req, res, next) => {
 	}
 });
 
-// Customer Invoice form data from dc_invno
+//This API is for Customer Invoice form data from dc_invno
 customerRouter.post(`/customerdlinvform`, async (req, res, next) => {
 	// console.log(req.body);
 	try {
@@ -1310,7 +1261,7 @@ customerRouter.post(`/customerdlinvform`, async (req, res, next) => {
 	}
 });
 
-// Customer Invoice form data from dc_invno - Tax Details
+//This API is for Customer Invoice form data from dc_invno - Tax Details
 customerRouter.post(`/customerdlinvformtaxdets`, async (req, res, next) => {
 	// console.log(req.body);
 	try {
@@ -1329,7 +1280,7 @@ customerRouter.post(`/customerdlinvformtaxdets`, async (req, res, next) => {
 	}
 });
 
-// Customer Dues Summary
+//This API is for Customer Dues Summary
 customerRouter.post(`/customerduessummary`, async (req, res, next) => {
 	// console.log(req.body);
 	try {
@@ -1379,51 +1330,11 @@ customerRouter.post(`/customerduessummary`, async (req, res, next) => {
 		next(error);
 	}
 });
-// Customers Outstanding Summary
 
+//This API is for Customers Outstanding Summary
 customerRouter.post(`/customeroutstandings`, async (req, res, next) => {
 	// console.log(req.body);
 	try {
-		//        const custcode = req.body.custcode;
-		//      if (!custcode) return res.send(createError.BadRequest())
-
-		//     `select ab.Cust_Code,ab.Cust_Name, Sum(DueAmt30 + DueAmt60 + DueAmt90 + DueAmt180 + DueAmt365 + DueAmtAbv365) as TotalDues,
-		//     Sum(DueAmt30) as DueAmt30, Sum(DueAmt60) as DueAmt60, Sum(DueAmt90) as DueAmt90,
-		//    Sum(DueAmt180) as DueAmt180, Sum(DueAmt365) as DueAmt365, Sum(DueAmtAbv365) as DueAmtAbv365 from
-		//    (SELECT dd.Cust_Code,c.Cust_Name,
-		//        CASE
-		//            WHEN (DateDiff(Curdate(),dd.PaymentDate) <= 30) THEN (dd.GrandTotal - dd.PymtAmtRecd)
-		//            ELSE 0
-		//        END AS DueAmt30,
-		//       CASE
-		//            WHEN ((DateDiff(Curdate(),dd.PaymentDate) > 30) and (DateDiff(Curdate(),dd.PaymentDate) <= 60))
-		//            THEN (dd.GrandTotal - dd.PymtAmtRecd)
-		//            ELSE 0
-		//        END AS DueAmt60,
-		//         CASE
-		//            WHEN ((DateDiff(Curdate(),dd.PaymentDate) > 60) and (DateDiff(Curdate(),dd.PaymentDate) <= 90))
-		//            THEN (dd.GrandTotal - dd.PymtAmtRecd)
-		//            ELSE 0
-		//        END AS DueAmt90,
-		//         CASE
-		//            WHEN ((DateDiff(Curdate(),dd.PaymentDate) > 90) and (DateDiff(Curdate(),dd.PaymentDate) <= 180))
-		//            THEN (dd.GrandTotal - dd.PymtAmtRecd)
-		//            ELSE 0
-		//        END AS DueAmt180,
-		//         CASE
-		//            WHEN ((DateDiff(Curdate(),dd.PaymentDate) > 180) and (DateDiff(Curdate(),dd.PaymentDate) <= 365))
-		//            THEN (dd.GrandTotal - dd.PymtAmtRecd)
-		//            ELSE 0
-		//        END AS DueAmt365,
-		//         CASE
-		//            WHEN (DateDiff(Curdate(),dd.PaymentDate) > 365) THEN (dd.GrandTotal - dd.PymtAmtRecd)
-		//            ELSE 0
-		//        END AS DueAmtAbv365
-		//       FROM magodmis.draft_dc_inv_register dd
-		//    left outer join magodmis.cust_data c on c.Cust_Code = dd.Cust_Code
-		//    where (dd.PymtAmtRecd < dd.GrandTotal) ) ab
-		//    where DueAmt30 > 0 or DueAmt60 >0 or DueAmt90 >0 or DueAmt180 > 0 or DueAmt365> 0 or DueAmtAbv365 > 0
-		//    Group by Cust_Code Order by Cust_Name asc`
 
 		misQueryMod(
 			`select ab.Cust_Code,ab.Cust_Name, Sum(DueAmt30 + DueAmt60 + DueAmt90 + DueAmt180 + DueAmt365 + DueAmtAbv365) as TotalDues,
@@ -1472,8 +1383,8 @@ customerRouter.post(`/customeroutstandings`, async (req, res, next) => {
 		next(error);
 	}
 });
-// customer outstanding invoices
 
+//This API is for customer outstanding invoices
 customerRouter.post(`/outstandinginvoices`, async (req, res, next) => {
 	// console.log(req.body);
 	try {
@@ -1495,7 +1406,7 @@ customerRouter.post(`/outstandinginvoices`, async (req, res, next) => {
 		next(error);
 	}
 });
-// Customer Receipts Info
+//This API is for Customer Receipts Info
 customerRouter.post(`/customerreceiptsinfo`, async (req, res, next) => {
 	// console.log(req.body);
 	try {
@@ -1514,7 +1425,7 @@ customerRouter.post(`/customerreceiptsinfo`, async (req, res, next) => {
 	}
 });
 
-// Customer Receipts Details
+//This API is for Customer Receipts Details
 customerRouter.post(`/customerreceiptdets`, async (req, res, next) => {
 	// console.log(req.body);
 	try {

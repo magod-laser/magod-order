@@ -1,8 +1,8 @@
 const inspectionRouter = require("express").Router();
-var createError = require('http-errors');
-
+const createError = require('http-errors');
 const { setupQuery } = require('../helpers/dbconn');
 
+// This API is for allinspectionlevels
 inspectionRouter.get('/allinspectionlevels', async (req, res, next) => {
     try {
         setupQuery("Select * from magod_setup.insplevels order by InspLevel asc", (data) => {
@@ -12,7 +12,5 @@ inspectionRouter.get('/allinspectionlevels', async (req, res, next) => {
         next(error)
     }
 })
-
-
 
 module.exports = inspectionRouter;

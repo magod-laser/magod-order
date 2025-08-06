@@ -14,7 +14,6 @@ function Home() {
     <>
       <Header user={false} />
       
-
       <div className="card-container">
         
         <Link

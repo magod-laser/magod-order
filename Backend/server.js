@@ -3,35 +3,21 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-// const fileUpload = require('express-fileupload');
 const path = require("path");
-// const { setConfig } = require("./routes/Utils/globalConfig");
-
 const pathConfig = require("./routes/Utils/globalConfig");
 
 const app = express();
-const {
-  misQuery,
-  setupQuery,
-  qtnQuery,
-  misQueryMod,
-  qtnQueryMod,
-  qtnQueryModv2,
-  slsQueryMod,
-  mchQueryMod,
-  mtrlQueryMod,
-  setupQueryMod,
-} = require("./helpers/dbconn");
+const {  setupQuery,setupQueryMod} = require("./helpers/dbconn");
 
 require("dotenv").config({ path: path.join(__dirname, "./.env.backend") });
-
 
 setupQuery("SELECT 1", (res) => {
   console.log("Connected to MySQL successfully. ");
 });
 
 let configObject = {};
-// // setup details
+
+//This function is for getting Setup details (Path from DB)
 function loadGlobalSetupConfig() {
   return new Promise((resolve, reject) => {
     setupQueryMod(
@@ -58,7 +44,6 @@ function loadGlobalSetupConfig() {
 
 loadGlobalSetupConfig()
   .then(() => {
-    // console.log("CONFIG Loaded:", pathConfig.getAll());   
   })
   .catch((err) => {
     console.error("Failed to load config", err);
@@ -69,7 +54,6 @@ loadGlobalSetupConfig()
 // Call it once
 app.use(cors());
 const userRouter = require("./routes/user");
-
 const unitRouter = require("./routes/units");
 const quoteRouter = require("./routes/quotations");
 const customerRouter = require("./routes/customer");
@@ -98,9 +82,7 @@ const analysisRouter = require("./routes/analysis"); // not in use
 const accountsRouter = require("./routes/accounts");
 const fileRouter = require("./routes/files");
 const orderListRouter = require("./routes/OrderList/OrderList");
-
 const { logger } = require("./helpers/logger");
-
 const ScheduleListRouter = require("./routes/OrderRoutes/ScheduleList");
 const CombinedScheduleCreate = require("./routes/CombinedSchedule/CombinedScheduleCreate");
 const scheduleListCombined = require("./routes/CombinedSchedule/scheduleListCombined");
@@ -144,7 +126,6 @@ app.use("/orderList", orderListRouter);
 app.use("/ScheduleList", ScheduleListRouter);
 app.use("/CombinedScheduleCreate", CombinedScheduleCreate);
 app.use("/scheduleListCombined", scheduleListCombined);
-
 app.use("/productionSchCreation", ProductionSchCreationRouter);
 app.use("/NCProgram", NCProgramRouter);
 app.use("/taskSheet", taskSheet);
@@ -152,8 +133,7 @@ app.use("/solidState", solidState);
 app.use("/co2", co2);
 app.use("/ISOpdf", pdf);
 
-// Deleted routess
-// NEW ORDER ROUTES
+// Deleted routess // NEW ORDER ROUTES
 const OrderDetailsRouter = require("./routes/OrderRoutes/OrderDetails");
 // const ProductionSchCreationRouter = require("./routes/OrderRoutes/ProductionSchCreation");
 const ProfarmaInvListRouter = require("./routes/OrderRoutes/ProfarmaInvList");
@@ -163,6 +143,7 @@ const PDFRouter = require("./routes/OrderRoutes/PDF");
 
 // const ScheduleListRouter=require("./routes/OrderRoutes/ScheduleList");
 // const NCprogramRoter=require("./routes/OrderRoutes/NCprogram");
+
 // running no
 const runningNoRouter = require("./routes/runningNo");
 const savePDF = require("./routes/SavePDFServer");

@@ -20,7 +20,7 @@
 **/.env   
 .env
 backend/.env
-frontend/.env            #  Ignore .env files in all folders
+frontend/.env           #  Ignore .env files in all folders
 backend/logs/        #  Ignore logs folder in backend
 
 npm-debug.log*

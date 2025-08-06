@@ -2,9 +2,9 @@ const mailRouter = require("express").Router();
 var createError = require("http-errors");
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
-
 const { sendQuotation, sendAttachmails } = require("../helpers/sendmail");
 
+// This API is for sendmail
 mailRouter.post("/sendmail", async (req, res, next) => {
   try {
     const { customer, qtnDetails, qtnTC } = req.body;
@@ -17,6 +17,7 @@ mailRouter.post("/sendmail", async (req, res, next) => {
   }
 });
 
+// This API is for sendDirectMail with attachment
 mailRouter.post(
   "/sendDirectMail",
   upload.single("file"),

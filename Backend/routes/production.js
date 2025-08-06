@@ -1,10 +1,9 @@
 const productionRouter = require("express").Router();
 var createError = require('http-errors')
-
 const { misQueryMod, setupQuery, misQuery, mchQueryMod } = require('../helpers/dbconn');
 const { createFolder } = require('../helpers/folderhelper');
 
-
+// This API is for allproductionlevels
 productionRouter.post(`/getprodschlistdetails`, async (req, res, next) => {
     try {
         let type = req.body.schtype;
@@ -13,7 +12,7 @@ productionRouter.post(`/getprodschlistdetails`, async (req, res, next) => {
         WHERE (o.Schedule_Status='Tasked' OR o.Schedule_Status='Programmed' OR o.Schedule_Status='Production' 
         OR o.Schedule_Status='Processing' OR o.Schedule_Status='Completed') AND o.Type='${type}' 
         ORDER BY o.Delivery_date `, (err, prodschdata) => {
-            console.log(prodschdata)
+            // console.log(prodschdata)
             res.send(prodschdata)
         })
     } catch (error) {
@@ -21,11 +20,12 @@ productionRouter.post(`/getprodschlistdetails`, async (req, res, next) => {
     }
 });
 
+// This API is for getncprogramlistdata
 productionRouter.post(`/getncprogramlistdata`, async (req, res, next) => {
     try {
         let nctaskid = req.body.Nctaskid;
         misQueryMod(`SELECT * FROM magodmis.ncprograms n WHERE n.NcTaskId='${nctaskid}'`, (err, prodschdata) => { 
-            console.log(prodschdata)
+            // console.log(prodschdata)
             res.send(prodschdata)
         })
     } catch (error) {

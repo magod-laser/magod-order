@@ -1,8 +1,8 @@
 const unitRouter = require("express").Router();
 var createError = require("http-errors");
-
 const { setupQuery } = require("../helpers/dbconn");
 
+//This API is for get all units 
 unitRouter.post("/allunits", async (req, res, next) => {
   try {
     setupQuery(
@@ -17,6 +17,7 @@ unitRouter.post("/allunits", async (req, res, next) => {
   }
 });
 
+//This API is for getting Unitname
 unitRouter.post("/unit", async (req, res, next) => {
   try {
     const { id } = req.body;

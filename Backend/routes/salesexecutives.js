@@ -2,9 +2,9 @@
 
 const salesexeclistRouter = require("express").Router();
 var createError = require("http-errors");
-
 const { slsQueryMod } = require("../helpers/dbconn");
 
+//This API is for allsalesexeclists
 salesexeclistRouter.post("/allsalesexeclists", async (req, res, next) => {
   try {
     slsQueryMod(
@@ -19,6 +19,7 @@ salesexeclistRouter.post("/allsalesexeclists", async (req, res, next) => {
   }
 });
 
+//This API is for indisalesexeclists 
 salesexeclistRouter.post("/indisalesexeclists", async (req, res, next) => {
   try {
     let salesid = req.body.salesContact;

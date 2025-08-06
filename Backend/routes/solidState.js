@@ -10,6 +10,7 @@ const {
 } = require("../helpers/dbconn");
 const { logger } = require("../helpers/logger");
 
+//This API is for getData
 solidState.get("/getData", async (req, res, next) => {
   const { ncid } = req.query;
   // console.log("ncid", req.query);
@@ -30,7 +31,7 @@ solidState.get("/getData", async (req, res, next) => {
     next(error);
   }
 });
-
+//This API is for getJointType
 solidState.get("/getJointType", async (req, res, next) => {
   try {
     qtnQueryMod(
@@ -45,7 +46,7 @@ solidState.get("/getJointType", async (req, res, next) => {
     next(error);
   }
 });
-
+//This API is for saveSolidStateParameters
 solidState.post("/saveSolidStateParameters", async (req, res, next) => {
   const { ncid, taskDate, operator, filler, gasType, jointType } = req.body;
   // console.log("req.body Save", req.body);
@@ -101,7 +102,7 @@ solidState.post("/saveSolidStateParameters", async (req, res, next) => {
     next(error);
   }
 });
-
+//This API is for insertMaterialDetails
 solidState.post("/insertMaterialDetails", async (req, res, next) => {
   const { ncid, material, thickness } = req.body;
   const thicknessValue = thickness !== "" ? thickness : null;
@@ -133,7 +134,7 @@ solidState.post("/insertMaterialDetails", async (req, res, next) => {
     next(error);
   }
 });
-
+//This API is for deleteMaterialDetails
 solidState.post("/deleteMaterialDetails", async (req, res, next) => {
   const { id } = req.body;
   try {
@@ -154,7 +155,7 @@ solidState.post("/deleteMaterialDetails", async (req, res, next) => {
     next(error);
   }
 });
-
+//This API is for updateMaterialDetails
 solidState.post("/updateMaterialDetails", async (req, res, next) => {
   const { ncid, id, material, thickness } = req.body;
 
@@ -177,7 +178,7 @@ solidState.post("/updateMaterialDetails", async (req, res, next) => {
     next(error);
   }
 });
-
+//This API is for updateParaDetails
 solidState.post("/updateParaDetails", async (req, res, next) => {
   const {
     ncid,
@@ -224,7 +225,7 @@ solidState.post("/updateParaDetails", async (req, res, next) => {
     next(error);
   }
 });
-
+//This API is for insertParaDetails
 solidState.post("/insertParaDetails", async (req, res, next) => {
   const {
     ncid,
@@ -286,7 +287,7 @@ solidState.post("/insertParaDetails", async (req, res, next) => {
     next(error);
   }
 });
-
+//This API is for deleteParaDetails
 solidState.post("/deleteParaDetails", async (req, res, next) => {
   const { id } = req.body;
   try {
@@ -307,7 +308,7 @@ solidState.post("/deleteParaDetails", async (req, res, next) => {
     next(error);
   }
 });
-
+//This API is for allSolidStateData
 solidState.post("/allSolidStateData", async (req, res, next) => {
   const { ncid } = req.body;
   // console.log("qtnID", req.body);

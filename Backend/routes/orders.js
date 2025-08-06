@@ -18,9 +18,7 @@ const { logger } = require("../helpers/logger");
 
 // This API is used to create a new order in the system
 ordersRouter.post(`/savecreateorder`, async (req, res, next) => {
-  ////console.log("Creating new order - I");
   try {
-    ////console.log("Creating new order");
     let zzz = new Date();
     const orddate =
       zzz.getFullYear() +
@@ -91,7 +89,15 @@ ordersRouter.post(`/savecreateorder`, async (req, res, next) => {
           .padStart(voucherLength, "0")}`;
         ////console.log(ordno);
         // Create folder on the server
-        await createFolder("Order", ordno, "");
+        // await createFolder("Order", ordno, "");
+         // Attempt to create folder
+          try {
+      await createFolder("Order", ordno, "");
+      console.log(" Folder created successfully for order:", ordno);
+    } catch (folderError) {
+      console.log("Folder creation failed for order:", ordno, "Error:", folderError.message);
+    }
+      
 
         ////console.log("After Qtn");
 
@@ -191,7 +197,7 @@ ordersRouter.post(`/getorderdata`, async (req, res, next) => {
   }
 });
 
-//
+// This API is used to get the order list data based on order type and status
 ordersRouter.get(`/getcombinedschdata`, async (req, res, next) => {
   try {
     misQueryMod(

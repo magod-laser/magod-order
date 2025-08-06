@@ -7,7 +7,6 @@ import Parentroute from "./Layout/Parentroute";
 import Login from "./pages/Auth/Login";
 import Home from "./pages/Home";
 import HomeOne from "./pages/HomeOne";
-
 import SendMail from "./pages/sendmail/sendmails";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

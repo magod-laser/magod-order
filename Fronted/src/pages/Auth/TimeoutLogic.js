@@ -15,8 +15,7 @@ export const TimeoutLogic = () => {
         setWarningModalOpen(true);
       }, 900000);
 
-    // 15 min we fixed the timout so, 900000 ms
-
+    //timout  for 15 min
     const createTimeout2 = () =>
       setTimeout(() => {
         localStorage.clear();

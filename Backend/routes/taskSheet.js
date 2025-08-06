@@ -10,9 +10,9 @@ const {
 } = require("../helpers/dbconn");
 const { logger } = require("../helpers/logger");
 
+//This API is for getData
 taskSheet.get("/getData", async (req, res, next) => {
   const { ncid } = req.query;
-  // console.log("ncid", req.query);
 
   try {
     misQueryMod(
@@ -63,6 +63,7 @@ taskSheet.get("/getData", async (req, res, next) => {
   }
 });
 
+//This API is for saveTaskSheetRegister
 taskSheet.post("/saveTaskSheetRegister", async (req, res, next) => {
   const {
     ncid,
@@ -213,6 +214,7 @@ taskSheet.post("/saveTaskSheetRegister", async (req, res, next) => {
   }
 });
 
+//This API is for saveSolidStateParameters
 taskSheet.post("/saveSolidStateParameters", async (req, res, next) => {
   const {
     ncid,
@@ -303,6 +305,7 @@ taskSheet.post("/saveSolidStateParameters", async (req, res, next) => {
   }
 });
 
+//This API is for saveCo2Parameters
 taskSheet.post("/saveCo2Parameters", async (req, res, next) => {
   const {
     ncid,
@@ -395,6 +398,7 @@ taskSheet.post("/saveCo2Parameters", async (req, res, next) => {
   }
 });
 
+//This API is for insertSubAssyDetails
 taskSheet.post("/insertSubAssyDetails", async (req, res, next) => {
   const { ncid, subAssy, qtyReceived } = req.body;
   try {
@@ -426,6 +430,7 @@ taskSheet.post("/insertSubAssyDetails", async (req, res, next) => {
   }
 });
 
+//This API is for deleteSubAssyDetails
 taskSheet.post("/deleteSubAssyDetails", async (req, res, next) => {
   const { id } = req.body;
   try {
@@ -447,6 +452,7 @@ taskSheet.post("/deleteSubAssyDetails", async (req, res, next) => {
   }
 });
 
+//This API is for updateSubAssyDetails
 taskSheet.post("/updateSubAssyDetails", async (req, res, next) => {
   const { ncid, id, subAssy, qtyReceived } = req.body;
 
@@ -470,6 +476,7 @@ taskSheet.post("/updateSubAssyDetails", async (req, res, next) => {
   }
 });
 
+//This API is for allTaskData
 taskSheet.post("/allTaskData", async (req, res, next) => {
   const { ncid } = req.body;
   // console.log("qtnID", req.body);
@@ -529,6 +536,7 @@ taskSheet.post("/allTaskData", async (req, res, next) => {
   }
 });
 
+//This API is for getJointType
 taskSheet.get("/getJointType", async (req, res, next) => {
   try {
     qtnQueryMod(
@@ -544,6 +552,7 @@ taskSheet.get("/getJointType", async (req, res, next) => {
   }
 });
 
+//This API is for getWeldSide
 taskSheet.get("/getWeldSide", async (req, res, next) => {
   try {
     qtnQueryMod(
@@ -559,6 +568,7 @@ taskSheet.get("/getWeldSide", async (req, res, next) => {
   }
 });
 
+//This API is for getNcIdData
 taskSheet.get("/getNcIdData", async (req, res, next) => {
   try {
     qtnQueryMod(`SELECT * FROM magodmis.ncprograms Limit 5000`, (err, data) => {
