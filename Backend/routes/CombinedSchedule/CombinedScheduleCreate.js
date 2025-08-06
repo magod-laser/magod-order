@@ -374,7 +374,6 @@ GROUP BY o.DwgName
 
         console.log("folderBase", folderBase);
       // Folder creation
-      // const baseDir = path.join("C:", "Magod", "Jigani", "Wo");
       const baseDir = folderBase;
       const combinedScheduleDir = path.join(baseDir, combinedScheduleNo);
 
@@ -599,7 +598,6 @@ CombinedScheduleCreate.post(
       
 
       // Step 4: Folder creation
-      // const baseDir = path.join("C:", "Magod", "Jigani", "Wo");
       const baseDir = folderBase;
       const combinedScheduleDir = path.join(baseDir, combinedScheduleNo);
       const subfolders = [

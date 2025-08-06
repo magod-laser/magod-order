@@ -71,7 +71,7 @@ function NewOrder(props) {
     
 
     let data = JSON.parse(localStorage.getItem("LazerUser"));
-    setuserName(data?.data[0]?.Name);
+    setuserName(data?.data?.Name);
 
     var currentDate = new Date();
 
@@ -118,6 +118,27 @@ function NewOrder(props) {
     toggleSelectDisabled();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isChecked]);
+
+   const [UnitName, setUnitName] = useState();
+
+   useEffect(() => {
+     const storedData = localStorage.getItem("userData");
+
+     if (storedData) {
+       try {
+         const parsedData = JSON.parse(storedData);
+         const AppunitName = parsedData.UnitName;
+
+         if (AppunitName) {
+           setUnitName(AppunitName);
+         }
+       } catch (err) {
+         console.error("Error parsing userData from localStorage:", err);
+       }
+     } else {
+       console.log("No userData in localStorage.");
+     }
+   }, []);
   // alert modals for register and save
   // eslint-disable-next-line no-unused-vars
   const openModal = (e) => {
@@ -276,6 +297,8 @@ function NewOrder(props) {
     if (!isChecked) {
       deliveryModeSelectRef?.current.reportValidity();
     }
+    // Unit name
+    
     await postRequest(
       endpoints.saveCreateOrder,
       {
@@ -300,9 +323,10 @@ function NewOrder(props) {
         shippingAddress,
         GSTTaxState,
         Transportcharges,
+        UnitName,
       },
       async (resp) => {
-        console.log("resp---000",resp);
+        // console.log("resp---000",resp);
         
         setOrderno(resp.orderno);
         // postRequest(endpoints.getCustomerDets, { CustCode }, (custdata) => {
@@ -602,6 +626,21 @@ function NewOrder(props) {
                 >
                   <label className="form-label">Sales Contact</label>
                 </div>
+                {/* <div className="col-md-8 col-sm-12">
+                  <select
+                    className="ip-select input-field"
+                    id="formSalesContact"
+                    defaultValue={userName}
+                    required
+                  >
+                    <option>{userName}</option>
+                    {salesExecdata.map((sdata) => {
+                      return (
+                        <option value={sdata["Name"]}>{sdata["Name"]}</option>
+                      );
+                    })}
+                  </select>
+                </div> */}
                 <div className="col-md-8 col-sm-12">
                   <select
                     className="ip-select input-field"

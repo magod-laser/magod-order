@@ -12,7 +12,7 @@ let globalAdjustmentName;
 const savePDF = express.Router();
 
 const baseUploadFolder =
-  process.env.FILE_SERVER_PATH?.trim() || "C:/Magod/Jigani"; // Ensure this is set correctly
+  process.env.FILE_SERVER_PATH?.trim() ; // Ensure this is set correctly
 
 const getFormattedDateTime = () => {
   const now = new Date();

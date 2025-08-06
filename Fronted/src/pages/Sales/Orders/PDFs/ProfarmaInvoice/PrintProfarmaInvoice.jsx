@@ -1614,7 +1614,7 @@ export default function PrintProfarmaInvoice(props) {
 //   <View style={{ ...style.globalPadding }}>
 //     <Text>
 // State Bank of India Current Account A/C No :
-// 33664104046 IFSC : SBIN0011355 Branch : Jigani
+// 33664104046 IFSC : SBIN0011355 Branch : ""
 //     </Text>
 //   </View>
 // </View>
