@@ -1,12 +1,5 @@
 /** @format */
 
-// let API = "http://localhost:3001";
-// let API = "http://172.16.20.39:3001";
-// let API = "http://20.204.144.125:3001";
-// let API = "http://localhost:4001";
-// let API = "http://192.168.1.25:4001";
-// let API = "http://172.16.20.61:3001";
-
 let API = process.env.REACT_APP_API_KEY;
 
 export const endpoints = {
@@ -29,7 +22,7 @@ export const endpoints = {
   updateOrderTblDetails: `${API}/order/updateOrderDetails`,
   ordertablevaluesupdate: `${API}/OrderDetails/ordertablevaluesupdate`,
 
-  //------------------veeranna-----------------------
+  //Order Details Related urls
   getOrderDataforFindOrder: `${API}/order/getOrderDataforFindOrder`,
   PostNewSrlData: `${API}/order/postnewsrldata`,
   InsertNewSrlData: `${API}/OrderDetails/insertnewsrldata`,
@@ -49,12 +42,13 @@ export const endpoints = {
   testttttt: `${API}/OrderDetails/testttttt`,
   compareCustDwg: `${API}/file/compareCustDwg`,
 
-  // profarma inv list...............
+  // profarma inv list  Related urls
   getProfarmaMain: `${API}/profarmaInvList/getProfarmaMain`,
   getProfarmaDetails: `${API}/profarmaInvList/getProfarmaDetails`,
   postCreateInvoice: `${API}/profarmaInvList/postCreateInvoice`,
   postDeleteInvoice: `${API}/profarmaInvList/postDeleteInvoice`,
-  // profarma inv form
+
+  // profarma inv form  Related urls
   getTaxData: `${API}/profarmaInvForm/getTaxData`,
   getProfarmaFormMain: `${API}/profarmaInvForm/getProfarmaFormMain`,
   getProfarmaFormDetails: `${API}/profarmaInvForm/getProfarmaFormDetails`,
@@ -151,8 +145,8 @@ export const endpoints = {
   getMtrlGrade: `${API}/mtrlgrades/mtrlgrad`,
   getMaterialSpWt: `${API}/mtrlgrades/getmaterialspwt`,
   getTermsConditions: `${API}/termsconditions/alltermsconditions`,
-  // Quotation
 
+  //Quotation  Related urls
   createQuotation: `${API}/quotation/quotation`,
   getQuotations: `${API}/quotation/getquotations`,
   getQuotationList: `${API}/quotation/getquotationlist`,
@@ -214,12 +208,9 @@ export const endpoints = {
   ReviseQuotation: `${API}/quotation/getquotationalldetails`,
   ChkQtnItems: `${API}/quotation/chkQtnItems`,
   getFabAssyParts: `${API}/quotation/getfabassyparts`,
-
   sendQuotationMail: `${API}/quotation/sendquotationmail`,
-
   getMtrlDetails: `${API}/materials/getmtrldetails`,
   getMtrlLocation: `${API}/materials/getmtrllocation`,
-
   getScheduleList: `${API}/sigmanc/getschedulelist`,
   getTaskScheduleDetails: `${API}/sigmanc/gettaskscheduledetails`,
   getCreateDxfWS: `${API}/sigmanc/getcreatedxfws`,
@@ -297,18 +288,18 @@ export const endpoints = {
   getPaymentRectsDetails: `${API}/accounts/paymentrectdetails`,
   getPrdSummary: `${API}/accounts/prdsummary`,
 
-  //Paking And Invoice
+  //Paking And Invoice  Related urls
   getData: `${API}/gettest/getdata`,
   getCustomerData: `${API}/schedulelist/getallcustomers`,
 
-  //ScheduleList Service
+  //ScheduleList Service  Related urls
   getScheduleListData: `${API}/ScheduleList/getScheduleListData`,
   getScheduleListDwgData: `${API}/ScheduleList/getDwgTableData`,
   getScheduleListTaskandMaterial: `${API}/ScheduleList/getTaskandMterial`,
   getDwgListData: `${API}/ScheduleList/getDwgDataListTMTab`,
   ShiftDetails: `${API}/ScheduleList/ScheduleDetails`,
 
-  //OpenSchedule Srvice
+  //OpenSchedule Srvice  Related urls
   getScheduleListgetFormDetails: `${API}/ScheduleList/getFormDeatils`,
   onClickShortClose: `${API}/ScheduleList/shortClose`,
   onClickSave: `${API}/ScheduleList/save`,
@@ -326,7 +317,7 @@ export const endpoints = {
   getFixtureStatus: `${API}/ScheduleList/checkFixtureOrder`,
   getProfileOrderStatus: `${API}/ScheduleList/checkProfileOrder`,
 
-  //NCProgram Button
+  //NCProgram Button  Related urls
   onClickNCProgram: `${API}/NCProgram/getFormData`,
   getMachineList: `${API}/NCProgram/getMachines`,
   addNCProgram: `${API}/NCProgram/addProgram`,
@@ -336,13 +327,15 @@ export const endpoints = {
   getNCPrograms: `${API}/NCProgram/getPrograms`,
   getPartsData: `${API}/NCProgram/NCProgramPartsData`,
 
-  //Production Schedule Creation
+  //Production Schedule Creation  Related urls
   CreateProductionSchedule: `${API}/productionSchCreation/createProductionSchedule`,
   shortcloseOrder: `${API}/productionSchCreation/shortCloseOrder`,
-  //ShortClose to Recorded
+
+  //ShortClose to Recorded  Related urls
   shortclosetoRecorded: `${API}/productionSchCreation/shortclosetoRecorded`,
   cancelOrder: `${API}/productionSchCreation/cancelOrder`,
-  //Cancel to Recorded
+
+  //Cancel to Recorded  Related urls
   canceltoRecorded: `${API}/productionSchCreation/canceltoRecord`,
   suspendOrder: `${API}/productionSchCreation/suspendOrder`,
   scheduleListbasedOnScheduleType: `${API}/productionSchCreation/schedulelistbasedonScheduleType`,
@@ -355,7 +348,7 @@ export const endpoints = {
   onClickScheduled: `${API}/ScheduleList/ScheduleButton`,
   releaseSuspended: `${API}/ScheduleList/releaseClick`,
 
-  // packingNote and Invoice
+  // packingNote and Invoice  Related urls
   getAllPNAndInvRegisterbyOrderNo: `${API}/orderPackingNoteAndInvoice/getAllPNAndInvRegisterbyOrderNo`,
   aboutInvoicePN: `${API}/orderPackingNoteAndInvoice/aboutInvoicePN`,
   getSetRateConsumerData: `${API}/orderPackingNoteAndInvoice/getSetRateConsumerData`,
@@ -375,7 +368,6 @@ export const endpoints = {
   getSalesContact: `${API}/ScheduleList/getSalesContact`,
   onClickTask: `${API}/ScheduleList/taskOnclick`,
 
-  // //NCProgram Button
   // onClickNCProgram: `${API}/NCProgram/getFormData`,
   // getMachineList: `${API}/NCProgram/getMachines`,
   // addNCProgram: `${API}/NCProgram/addProgram`,
@@ -384,12 +376,12 @@ export const endpoints = {
   // SaveButton: `${API}/NCProgram/ButtonSave`,
   // getNCPrograms: `${API}/NCProgram/getPrograms`,
 
-  // running no
+  // running no  Related urls
   getAndInsertRunningNo: `${API}/runningNo/getAndInsertRunningNo`,
   updateRunningNoBySrlType: `${API}/runningNo/updateRunningNoBySrlType`,
   insertAndGetRunningNo: `${API}/runningNo/insertAndGetRunningNo`,
 
-  // import qtn
+  // import qtn Related urls
   getQtnList: `${API}/orderDetails/getQtnList`,
   getQtnDataByQtnID: `${API}/orderDetails/getQtnDataByQtnID`,
   getOldOrderByCustCodeAndOrderNo: `${API}/orderDetails/getOldOrderByCustCodeAndOrderNo`,
@@ -398,12 +390,13 @@ export const endpoints = {
   postDetailsDataInImportQtn: `${API}/orderDetails/postDetailsDataInImportQtn`,
   UpdateOrdDWG: `${API}/orderDetails/updateOrdDWG`,
 
-  // IMPORT EXCEL
+  //IMPORT EXCEL  Related url
   postDetailsDataInImportExcel: `${API}/orderDetails/postDetailsDataInImportExcel`,
-  // IMPORT OLD ORDER
+
+  //IMPORT OLD ORDER  Related url
   postDetailsDataInImportOldOrder: `${API}/orderDetails/postDetailsDataInImportOldOrder`,
 
-  //Combined Schedule
+  //Combined Schedule  Related urls
   getSalesContact: `${API}/CombinedScheduleCreate/getSalesContactList`,
   allcustomerdata: `${API}/CombinedScheduleCreate/allcustomersData`,
   rightTabledata: `${API}/CombinedScheduleCreate/getRightTableData`,
@@ -415,8 +408,8 @@ export const endpoints = {
   CreateScheduleforSales: `${API}/CombinedScheduleCreate/createScheduleforSales`,
   afterCombinedSchedule: `${API}/CombinedScheduleCreate/afterCombineSchedule`,
   getSchedudleDetails: `${API}/scheduleListCombined/scheduleListDetails`,
-  getSchedudleDetailssales: `${API}/scheduleListCombined/scheduleListDetailssales`, // veeeeeeeranna
-  scheduleListDetailssalescreate: `${API}/scheduleListCombined/scheduleListDetailssalescreate`, // veeeeeeeranna
+  getSchedudleDetailssales: `${API}/scheduleListCombined/scheduleListDetailssales`, 
+  scheduleListDetailssalescreate: `${API}/scheduleListCombined/scheduleListDetailssalescreate`,
   CombinedTasksTaskTable: `${API}/scheduleListCombined/combinedTaksTaskTable`,
   CombinedTasksShowDwg: `${API}/scheduleListCombined/combinedTaksShowDwgName`,
   OriginalTable: `${API}/scheduleListCombined/OriginalTable1`,
@@ -438,7 +431,7 @@ export const endpoints = {
   getFolders: `${API}/file/getfoldernames`,
   onClickLoginSchedule: `${API}/ScheduleList/scheduleAfterLogin`,
 
-  // suresh sir code
+  // WS  Related urls
   createSchWS: `${API}/ScheduleList/createSchWS`,
   schCreatePartsWS: `${API}/ScheduleList/schCreatePartsWS`,
   readSchWS: `${API}/ScheduleList/readSchWS`,

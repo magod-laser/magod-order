@@ -2,7 +2,6 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import BreadcrumbsComponent from "../components/BreadCumbsComponent";
 import Header from "../pages/Header";
-import Sidebar from "../pages/Sidebar";
 import SidebarComp from "./SideBarComp";
  
 function SharedLayout() {
@@ -11,7 +10,6 @@ function SharedLayout() {
       <div className="parent">
         <div className="main">
           <div className="sidebar-child">
-            {/* <Sidebar /> */}
             <SidebarComp />
           </div>
           <div className="content-child ">

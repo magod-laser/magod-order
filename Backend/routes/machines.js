@@ -1,8 +1,8 @@
 const machineRouter = require("express").Router();
-var createError = require('http-errors');
-
+const createError = require('http-errors');
 const { mchQueryMod } = require('../helpers/dbconn');
 
+// This API is for allmachines
 machineRouter.get('/allmachines', async (req, res, next) => {
     try {
         mchQueryMod("Select * from machine_data.machine_list order by Machine_srl asc", (err,data) => {

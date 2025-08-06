@@ -22,7 +22,6 @@ export default function OkayModal(props) {
            message
           </Modal.Title>
         </Modal.Header>
-        {/* <Modal.Body>Draft Created Successfully</Modal.Body> */}
         <Modal.Body>{message}</Modal.Body>
         <Modal.Footer>
           <button

@@ -1,11 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /** @format */
 
-import React, { useEffect, useState, Profiler } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Tab, Table, Tabs, Form } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { Tab, Tabs, } from "react-bootstrap";
 import FindOldPart from "./Tabs/FindOldPart/FindOldPart";
 import MaterialInfo from "./Tabs/MaterialInfo/MaterialInfo";
-import MaterialPlanner from "./Tabs/MaterialPlanner/MaterialPlanner";
+// import MaterialPlanner from "./Tabs/MaterialPlanner/MaterialPlanner";
 import OrderDetails from "./Tabs/OrderDetails/OrderDetails";
 import OrderInfo from "./Tabs/OrderInfo/OrderInfo";
 import ProductionScheduleCreation from "./Tabs/ProductionScheduleCreation/ProductionScheduleCreation";
@@ -19,7 +20,7 @@ import { Helper } from "dxf";
 import { Buffer } from "buffer";
 import axios from "axios";
 const {
-  getRequest,
+  
   postRequest,
   getFileRequest,
 } = require("../../../../api/apiinstance");
@@ -38,7 +39,7 @@ const InputField = ({
   showCheckbox,
   Type,
 }) => {
-  const [isValid, setIsValid] = useState(true);
+  // const [isValid, setIsValid] = useState(true);
   const handleInputChange = (e) => {
     const inputValue = e.target.value.replace(/[^0-9.]/g, "");
 
@@ -78,15 +79,18 @@ const InputField = ({
 };
 export default function ScheduleCreationForm(props) {
   // console.log("props", props);
+  let REACT_APP_GETCALCREQ_URL = process.env.REACT_APP_GETCALCREQ_URL;
+  let API = process.env.REACT_APP_API_KEY;
 
+  console.log("REACT_APP_GETCALCREQ_URL", REACT_APP_GETCALCREQ_URL);
+  console.log("REACT_APP_API", API);
   const location = useLocation();
 
   // console.log("location.state---", location.state);
   const FabOrderNo = location?.state?.FabOrderNo;
   console.log("FabOrderNo", FabOrderNo);
-  
-  
-   const fromPath = location?.state?.from;
+
+  const fromPath = location?.state?.from;
 
   console.log("Came from:", fromPath);
 
@@ -100,25 +104,29 @@ export default function ScheduleCreationForm(props) {
   console.log("0", Cust_Code);
 
   const [intSchStatus, setIntSchStatus] = useState(0);
-  const [mtrldata, setMtrldata] = useState([]);
-  const [procdata, setProcdata] = useState([]);
-  const [inspdata, setInspdata] = useState([]);
-  const [packdata, setPackdata] = useState([]);
-  const [tolerancedata, setTolerancedata] = useState([]);
+  // const [mtrldata, setMtrldata] = useState([]);
+  // const [procdata, setProcdata] = useState([]);
+  // const [inspdata, setInspdata] = useState([]);
+  // const [packdata, setPackdata] = useState([]);
+  // const [tolerancedata, setTolerancedata] = useState([]);
   const [salesExecdata, setSalesExecdata] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [gradeid, setGradeID] = useState("");
+  // eslint-disable-next-line no-unused-vars
   const [material, setMaterial] = useState("");
-  const [DwgName, setDwgName] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [jwRate, setJwRate] = useState("");
-  const [materialRate, setMaterialRate] = useState("");
-  const [unitPrice, setUnitPrice] = useState("");
-  const [Operation, setOperation] = useState("");
+  // const [DwgName, setDwgName] = useState("");
+  // const [quantity, setQuantity] = useState("");
+  // const [jwRate, setJwRate] = useState("");
+  // const [materialRate, setMaterialRate] = useState("");
+  // const [unitPrice, setUnitPrice] = useState("");
+  // const [Operation, setOperation] = useState("");
+  // eslint-disable-next-line no-unused-vars
   const [thickness, setThickness] = useState("");
   const [specificwt, setSpecificWt] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [grade, setGrade] = useState("");
-  const [HasBOM, setHasBOM] = useState(0);
-  const [Dwg, setDwg] = useState(0);
+  // const [HasBOM, setHasBOM] = useState(0);
+  // const [Dwg, setDwg] = useState(0);
   const [newSerial, setNewSerial] = useState({
     DwgName: "",
     material: "",
@@ -180,42 +188,43 @@ export default function ScheduleCreationForm(props) {
     PkngLvl: "",
     quantity: 0.0,
   });
-  let [orderdetailsdata, setOrderDetailsData] = useState([]);
+  // let [orderdetailsdata, setOrderDetailsData] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   let [Orderno, setOrderno] = useState(location.state);
 
   //IMPORT DWG
-  let [strprocess, setStrProcess] = useState("");
-  let [strmtrlcode, setStrMtrlCode] = useState("");
-  let [strtolerance, setStrTolerance] = useState("");
-  let [mtrlcode, setMtrlCode] = useState("");
-  let [strMaterial, setStrMaterial] = useState("");
-  let [strGrade, setStrGrade] = useState("");
-  let [decThick, setDecThick] = useState(0);
-  let [dblSpWt, setDblSpWt] = useState(0);
-  let [dblCuttingRate, setDblCuttingRate] = useState(0);
-  let [dblPierceRate, setDblPierceRate] = useState(0);
-  let [strInsp, setStrInsp] = useState("");
-  let [strPkng, setStrPkng] = useState("");
-  let [strSource, setStrSource] = useState("");
-  let [strMtrlGrade, setStrMtrlGrade] = useState("");
-  let [Qty, setQty] = useState(0);
-  let [FormOk, setFormOk] = useState(false);
-  let [valOK, setValOK] = useState(false);
-  let [TMd, setTMd] = useState([]);
-  let [mtrl, setMtrl] = useState([]);
-  let [bolMtrl, setBolMtrl] = useState(false);
-  let [bolOperation, setBolOperation] = useState(false);
-  let [bolSource, setBolSource] = useState(false);
-  let [bolInsp, setBolInsp] = useState(false);
-  let [bolPkng, setBolPkng] = useState(false);
-  let [bolTolerance, setBolTolerance] = useState(false);
-  let [bolQty, setBolQty] = useState(false);
+  // let [strprocess, setStrProcess] = useState("");
+  // let [strmtrlcode, setStrMtrlCode] = useState("");
+  // let [strtolerance, setStrTolerance] = useState("");
+  // let [mtrlcode, setMtrlCode] = useState("");
+  // let [strMaterial, setStrMaterial] = useState("");
+  // let [strGrade, setStrGrade] = useState("");
+  // let [decThick, setDecThick] = useState(0);
+  // let [dblSpWt, setDblSpWt] = useState(0);
+  // let [dblCuttingRate, setDblCuttingRate] = useState(0);
+  // let [dblPierceRate, setDblPierceRate] = useState(0);
+  // let [strInsp, setStrInsp] = useState("");
+  // let [strPkng, setStrPkng] = useState("");
+  // let [strSource, setStrSource] = useState("");
+  // let [strMtrlGrade, setStrMtrlGrade] = useState("");
+  // let [Qty, setQty] = useState(0);
+  // let [FormOk, setFormOk] = useState(false);
+  // let [valOK, setValOK] = useState(false);
+  // let [TMd, setTMd] = useState([]);
+  // let [mtrl, setMtrl] = useState([]);
+  // let [bolMtrl, setBolMtrl] = useState(false);
+  // let [bolOperation, setBolOperation] = useState(false);
+  // let [bolSource, setBolSource] = useState(false);
+  // let [bolInsp, setBolInsp] = useState(false);
+  // let [bolPkng, setBolPkng] = useState(false);
+  // let [bolTolerance, setBolTolerance] = useState(false);
+  // let [bolQty, setBolQty] = useState(false);
 
   const [OdrDtlMtrlSrc, setOdrDtlMtrlSrc] = useState("");
 
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // const [show, setShow] = useState(false);
+  // const handleClose = () => setShow(false);
+  // const handleShow = () => setShow(true);
 
   // LOC CACLULATION AND DXF FILE
   let locCalc = async (drwfile, material, grade, thickness, cb) => {
@@ -224,9 +233,8 @@ export default function ScheduleCreationForm(props) {
     formData.append("file", drwfile); //files[i]);
     formData.append("thickness", thickness);
     formData.append("specficWeight", specificwt); // resp[0].Specific_Wt);
-    //  setSpecificWt(resp[0].Specific_Wt);
-    // const getCalcReq = await fetch('http://127.0.0.1:21341/getCalc', {
-    const getCalcReq = await fetch("http://localhost:21341/getCalc", {
+   
+    const getCalcReq = await fetch(`${REACT_APP_GETCALCREQ_URL}/getCalc`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -261,94 +269,90 @@ export default function ScheduleCreationForm(props) {
     });
   };
 
-  async function dxfupload(files, destPath, response) {
-    const data = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      data.append("files", files[i]);
-    }
-    let API = "http://localhost:6001";
-    const rawResponse = await fetch(`${API}/file/uploaddxf`, {
-      method: "POST",
-      headers: {
-        Accept: "multipart/form-data",
-        destinationPath: destPath,
-      },
-      body: data,
-    });
-    const content = await rawResponse.json();
-    response(content);
-  }
+  // async function dxfupload(files, destPath, response) {
+  //   const data = new FormData();
+  //   for (let i = 0; i < files.length; i++) {
+  //     data.append("files", files[i]);
+  //   }
+  //   // let API = API;
+  //   const rawResponse = await fetch(`${API}/file/uploaddxf`, {
+  //     method: "POST",
+  //     headers: {
+  //       Accept: "multipart/form-data",
+  //       destinationPath: destPath,
+  //     },
+  //     body: data,
+  //   });
+  //   const content = await rawResponse.json();
+  //   response(content);
+  // }
 
-  let importdrawings = async (e) => {
-    e.preventDefault();
+  // let importdrawings = async (e) => {
+  //   e.preventDefault();
 
-    // if (!(orderStatus === "Created" || orderStatus === "Recorded")) {
-    //   alert("Cannot import after the Order is recorded");
-    //   return;import FindOldPart from './../../Menus/Profile/Find Order/Header Tabs/FindOldPart';
+  //   // if (!(orderStatus === "Created" || orderStatus === "Recorded")) {
+  //   //   alert("Cannot import after the Order is recorded");
+  //   //   return;import FindOldPart from './../../Menus/Profile/Find Order/Header Tabs/FindOldPart';
 
-    // }
+  //   // }
 
-    let materialcode = strmtrlcode;
-    let process = strprocess; //e.target.elements.processdescription.value;
-    let quantity = quantity; // e.target.elements.quantity.value;
-    let materialsource = strSource; // e.target.elements.materialsource.value;
-    let tolerance = strtolerance; // e.target.elements.tolerance.value;
-    let insplevel = strInsp; // e.target.elements.insplevel.value;
-    let packinglevel = strPkng; // e.target.elements.packinglevel.value;
-    let files = e.target.elements.files.files;
-    setDblCuttingRate(dblCuttingRate);
-    setDblPierceRate(dblPierceRate);
+  //   let materialcode = strmtrlcode;
+  //   let process = strprocess; //e.target.elements.processdescription.value;
+  //   let quantity = quantity; // e.target.elements.quantity.value;
+  //   let materialsource = strSource; // e.target.elements.materialsource.value;
+  //   let tolerance = strtolerance; // e.target.elements.tolerance.value;
+  //   let insplevel = strInsp; // e.target.elements.insplevel.value;
+  //   let packinglevel = strPkng; // e.target.elements.packinglevel.value;
+  //   let files = e.target.elements.files.files;
+  //   setDblCuttingRate(dblCuttingRate);
+  //   setDblPierceRate(dblPierceRate);
 
-    for (let i = 0; i < files.length; i++) {
-      let drwfname = files[i];
+  //   for (let i = 0; i < files.length; i++) {
+  //     let drwfname = files[i];
 
-      // await postRequest(endpoints.getmtrldetsbymtrlcode,{materialRate},(mtrldataforloc) => {
+  //     locCalc(drwfname, material, grade, thickness, (output) => {
+  //       let olddata = Object.entries(orderdetailsdata).map(([key, value]) => ({
+  //         key,
+  //         value,
+  //       }));
 
-      // })
+  //       if (olddata === null || olddata === undefined) {
+  //         return;
+  //       } else {
+  //         setOrderDetailsData((olddata) => {
+  //           return [
+  //             ...olddata,
+  //             {
+  //               file: files[i],
+  //               operation: process,
+  //               material,
+  //               grade,
+  //               thickness,
+  //               quantity,
+  //               mtrlcode,
+  //               lengthOfCut: output.lengthOfCut,
+  //               noOfPierces: output.noOfPierces,
+  //               partNetArea: output.partNetArea,
+  //               complexity: output.complexity,
+  //               hasOpenContour: output.hasOpenContour,
+  //               outOpen: output.outOpen,
+  //               partNetWeight: output.partNetWeight,
+  //               partOutArea: output.partOutArea,
+  //               partOutWeight: output.partOutWeight,
+  //               rectArea: output.rectArea,
+  //               rectWeight: output.rectWeight,
+  //             },
+  //           ];
+  //         });
+  //       }
+  //     });
+  //   }
 
-      locCalc(drwfname, material, grade, thickness, (output) => {
-        let olddata = Object.entries(orderdetailsdata).map(([key, value]) => ({
-          key,
-          value,
-        }));
-
-        if (olddata === null || olddata === undefined) {
-          return;
-        } else {
-          setOrderDetailsData((olddata) => {
-            return [
-              ...olddata,
-              {
-                file: files[i],
-                operation: process,
-                material,
-                grade,
-                thickness,
-                quantity,
-                mtrlcode,
-                lengthOfCut: output.lengthOfCut,
-                noOfPierces: output.noOfPierces,
-                partNetArea: output.partNetArea,
-                complexity: output.complexity,
-                hasOpenContour: output.hasOpenContour,
-                outOpen: output.outOpen,
-                partNetWeight: output.partNetWeight,
-                partOutArea: output.partOutArea,
-                partOutWeight: output.partOutWeight,
-                rectArea: output.rectArea,
-                rectWeight: output.rectWeight,
-              },
-            ];
-          });
-        }
-      });
-    }
-
-    let destPath = `\\Wo\\` + Orderno + "\\DXF\\";
-    dxfupload(files, destPath, (res) => {});
-    window.dxffiles = files;
-    setShow(false);
-  };
+  //   let destPath = `\\Wo\\` + Orderno + "\\DXF\\";
+  //   dxfupload(files, destPath, (res) => {});
+  //   window.dxffiles = files;
+  //   setShow(false);
+  // };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -477,14 +481,14 @@ export default function ScheduleCreationForm(props) {
       );
     }
 
-    const handleMtrlCodeTypeaheadChange = (selectedOptions) => {
-      setSelectedItems(selectedOptions);
-      const selectedValue =
-        selectedOptions.length > 0 ? selectedOptions[0] : null;
-      if (selectedValue) {
-        setStrMtrlCode(selectedValue.Mtrl_Code);
-      }
-    };
+    // const handleMtrlCodeTypeaheadChange = (selectedOptions) => {
+    //   setSelectedItems(selectedOptions);
+    //   const selectedValue =
+    //     selectedOptions.length > 0 ? selectedOptions[0] : null;
+    //   if (selectedValue) {
+    //     setStrMtrlCode(selectedValue.Mtrl_Code);
+    //   }
+    // };
 
     if (name === "newSrlMaterial") {
       setNewSerial((prevState) => ({
@@ -796,7 +800,7 @@ export default function ScheduleCreationForm(props) {
         strmtrlcode: LastSlctedRow?.Mtrl_Code,
       },
       async (singleChngData) => {
-        if (singleChngData.affectedRows != 0) {
+        if (singleChngData.affectedRows !== 0) {
           alert("Updated successfully");
           fetchData();
         } else {
@@ -806,6 +810,7 @@ export default function ScheduleCreationForm(props) {
     );
   };
 
+  // eslint-disable-next-line no-unused-vars
   const [orderNo, setorderNo] = useState(location?.state);
   const [OrderData, setOrderData] = useState({});
   const [OrderCustData, setOrderCustData] = useState({});
@@ -824,7 +829,7 @@ export default function ScheduleCreationForm(props) {
   const [oldOrderListData, setOldOrderListData] = useState([]);
   const [oldOrderDetailsData, setOldOrderDetailsData] = useState([]);
 
-  const [createInvoicetrigger, SetCreateInvoicetrigger] = useState(false);
+  // const [createInvoicetrigger, SetCreateInvoicetrigger] = useState(false);
 
   // Register button
   const [isButtonDisabled, setButtonDisabled] = useState(false);
@@ -931,6 +936,7 @@ export default function ScheduleCreationForm(props) {
   useEffect(() => {
     FindOldOrderButtonData();
     PerformaTabData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [CustCode]);
 
   const LoadInitialData = async () => {
@@ -984,9 +990,12 @@ export default function ScheduleCreationForm(props) {
           orderType: orderType,
         }
       );
-      console.log("oldOrderData?.orderListData",oldOrderData?.orderListData);
-      console.log("oldOrderData?.orderDetailsData",oldOrderData?.orderDetailsData);
-      
+      console.log("oldOrderData?.orderListData", oldOrderData?.orderListData);
+      console.log(
+        "oldOrderData?.orderDetailsData",
+        oldOrderData?.orderDetailsData
+      );
+
       setOldOrderListData(oldOrderData?.orderListData);
       setOldOrderDetailsData(oldOrderData?.orderDetailsData);
       setOldOrderDetailsData(oldOrderData?.orderDetailsData);
@@ -1046,6 +1055,7 @@ export default function ScheduleCreationForm(props) {
   };
 
   const updateOrderStatus = () => {
+    // eslint-disable-next-line no-unused-vars
     const status = getStatusText(intSchStatus);
   };
 
@@ -1121,18 +1131,18 @@ export default function ScheduleCreationForm(props) {
   };
 
   // Assuming you have state variables and setters for the conditions below
-  const [messagee, setMessagee] = useState("");
-  const [orderDetailsEnabled, setOrderDetailsEnabled] = useState(false);
-  const [bulkChangeEnabled, setBulkChangeEnabled] = useState(false);
-  const [addSrlVisible, setAddSrlVisible] = useState(false);
-  const [bulkChangeVisible, setBulkChangeVisible] = useState(false);
-  const [columnsReadOnly, setColumnsReadOnly] = useState({
-    Dwg: true,
-    Operation: false,
-    QtyOrdered: false,
-    JWCost: false,
-    MtrlCost: false,
-  });
+  // const [messagee, setMessagee] = useState("");
+  // const [orderDetailsEnabled, setOrderDetailsEnabled] = useState(false);
+  // const [bulkChangeEnabled, setBulkChangeEnabled] = useState(false);
+  // const [addSrlVisible, setAddSrlVisible] = useState(false);
+  // const [bulkChangeVisible, setBulkChangeVisible] = useState(false);
+  // const [columnsReadOnly, setColumnsReadOnly] = useState({
+  //   Dwg: true,
+  //   Operation: false,
+  //   QtyOrdered: false,
+  //   JWCost: false,
+  //   MtrlCost: false,
+  // });
   useEffect(() => {
     fetchData();
     setIntSchStatus(calculateMinSrlStatus());
@@ -1158,6 +1168,7 @@ export default function ScheduleCreationForm(props) {
 
   // message for Register Button
   let message = "";
+  // eslint-disable-next-line default-case
   switch (OrderData?.Order_Type) {
     case "Complete":
       message =
@@ -1193,19 +1204,31 @@ export default function ScheduleCreationForm(props) {
 
   //ROW SEECTION FOR PROFILE
   const [orderDrawings, setOrderDrawings] = useState({});
+  // eslint-disable-next-line no-unused-vars
   let [dxfFileData, setDxfFileData] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   let [lengthOfCut, setLengthOfCut] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   let [noOfPierces, setNoofPierces] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   let [partNetArea, setPartNetArea] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   let [outOpen, setOutOpen] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   let [complexity, setComplexity] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   let [hasOpenContour, setHasOpenContour] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   let [partNetWeight, setPartNetWeight] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   let [partOutArea, setPartOutArea] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   let [partOutWeight, setPartOutWeight] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   let [rectArea, setRectArea] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   let [rectWeight, setRectWeight] = useState(0);
-  const [orderStatus, setOrderStatus] = useState("Created");
+  // const [orderStatus, setOrderStatus] = useState("Created");
   let [Dwglist, setDwgList] = useState([]);
 
   const drawSvg = (text) => {
@@ -1268,14 +1291,14 @@ export default function ScheduleCreationForm(props) {
 
   window.Buffer = Buffer;
 
-  function arrayBufferToString(buffer, encoding, callback) {
-    var blob = new Blob([buffer], { type: "text/plain" });
-    var reader = new FileReader();
-    reader.onload = function (evt) {
-      callback(evt.target.result);
-    };
-    reader.readAsText(blob, encoding);
-  }
+  // function arrayBufferToString(buffer, encoding, callback) {
+  //   var blob = new Blob([buffer], { type: "text/plain" });
+  //   var reader = new FileReader();
+  //   reader.onload = function (evt) {
+  //     callback(evt.target.result);
+  //   };
+  //   reader.readAsText(blob, encoding);
+  // }
 
   // Row selection in orderDetails (OLD)
   const selectItem = async (OrdrDetailsItem) => {
@@ -1441,14 +1464,14 @@ export default function ScheduleCreationForm(props) {
     // DXF File Handling (if applicable)
     if (props.Type === "Profile") {
       let srcpath = `\\Wo\\` + (orderNUmber || Orderno) + "\\DXF\\";
-      const WOPath = process.env.REACT_APP_SERVER_FILES;
+      // const WOPath = process.env.REACT_APP_SERVER_FILES;
       // let srcpath = WOPath + "\\" + (orderNUmber || Orderno) + "\\DXF\\";
 
-      console.log("DXFsrcpath",srcpath);
-      
+      console.log("DXFsrcpath", srcpath);
+
       let filename = rowData.DwgName;
-      
-        // fetchData();
+
+      // fetchData();
       if (orderDrawings[window.Buffer.from(filename, "base64")]) {
         const drawingFile = new File(
           [orderDrawings[window.Buffer.from(filename, "base64")]],
@@ -1512,7 +1535,7 @@ export default function ScheduleCreationForm(props) {
   // Handle multi row selection with checkbox
   const handleCheckboxChange = async (rowData) => {
     console.log("rowData", rowData);
-    
+
     setSelectedRows((prevSelectedRows) => {
       const updatedRows = prevSelectedRows.some(
         (selectedRow) => selectedRow.OrderDetailId === rowData.OrderDetailId
@@ -1552,6 +1575,7 @@ export default function ScheduleCreationForm(props) {
       const lastSelectedRow =
         updatedSelectedItems[updatedSelectedItems.length - 1] || null;
 
+      // eslint-disable-next-line no-unused-vars
       const lastUncheckedRow =
         updatedSelectedItems[updatedSelectedItems.length] || null;
       // setSelectedRow(lastSelectedRow);
@@ -1614,7 +1638,7 @@ export default function ScheduleCreationForm(props) {
     setSelectedRow(null);
   };
 
-  console.log("After Update", selectedItems)
+  console.log("After Update", selectedItems);
 
   // selectAll button
   const handleSelectAll = () => {
@@ -1627,9 +1651,7 @@ export default function ScheduleCreationForm(props) {
   // console.log("selectedItems", selectedItems);
   // console.log("selectedSrl", selectedSrl);
   console.log("selectedRow", selectedRow);
-  console.log("selectedCheckbox",selectedRows.length);
-
-
+  console.log("selectedCheckbox", selectedRows.length);
 
   // console.log("updatedSelectedItems-slctAll", selectedSrl);
 
@@ -1870,6 +1892,8 @@ export default function ScheduleCreationForm(props) {
                 goToLast={goToLast}
                 FindOldOrderButtonData={FindOldOrderButtonData}
                 OdrDtlMtrlSrc={OdrDtlMtrlSrc}
+                REACT_APP_GETCALCREQ_URL={REACT_APP_GETCALCREQ_URL}
+                API={API}
               />
             </Tab>
             <Tab eventKey="scheduleList" title="Schedule List">

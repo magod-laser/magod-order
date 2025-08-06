@@ -1,22 +1,8 @@
 import React from "react";
 
-import {
-  // Container,
-
-  // Row,
-
-  // Col,
-
-  // Form,
-
-  Button,
-
-  // Card,
-  Modal,
-} from "react-bootstrap";
+import {  Modal} from "react-bootstrap";
 
 function AlertModal(props) {
-  // const [show, setShow] = useState(props.show);
 
   return (
     <Modal show={props.show} onHide={props.onHide}>

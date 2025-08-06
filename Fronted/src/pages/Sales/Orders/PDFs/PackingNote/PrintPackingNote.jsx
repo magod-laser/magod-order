@@ -20,7 +20,7 @@ export default function PrintPackingNote(props) {
 
 	// const rowLimit = 20;
 	// const [tableData, setTableData] = useState([]);
-
+const headerFontSize = "9px";
 	const style = {
 		pageStyling: { padding: "2%", fontSize: "10px", fontFamily: "Helvetica" },
 		globalPadding: { padding: "0.6%" },
@@ -230,7 +230,7 @@ export default function PrintPackingNote(props) {
 													Packing Note and Delivery Challan
 												</Text>
 											</View>
-											<Text style={{ ...style.fontBold, fontSize: "11px" }}>
+											{/* <Text style={{ ...style.fontBold, fontSize: "11px" }}>
 												Magod Laser Machining Private Limited
 											</Text>
 											<Text style={{ ...style.fontBold }}>
@@ -243,7 +243,22 @@ export default function PrintPackingNote(props) {
 											<Text>
 												Ph : 08110 414313, 9513393352, sales@magodlaser.in,
 												www.magodlaser.in
-											</Text>
+											</Text> */}
+											<Text style={{ ...style.fontBold, fontSize: "11px" }}>
+																						{props.PDFData.RegisteredName}
+																					</Text>
+																					<Text
+																						style={{ ...style.fontBold, fontSize: headerFontSize, marginTop: "5px" }}>
+																						GST: {props.PDFData.GST_No} CIN: {props.PDFData.CIN_No}
+																					</Text>
+																					<Text style={{ fontSize: headerFontSize }}>
+																						{props.PDFData.RegistredOfficeAddress}
+																					</Text>
+																					<Text style={{ fontSize: headerFontSize }}>
+																						{props.PDFData.PhonePrimary},{" "}
+																						{props.PDFData.PhoneSecondary}, {props.PDFData.Email},{" "}
+																						{props.PDFData.URL}
+																					</Text>
 										</View>
 										{/* <View> */}
 										<Text style={{ width: "10%" }}>{copyVal.copyName}</Text>

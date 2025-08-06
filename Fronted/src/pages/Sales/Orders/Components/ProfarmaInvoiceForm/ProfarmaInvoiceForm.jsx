@@ -26,7 +26,7 @@ export default function ProfarmaInvoiceForm(props) {
 
  
   const [formData, setFormData] = useState({
-    //unitName: "Jigani",
+    //unitName: "",
     unitName: "",
   });
 

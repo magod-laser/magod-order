@@ -1,74 +1,75 @@
 import { React, useEffect, useState } from "react";
 import { Form, Modal } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
-import LoadingPage from "../../../Loading";
+// import LoadingPage from "../../../Loading";
 function BulkChangeModal(props) {
   const {
     bulkChnangMdl,
-    setBulkChnangMdl,
-    handlebulkChnangMdl,
+    // setBulkChnangMdl,
+    // handlebulkChnangMdl,
     handleClosesetBulkChnangMdl,
     // ------------------------------------
-    OrderData,
-    OrderCustData,
-    OrdrDetailsData,
-    importdwgshow,
-    setImportDwgShow,
-    handleImportDwg,
-    handleCloseImportDwg,
-    importdrawings,
+    // OrderData,
+    // OrderCustData,
+    // OrdrDetailsData,
+    // importdwgshow,
+    // setImportDwgShow,
+    // handleImportDwg,
+    // handleCloseImportDwg,
+    // importdrawings,
     mtrldata,
-    selectMtrl,
-    strmtrlcode,
+    // selectMtrl,
+    // strmtrlcode,
     procdata,
-    selectProc,
-    selectMtrlSrc,
-    tolerancedata,
-    selectTolerance,
+    // selectProc,
+    // selectMtrlSrc,
+    // tolerancedata,
+    // selectTolerance,
     inspdata,
-    selectInsp,
+    // selectInsp,
     packdata,
-    selectPack,
-    InputField,
-    quantity,
-    setQuantity,
-    jwRate,
-    setJwRate,
-    materialRate,
-    setMaterialRate,
-    unitPrice,
-    setUnitPrice,
-    DwgName,
-    handleDwgInputChange,
-    PostSrlData,
-    insertnewsrldata,
+    // selectPack,
+    // InputField,
+    // quantity,
+    // setQuantity,
+    // jwRate,
+    // setJwRate,
+    // materialRate,
+    // setMaterialRate,
+    // unitPrice,
+    // setUnitPrice,
+    // DwgName,
+    // handleDwgInputChange,
+    // PostSrlData,
+    // insertnewsrldata,
     handleMtrlCodeTypeaheadChange,
-    PostOrderDetails,
-    selectedPartId,
-    setSelectedPartId,
-    BomArry,
-    setBomArry,
-    handleSelectChange,
-    options,
-    HasBOM,
-    setHasBOM,
+    // PostOrderDetails,
+    // selectedPartId,
+    // setSelectedPartId,
+    // BomArry,
+    // setBomArry,
+    // handleSelectChange,
+    // options,
+    // HasBOM,
+    // setHasBOM,
     LastSlctedRow,
-    setLastSlctedRow,
-    selectedItems,
+    // setLastSlctedRow,
+    // selectedItems,
     updateblkcngOrdrData,
     handleblkCngCheckBox,
     blkCngCheckBox,
-    setBlkCngCheckBox,
+    // setBlkCngCheckBox,
     //---new -----
     blkChange,
     setBlkChange,
     handleChange,
     handleInputChange,
-    isLoading,
+    // isLoading,
   } = props;
 
   const [isChecked, setChecked] = useState(false);
 
+  // eslint-disable-next-line no-unused-vars
   const handleCheckboxChange = () => {
     const newCheckedValue = !isChecked;
     setChecked(newCheckedValue);
@@ -81,6 +82,7 @@ function BulkChangeModal(props) {
         InspLvl: inspdata[0].InspLevel || "Insp1",
       }));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inspdata]);
   console.log("blkChange.InspLvl", blkChange.InspLvl);
   
@@ -92,6 +94,7 @@ function BulkChangeModal(props) {
         PkngLvl: packdata[0].PkngLevel || "Pkng1",
       }));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [packdata]);
 
   console.log("blkChange.PkngLevel", blkChange.PkngLvl);

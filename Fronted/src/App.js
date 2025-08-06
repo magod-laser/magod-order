@@ -1,21 +1,21 @@
 /** @format */
 
 import "./App.css";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import WithNav from "./Layout/WithNav";
 import Parentroute from "./Layout/Parentroute";
 import Login from "./pages/Auth/Login";
 import Home from "./pages/Home";
 import HomeOne from "./pages/HomeOne";
-import SendMail from "./pages/sendmail/sendmails";
+// import SendMail from "./pages/sendmail/sendmails";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "react-toastify/dist/ReactToastify.css";
-import { RequireAuth } from "./pages/Auth/RequireAuth";
+// import { RequireAuth } from "./pages/Auth/RequireAuth";
 import Order from "../src/Customer/Order";
 // Profile
 import ProfileNewOrder from "./pages/Sales/Orders/Menus/Profile/NewOrder/ProfileNewOrder";
-import FindOrder from "./pages/Sales/Orders/Menus/Profile/Find Order/FindOrder";
+// import FindOrder from "./pages/Sales/Orders/Menus/Profile/Find Order/FindOrder";
 import ImportExcelForm from "./pages/Sales/Orders/Menus/Profile/Find Order/Body Tabs/OrderDetailsTab/ButtonTabs/ImportExcelForm";
 import ImportQtn from "./pages/Sales/Orders/Menus/Profile/Find Order/Body Tabs/OrderDetailsTab/ButtonTabs/ImportQtn";
 // import ScheduleCreationForm from "./pages/Sales/Orders/ZComponents/ScheduleCreationForm";
@@ -50,7 +50,7 @@ import InternalHandedOver from "./pages/Sales/Orders/Menus/Profile/InternalOrder
 // Combined Schedule
 // import Create from "./pages/Sales/Orders/Menus/Combined Schedules/Job Work/Create/Create";
 import CreateJW from "./pages/Combined Schedules_JobWork/Job Work/Create/CreateJW";
-import CombinedScheduleList from "./pages/Combined Schedules_JobWork/Job Work/ScheduleList/Order/CombinedScheduleListJW";
+// import CombinedScheduleList from "./pages/Combined Schedules_JobWork/Job Work/ScheduleList/Order/CombinedScheduleListJW";
 import CombinedScheduleDetailsForm from "./pages/Combined Schedules_JobWork/Job Work/ScheduleList/Order/CombinedScheduleDetailsForm";
 import Open from "./pages/Combined Schedules_JobWork/Job Work/Open/Open";
 
@@ -94,8 +94,8 @@ import FabEditDxf from "./pages/Sales/Orders/Menus/Fabrication/ScheduleCreationF
 import ProfileScheduleCreationForm from "./pages/Sales/Orders/Menus/Profile/ScheduleCreationForm/ProfileScheduleCreationForm";
 import { QuotationProvider } from "./context/QuotationContext";
 
-import { OrderProvider } from "./context/OrderContext";
-import { MenuProvider } from "./context/MenusContext";
+// import { OrderProvider } from "./context/OrderContext";
+// import { MenuProvider } from "./context/MenusContext";
 import ServiceOpenSchedule from "./pages/Sales/Orders/Menus/Service/ScheduleCreationForm/BodyTabs/ScheduleList/ServiceOpenSchedule";
 // import ProfarmaInvoiceForm from "./pages/Sales/Orders/Components/ProfarmaInvoiceForm/ProfarmaInvoiceForm";
 import PackingNoteAndInvoiceDetails from "./pages/Sales/Orders/Menus/Service/ScheduleCreationForm/BodyTabs/ScheduleList/Tabs/Details/PackingNoteAndInvoiceDetails";
@@ -104,7 +104,7 @@ import FindProOrder from "./pages/Sales/Orders/Menus/Profile/Find Order/FindOrde
 
 // prakruthis
 import ScheduleList from "./pages/Combined Schedules_JobWork/Job Work/ScheduleList/ScheduleList";
-import CombinedScheduleListClosed from "./pages/Combined Schedules_JobWork/Job Work/ScheduleList/Closed/CombinedScheduleListClosedJW";
+// import CombinedScheduleListClosed from "./pages/Combined Schedules_JobWork/Job Work/ScheduleList/Closed/CombinedScheduleListClosedJW";
 import CombinedScheduleDetailsFormClosed from "./pages/Combined Schedules_JobWork/Job Work/ScheduleList/Closed/CombinedScheduleDetailsFormClosed";
 import SalesCreate from "./pages/Combined Schedules_JobWork/Sales/Create Sales/SalesCreate";
 import CombinedScheduleListJW from "./pages/Combined Schedules_JobWork/Job Work/ScheduleList/Order/CombinedScheduleListJW";
@@ -112,8 +112,8 @@ import CombinedScheduleListSales from "./pages/Combined Schedules_JobWork/Sales/
 import CombinedScheduleListClosedJW from "./pages/Combined Schedules_JobWork/Job Work/ScheduleList/Closed/CombinedScheduleListClosedJW";
 import CombinedScheduleListClosedSales from "./pages/Combined Schedules_JobWork/Sales/ScheduleList/Closed/CombinedScheduleListClosedSales";
 import TaskSheet from "./pages/Sales/Orders/Menus/Service/ScheduleCreationForm/BodyTabs/ScheduleList/TaskSheet";
-import SolidStateLaserTable from "./pages/Sales/Orders/Menus/Service/ScheduleCreationForm/BodyTabs/ScheduleList/SolidStateLaserTable";
-import CoTable from "./pages/Sales/Orders/Menus/Service/ScheduleCreationForm/BodyTabs/ScheduleList/CoTable";
+// import SolidStateLaserTable from "./pages/Sales/Orders/Menus/Service/ScheduleCreationForm/BodyTabs/ScheduleList/SolidStateLaserTable";
+// import CoTable from "./pages/Sales/Orders/Menus/Service/ScheduleCreationForm/BodyTabs/ScheduleList/CoTable";
 import Solidstatelaser from "./pages/Sales/Orders/Menus/Service/ScheduleCreationForm/BodyTabs/ScheduleList/JobParameters/SolidStateLaser/Solidstatelaser";
 import Co2Form from "./pages/Sales/Orders/Menus/Service/ScheduleCreationForm/BodyTabs/ScheduleList/JobParameters/Co2Form/Co2Form";
 import { ScheduleProvider } from "./context/CombScheduleContext";
@@ -122,7 +122,7 @@ import { ScheduleDataProvider } from "./context/CmbineSchDetailsTabContext";
 function App() {
 	return (
     <BrowserRouter>
-      <MenuProvider>
+      {/* <MenuProvider> */}
         <ScheduleDataProvider>
           <ScheduleProvider>
             <QuotationProvider>
@@ -430,7 +430,7 @@ function App() {
             </QuotationProvider>
           </ScheduleProvider>
         </ScheduleDataProvider>
-      </MenuProvider>
+      {/* </MenuProvider> */}
     </BrowserRouter>
   );
 }

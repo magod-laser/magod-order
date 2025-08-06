@@ -9,8 +9,6 @@ const {
   setupQuery,
   setupQueryMod,
   qtnQueryMod,
-  misQuery,
-  mchQueryMod,
 } = require("../helpers/dbconn");
 const { createFolder } = require("../helpers/folderhelper");
 const { logger } = require("../helpers/logger");
@@ -18,9 +16,7 @@ const { logger } = require("../helpers/logger");
 
 // This API is used to create a new order in the system
 ordersRouter.post(`/savecreateorder`, async (req, res, next) => {
-  ////console.log("Creating new order - I");
   try {
-    ////console.log("Creating new order");
     let zzz = new Date();
     const orddate =
       zzz.getFullYear() +
@@ -41,6 +37,8 @@ ordersRouter.post(`/savecreateorder`, async (req, res, next) => {
 
     const purchaseorder = req.body.purchaseorder;
     const qtnno = req.body.qtnno;
+    const UnitName = req.body.UnitName;
+ //console.log("UnitName---", UnitName);
 
     let deliverydate = null;
 
@@ -68,40 +66,42 @@ ordersRouter.post(`/savecreateorder`, async (req, res, next) => {
     const billingstateId = "00";
     const DelStateId = "00";
 
-    ////console.log("Before Order");
+    //console.log("Before Order");
     let runningno = 0;
 
     // Retrieve the running number for orders
     await setupQueryMod(
-      `SELECT * FROM magod_setup.magod_runningno WHERE SrlType='Order' AND UnitName='Jigani' ORDER BY Id DESC LIMIT 1`,
+      `SELECT * FROM magod_setup.magod_runningno WHERE SrlType='Order' AND UnitName='${UnitName}' ORDER BY Id DESC LIMIT 1`,
       async (err, runningNoResult) => {
         if (err) {
-          ////console.log(err);
+          //console.log(err);
           return;
         }
-        ////console.log(runningNoResult);
+        //console.log(runningNoResult);
         runningno = runningNoResult[0]["Running_No"];
         voucherLength = runningNoResult[0]["Length"];
-        ////console.log(runningno);
+        //console.log(runningno);
         // Generate the order number
         let ordno = `${zzz.getFullYear().toString().substr(-2)}${(
           parseInt(runningno) + 1
         )
           .toString()
           .padStart(voucherLength, "0")}`;
-        ////console.log(ordno);
-        // Create folder on the server
-        // await createFolder("Order", ordno, "");
-         // Attempt to create folder
-          try {
-      await createFolder("Order", ordno, "");
-      console.log(" Folder created successfully for order:", ordno);
-    } catch (folderError) {
-      console.log("Folder creation failed for order:", ordno, "Error:", folderError.message);
-    }
-      
+        
+        // Attempt to create folder
+        try {
+          await createFolder("Order", ordno, "");
+          // console.log(" Folder created successfully for order:", ordno);
+        } catch (folderError) {
+          console.log(
+            "Folder creation failed for order:",
+            ordno,
+            "Error:",
+            folderError.message
+          );
+        }
 
-        ////console.log("After Qtn");
+        //console.log("After Qtn");
 
         // Insert the order details into the database
         await misQueryMod(
@@ -116,52 +116,26 @@ ordersRouter.post(`/savecreateorder`, async (req, res, next) => {
             '${Transportcharges}', '${type}', '${0}', '${qtnno}')`,
           (err, insertResult) => {
             if (err) logger.error(err);
-            ////console.log("Inserted order data:", insertResult);
-
-            //   if (insertResult.affectedRows === 1) {
-
-            // misQueryMod(
-            //   `UPDATE magodmis.draft_dc_inv_register SET Del_Address = '${shippingAddress}' WHERE Order_No='${ordno}'`,
-            //   (err, updateResultt) => {
-            //     console.log("updateResultt123", updateResultt);
-            //   }
-            // );
+            //console.log("Inserted order data:", insertResult);
             // Update the running number for orders
             setupQuery(
               `UPDATE magod_setup.magod_runningno SET Running_No = Running_No + 1 WHERE SrlType='Order' AND Id = ${runningNoResult[0]["Id"]}`,
               (err, updateResult) => {
                 if (err) logger.error(err);
-                ////console.log("Inserted order data:", insertResult);
-
-                //   if (insertResult.affectedRows === 1) {
-
-                // misQueryMod(
-                //   `UPDATE magodmis.draft_dc_inv_register SET Del_Address = '${shippingAddress}' WHERE Order_No='${ordno}'`,
-                //   (err, updateResultt) => {
-                //     console.log(
-                //       "dc_inv_register-updateResultt123",
-                //       updateResultt
-                //     );
-                //   }
-                // );
+                //console.log("Inserted order data:", insertResult);
               }
             );
 
-            // console.log("Updated running number.");
-            // console.log("Saved Successfully.", ordno);
             res.send({ message: "Saved Successfully", orderno: ordno });
           }
         );
-        //  }
+        
       }
     );
-    // res.send({ orderno: ordno });
   } catch (error) {
     next(error);
   }
 });
-
-
 
 //This API is used to get the list of quotation numbers sent
 ordersRouter.post(`/getqtnnossentdata`, async (req, res, next) => {
@@ -172,7 +146,7 @@ ordersRouter.post(`/getqtnnossentdata`, async (req, res, next) => {
       async (err, data) => {
         if (err) logger.error(err);
         res.send(data);
-        ////console.log("QTN DROPDOWN DATA", data);
+        //console.log("QTN DROPDOWN DATA", data);
       }
     );
   } catch (error) {
@@ -183,10 +157,10 @@ ordersRouter.post(`/getqtnnossentdata`, async (req, res, next) => {
 // This API is used to get the order data based on order number and type
 ordersRouter.post(`/getorderdata`, async (req, res, next) => {
   try {
-    ////console.log("Getting order data");
+    //console.log("Getting order data");
     const orderno = req.body.ordno;
     const ordtype = req.body.ordtype;
-    ////console.log(orderno, ordtype);
+    //console.log(orderno, ordtype);
     misQueryMod(
       `SELECT ord.*,cust.Cust_name FROM magodmis.order_list ord 
         left outer join magodmis.cust_data cust on cust.Cust_code = ord.Cust_Code
@@ -201,7 +175,7 @@ ordersRouter.post(`/getorderdata`, async (req, res, next) => {
   }
 });
 
-//
+// This API is used to get the order list data based on order type and status
 ordersRouter.get(`/getcombinedschdata`, async (req, res, next) => {
   try {
     misQueryMod(

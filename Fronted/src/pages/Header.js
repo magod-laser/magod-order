@@ -3,11 +3,6 @@
 
 import React, { useState } from "react";
 import Cookies from "js-cookie";
-import { Link } from "react-router-dom";
-import { FiLogOut } from "react-icons/fi";
-import { BiDownArrow } from "react-icons/bi";
-import { AiFillCaretDown } from "react-icons/ai";
-import { CgLogIn, CgProfile } from "react-icons/cg";
 
 function Header() {
   const getUser = () => {
@@ -19,14 +14,11 @@ function Header() {
     return null;
   };
   const userData = JSON.parse(Cookies.get("userData"));
- 
   const logoutUrl = process.env.REACT_APP_LOGOUT_URL;
 
   const logout = () => {
     Cookies.remove("userData");
-    // window.location.replace("http://172.16.20.61:3000/");
     window.location.replace(logoutUrl);
-    // window.location.replace("http://192.168.1.25:9000/");
   };
 
   const [anchorEl, setAnchorEl] = useState(null);

@@ -2,7 +2,7 @@ const analysisRouter = require("express").Router();
 var createError = require('http-errors');
 
 const { misQuery, setupQuery, misQueryMod } = require('../helpers/dbconn');
-
+//This API is for analysisinvoices
 analysisRouter.post('/analysisinvoices', async (req, res, next) => {
     const invdate = req.body.invdate;
     try {

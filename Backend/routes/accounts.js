@@ -4,6 +4,7 @@ const req = require("express/lib/request");
 const { misQuery, setupQuery, misQueryMod } = require('../helpers/dbconn');
 const { logger } = require("../helpers/logger");
 
+//This API i for salesinvoices
 accountsRouter.post('/salesinvoices', async (req, res, next) => {
     console.log("Accounts")
     console.log(req.body.reportdate);
@@ -23,8 +24,7 @@ accountsRouter.post('/salesinvoices', async (req, res, next) => {
     }
 });
 
-// Tax Summary
-
+//This API is for taxsummary
 accountsRouter.post('/taxsummary', async (req, res, next) => {
     console.log("Accounts")
     const repdate = req.body.reportdate;
@@ -42,8 +42,7 @@ accountsRouter.post('/taxsummary', async (req, res, next) => {
     }
 });
 
-// Payment Receipts
-
+// This API is Payment Receipts
 accountsRouter.post('/paymentreceipts', async (req, res, next) => {
     const repdate = req.body.reportdate;
     try {
@@ -59,9 +58,7 @@ accountsRouter.post('/paymentreceipts', async (req, res, next) => {
     }
 });
 
-
-// Payment Receipts Details
-
+//This is API Payment Receipts Details
 accountsRouter.post('/paymentrectdetails', async (req, res, next) => {
     const repdate = req.body.reportdate;
     try {
@@ -77,8 +74,7 @@ accountsRouter.post('/paymentrectdetails', async (req, res, next) => {
     }
 });
 
-// Production Summary
-
+// This API ISFOR Production Summary
 accountsRouter.post('/prdsummary', async (req, res, next) => {
     const repdate = req.body.reportdate;
     try {

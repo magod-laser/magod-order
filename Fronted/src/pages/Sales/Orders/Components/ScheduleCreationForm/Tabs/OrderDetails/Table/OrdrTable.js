@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 
 import { React, useState, useEffect } from "react";
 import { Table, Form } from "react-bootstrap";
@@ -49,6 +50,7 @@ function OrdrTable(props) {
 
   useEffect(() => {
     setDetailsColour();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [OrdrDetailsData]);
 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });

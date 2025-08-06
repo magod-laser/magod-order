@@ -1,19 +1,15 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Tab, Table, Tabs, Form } from "react-bootstrap";
+import React, {  useState } from "react";
+import {  useNavigate } from "react-router-dom";
 
-// import Axios from "axios";
 import DetailsTable from "./Tables/DetailsTable";
 import MainTable from "./Tables/MainTable";
 import { endpoints } from "../../../../../../api/constants";
 import { postRequest } from "../../../../../../api/apiinstance";
-
 import { toast } from "react-toastify";
 
 export default function ProfarmaInvoiceList(props) {
-  // console.log("propsss in proforma inv list", props);
   const nav = useNavigate();
 
   const [selectedProfarmaMainRow, setSelectedProfarmaMainRow] = useState({});
@@ -74,6 +70,7 @@ export default function ProfarmaInvoiceList(props) {
 
     if (props.selectedItems.length > 0) {
 
+      // eslint-disable-next-line no-unused-vars
       let flag = false;
      
       

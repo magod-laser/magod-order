@@ -1,22 +1,12 @@
 const stocksRouter = require("express").Router();
 var createError = require('http-errors')
-
 const { setupQuery, qtnQuery, misQueryMod,mtrlQueryMod } = require('../helpers/dbconn');
 
+// This API is for getmtrlstocks
 stocksRouter.post(`/getmtrlstocks`, async (req, res, next) => {
     try {
-        //Mtrl_Stock 
-        // misQueryMod(`SELECT m.Cust_Code,m.Mtrl_Code, m.DynamicPara1, m.DynamicPara2,
-        // m.DynamicPara3, m.Locked, m.Scrap, m1.Material, count(m.MtrlStockID) as Qty, 
-        //  Sum(m.Weight) as Weight, sum(m.ScrapWeight) as ScrapWeight 
-        // FROM magodmis.mtrlstocklist m ,magodmis.mtrlgrades m1, magodmis.mtrl_data m2 
-        // WHERE m.Cust_Code= '${ccode}' AND m.IV_No is  null AND m2.Mtrl_Code=m.Mtrl_Code
-        // AND m1.MtrlGradeID =m2.MtrlGradeID
-        // GROUP BY m.Mtrl_Code, m.DynamicPara1, m.DynamicPara2, m.Locked, m.Scrap 
-        // ORDER BY m.Scrap Desc , m.Mtrl_Code`
-
+    
         let ccode = req.body.ccode;
-        console.log(ccode);
 
         misQueryMod(`SELECT m.Cust_Code,m.Mtrl_Code, m.DynamicPara1, m.DynamicPara2,
         m.DynamicPara3, m.Locked, m.Scrap, m1.Material, count(m.MtrlStockID) as Qty, 
@@ -27,10 +17,10 @@ stocksRouter.post(`/getmtrlstocks`, async (req, res, next) => {
         GROUP BY m1.Material
         ORDER BY m.Scrap Desc , m.Mtrl_Code`, async (err, data) => {
             if (err) {
-                console.log(err);
+                // console.log(err);
                 res.status(500).send(err);
             }
-            console.log(data);
+            // console.log(data);
             res.send(data)
         })
     } catch (error) {
@@ -38,12 +28,12 @@ stocksRouter.post(`/getmtrlstocks`, async (req, res, next) => {
     }
 });
 
-
+// This API is for getmtrlcodestocks
 stocksRouter.post(`/getmtrlcodestocks`, async (req, res, next) => {
     try {
         let ccode = req.body.ccode;
         let mtrl = req.body.material;
-        console.log(ccode);
+        // console.log(ccode);
 
         if (mtrl == null) {
             misQueryMod(`SELECT m.Cust_Code, m1.Material, count(m.MtrlStockID) as Qty, 
@@ -56,7 +46,7 @@ stocksRouter.post(`/getmtrlcodestocks`, async (req, res, next) => {
                     console.log(err);
                     res.status(500).send(err);
                 }
-                console.log(data);
+                // console.log(data);
                 res.send(data)
             })
         } else {
@@ -70,7 +60,7 @@ stocksRouter.post(`/getmtrlcodestocks`, async (req, res, next) => {
                     console.log(err);
                     res.status(500).send(err);
                 }
-                console.log(data);
+                // console.log(data);
                 res.send(data)
             })
         }
@@ -79,12 +69,12 @@ stocksRouter.post(`/getmtrlcodestocks`, async (req, res, next) => {
     }
 });
 
-
+// This API is for getmtrlstocksdets
 stocksRouter.post(`/getmtrlstocksdets`, async (req, res, next) => {
     try {
         let ccode = req.body.ccode;
         let mtrlcd = req.body.mtrlcode;
-        console.log(ccode);
+        // console.log(ccode);
 
         if (mtrlcd == null) {
             misQueryMod(`SELECT m.Cust_Code,m.Mtrl_Code, m.DynamicPara1, m.DynamicPara2,
@@ -99,7 +89,7 @@ stocksRouter.post(`/getmtrlstocksdets`, async (req, res, next) => {
                     console.log(err);
                     res.status(500).send(err);
                 }
-                console.log(data);
+                // console.log(data);
                 res.send(data)
             })
         } else {
@@ -115,7 +105,7 @@ stocksRouter.post(`/getmtrlstocksdets`, async (req, res, next) => {
                     console.log(err);
                     res.status(500).send(err);
                 }
-                console.log(data);
+                // console.log(data);
                 res.send(data)
             })
         }
@@ -124,8 +114,7 @@ stocksRouter.post(`/getmtrlstocksdets`, async (req, res, next) => {
     }
 });
 
-// Stock Arrivals
-
+// This API is for getstockarrivalsummary
 stocksRouter.post(`/getstockarrivalsummary`, async (req, res, next) => {
     try {
         let rvdate = req.body.rvdate;
@@ -148,7 +137,7 @@ stocksRouter.post(`/getstockarrivalsummary`, async (req, res, next) => {
         next(error)
     }
 });
-
+// This API is for getstockarrivalreceipts 
 stocksRouter.post(`/getstockarrivalreceipts`, async (req, res, next) => {
     try {
         let rvdate = req.body.rvdate;
@@ -172,7 +161,7 @@ stocksRouter.post(`/getstockarrivalreceipts`, async (req, res, next) => {
     }
 });
 
-
+// This API is for getstockarrivalreceiptList
 stocksRouter.post(`/getstockarrivalreceiptList`, async (req, res, next) => {
     try {
         let rvdate = req.body.rvdate;
@@ -191,7 +180,7 @@ stocksRouter.post(`/getstockarrivalreceiptList`, async (req, res, next) => {
     }
 });
 
-
+// This API is for getsalesdispatchsummary
 stocksRouter.post(`/getsalesdispatchsummary`, async (req, res, next) => {
     try {
         let rvdate = req.body.rvdate;
@@ -215,7 +204,7 @@ stocksRouter.post(`/getsalesdispatchsummary`, async (req, res, next) => {
     }
 });
 
-
+// This API is for getsalesdispatchinvoices
 stocksRouter.post(`/getsalesdispatchinvoices`, async (req, res, next) => {
     try {
         let rvdate = req.body.rvdate;
@@ -237,7 +226,7 @@ stocksRouter.post(`/getsalesdispatchinvoices`, async (req, res, next) => {
         next(error)
     }
 });
-
+// This API is for getsalesdispatchstocklist
 stocksRouter.post(`/getsalesdispatchstocklist`, async (req, res, next) => {
     try {
         let rvdate = req.body.rvdate;

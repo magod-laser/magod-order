@@ -1,22 +1,17 @@
 /** @format */
 
 const fileRouter = require("express").Router();
-// var exists = require("fs-exists-sync");
 var createError = require("http-errors");
 const fsSync = require("fs");
 const fsAsync = require("fs").promises;
 const fs = require("fs");
 const multer = require("multer");
 const { copyfiles } = require("../helpers/folderhelper");
-// const JSONStream = require("JSONStream");
 const path = require("path");
 const { misQueryMod } = require("../helpers/dbconn");
 const CustomStorageEngine = require("../helpers/storageEngine");
-
 const pathConfig = require("../routes/Utils/globalConfig");
 
-
-;
 const basefolder = process.env.FILE_SERVER_PATH;
 
 var storage = new CustomStorageEngine({
@@ -29,6 +24,7 @@ var storage = new CustomStorageEngine({
 
 const upload = multer({ storage: storage });
 
+// This API is for uploaddxf
 fileRouter.post("/uploaddxf", upload.array("files"), function (req, res, next) {
   
   console.log(" Upload DXF ");
@@ -36,6 +32,7 @@ fileRouter.post("/uploaddxf", upload.array("files"), function (req, res, next) {
   res.send({ status: "success" });
 });
 
+// This API is for getdxf
 fileRouter.post("/getdxf", async (req, res, next) => {
   try {
     const { dxfname } = req.body;
@@ -50,31 +47,21 @@ fileRouter.post("/getdxf", async (req, res, next) => {
   }
 });
 
+// This API is for getfoldernames
 fileRouter.post("/getfoldernames", async (req, res) => {
-  console.log("getfoldernames");
   try {
-    //        process.env.FILE_SERVER_PATH
+    
     const quoteno = req.body.docNo;
 
-    let filepath = process.env.FILE_SERVER_PATH + "\\WO\\"; //.replace("/","_");
+    let filepath = process.env.FILE_SERVER_PATH + "\\WO\\"; 
     console.log("filepath :", filepath);
-    // const path = basefolder + req.body.filepath + "\\" + quoteno;
 
-    //  const directoryPath = path.join(__dirname, 'your-directory');
-    const directoryPath = filepath + quoteno + "\\"; // + quoteno;
+    const directoryPath = filepath + quoteno + "\\"; 
     console.log("directoryPath :", directoryPath);
-    // Step 1: Read the directory
-    // fs.readdir(directoryPath, (err, files) => {
-    //   if (err) {
-    //     return res.status(500).send('Unable to scan directory');
-    //   }
-    //  // const folders = files.filter(file => file.isDirectory()).map(folder => folder.name);
-    //   const folders = files.filter(file => file.type === 'directory').map(folder => folder.name);
-    //   console.log('Folders:', folders);
+   
 
     const files = fs.readdirSync(directoryPath).map((file) => {
-      //   const fullPath = path.join(directoryPath, file);
-      //   return { name: file, isDirectory: fs.statSync(fullPath).isDirectory() };
+      
       return {
         name: file,
         isDirectory: fs.statSync(directoryPath).isDirectory(),
@@ -84,17 +71,15 @@ fileRouter.post("/getfoldernames", async (req, res) => {
     const folders = files
       .filter((file) => file.isDirectory)
       .map((folder) => folder.name);
-    console.log("Folders:", folders); // Should list only the directories
+    console.log("Folders:", folders); 
     res.json(folders);
-    // });
   } catch (error) {
     console.log(error);
-    //       next(error);
   }
 });
 
+// This API is for orddxf
 fileRouter.get("/orddxf", async (req, res, next) => {
-  console.log(" Order DXF ");
   try {
     const { dxfName, srcPath } = req.query;
     if (!dxfName) {
@@ -106,35 +91,8 @@ fileRouter.get("/orddxf", async (req, res, next) => {
     const path = require("path");
     let basefolder = process.env.FILE_SERVER_PATH;
     const filePath = path.join(basefolder, srcPath, dxfName);
-    console.log("filePath : ", filePath);
-    //let filePath = basefolder + srcPath + dxfName;
-    /////////////////////////////////////////////
-    // let content = "";
-    // fs.readdir(filePath, (err, dxfName) => {
-    //     if (err) {
-    //         console.error('Error reading the folder:', err);
-    //     }
-
-    // if (path.extname(dxfName).toLowerCase() === '.dxf') {
-    //     try {
-    //     content = fs.readFileSync(filePath, 'utf8');
-    //     } catch (error) {
-    //         console.log(error);
-    //         next(error)
-    //     }
-    // } else {
-
-    // fs.renameSync("uploads/" + dxfName, filePath);
-    // content = fs.readFileSync(filePath, 'utf8');
-    // // }
-    // res.send(content);
-    //  });
-
-    /////////////////////////////////////////////
-    console.log("basefolder :", basefolder + srcPath + dxfName);
-    console.log(filePath);
-    let content = fsSync.readFileSync(filePath); // basefolder + srcPath + dxfName);
-    //let content = fs.readFileSync(basefolder + srcPath + dxfName);
+   
+    let content = fsSync.readFileSync(filePath);
     if (!content) {
       throw createError(404, "DXF not found");
     }
@@ -145,12 +103,12 @@ fileRouter.get("/orddxf", async (req, res, next) => {
   }
 });
 
+// This API is for tocopydxfforselected
 fileRouter.post("/tocopydxfforselected", async (req, res, next) => {
-  console.log(" Copy DXF for Selected ");
   try {
     const { OrderNo, Dwglist } = req.body;
-    console.log(OrderNo);
-    console.log(Dwglist);
+    // console.log(OrderNo);
+    // console.log(Dwglist);
     let basefolder = process.env.FILE_SERVER_PATH;
     let basefoldr = basefolder + "\\Wo\\" + OrderNo + "\\DXF\\";
 
@@ -189,72 +147,7 @@ fileRouter.post("/tocopydxfforselected", async (req, res, next) => {
   }
 });
 
-// fileRouter.post("/checkdxf", async (req, res, next) => {
-// 	console.log(" Check Dxf ");
-// 	try {
-// 		//  const { docno, drawfiles } = req.body;
-// 		const docno = req.body.OrderNo;
-// 		// let chkdxf = false;
-
-// 		//  console.log(req.body.drawfiles);
-// 		let basefolder = process.env.FILE_SERVER_PATH;
-
-// 		basefolder = basefolder + "\\Wo\\" + docno + "\\DXF\\";
-
-// 		fs.readdir(basefolder, (err, files) => {
-// 			if (err) {
-// 				console.error("Error reading the folder:", err);
-// 				//    chkdxf = false;
-// 			}
-
-// 			// Filter the files to find any with the .dxf extension
-// 			const dxfFiles = files.filter(
-// 				(file) => path.extname(file).toLowerCase() === ".dxf"
-// 			);
-
-// 			// Check if any .dxf files were found
-// 			if (dxfFiles.length > 0) {
-// 				console.log(".dxf files found:", dxfFiles);
-// 				//    chkdxf = true;
-// 			} else {
-// 				console.log("No .dxf files found in the folder.");
-// 				//   chkdxf = false;
-// 			}
-// 			res.send(dxfFiles);
-// 		});
-// 	} catch (error) {
-// 		console.log(error);
-// 		next(error);
-// 	}
-// });
-/////////////////////////////////////////////////////
-// Local Copying of DXF files
-
-//const fs = require("fs").promises;
-
-// fileRouter.post("/checkdxf", async (req, res, next) => {
-//   console.log(" Check Dxf ");
-//   try {
-//     const docno = req.body.orderno;
-//     let basefolder = process.env.FILE_SERVER_PATH + "\\Wo\\" + docno + "\\DXF\\";
-
-//     console.log("Base Folder Path:", basefolder);
-
-//     const files = await fs.readdir(basefolder);
-//     const dxfFiles = files.filter((file) => path.extname(file).toLowerCase() === ".dxf");
-
-//     if (dxfFiles.length > 0) {
-//       console.log(".dxf files found:", dxfFiles);
-//     } else {
-//       console.log("No .dxf files found in the folder.");
-//     }
-//     res.send(dxfFiles);
-//   } catch (error) {
-//     console.error("Error:", error);
-//     res.status(500).send("An error occurred");
-//   }
-// });
-
+// This API is for checking if DXF files exist in the order folder
 fileRouter.post("/checkdxf", async (req, res, next) => {
   console.log("entred checkdxf api");
 
@@ -335,8 +228,9 @@ fileRouter.post("/saveToCustDwg", async (req, res, next) => {
   }
 });
 
+// This API is for comparing customer drawings
 fileRouter.post("/compareCustDwg", async (req, res, next) => {
-  console.log("compareCustDwg");
+  // console.log("compareCustDwg");
   // console.log(req.body.Dwg);
   try {
     //	let orderno = req.body.orderno;
@@ -369,71 +263,17 @@ fileRouter.post("/compareCustDwg", async (req, res, next) => {
   }
 });
 
-// fileRouter.post("/checkmultidxf", async (req, res, next) => {
-// 	try {
-// 		const docno = req.body.orderno;
-// 		const dname = req.body.Dwgname;
-// 		let basefolder = process.env.FILE_SERVER_PATH + "\\Wo\\" + docno + "\\DXF\\";
-// 		console.log("Base Folder Path:", basefolder);
-
-// 		const files = await fsAsync.readdir(basefolder);
-// 		const dxfFiles = files; //.filter((file) => path.extname(file).toLowerCase() === ".dxf");
-
-// 			dname.forEach((dwg, idx) => {
-// 				let found = false;
-
-// 				for (let i = 0; i < dxfFiles.length; i++) {
-// 				  if (dxfFiles[i].name === dwg) {
-// 					found = true;
-// 					break;
-// 				  }
-// 				}
-
-// 				if (found) {
-// 				  console.log(`${dwg} is present`);
-// 				} else {
-// 				  console.log(`${dwg} is not present`);
-// 				}
-// 			  });
-
-// 			const filePath = directoryPath + file.name;
-// 			const content = fsSync.readFileSync(filePath, 'utf8'); // Read the file content
-// 			// console.log(`Content of ${file.name}:`);
-// 			//  console.log(content);
-// 			filedetails = [...filedetails, { name: file.name, fcontent: content, size: (file.size / 1024).toFixed(2) + ' KB' }];
-// 		});
-
-// 		for each dname.map((dwg,idx) => {
-
-// 		}
-// 	}
-// 		//res.send(dxfFiles);
-// 		if (dxfFiles.length > 0) {
-// 			res.send({ message: "Present" });
-// 		} else {
-// 			res.send({ message: "Not Present" });
-// 		}
-
-// 	} catch (error) {
-// 		console.error("Error:", error);
-// 		res.status(500).send("An error occurred");
-// 	}
-// });
-
+// This API is for copying DXF files to a specified destination
 fileRouter.post("/copydxf", async (req, res, next) => {
-  console.log(" Copy Dxf ");
-  console.log(req.body.Dwg);
+ 
   try {
     let files = req.body.Dwg;
     let destination = req.body.destPath;
-    //  console.log(req.body.files[0].);
-    // console.log("uploads/" + filename);
-    console.log(basefolder + destination);
+    
     let srcfolder = "uploads\\" + files;
     let destdir = basefolder + destination;
     let destfolder = path.join(destdir, files);
-    console.log(srcfolder);
-    console.log(destfolder);
+    
     fsSync.copyFile(srcfolder, destfolder, (err) => {
       if (err) {
         console.error("Error during file copy:", err);
@@ -444,15 +284,7 @@ fileRouter.post("/copydxf", async (req, res, next) => {
       }
     });
 
-    // fs.renameSync("uploads\\" + files, basefolder + destination + files); // files[0].DwgName);
-    // copyfiles(filename, basefolder + destination + '\\' + filename, (err, result) => {
-    //     if (err) {
-    //         res.status(500).send(err);
-    //         console.log(err);
-    //     } else {
-    //         res.send({ status: 'success' });
-    //     }
-    // });
+    
   } catch (error) {
     console.log(error);
     next(error);
@@ -461,15 +293,12 @@ fileRouter.post("/copydxf", async (req, res, next) => {
 
 // Order Copy Dxf File
 fileRouter.post("/ordcopydxf", async (req, res, next) => {
-  console.log(" Ord Copy Dxf ", req.body);
 
-  //console.log("custdwgname : ", req.body.custdwgname);
   try {
     let files = req.body.orderdwg; //OrdrDetailsData.DwgName; //custdwgname;
 
     let sourcefld = path.join(req.body.srcfolder, "\\");
     let destinationfld = path.join(req.body.destfolder, "\\");
-    console.log("files : ", files);
     for (let i = 0; i < files.length; i++) {
       sourcefld = path.join(req.body.srcfolder, "\\", files[i]);
       destinationfld = path.join(req.body.destfolder, "\\", files[i]);
@@ -485,37 +314,24 @@ fileRouter.post("/ordcopydxf", async (req, res, next) => {
               "Customer Drawing folder does not exist. Create it and update in Cust Information",
           });
         } else {
-          console.log("File copied successfully");
         }
       });
     }
     res.send({ status: "success" });
-    // fs.renameSync("uploads\\" + files, basefolder + destination + files); // files[0].DwgName);
-    // copyfiles(filename, basefolder + destination + '\\' + filename, (err, result) => {
-    //     if (err) {
-    //         res.status(500).send(err);
-    //         console.log(err);
-    //     } else {
-    //         res.send({ status: 'success' });
-    //     }
-    // });
+   
   } catch (error) {
-    console.log(error);
     next(error);
   }
 });
 
+// This API is for getting folder file names
 fileRouter.post("/getfolderfilenames", async (req, res) => {
-  console.log(" Get Folder File Names ");
-  console.log("req.body-getfolderfilenames", req.body);
+  
   let filedetails = [];
   try {
-    console.log("basefolder from .env : ", process.env.FILE_SERVER_PATH);
-    console.log("destPath before : ", req.body.destPath);
-    //  let strpath = path.join(process.env.FILE_SERVER_PATH,"\\", req.body.destPath);
+    
     let strpath = req.body.destPath;
 
-    console.log("destPath after--", strpath);
 
     const directoryPath = strpath; // '/path/to/your/directory';
 
@@ -534,9 +350,8 @@ fileRouter.post("/getfolderfilenames", async (req, res) => {
     // Step 3: Read each file's content (optional)
     files.forEach((file) => {
       const filePath = directoryPath + file.name;
-      const content = fsSync.readFileSync(filePath, "utf8"); // Read the file content
-      // console.log(`Content of ${file.name}:`);
-      //  console.log(content);
+      const content = fsSync.readFileSync(filePath, "utf8"); 
+      
       filedetails = [
         ...filedetails,
         {
@@ -549,11 +364,11 @@ fileRouter.post("/getfolderfilenames", async (req, res) => {
 
     res.send(filedetails);
   } catch (error) {
-    console.log(error);
-    //       next(error);
+    // console.log(error);
   }
 });
 
+// This API is for getting files in a folder
 fileRouter.post(`/getfolderfiles`, async (req, res, next) => {
   console.log("getfolderfiles : " + basefolder + req.body.FolderName);
   console.log(req.body);
@@ -567,6 +382,7 @@ fileRouter.post(`/getfolderfiles`, async (req, res, next) => {
   }
 });
 
+// This API is for getting DXF names from a specified path
 fileRouter.post("/getdxfnames", async (req, res) => {
   console.log(" Get DXF Names ");
   console.log(req.body);
@@ -580,6 +396,7 @@ fileRouter.post("/getdxfnames", async (req, res) => {
   res.send({ files: content });
 });
 
+// This API is for getting DXF files from a specified path
 fileRouter.get("/orddxf", async (req, res, next) => {
   console.log(" Order DXF ");
   try {
@@ -629,6 +446,7 @@ fileRouter.get("/orddxf", async (req, res, next) => {
   }
 });
 
+//  This API is for getfolderfilenames
 fileRouter.post("/getfolderfilenames", async (req, res) => {
   let filedetails = [];
   try {
@@ -701,8 +519,7 @@ fileRouter.post("/getfolderfilenames", async (req, res) => {
   }
 });
 
-//Function to execute database queries
-
+//  This API is for Function to execute database queries
 const queryDatabase = (query) => {
   return new Promise((resolve, reject) => {
     misQueryMod(query, (err, results) => {
@@ -713,11 +530,9 @@ const queryDatabase = (query) => {
     });
   });
 };
-// checking the import old order dxf files
 
+// This API is for  checking the import old order dxf files
 fileRouter.post(`/checkdxffilesimportoldorder`, async (req, res, next) => {
-  console.log("checking the import old order dxf files");
-  console.log("request", req.body);
 
   let Old_Order_No = req.body.Old_Order_No;
   let New_Order_No = req.body.New_Order_No;
@@ -808,9 +623,9 @@ fileRouter.post(`/checkdxffilesimportoldorder`, async (req, res, next) => {
   }
 });
 
+// This API is for  orddxffilesimporttocombsch
 fileRouter.post(`/orddxffilesimporttocombsch`, async (req, res, next) => {
-  console.log("checking the import order dxf files to comb sch folder");
-  console.log("request", req.body);
+  
 
   let Doctype = req.body.Doctype;
   let Old_Order_No = req.body.docNo;
@@ -827,8 +642,7 @@ fileRouter.post(`/orddxffilesimporttocombsch`, async (req, res, next) => {
     New_Order_No,
     "//DXF//"
   );
-  console.log("srcfilepth: ", srcfilepth);
-  console.log("dstfilepth: ", dstfilepth);
+  
   try {
     const sourceFolder = srcfilepth;
     const destinationFolder = dstfilepth;
@@ -871,9 +685,8 @@ fileRouter.post(`/orddxffilesimporttocombsch`, async (req, res, next) => {
   }
 });
 
-// Combined Order Copy Dxf File
+//  This API is for Combined Order Copy Dxf File
 fileRouter.post("/cmbordcopydxf", async (req, res, next) => {
-  console.log(" Cmb Ord Copy Dxf ", req.body);
 
   try {
     let SourceOrdno = req.body.DwgDatas;

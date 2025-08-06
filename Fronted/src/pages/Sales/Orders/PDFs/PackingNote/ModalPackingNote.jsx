@@ -11,9 +11,9 @@ import {
 import { Button, Modal } from "react-bootstrap";
 import PrintPackingNote from "./PrintPackingNote";
 import { useEffect } from "react";
-// import PrintInvoiceAndAnnexure from "./PrintInvoiceAndAnnexure";
-// import MLLogo from "../../../../../../../ML-LOGO.png";
-// PrintInvoiceAndAnnexure
+import { Axios } from "axios";
+import { endpoints } from "../../../../api/constants";
+
 
 // PrintPackingNote
 export default function ModalPackingNote(props) {
@@ -48,6 +48,20 @@ export default function ModalPackingNote(props) {
     }
   }
 
+  const [PDFData, setPDFData] = useState({});
+ function fetchPDFData() {
+   Axios.post(endpoints.getPDFData, { UnitName: UnitName }).then((res) => {
+     console.log(" axios response ::", res.data[0]);
+     setPDFData(res.data[0]);
+   });
+ }
+
+ useEffect(() => {
+   if (props.printInvoiceModal) {
+     fetchPDFData();
+   }
+ }, [props.printInvoiceModal]);
+
   return (
     <>
       <Modal
@@ -63,6 +77,7 @@ export default function ModalPackingNote(props) {
           <Fragment>
             <PDFViewer width="1358" height="595" filename="PackingNote.pdf">
               <PrintPackingNote
+                PDFData={PDFData}
                 invRegisterData={props.invRegisterData}
                 // invDetailsData={props.invDetailsData}
                 invTaxData={props.invTaxData}

@@ -1,9 +1,9 @@
 const mtrlgradesRouter = require("express").Router();
-var createError = require('http-errors');
-
+const createError = require('http-errors');
 const { misQuery, misQueryMod } = require('../helpers/dbconn');
 const { logger } = require("../helpers/logger");
 
+// This API is for allmtrlgrades
 mtrlgradesRouter.post('/allmtrlgrades', async (req, res, next) => {
     try {
         misQuery("Select * from magodmis.mtrlgrades order by MtrlGradeID asc", (data) => {
@@ -13,13 +13,10 @@ mtrlgradesRouter.post('/allmtrlgrades', async (req, res, next) => {
         next(error)
     }
 });
-
+// This API is for savenewmtrlgrades
 mtrlgradesRouter.post('/savenewmtrlgrades', async (req, res, next) => {
     try {
-        console.log("Saving new mtrlgrades");
-        console.log(req.body);
-      //  materialtype,newGrade,newSpWeight,newExciseClass,newMtrlCode
-
+      
         const mtrl = req.body.materialtype;
         const grde = req.body.newGrade;
         const spwt = req.body.newSpWeight;
@@ -37,6 +34,7 @@ mtrlgradesRouter.post('/savenewmtrlgrades', async (req, res, next) => {
         next(error)
     }
 });
+// This API is for getmaterialspwt
 mtrlgradesRouter.post('/getmaterialspwt', async (req, res, next) => {
     try {
         const mtrl = req.body.material;
@@ -48,6 +46,7 @@ mtrlgradesRouter.post('/getmaterialspwt', async (req, res, next) => {
         next(error)
     }
 });
+// This API is for allmtrltypelists
 mtrlgradesRouter.get('/allmtrltypelists', async (req, res, next) => {
     try {
         misQuery("SELECT * FROM magodmis.mtrl_typeslist m  ORDER BY m.Material", (data) => {
@@ -57,7 +56,7 @@ mtrlgradesRouter.get('/allmtrltypelists', async (req, res, next) => {
         next(error)
     }
 });
-
+// This API is for allmtrlgrdtypes
 mtrlgradesRouter.post('/allmtrlgrdtypes', async (req, res, next) => {
     try {
         let mtrltype = req.body.materialtype;
@@ -69,7 +68,7 @@ mtrlgradesRouter.post('/allmtrlgrdtypes', async (req, res, next) => {
         next(error)
     }
 });
-
+// This API is for allmtrlshapes
 mtrlgradesRouter.get('/allmtrlshapes', async (req, res, next) => {
     try {
         misQuery(`SELECT * FROM magodmis.Shapes`, (data) => {
@@ -79,7 +78,7 @@ mtrlgradesRouter.get('/allmtrlshapes', async (req, res, next) => {
         next(error)
     }
 });
-
+// This API is for allmtrlshapegrades
  mtrlgradesRouter.post('/allmtrlshapegrades', async (req, res, next) => {
     try {
         let shape = req.body.shape;
@@ -94,8 +93,9 @@ mtrlgradesRouter.get('/allmtrlshapes', async (req, res, next) => {
         next(error)
     }
 });
+// This API is for getmtrlgrad
 mtrlgradesRouter.post('/mtrlgrad', async (req, res, next) => {
-    console.log('Mtrl Grad');
+    // console.log('Mtrl Grad');
     try {
         const id = req.body.grdid;
         misQueryMod(`Select * from magodmis.mtrlgrades WHERE MtrlGradeID = '${id}'`, (err,data) => {

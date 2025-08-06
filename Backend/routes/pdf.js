@@ -1,5 +1,5 @@
 const pdf = require("express").Router();
-var createError = require("http-errors");
+const createError = require("http-errors");
 const req = require("express/lib/request");
 const {
   misQuery,
@@ -10,11 +10,9 @@ const {
 } = require("../helpers/dbconn");
 const { logger } = require("../helpers/logger");
 
+//This API is for getPDFData
 pdf.get("/getPDFData", async (req, res, next) => {
-  const { UnitName } = req.body;
-
-  console.log("UnitName", UnitName);
-  
+  const { UnitName } = req.body;  
   try {
     setupQueryMod(
       `SELECT * FROM magod_setup.magodlaser_units`,
@@ -23,9 +21,7 @@ pdf.get("/getPDFData", async (req, res, next) => {
         if (err) {
           console.log("err", err);
         } else {
-          //   console.log("pdfData", pdfData);
           logger.info("successfully fetched data from magodlaser_units");
-
           res.send(pdfData);
         }
       }

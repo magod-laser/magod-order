@@ -1,5 +1,5 @@
 const co2 = require("express").Router();
-var createError = require("http-errors");
+const createError = require("http-errors");
 const req = require("express/lib/request");
 const {
   misQuery,
@@ -10,10 +10,10 @@ const {
 } = require("../helpers/dbconn");
 const { logger } = require("../helpers/logger");
 
+// This API is for getData
 co2.get("/getData", async (req, res, next) => {
   const { ncid } = req.query;
-  // console.log("ncid", req.query);
-
+  
   try {
     misQueryMod(
       `SELECT * FROM magodmis.ncprograms where Ncid  = ${ncid}`,
@@ -31,6 +31,7 @@ co2.get("/getData", async (req, res, next) => {
   }
 });
 
+// This API is for getJointType
 co2.get("/getJointType", async (req, res, next) => {
   try {
     qtnQueryMod(
@@ -46,6 +47,7 @@ co2.get("/getJointType", async (req, res, next) => {
   }
 });
 
+// This API is for saveCo2Parameters
 co2.post("/saveCo2Parameters", async (req, res, next) => {
   const { ncid, taskDate, operator, nt, joint } = req.body;
   console.log("req.body Save", req.body);
@@ -99,6 +101,7 @@ co2.post("/saveCo2Parameters", async (req, res, next) => {
   }
 });
 
+//This API is for insertMaterialDetails
 co2.post("/insertMaterialDetails", async (req, res, next) => {
   const { ncid, material, thickness } = req.body;
 
@@ -132,6 +135,7 @@ co2.post("/insertMaterialDetails", async (req, res, next) => {
   }
 });
 
+//This API is for deleteMaterialDetails
 co2.post("/deleteMaterialDetails", async (req, res, next) => {
   const { id } = req.body;
   try {
@@ -153,6 +157,7 @@ co2.post("/deleteMaterialDetails", async (req, res, next) => {
   }
 });
 
+//This API is for updateMaterialDetails
 co2.post("/updateMaterialDetails", async (req, res, next) => {
   const { ncid, id, material, thickness } = req.body;
 
@@ -176,6 +181,7 @@ co2.post("/updateMaterialDetails", async (req, res, next) => {
   }
 });
 
+//This API is for updateParaDetails
 co2.post("/updateParaDetails", async (req, res, next) => {
   const {
     ncid,
@@ -218,6 +224,7 @@ co2.post("/updateParaDetails", async (req, res, next) => {
   }
 });
 
+//This API is for insertParaDetails
 co2.post("/insertParaDetails", async (req, res, next) => {
   const {
     ncid,
@@ -271,6 +278,7 @@ co2.post("/insertParaDetails", async (req, res, next) => {
   }
 });
 
+//This API is for deleteParaDetails
 co2.post("/deleteParaDetails", async (req, res, next) => {
   const { id } = req.body;
   try {
@@ -292,6 +300,7 @@ co2.post("/deleteParaDetails", async (req, res, next) => {
   }
 });
 
+//This API is for allCo2Data
 co2.post("/allCo2Data", async (req, res, next) => {
   const { ncid } = req.body;
 

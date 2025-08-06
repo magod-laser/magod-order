@@ -3,6 +3,7 @@
 const runningNoRouter = require("express").Router();
 const { setupQueryMod } = require("../helpers/dbconn");
 
+// This API is for get and insert running number
 runningNoRouter.post("/getAndInsertRunningNo", async (req, res, next) => {
 	try {
 		setupQueryMod(
@@ -63,6 +64,7 @@ runningNoRouter.post("/getAndInsertRunningNo", async (req, res, next) => {
 	}
 });
 
+// This API is for getRunningNoBySrlType
 runningNoRouter.post("/updateRunningNoBySrlType", async (req, res, next) => {
 	try {
 		//console.log("updateRunningNoBySrlType", req.body);
@@ -79,6 +81,7 @@ runningNoRouter.post("/updateRunningNoBySrlType", async (req, res, next) => {
 	}
 });
 
+// This API is for insert and get running number
 runningNoRouter.post("/insertAndGetRunningNo", async (req, res, next) => {
 	// console.log("reqqqq", req.body);
 

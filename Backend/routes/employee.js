@@ -3,6 +3,7 @@ var createError = require('http-errors');
 const { createFolder } = require('../helpers/folderhelper');
 const { misQuery, setupQuery, misQueryMod } = require('../helpers/dbconn');
 
+// This API is for allsalesemployees
 employeeRouter.get('/allsalesemployees', async (req, res, next) => {
     try {
         misQueryMod("SELECT EmployeeID,Employee_Name FROM magodmis.employeesdb where Sales = '-1'", (err,data) => {

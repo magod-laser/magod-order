@@ -14,6 +14,7 @@ const {
 const { logger } = require("../../helpers/logger");
 const bodyParser = require("body-parser");
 const moment = require("moment");
+const globalConfig = require("../Utils/globalConfig");
 
 var jsonParser = bodyParser.json();
 
@@ -34,7 +35,10 @@ scheduleListCombined.post("/files", jsonParser, async (req, res, next) => {
   if (isNaN(orderNumber)) {
     return res.status(400).send("Invalid OrderNo");
   }
-
+ const workOrderPath = globalConfig.getAll();
+  let baseDirectory = workOrderPath.WORKORDER;
+  console.log("baseDirectory", baseDirectory);
+  
   // Construct the directory path with the OrderNo and 'DXF' appended
   const directoryPath = path.join(baseDirectory, orderNumber.toString(), "DXF");
 
@@ -848,13 +852,12 @@ scheduleListCombined.post("/copyDwg", async (req, res, next) => {
   let folderBase = workOrderPath.WORKORDER;    
 
     const sourceDirs = orinalScheudledata.map((data) =>
-      // path.join("C:", "Magod", "Jigani", "Wo", data.Order_No, "DXF")
       path.join(folderBase, data.Order_No, "DXF")
     );
     // const targetDir = path.join(
     //   "C:",
     //   "Magod",
-    //   "Jigani",
+    //   "",
     //   "Wo",
     //   selectedRow.Order_No,
     //   "DXF"

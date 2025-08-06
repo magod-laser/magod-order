@@ -1430,49 +1430,7 @@ let serialNumber = 1; // Initialize counter before mapping
                       </View>
                     </View>
 
-                    {/* <View style={styles.MagodTitle}>
-                      <View>
-                        <Text
-                          style={[styles.titleBold, { marginLeft: "20px" }]}
-                        >
-                          Magod Laser Machining Pvt Ltd
-                        </Text>
-                        <Text
-                          style={[{ marginTop: "1%", textAlign: "center" }]}
-                        >
-                          Jigani
-                        </Text>
-                        <Text
-                          style={[
-                            {
-                              marginTop: "1%",
-                              textAlign: "center",
-                              fontFamily: "Helvetica-Bold",
-                            },
-                          ]}
-                        >
-                          Production Schedule Form
-                        </Text>
-                        <View style={styles.titlePlace}>
-                          <Text
-                            style={[
-                              styles.globalfontwithoutbold,
-                              { fontSize: "11px" },
-                            ]}
-                          >
-                            {item.location}
-                          </Text>
-                        </View>
-
-                        <Text
-                          style={[styles.typeofform, { marginLeft: "20px" }]}
-                        >
-                          {item.typeofform}
-                        </Text>
-                      </View>
-                    </View> */}
-                    {/* 04062025 */}
-                     <View
+                           <View
                                     style={{
                                       justifyContent: "center",
                                       alignItems: "center",

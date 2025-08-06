@@ -3,36 +3,25 @@
 
 
 import React, { useState, useEffect } from "react";
-
 import styled from "styled-components";
-
-import { Link, useLocation } from "react-router-dom";
-
-import * as FaIcons from "react-icons/fa";
-
-import * as AiIcons from "react-icons/ai";
-
+import {  useLocation } from "react-router-dom";
 import SubMenuComp from "./SubNavComp";
-
-import { IconContext } from "react-icons/lib";
-
 import { customerSidebar, adminSidebar } from "../components/SidebarData";
+import { FaAngleRight, FaAngleLeft } from "react-icons/fa";
 
-import { FaAngleRight, FaAngleLeft, FaAngleDown } from "react-icons/fa";
+// const NavIcon = styled.div`
+// 	margin-left: 2rem;
 
-const NavIcon = styled.div`
-	margin-left: 2rem;
+// 	font-size: 2rem;
 
-	font-size: 2rem;
+// 	height: 80px;
 
-	height: 80px;
+// 	display: flex;
 
-	display: flex;
+// 	justify-content: flex-start;
 
-	justify-content: flex-start;
-
-	align-items: center;
-`;
+// 	align-items: center;
+// `;
 
 const SidebarWrap = styled.div`
 	width: 100%;
@@ -108,6 +97,7 @@ const SidebarComp = () => {
 						<img
 							className="logo"
 							src={require("../ML-LOGO1.png")}
+							alt="logo"
 						/>
 
 						{sidebar ? (

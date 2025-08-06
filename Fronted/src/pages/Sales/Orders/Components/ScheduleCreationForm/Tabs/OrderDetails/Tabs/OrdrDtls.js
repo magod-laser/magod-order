@@ -1,16 +1,11 @@
 /** @format */
 
 import React, { useEffect, useState } from "react";
-import { Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import AddNewSrlModal from "../Modals/AddNewSrlModal";
 import { Typeahead } from "react-bootstrap-typeahead";
-import { Folder, Login } from "@mui/icons-material";
-import { Last } from "react-bootstrap/esm/PageItem";
 import LoadingPage from "../../../Loading";
 import { postRequest } from "../../../../../../../api/apiinstance";
 import { endpoints } from "../../../../../../../api/constants";
-import { toast } from "react-toastify";
 
 function OrdrDtls(props) {
   const {
@@ -41,7 +36,7 @@ function OrdrDtls(props) {
     DwgName,
     handleDwgInputChange,
     PostSrlData,
-    selectItem,
+    // selectItem,
     selectedItems,
     insertnewsrldata,
     importdwgshow,
@@ -50,45 +45,42 @@ function OrdrDtls(props) {
     handleCloseImportDwg,
     handleMtrlCodeTypeaheadChange,
     BomData,
-    setBomData,
+    // setBomData,
     PostOrderDetails,
     selectedPartId,
-    setSelectedPartId,
+    // setSelectedPartId,
     BomArry,
-    setBomArry,
+    // setBomArry,
     handleSelectChange,
     options,
     HasBOM,
-    setHasBOM,
+    // setHasBOM,
     LastSlctedRow,
-    setLastSlctedRow,
+    // setLastSlctedRow,
     //-------NEW
     newSerial,
     setNewSerial,
     ordrDetailsChange,
-    setordrDetailsChange,
+    // setordrDetailsChange,
     handleChange,
     isLoading,
     handleInputChange,
     handleMtrlCodeTypeaheadChangeeee,
-    magodCode,
+    // magodCode,
     NewSrlFormData,
     Operation,
     setOperation,
-    deleteRowsBySrl,
-    selectedRow,OdrDtlMtrlSrc
+    // deleteRowsBySrl,
+    selectedRow,
+    // OdrDtlMtrlSrc
   } = props;
 
-  console.log("selectedRow", selectedRow);
-  console.log("OrderCustData", OrderCustData);
-  // console.log("OdrDtlMtrlSrc", OdrDtlMtrlSrc);
-  // console.log("OdrDtlMtrlSrc", OdrDtlMtrlSrc);
-
- 
-
+  
+  // eslint-disable-next-line no-unused-vars
   const [materialCode, setMaterialCode] = useState(
     selectedItems[0]?.Mtrl_Code || ""
   );
+  // eslint-disable-next-line no-unused-vars
   const handleMaterialCodeChange = (event) => {
     // Update the state when the dropdown value changes
     setMaterialCode(event.target.value);
@@ -96,14 +88,17 @@ function OrdrDtls(props) {
 
   useEffect(() => {
     setQuantity(LastSlctedRow?.Qty_Ordered || "");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [LastSlctedRow]);
   useEffect(() => {
     // Set the default value from the array
     if (LastSlctedRow && LastSlctedRow.length > 0) {
       setQuantity(LastSlctedRow?.Qty_Ordered);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [LastSlctedRow]);
 
+  // eslint-disable-next-line no-unused-vars
   const handleQuantityChange = (event) => {
     setQuantity(event.target.value);
     // Your other logic if needed
@@ -769,7 +764,7 @@ postRequest(endpoints.saveToCustDwg, {orderno, ccode, dwgname},(respdwg)=> {
                   {" "}
                   {/* <label className="form-label label-space">Part id</label> */}
                   <label className="form-label label-space">Assembly</label>
-                  {BomData?.length != 0 ? (
+                  {BomData?.length !== 0 ? (
                     <Typeahead
                       className="in-field"
                       selected={selectedPartId}
@@ -893,7 +888,7 @@ postRequest(endpoints.saveToCustDwg, {orderno, ccode, dwgname},(respdwg)=> {
               </div>
               <div className="col-md-4">
                 {" "}
-                {BomData?.length != 0 ? (
+                {BomData?.length !== 0 ? (
                   <Typeahead
                     className="ip-slecet input-field"
                     selected={selectedPartId}

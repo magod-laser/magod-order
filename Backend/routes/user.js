@@ -14,6 +14,8 @@ const fs = require("fs");
 // const subprocess = require("subprocess");
 var jsonParser = bodyParser.json();
 
+
+//This API is for login
 userRouter.post(`/login`, async (req, res, next) => {
   try {
     // console.log("login");
@@ -81,6 +83,7 @@ userRouter.post(`/login`, async (req, res, next) => {
   }
 });
 
+//This API is for savemenurolemapping
 userRouter.post(`/savemenurolemapping`, async (req, res, next) => {
   let sucs = false;
   let updt = false;
@@ -174,6 +177,7 @@ userRouter.post(`/savemenurolemapping`, async (req, res, next) => {
   }
 });
 
+//This API is for getusers
 userRouter.post(`/getusers`, async (req, res, next) => {
   // console.log("get users");
   try {
@@ -191,6 +195,7 @@ userRouter.post(`/getusers`, async (req, res, next) => {
   }
 });
 
+//This API is for delusers
 userRouter.post(`/delusers`, async (req, res, next) => {
   // console.log("Delete User");
   try {
@@ -219,6 +224,7 @@ userRouter.post(`/delusers`, async (req, res, next) => {
   }
 });
 
+//This API is for saveusers
 userRouter.post(`/saveusers`, async (req, res, next) => {
   try {
     let data = req.body.usrdata;
@@ -273,6 +279,7 @@ userRouter.post(`/saveusers`, async (req, res, next) => {
   }
 });
 
+//This API is for user
 userRouter.get("/user", async (req, res, next) => {
   try {
     const id = req.body.id;
@@ -283,6 +290,7 @@ userRouter.get("/user", async (req, res, next) => {
   }
 });
 
+//This API is for getusermodules
 userRouter.post(`/getusermodules`, async (req, res, next) => {
   try {
     const strmodule = req.body.Module;
@@ -295,6 +303,7 @@ userRouter.post(`/getusermodules`, async (req, res, next) => {
   }
 });
 
+//This API is for getuserroles
 userRouter.post(`/getuserroles`, async (req, res, next) => {
   try {
     setupQueryMod(`Select * FROM magod_setup.userroles`, async (err, data) => {
@@ -307,6 +316,7 @@ userRouter.post(`/getuserroles`, async (req, res, next) => {
   }
 });
 
+//This API is for adduserroles
 userRouter.post(`/adduserroles`, async (req, res, next) => {
   try {
     // console.log("adduserroles");
@@ -348,16 +358,11 @@ userRouter.post(`/adduserroles`, async (req, res, next) => {
   }
 });
 
+//This API is for deluserroles
 userRouter.post(`/deluserroles`, async (req, res, next) => {
-  // console.log("Delete user Role");
   try {
     let oldrole = req.body.rolenm;
-    // console.log("Role : " + req.body.rolenm);
-
-    // setupQuery(`Select * from magod_setup.menumapping where Role='${oldrole}'`,(mmdata) => {
-    //     if(mmdata.length > 0){
-    //         res.send({status : "RoleMenu"});
-    //     }else {
+    
     setupQueryMod(
       `Update magod_setup.menumapping set ActiveMenu = 0 where Role = '${oldrole}'`,
       (err, mmdata) => {
@@ -368,7 +373,6 @@ userRouter.post(`/deluserroles`, async (req, res, next) => {
       `Delete from magod_setup.userroles where Role='${oldrole}'`,
       (err, data) => {
         if (err) logger.error(err);
-        // console.log("Role Deleted");
         res.send({ status: "Deleted" });
       }
     );
@@ -377,6 +381,7 @@ userRouter.post(`/deluserroles`, async (req, res, next) => {
   }
 });
 
+//This API is for addusermodules
 userRouter.post(`/addusermodules`, async (req, res, next) => {
   try {
     const strrole = req.body.Module;
@@ -417,6 +422,7 @@ userRouter.post(`/addusermodules`, async (req, res, next) => {
   }
 });
 
+//This API is for getrolemenus
 userRouter.post(`/getrolemenus`, async (req, res, next) => {
   const strrole = req.body.Role;
   try {
@@ -435,6 +441,7 @@ userRouter.post(`/getrolemenus`, async (req, res, next) => {
   }
 });
 
+//This API is for getusermenus
 userRouter.post(`/getusermenus`, async (req, res, next) => {
   try {
     setupQueryMod(
@@ -451,6 +458,7 @@ userRouter.post(`/getusermenus`, async (req, res, next) => {
   }
 });
 
+//This API is for delusermenus
 userRouter.post(`/delusermenus`, async (req, res, next) => {
   try {
     let mnuname = req.body.mname;
@@ -466,6 +474,7 @@ userRouter.post(`/delusermenus`, async (req, res, next) => {
   }
 });
 
+//This API is for addusermenus
 userRouter.post(`/addusermenus`, async (req, res, next) => {
   // console.log("addusermenus");
 
@@ -514,52 +523,7 @@ userRouter.post(`/addusermenus`, async (req, res, next) => {
   }
 });
 
-// New endpoint to fetch menu URLs (no login)
-// userRouter.post("/fetchMenuUrls", async (req, res, next) => {
-//   try {
-//     const { role, username } = req.body;
-//     // console.log("req.body", req.body);
-//     if (!role || !username) return res.send(createError.BadRequest());
-
-//     setupQueryMod(
-//       `Select usr.Name, usr.UserName,usr.Password,usr.Role, unt.UnitName,usr.ActiveUser from magod_setup.magod_userlist usr
-//         left join magod_setup.magodlaser_units unt on unt.UnitID = usr.UnitID WHERE usr.UserName = '${username}' and usr.ActiveUser = '1'`,
-//       async (err, d) => {
-//         if (err) logger.error(err);
-//         let data = d;
-//         if (data.length > 0) {
-//           setupQueryMod(
-//             `Select m.MenuUrl,ModuleId  from magod_setup.menumapping mm
-//                 left outer join magod_setup.menus m on m.Id = mm.MenuId
-//                 where mm.Role = '${data[0]["Role"]}' and mm.ActiveMenu = '1'`,
-//             async (err, mdata) => {
-//               if (err) logger.error(err);
-//               let menuarray = [];
-//               mdata.forEach((element) => {
-//                 menuarray.push(element["MenuUrl"]);
-//               });
-//               const moduleIds = [
-//                 ...new Set(
-//                   mdata.map((menu) => menu.ModuleId).filter((id) => id !== null)
-//                 ),
-//               ];
-//               res.send({
-//                 data: { ...data, access: menuarray },
-//                 moduleIds: moduleIds,
-//               });
-//             }
-//           );
-//         } else {
-//           res.send(createError.Unauthorized("Invalid Username"));
-//           logger.error(` Failed - ${username} IP : ${req.ip}`);
-//         }
-//       }
-//     );
-//   } catch (error) {
-//     next(error);
-//     logger.error(`Error - ${error}`);
-//   }
-// });
+//This API is for fetchMenuUrls
 userRouter.post("/fetchMenuUrls", async (req, res, next) => {
   try {
     const { role, username } = req.body;
@@ -644,29 +608,19 @@ userRouter.post("/fetchMenuUrls", async (req, res, next) => {
   }
 });
 
+//This API is for  openexplorer
 userRouter.post("/openexplorer", (req, res) => {
   const testPath = req.body.path || "E:\\After-Restoration"; // Default path
   exec(
     `powershell.exe Start-Process explorer.exe -ArgumentList "${testPath}"`,
     (err, stdout, stderr) => {
       if (err) {
-        // console.error(`Error opening path: ${err.message}`);
-        // console.error(`stderr: ${stderr}`);
         return res.status(500).send("Failed to open the path");
       }
-      // console.log(`stdout: ${stdout}`);
       res.send(`Opened path: ${testPath}`);
     }
   );
 });
 
-// Test execution with a simple command
-// exec("echo Test", (err, stdout, stderr) => {
-//   if (err) {
-//     console.error(`Error: ${err.message}`);
-//     return;
-//   }
-//   console.log(`Output: ${stdout}`);
-// });
 
 module.exports = userRouter;

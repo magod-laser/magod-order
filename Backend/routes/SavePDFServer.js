@@ -4,6 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const { createFolder } = require("../helpers/folderhelper");
 require("dotenv").config();
+
 let OrderNOO;
 let SchNoo;
 let globalAdjustmentName;
@@ -11,7 +12,7 @@ let globalAdjustmentName;
 const savePDF = express.Router();
 
 const baseUploadFolder =
-  process.env.FILE_SERVER_PATH?.trim() || "C:/Magod/Jigani"; // Ensure this is set correctly
+  process.env.FILE_SERVER_PATH?.trim() ; // Ensure this is set correctly
 
 const getFormattedDateTime = () => {
   const now = new Date();
@@ -24,18 +25,12 @@ const getFormattedDateTime = () => {
 savePDF.post("/set-adjustment-name", (req, res) => {
   const { adjustment, OrderNo, SchNo } = req.body;
 
-  console.log("OrderNo", OrderNo);
-  console.log("adjustment", adjustment);
-  console.log("SchNo", SchNo);
   if (SchNo) {
-    console.log("entereddd");
-
     createFolder("Schedule", SchNo, "");
   }
   OrderNOO = req.body.OrderNo;
   SchNoo = req.body.SchNo;
 
-  console.log("SchNoo", SchNoo);
 
   if (!adjustment || !OrderNo) {
     return res
@@ -44,12 +39,7 @@ savePDF.post("/set-adjustment-name", (req, res) => {
   }
 
   globalAdjustmentName = adjustment;
-  console.log("Global adjustment name set to:", globalAdjustmentName);
-
-  // const uploadFolder = path.join(baseUploadFolder, "Wo", OrderNo.toString());
-  // if (!fs.existsSync(uploadFolder)) {
-  //   fs.mkdirSync(uploadFolder, { recursive: true });
-  // }
+  
   let uploadFolder = path.join(baseUploadFolder, "Wo", OrderNo.toString());
 
   if (!fs.existsSync(uploadFolder)) {
@@ -69,19 +59,20 @@ savePDF.post("/set-adjustment-name", (req, res) => {
     }
   }
 
-  console.log("Upload folder created/exists:", uploadFolder);
+  // console.log("Upload folder created/exists:", uploadFolder);
 
   res
     .status(200)
     .send({ message: "Adjustment name saved successfully.", uploadFolder });
 });
 
+//Function for mulrter storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const orderNo = OrderNOO;
 
-    console.log("Extracted OrderNo:", orderNo);
-    console.log("Extracted SchNo:", SchNoo);
+    // console.log("Extracted OrderNo:", orderNo);
+    // console.log("Extracted SchNo:", SchNoo);
 
     if (!orderNo) {
       return cb(new Error("OrderNo is required to save the file."), null);
@@ -105,7 +96,7 @@ const storage = multer.diskStorage({
       }
     }
 
-    console.log("Final file save path:", orderPath);
+    // console.log("Final file save path:", orderPath);
     cb(null, orderPath);
   },
   filename: (req, file, cb) => {
@@ -114,8 +105,8 @@ const storage = multer.diskStorage({
   },
 });
 
+// This API is for save
 savePDF.post("/save-pdf", (req, res) => {
-  console.log("reqqqq", req.body);
 
   const upload = multer({ storage }).single("file");
 
@@ -127,16 +118,12 @@ savePDF.post("/save-pdf", (req, res) => {
         .send({ message: "File upload failed", error: err });
     }
 
-    console.log("Received req.body:", req.body);
     const orderNo = OrderNOO;
 
     if (!orderNo) {
-      console.error("OrderNo is missing in request.");
       return res.status(400).send({ message: "OrderNo is required." });
     }
 
-    console.log("File saved to:", req.file.path);
-    console.log(" req.file.size:", req.file.size);
     res
       .status(200)
       .send({ message: "PDF saved successfully!", filePath: req.file.path });

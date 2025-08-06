@@ -1,19 +1,19 @@
 const taxdbRouter = require("express").Router();
 var createError = require('http-errors');
-
 const { misQuery, misQueryMod } = require('../helpers/dbconn');
 
+//This API is for alltaxdetails
 taxdbRouter.post('/alltaxdetails', async (req, res, next) => {
-    console.log(req.body)
+    // console.log(req.body)
     try {
-        console.log(req.body.formqtntype)
+        // console.log(req.body.formqtntype)
         switch (req.body.formqtntype) {
             case "JobWork":
-                console.log("JobWork")
+                // console.log("JobWork")
                 misQueryMod("SELECT * FROM magodmis.taxdb where JobWork = 0 and current_date() >= EffectiveFrom and current_date() <= EffectiveTO order by TaxName asc", (err,data) => {
                     if(err) console.log(err)
                     res.send(data);
-                    console.log(data);
+                    // console.log(data);
                 })
                 break;
             case "Sales":
@@ -38,7 +38,5 @@ taxdbRouter.post('/alltaxdetails', async (req, res, next) => {
         next(error)
     }
 });
-
-
 
 module.exports = taxdbRouter;

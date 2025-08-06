@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from "react";
-import Axios from "axios";
+import React from "react";
 
-import { Form, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import * as XLSX from 'xlsx';
@@ -44,13 +42,6 @@ export default function Header(props) {
       XLSX.writeFile(workbook, `${filName}.xlsx`);
     };
   
-    // const preprocessedData = (data) => {
-    //   return data.map(row => ({
-    //     ...row,
-    //     Total : parseFloat( row["UnitPrice"] * row["Qty_Ordered"]).toFixed(2)
-    //   }));
-    // };
-
   return (
     <>
       <div className="row">
@@ -138,11 +129,7 @@ export default function Header(props) {
                   Clear Filter
                 </button>
               </div>
-              {/* <div className="col-md-2">
-                <button className="button-style m-0" style={{ width: "100%" }}>
-                  Close
-                </button>
-              </div> */}
+              
             </div>
           </div>
         </div>

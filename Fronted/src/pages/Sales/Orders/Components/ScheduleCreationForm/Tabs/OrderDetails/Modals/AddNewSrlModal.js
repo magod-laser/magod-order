@@ -1,34 +1,34 @@
 /** @format */
 
-import { React, useState } from "react";
+import { React } from "react";
 import { Form, Modal } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
 import LoadingPage from "../../../Loading";
 
-const {
-  getRequest,
-  postRequest,
-} = require("../../../../../../../api/apiinstance");
-const { endpoints } = require("../../../../../../../api/constants");
+// const {
+//   getRequest,
+//   postRequest,
+// } = require("../../../../../../../api/apiinstance");
+// const { endpoints } = require("../../../../../../../api/constants");
 
 function AddNewSrlModal(props) {
   const {
-    OrderData,
-    OrderCustData,
-    OrdrDetailsData,
+    // OrderData,
+    // OrderCustData,
+    // OrdrDetailsData,
     importdwgshow,
-    setImportDwgShow,
-    handleImportDwg,
+    // setImportDwgShow,
+    // handleImportDwg,
     handleCloseImportDwg,
-    importdrawings,
+    // importdrawings,
     mtrldata,
-    selectMtrl,
-    strmtrlcode,
+    // selectMtrl,
+    // strmtrlcode,
     procdata,
     selectProc,
     selectMtrlSrc,
-    tolerancedata,
-    selectTolerance,
+    // tolerancedata,
+    // selectTolerance,
     inspdata,
     selectInsp,
     packdata,
@@ -40,24 +40,24 @@ function AddNewSrlModal(props) {
     setJwRate,
     materialRate,
     setMaterialRate,
-    unitPrice,
+    // unitPrice,
     setUnitPrice,
-    DwgName,
-    handleDwgInputChange,
-    PostSrlData,
-    insertnewsrldata,
-    handleMtrlCodeTypeaheadChange,
+    // DwgName,
+    // handleDwgInputChange,
+    // PostSrlData,
+    // insertnewsrldata,
+    // handleMtrlCodeTypeaheadChange,
     PostOrderDetails,
     //---NEW ---------
     newSerial,
-    setNewSerial,
+    // setNewSerial,
     handleChange,
     isLoading,
-    handleInputChange,
+    // handleInputChange,
     handleMtrlCodeTypeaheadChangeeee,
     NewSrlFormData,
-    Operation,
-    setOperation,
+    // Operation
+    // setOperation,
   } = props;
 
   return (

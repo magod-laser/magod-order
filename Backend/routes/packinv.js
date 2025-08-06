@@ -1,6 +1,5 @@
 const packinvRouter = require("express").Router();
-var createError = require("http-errors");
-
+const createError = require("http-errors");
 const {
   setupQuery,
   qtnQuery,
@@ -8,6 +7,7 @@ const {
   mtrlQueryMod,
 } = require("../helpers/dbconn");
 
+// getpackingschedules
 packinvRouter.post(`/getpackingschedules`, async (req, res, next) => {
   try {
     let intype = req.body.instype;
@@ -34,6 +34,7 @@ packinvRouter.post(`/getpackingschedules`, async (req, res, next) => {
   }
 });
 
+// getpackschdetails
 packinvRouter.post(`/getpackschdetails`, async (req, res, next) => {
   try {
     let schid = req.body.scheduleid;
@@ -55,6 +56,7 @@ packinvRouter.post(`/getpackschdetails`, async (req, res, next) => {
   }
 });
 
+// getexnotifications
 packinvRouter.post(`/getexnotifications`, async (req, res, next) => {
   try {
     // let schid = req.body.scheduleid;
@@ -68,6 +70,7 @@ packinvRouter.post(`/getexnotifications`, async (req, res, next) => {
   }
 });
 
+// getpckscheduledetails
 packinvRouter.post(`/getpckscheduledetails`, async (req, res, next) => {
   try {
     let schdetsid = req.body.scheduleid;
