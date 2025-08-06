@@ -384,3 +384,41 @@ export const customerSidebar = [
   },
 ];
 
+export const adminSidebar = [
+	{
+		title: "Access",
+		icon: <MdIcon.MdOutlineSecurity />,
+		iconClosed: <RiIcons.RiArrowDownSFill />,
+		iconOpened: <RiIcons.RiArrowUpSFill />,
+		subNav: [
+			{
+				title: "Menu Roles",
+				path: "/admin/menuRoles",
+				icon: <AiIcons.AiOutlineMenuFold />,
+			},
+		],
+	},
+	{
+		title: "Users",
+		icon: <FaIcon.FaUsers />,
+		iconClosed: <RiIcons.RiArrowDownSFill />,
+		iconOpened: <RiIcons.RiArrowUpSFill />,
+		subNav: [
+			{
+				title: "Roles",
+				path: "/admin/roles",
+				icon: <VscTypeHierarchySub />,
+			},
+			{
+				title: "Menus",
+				path: "/admin/menus",
+				icon: <BiFoodMenu />,
+			},
+			{
+				title: "Users",
+				path: "/admin/users",
+				icon: <HiUsers />,
+			},
+		],
+	},
+];
