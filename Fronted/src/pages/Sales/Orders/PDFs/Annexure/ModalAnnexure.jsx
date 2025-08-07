@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import {
   PDFDownloadLink,
   Page,
@@ -10,11 +10,49 @@ import {
 } from "@react-pdf/renderer";
 import { Button, Modal } from "react-bootstrap";
 import PrintInvoiceAndAnnexure from "./PrintAnnexure";
+import { Axios } from "axios";
+import { endpoints } from "../../../../api/constants";
 // import MLLogo from "../../../../../../../ML-LOGO.png";
 // PrintInvoiceAndAnnexure
 
 export default function ModalInvoiceAndAnnexure(props) {
   const handleClose = () => props.setPrintAnneureModal(false);
+
+ const [PDFData, setPDFData] = useState({});
+
+const [UnitName, setUnitName] = useState();
+  
+    useEffect(() => {
+        const storedData = localStorage.getItem("userData");
+    
+        if (storedData) {
+          try {
+            const parsedData = JSON.parse(storedData);
+            const AppunitName = parsedData.UnitName;
+    
+            if (AppunitName) {
+              setUnitName(AppunitName);
+            }
+          } catch (err) {
+            console.error("Error parsing userData from localStorage:", err);
+          }
+        } else {
+          console.log("No userData in localStorage.");
+        }
+      }, []);
+
+ function fetchPDFData() {
+   Axios.post(endpoints.getPDFData, { UnitName: UnitName }).then((res) => {
+     console.log(" axios response ::", res.data[0]);
+     setPDFData(res.data[0]);
+   });
+ }
+
+ useEffect(() => {
+   if (props.printInvoiceModal) {
+     fetchPDFData();
+   }
+ }, [props.printInvoiceModal]);
 
   return (
     <>
@@ -33,6 +71,7 @@ export default function ModalInvoiceAndAnnexure(props) {
                 invRegisterData={props.invRegisterData}
                 invDetailsData={props.invDetailsData}
                 invTaxData={props.invTaxData}
+                PDFData={PDFData}
               />
             </PDFViewer>
           </Fragment>
