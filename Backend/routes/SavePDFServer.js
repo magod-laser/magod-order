@@ -4,6 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const { createFolder } = require("../helpers/folderhelper");
 require("dotenv").config();
+const globalConfig = require("../routes/Utils/globalConfig");
 
 let OrderNOO;
 let SchNoo;
@@ -24,6 +25,11 @@ const getFormattedDateTime = () => {
 // API to store adjustment name globally
 savePDF.post("/set-adjustment-name", (req, res) => {
   const { adjustment, OrderNo, SchNo } = req.body;
+    //Path from setup details table
+    const workOrderPath = globalConfig.getAll();
+    let baseUploadFolder = workOrderPath.WORKORDER;
+    console.log("baseUploadFolder", baseUploadFolder);
+    
 
   if (SchNo) {
     createFolder("Schedule", SchNo, "");
@@ -40,7 +46,8 @@ savePDF.post("/set-adjustment-name", (req, res) => {
 
   globalAdjustmentName = adjustment;
   
-  let uploadFolder = path.join(baseUploadFolder, "Wo", OrderNo.toString());
+  // let uploadFolder = path.join(baseUploadFolder, "Wo", OrderNo.toString());
+  let uploadFolder = path.join(baseUploadFolder,  OrderNo.toString());
 
   if (!fs.existsSync(uploadFolder)) {
     fs.mkdirSync(uploadFolder, { recursive: true });
@@ -48,8 +55,12 @@ savePDF.post("/set-adjustment-name", (req, res) => {
 
   if (SchNo) {
     uploadFolder = path.join(
+      // baseUploadFolder,
+      // "Wo",
+      // OrderNo.toString(),
+      // SchNo.toString()
       baseUploadFolder,
-      "Wo",
+      // "Wo",
       OrderNo.toString(),
       SchNo.toString()
     );
@@ -77,9 +88,12 @@ const storage = multer.diskStorage({
     if (!orderNo) {
       return cb(new Error("OrderNo is required to save the file."), null);
     }
+ const workOrderPath = globalConfig.getAll();
+ let baseUploadFolder = workOrderPath.WORKORDER;
 
     // Base folder for the order
-    let orderPath = path.join(baseUploadFolder, "Wo", orderNo.toString());
+    // let orderPath = path.join(baseUploadFolder, "Wo", orderNo.toString());
+    let orderPath = path.join(baseUploadFolder, orderNo.toString());
 
     // Ensure the base folder exists
     if (!fs.existsSync(orderPath)) {
