@@ -254,8 +254,8 @@
 // 												TAX INVOICE
 // 											</Text>
 // 										</View>
-// 										<Text style={{ ...style.fontBold, fontSize: "11px" }}>
-// 											Magod Laser Machining Private Limited
+// 										<Text LaserText style={{ ...style.fontBold, fontSize: "11px" }}>
+// 											 Machining Private Limited
 // 										</Text>
 // 										<Text style={{ ...style.fontBold }}>
 // 											GST: 29AABCM1970H1ZE CIN: U28900KA1995PTC018437

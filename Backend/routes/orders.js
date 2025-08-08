@@ -12,6 +12,9 @@ const {
 } = require("../helpers/dbconn");
 const { createFolder } = require("../helpers/folderhelper");
 const { logger } = require("../helpers/logger");
+const globalConfig = require("../routes/Utils/globalConfig");
+
+
 
 
 // This API is used to create a new order in the system

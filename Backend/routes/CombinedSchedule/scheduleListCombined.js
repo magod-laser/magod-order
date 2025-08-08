@@ -2,6 +2,7 @@ const express = require("express");
 const scheduleListCombined = express.Router();
 const fs = require("fs");
 const path = require("path");
+require("dotenv").config();
 const { error } = require("winston");
 const {
   misQuery,
@@ -13,14 +14,14 @@ const {
 } = require("../../helpers/dbconn");
 const { logger } = require("../../helpers/logger");
 const bodyParser = require("body-parser");
-const moment = require("moment");
 const globalConfig = require("../Utils/globalConfig");
 
 var jsonParser = bodyParser.json();
 
-
-// Define the base directory path
-const baseDirectory = "C:/Magod/Jigani/Wo";
+// let baseDirectory = "C:/Magod/Jigani/Wo";
+// getting from env file 
+const basePath = process.env.FILE_SERVER_PATH ;
+const baseDirectory = path.join(basePath, "Wo");
 
 scheduleListCombined.post("/files", jsonParser, async (req, res, next) => {
   const { requestData } = req.body;

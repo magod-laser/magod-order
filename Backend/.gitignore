@@ -1,8 +1,9 @@
 
 node_modules
-env
+.env
 dist
 logs
+/uploads
 
 # dependencies
 /node_modules
