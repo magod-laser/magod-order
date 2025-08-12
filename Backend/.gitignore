@@ -3,16 +3,18 @@ node_modules
 env
 dist
 logs
+iisnode
 
 # dependencies
 /node_modules
 /.pnp
 .pnp.js
 logs/
+uploads/
 
 # testing
 /coverage
-
+iisnode
 # production
 /build
 
