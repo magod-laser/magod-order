@@ -27,6 +27,14 @@ function ServiceNCProgram() {
 		setNCProgramForm(response);
 		setMachineList(MachineList);
 		setSelectedMachine(NCprogramForm[0]?.Machine);
+     postRequest(
+       endpoints.getMachineList,
+       { NCprogramForm: location?.state?.rowselectTaskMaterial },
+       (responsedata) => {
+         console.log("responsedata---machinelist", responsedata);
+         setMachineList(responsedata);
+       }
+     );
 	}, []);
 
 	//getNCProgram

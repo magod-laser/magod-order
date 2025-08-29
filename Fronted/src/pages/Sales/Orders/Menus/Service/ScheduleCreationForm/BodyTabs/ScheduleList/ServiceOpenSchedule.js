@@ -954,6 +954,7 @@ function ServiceOpenSchedule() {
                   responsedata: responsedata,
                   Type: Type,
                   DwgNameList: DwgNameList,
+                  rowselectTaskMaterial: rowselectTaskMaterial,
                 },
               });
             }
