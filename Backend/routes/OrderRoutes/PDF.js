@@ -6,6 +6,7 @@ const {
   misQueryMod,
 } = require("../../helpers/dbconn");
 const { logger } = require("../../helpers/logger");
+const globalConfig = require("../Utils/globalConfig");
 
 const express = require("express");
 const fs = require("fs");
@@ -51,6 +52,8 @@ PDFRouter.post("/upload-pdf", async (req, res) => {
 
     // Get the path to save the file
     const folderPath = process.env.FILE_SERVER_PDF_PATH;
+    //  const workOrderPath = globalConfig.getAll();
+    // let folderPath = workOrderPath.WORKORDER;
     const filePath = path.join(folderPath, fileName);
 
     // Save the file

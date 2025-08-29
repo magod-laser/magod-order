@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { Table } from "react-bootstrap";
+import { HashLoader } from "react-spinners";
+
 
 export default function OLTable(props) {
   console.log("props.FilteredOrderListData", props.FilteredOrderListData);
 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+
+  
 
   // sorting function for table headings of the table
   const requestSort = (key) => {
@@ -49,11 +53,20 @@ export default function OLTable(props) {
     }
     return dataCopy;
   };
+console.log("props.isLoading", props.isLoading);
 
   return (
     <>
       <div style={{ maxHeight: "50vh", overflow: "auto" }}>
         <Table striped className="table-data border" style={{ border: "1px" }}>
+          <>
+            {props.isLoading && (
+              <div className="full-page-loader">
+                <HashLoader color="#2b3a55" />
+                <p className="mt-2">Loading, please wait...</p>
+              </div>
+            )}
+          </>
           <thead className="tableHeaderBGColor">
             <tr>
               <th>SL No</th>

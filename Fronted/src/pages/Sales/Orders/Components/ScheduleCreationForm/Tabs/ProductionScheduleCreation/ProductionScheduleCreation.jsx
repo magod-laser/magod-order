@@ -166,17 +166,19 @@ export default function ProductionScheduleCreation({
             label: material.Mtrl_Code,
           }));
 
-          // console.log("all Material List: ", materialArr);
-          // console.log("all Material Codes: ", materialArr.map(mtrl => mtrl.Mtrl_Code));
-
-          // Check if the selected item's mtrl_code exists in materialArr
-          // const allMtrlCodes = materialArr.map((mtrl) => mtrl === mtrl.Mtrl_Code);
-
           const allMtrlCodes = materialArr.map((mtrl) => mtrl.Mtrl_Code);
 
           const hasValidMtrlCode = filteredItems2.every((item) => {
-            // console.log("all checking item:", item); // Log each item in filteredItems2
-            // console.log("all Mtrl_Code in item:", item.Mtrl_Code);
+            
+           const code = item.Mtrl_Code;
+
+           // Check if code is non-empty, not null, and exists in allMtrlCodes
+           const isValid =
+             code !== null && code !== "" && allMtrlCodes.includes(code); 
+             
+  // console.log("Checking Mtrl_Code:", code, "=> Valid:", isValid);
+
+             return isValid;   
             return allMtrlCodes.includes(item.Mtrl_Code);
           });
 

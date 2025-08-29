@@ -564,7 +564,7 @@ userRouter.post("/fetchMenuUrls", async (req, res, next) => {
               ];
               
               setupQueryMod(
-                `SELECT * FROM magod_setup.setupdetails`,
+                `SELECT * FROM magod_setup.setupdetails where SetupGroup = "Path"`,
                 (err, setupDetailsData) => {
                   if (err) {
                     logger.error(err);
@@ -586,7 +586,7 @@ userRouter.post("/fetchMenuUrls", async (req, res, next) => {
 
                   // Set globally
                   // setConfig(configObject);
-                   // Final response
+                  // Final response
                   res.send({
                     data: { ...data[0], access: menuarray },
                     moduleIds: moduleIds,

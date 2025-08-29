@@ -946,6 +946,8 @@ function ServiceOpenSchedule() {
             endpoints.getMachineList,
             { NCprogramForm: rowselectTaskMaterial },
             (responsedata) => {
+              console.log("responsedata---machinelist", responsedata);
+              
               navigate("/Orders/Service/NCProgram", {
                 state: {
                   response: response,

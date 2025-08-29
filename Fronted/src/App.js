@@ -118,11 +118,13 @@ import Solidstatelaser from "./pages/Sales/Orders/Menus/Service/ScheduleCreation
 import Co2Form from "./pages/Sales/Orders/Menus/Service/ScheduleCreationForm/BodyTabs/ScheduleList/JobParameters/Co2Form/Co2Form";
 import { ScheduleProvider } from "./context/CombScheduleContext";
 import { ScheduleDataProvider } from "./context/CmbineSchDetailsTabContext";
+import { OrderDetailsProvider } from "./context/OrderDetailsContext";
 
 function App() {
 	return (
     <BrowserRouter>
       {/* <MenuProvider> */}
+      <OrderDetailsProvider>
         <ScheduleDataProvider>
           <ScheduleProvider>
             <QuotationProvider>
@@ -132,10 +134,9 @@ function App() {
                 <Route element={<Login />} path="/" />
                 <Route path="/home" element={<Home />} />
                 <Route path="/salesHome" element={<HomeOne />} />
-               
+
                 <Route element={<WithNav />}>
                   <Route path="/Orders" element={<Parentroute />}>
-                    
                     <Route index element={<Order />} />
                     <Route path="/Orders/JobWork" element={<CreateJW />} />
                     <Route
@@ -195,7 +196,6 @@ function App() {
                       path="/Orders/Sales/ScheduleList/Closed/OpenDetailForm"
                       element={<CombinedScheduleDetailsFormClosed />}
                     />
-                 
 
                     <Route index={true} />
 
@@ -425,12 +425,12 @@ function App() {
                     </Route>
                   </Route>
                 </Route>
-               
               </Routes>
             </QuotationProvider>
           </ScheduleProvider>
         </ScheduleDataProvider>
-      {/* </MenuProvider> */}
+      </OrderDetailsProvider>
+      ,{/* </MenuProvider> */}
     </BrowserRouter>
   );
 }
