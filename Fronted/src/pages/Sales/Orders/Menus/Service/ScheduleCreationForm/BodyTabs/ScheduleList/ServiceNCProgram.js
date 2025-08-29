@@ -37,6 +37,8 @@ function ServiceNCProgram() {
      );
 	}, []);
 
+  // console.log(machineList);
+  
 	//getNCProgram
 	const [NCProramData, setNCProgramData] = useState([]);
 	const getNCProgramData = () => {
