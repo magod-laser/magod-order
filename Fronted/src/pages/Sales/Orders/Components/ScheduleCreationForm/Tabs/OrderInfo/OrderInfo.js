@@ -95,102 +95,109 @@ export default function OrderInfo(props) {
 		}
 	};
 	return (
-		<>
-			<div>
-				<div className="row mt-1">
-					<div
-						className="d-flex col-md-2 sm-12 field-gap"
-						style={{ gap: "37px" }}>
-						<label className="form-label label-space">Order Type</label>
-						<input
-							className="in-field"
-							type="text"
-							id="orderType"
-							value={props.OrderData?.Order_Type}
-						/>
-					</div>
-					<div className="d-flex col-md-2 sm-12 field-gap">
-						<label className="form-label label-space">Delivery Date</label>
-						<input
-							type="date"
-							className="in-field"
-							id="deliveryDate"
-							// onChange={handleDateChange}
-							onChange={handleChange}
-							value={deliveryDate}
-							// value={formattedDate}
-							min={today}
-						/>
-					</div>
+    <>
+      {/* {props.OrderData?.Order_Status ? ( */}
+        <div>
+          <div className="row mt-1">
+            <div
+              className="d-flex col-md-2 sm-12 field-gap"
+              style={{ gap: "37px" }}
+            >
+              <label className="form-label label-space">Order Type</label>
+              <input
+                className="in-field"
+                type="text"
+                id="orderType"
+                value={props.OrderData?.Order_Type}
+              />
+            </div>
+            <div className="d-flex col-md-2 sm-12 field-gap">
+              <label className="form-label label-space">Delivery Date</label>
+              <input
+                type="date"
+                className="in-field"
+                id="deliveryDate"
+                // onChange={handleDateChange}
+                onChange={handleChange}
+                value={deliveryDate}
+                // value={formattedDate}
+                min={today}
+              />
+            </div>
 
-					<div
-						className="d-flex col-md-2 sm-12 field-gap"
-						style={{ gap: "25px" }}>
-						<label className="form-label label-space">Magod Delivery</label>
+            <div
+              className="d-flex col-md-2 sm-12 field-gap"
+              style={{ gap: "25px" }}
+            >
+              <label className="form-label label-space">Magod Delivery</label>
 
-						<input
-							type="checkbox"
-							className="checkBoxStyle mt-1 col-md-1"
-							checked={props.OrderData?.Delivery === 1}
-						/>
-					</div>
-					<div
-						className="d-flex col-md-2 sm-12 field-gap"
-						style={{ gap: "18px" }}>
-						<label className="form-label label-space">Sales Contact</label>
-						<input
-							className="in-field"
-							type="text"
-							id="salesContact"
-							value={props.OrderData?.SalesContact}
-						/>
-					</div>
-					<div
-						className="d-flex col-md-2 sm-12 field-gap"
-						style={{ gap: "36px" }}>
-						<label className="form-label label-space">Recorded By</label>
-						<input
-							className="in-field"
-							type="text"
-							value={props.OrderData?.RecordedBy}
-						/>
-					</div>
-					<div className="d-flex col-md-2 sm-12 field-gap">
-						<label className="form-label label-space">Received By</label>
-						<input
-							className="in-field"
-							type="text"
-							value={props.OrderData?.Order_Received_By}
-						/>
-					</div>
-				</div>
+              <input
+                type="checkbox"
+                className="checkBoxStyle mt-1 col-md-1"
+                checked={props.OrderData?.Delivery === 1}
+              />
+            </div>
+            <div
+              className="d-flex col-md-2 sm-12 field-gap"
+              style={{ gap: "18px" }}
+            >
+              <label className="form-label label-space">Sales Contact</label>
+              <input
+                className="in-field"
+                type="text"
+                id="salesContact"
+                value={props.OrderData?.SalesContact}
+              />
+            </div>
+            <div
+              className="d-flex col-md-2 sm-12 field-gap"
+              style={{ gap: "36px" }}
+            >
+              <label className="form-label label-space">Recorded By</label>
+              <input
+                className="in-field"
+                type="text"
+                value={props.OrderData?.RecordedBy}
+              />
+            </div>
+            <div className="d-flex col-md-2 sm-12 field-gap">
+              <label className="form-label label-space">Received By</label>
+              <input
+                className="in-field"
+                type="text"
+                value={props.OrderData?.Order_Received_By}
+              />
+            </div>
+          </div>
 
-				<div className="row">
-					<div
-						className="d-flex col-md-2 sm-12 field-gap"
-						style={{ gap: "27px" }}>
-						<label className="form-label label-space">Order Status</label>
-						<input
-							className="in-field"
-							type="text"
-							id="orderStatus"
-							value={props.OrderData?.Order_Status}
-						/>
-					</div>
-					<div
-						className="d-flex col-md-2 sm-12 field-gap"
-						style={{ gap: "38px" }}>
-						<label className="form-label label-space">Order Value</label>
-						<input
-							id="OrderValue"
-							className="in-field"
-							type="text"
-							value={props.OrderData?.OrderValue}
-							// value={props.OrderData?.OrderValue.toFixed(2)}
-							onChange={props.handleChangeOrderInfo}
-						/>
-					</div>
-					{/* <div
+          <div className="row">
+            <div
+              className="d-flex col-md-2 sm-12 field-gap"
+              style={{ gap: "27px" }}
+            >
+              <label className="form-label label-space">Order Status</label>
+              <input
+                className="in-field"
+                type="text"
+                id="orderStatus"
+                value={props.OrderData?.Order_Status}
+              />
+            </div>
+            <div
+              className="d-flex col-md-2 sm-12 field-gap"
+              style={{ gap: "38px" }}
+            >
+              <label className="form-label label-space">Order Value</label>
+              <input
+                id="OrderValue"
+                className="in-field"
+                type="text"
+                value={props.OrderData?.OrderValue}
+                // value={props.OrderData?.OrderValue.toFixed(2)}
+                onChange={props.handleChangeOrderInfo}
+              />
+            </div>
+            {/* <div
             className="d-flex col-md-2 sm-12 field-gap"
             // style={{ gap: "66px" }}
           >
@@ -204,91 +211,97 @@ export default function OrderInfo(props) {
               readOnly
             />
           </div> */}
-					<div className="col-md-2 sm-12 d-flex field-gap">
-						<label className="form-label label-space">Delivery Mode</label>
-						<input
-							className="in-field"
-							type="text"
-							id="delivery"
-							value={props.OrderData?.Del_Mode}
-							readOnly
-						/>
-					</div>
-					{/* {console.log("selectedEngineer123", selectedEngineer)}
+            <div className="col-md-2 sm-12 d-flex field-gap">
+              <label className="form-label label-space">Delivery Mode</label>
+              <input
+                className="in-field"
+                type="text"
+                id="delivery"
+                value={props.OrderData?.Del_Mode}
+                readOnly
+              />
+            </div>
+            {/* {console.log("selectedEngineer123", selectedEngineer)}
 					{console.log(
 						"props.OrderData?.Dealing_Engineer",
 						props.OrderData?.Dealing_Engineer
 					)}
 					{console.log("props.salesExecdata", props.salesExecdata)} */}
-					<div className="col-md-3 sm-12 d-flex field-gap">
-						<label className="form-label label-space">Dealing Engineer</label>
-						<select
-							id="formDealingEngineer"
-							className="ip-select"
-							onChange={handleChange}>
-							<option value={selectedEngineer}>{selectedEngineer}</option>
-							{props.salesExecdata.map((sdata) => {
-								return (
-									<>
-										{/* <option value={sdata["ID"]}>{sdata["Name"]}</option> */}
-										<option
-											value={`${sdata["ID"]}:${sdata["Name"]}`}
-											key={sdata["ID"]}>
-											{sdata["Name"]}
-										</option>
-									</>
-								);
-							})}
-						</select>
-					</div>
-					<div
-						className="d-flex col-md-3 sm-12 field-gap"
-						style={{ gap: "26px" }}>
-						<label className="form-label label-space">Contact Name</label>
-						<input
-							className="in-field"
-							type="text"
-							value={props.OrderData?.Contact_Name}
-						/>
-					</div>
-				</div>
+            <div className="col-md-3 sm-12 d-flex field-gap">
+              <label className="form-label label-space">Dealing Engineer</label>
+              <select
+                id="formDealingEngineer"
+                className="ip-select"
+                onChange={handleChange}
+              >
+                <option value={selectedEngineer}>{selectedEngineer}</option>
+                {props.salesExecdata.map((sdata) => {
+                  return (
+                    <>
+                      {/* <option value={sdata["ID"]}>{sdata["Name"]}</option> */}
+                      <option
+                        value={`${sdata["ID"]}:${sdata["Name"]}`}
+                        key={sdata["ID"]}
+                      >
+                        {sdata["Name"]}
+                      </option>
+                    </>
+                  );
+                })}
+              </select>
+            </div>
+            <div
+              className="d-flex col-md-3 sm-12 field-gap"
+              style={{ gap: "26px" }}
+            >
+              <label className="form-label label-space">Contact Name</label>
+              <input
+                className="in-field"
+                type="text"
+                value={props.OrderData?.Contact_Name}
+              />
+            </div>
+          </div>
 
-				<div className="row mt-2">
-					<div className="col-md-2 sm-12 d-flex field-gap">
-						<label className="form-label label-space">Payment Terms</label>
-						<input
-							className="in-field"
-							type="text"
-							value={props.OrderData?.Payment}
-							readOnly
-						/>
-					</div>
-					<div className="d-flex col-md-3 sm-12 field-gap">
-						<label className="form-label label-space">Transport Charges</label>
-						<input
-							className="in-field"
-							type="text"
-							value={props.OrderData?.TptCharges}
-							readOnly
-						/>
+          <div className="row mt-2">
+            <div className="col-md-2 sm-12 d-flex field-gap">
+              <label className="form-label label-space">Payment Terms</label>
+              <input
+                className="in-field"
+                type="text"
+                value={props.OrderData?.Payment}
+                readOnly
+              />
+            </div>
+            <div className="d-flex col-md-3 sm-12 field-gap">
+              <label className="form-label label-space">
+                Transport Charges
+              </label>
+              <input
+                className="in-field"
+                type="text"
+                value={props.OrderData?.TptCharges}
+                readOnly
+              />
 
-						{/* <select id="" className="ip-select">
+              {/* <select id="" className="ip-select">
               <option value=""> Select </option>
               <option value="Customer Account">Customer Account</option>
               <option value="Magod Account">Magod Account</option>
             </select> */}
-					</div>
-					<div
-						className="d-flex col-md-3 sm-12 field-gap"
-						style={{ gap: "65px" }}>
-						<label className="form-label label-space">PO No</label>
-						<input
-							className="in-field"
-							type="text"
-							value={props.OrderData?.Purchase_Order}
-						/>
-					</div>
-					{/* <div
+            </div>
+            <div
+              className="d-flex col-md-3 sm-12 field-gap"
+              style={{ gap: "65px" }}
+            >
+              <label className="form-label label-space">PO No</label>
+              <input
+                className="in-field"
+                type="text"
+                value={props.OrderData?.Purchase_Order}
+              />
+            </div>
+            {/* <div
             className="d-flex col-md-3 sm-12 field-gap"
             style={{ gap: "38px" }}
           >
@@ -299,35 +312,35 @@ export default function OrderInfo(props) {
               value={props.OrderData?.OrderValue}
             />
           </div> */}
-					<div
-						className="d-flex col-md-4 sm-12 field-gap"
-						// style={{ gap: "66px" }}
-					>
-						<label className="form-label label-space">Delivery</label>
-						<textarea
-							className="in-field"
-							type="text"
-							id="delivery"
-							// value={props.OrderData?.Delivery}
-							// value={props.OrderData?.Del_Place}
-							value={
-								props.OrderData?.Del_Place
-								// props.OrderData?.Delivery === 0
-								//   ? "EX FACTORY"
-								//   : props.OrderData?.Billing_Address
-							}
-							readOnly
-							style={{
-								borderRadius: "0",
-								height: "50px",
-								width: "100%",
-							}}
-						/>
-					</div>
-				</div>
+            <div
+              className="d-flex col-md-4 sm-12 field-gap"
+              // style={{ gap: "66px" }}
+            >
+              <label className="form-label label-space">Delivery</label>
+              <textarea
+                className="in-field"
+                type="text"
+                id="delivery"
+                // value={props.OrderData?.Delivery}
+                // value={props.OrderData?.Del_Place}
+                value={
+                  props.OrderData?.Del_Place
+                  // props.OrderData?.Delivery === 0
+                  //   ? "EX FACTORY"
+                  //   : props.OrderData?.Billing_Address
+                }
+                readOnly
+                style={{
+                  borderRadius: "0",
+                  height: "50px",
+                  width: "100%",
+                }}
+              />
+            </div>
+          </div>
 
-				<div className="row mt-2">
-					{/* <div
+          <div className="row mt-2">
+            {/* <div
             className="d-flex col-md-4 sm-12 field-gap"
             style={{ gap: "33px" }}
           >
@@ -338,16 +351,40 @@ export default function OrderInfo(props) {
               value={props.OrderData?.QtnNo}
             />
           </div> */}
-					{/* <div className="col-md-4 sm-12 ">
+            {/* <div className="col-md-4 sm-12 ">
             <label className="form-label">Order Value</label>
             <input type="text" value={props.OrderData?.OrderValue} />
           </div> */}
-					{/* <div className="col-md-4 sm-12 ">
+            {/* <div className="col-md-4 sm-12 ">
             <label className="form-label">Delivery</label>
             <input type="text" id="delivery" value={props.OrderData?.Delivery} />
           </div> */}
-				</div>
-			</div>
-		</>
-	);
+          </div>
+        </div>
+      {/* ) : (
+        // <div
+        //   style={{
+        //     display: "flex",
+        //     flexDirection: "column",
+        //     alignItems: "center",
+        //     justifyContent: "center",
+        //     textAlign: "center",
+        //     color: "black",
+        //   }}
+        // >
+        //   <div
+        //     className="spinner-border text-primary"
+        //     role="status"
+        //     style={{ width: "3rem", height: "3rem" }}
+        //   >
+        //     <span className="visually-hidden">Loading...</span>
+        //   </div>
+        //   <div style={{ marginTop: "10px", fontWeight: "500" }}>
+        //     Please wait...
+        //   </div>
+        // </div>
+		""
+      )} */}
+    </>
+  );
 }

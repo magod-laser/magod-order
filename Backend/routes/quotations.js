@@ -43,8 +43,6 @@ quoteRouter.post(`/quotation`, async (req, res, next) => {
 
 
         //let month = mon[new Date().getMonth()]
-
-
         // to update table runningno = runningno + 1
 
     } catch (error) {

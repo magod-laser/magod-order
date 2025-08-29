@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Tab, Tabs, } from "react-bootstrap";
+import { Tab, Tabs } from "react-bootstrap";
 import FindOldPart from "./Tabs/FindOldPart/FindOldPart";
 import MaterialInfo from "./Tabs/MaterialInfo/MaterialInfo";
 // import MaterialPlanner from "./Tabs/MaterialPlanner/MaterialPlanner";
@@ -19,11 +19,10 @@ import AlertModal from "../Components/Alert";
 import { Helper } from "dxf";
 import { Buffer } from "buffer";
 import axios from "axios";
-const {
-  
-  postRequest,
-  getFileRequest,
-} = require("../../../../api/apiinstance");
+import { useOrderDetails } from ".././../../../../../src/context/OrderDetailsContext";
+import { HashLoader } from "react-spinners";
+
+const { postRequest, getFileRequest } = require("../../../../api/apiinstance");
 const InputField = ({
   label,
   id,
@@ -79,6 +78,7 @@ const InputField = ({
 };
 export default function ScheduleCreationForm(props) {
   // console.log("props", props);
+  const { setConOrdrDetailsData } = useOrderDetails();
   let REACT_APP_GETCALCREQ_URL = process.env.REACT_APP_GETCALCREQ_URL;
   let API = process.env.REACT_APP_API_KEY;
 
@@ -102,6 +102,7 @@ export default function ScheduleCreationForm(props) {
   console.log("0", orderNUmber);
   console.log("0", orderType);
   console.log("0", Cust_Code);
+  const [isLoading, setisLoading] = useState(false);
 
   const [intSchStatus, setIntSchStatus] = useState(0);
   // const [mtrldata, setMtrldata] = useState([]);
@@ -233,7 +234,7 @@ export default function ScheduleCreationForm(props) {
     formData.append("file", drwfile); //files[i]);
     formData.append("thickness", thickness);
     formData.append("specficWeight", specificwt); // resp[0].Specific_Wt);
-   
+
     const getCalcReq = await fetch(`${REACT_APP_GETCALCREQ_URL}/getCalc`, {
       method: "POST",
       headers: {
@@ -925,11 +926,16 @@ export default function ScheduleCreationForm(props) {
 
   const fetchData = async () => {
     try {
+      setisLoading(true);
       await LoadInitialData();
+      setisLoading(false);
+
       await PerformaTabData();
       await FindOldPartData();
       // await FindOldOrderButtonData();
-    } catch (error) {}
+    } catch (error) {
+    } finally {
+    }
   };
 
   //------------------
@@ -959,6 +965,7 @@ export default function ScheduleCreationForm(props) {
         const bomData = await postRequest(endpoints.GetBomData, {
           custcode: Cust_Code || custCode,
         });
+
         setBomData(bomData);
 
         const ordrDetailsData = await postRequest(endpoints.PostNewSrlData, {
@@ -967,6 +974,7 @@ export default function ScheduleCreationForm(props) {
         });
 
         setOrdrDetailsData(ordrDetailsData);
+        setConOrdrDetailsData(ordrDetailsData);
       }
     } catch (error) {}
   };
@@ -1748,7 +1756,14 @@ export default function ScheduleCreationForm(props) {
 
   return (
     <>
+      {/* {OrderData?.Order_Status && filteredData ? ( */}
       <div>
+        {isLoading && (
+          <div className="full-page-loader">
+            <HashLoader color="#2b3a55" />
+            <p className="mt-2">Loading, please wait...</p>
+          </div>
+        )}
         {/* <button onClick={saveJWMRChanges}>update</button> */}
         <FormHeader
           OrderData={OrderData}
@@ -1950,6 +1965,29 @@ export default function ScheduleCreationForm(props) {
           secondbuttontext="No"
         />
       </div>
+      {/* ) : (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            color: "black",
+          }}
+        >
+          <div
+            className="spinner-border text-primary"
+            role="status"
+            style={{ width: "3rem", height: "3rem" }}
+          >
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <div style={{ marginTop: "10px", fontWeight: "500" }}>
+            Please wait...
+          </div>
+        </div>
+      )} */}
     </>
   );
 }

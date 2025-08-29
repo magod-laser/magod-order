@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 /** @format */
 
 import React, { useEffect, useState } from "react";
@@ -27,9 +29,9 @@ function ServiceOpenSchedule() {
   const OrdrDetailsData = location?.state?.OrdrDetailsData || [];
   // const OrdrDetailsData = location?.state.OrdrDetailsData || [];
 
-  console.log("--FDwgNameList", DwgNameList);
-  console.log("--FType", Type);
-  console.log("--FOrdrDetailsData", OrdrDetailsData);
+  // console.log("--FDwgNameList", DwgNameList);
+  // console.log("--FType", Type);
+  // console.log("--FOrdrDetailsData", OrdrDetailsData);
 
   // Standardize the case of the property name
   const scheduleId = DwgNameList[0]?.ScheduleId || DwgNameList[0]?.ScheduleID;
@@ -40,6 +42,7 @@ function ServiceOpenSchedule() {
   const [smShow, setSmShow] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
 
+  
   useEffect(() => {
     postRequest(
       endpoints.ShiftDetails,
@@ -943,6 +946,8 @@ function ServiceOpenSchedule() {
             endpoints.getMachineList,
             { NCprogramForm: rowselectTaskMaterial },
             (responsedata) => {
+              console.log("responsedata---machinelist", responsedata);
+              
               navigate("/Orders/Service/NCProgram", {
                 state: {
                   response: response,
@@ -1083,7 +1088,7 @@ function ServiceOpenSchedule() {
       });
     } else if (
       value > scheduleDetailsRow?.QtyToSchedule &&
-      field != "QtyCleared"
+      field !== "QtyCleared"
     ) {
       toast.error("Scheduled cannot be greater than ToSchedule", {
         position: toast.POSITION.TOP_CENTER,
@@ -1154,7 +1159,7 @@ function ServiceOpenSchedule() {
   const [selectedMtrlDimenId, setSelectedMtrlDimenId] = useState(0);
 
   const fnSchCreateWS = async () => {
-    if (formdata[0]?.Schedule_Status != "Created") {
+    if (formdata[0]?.Schedule_Status !== "Created") {
       alert("Cannot check material requirement once scheduled");
       return;
     }
@@ -1323,7 +1328,7 @@ function ServiceOpenSchedule() {
   };
 
   const fnSchCreatePartsWS = async () => {
-    if (formdata[0]?.Schedule_Status != "Created") {
+    if (formdata[0]?.Schedule_Status !== "Created") {
       alert("Cannot check material requirement once scheduled");
       return;
     }
@@ -1743,18 +1748,20 @@ function ServiceOpenSchedule() {
             <button
               className="button-style"
               onClick={() =>
+                
                 console.log("Navigating with:", {
                   Order_No: formdata[0]?.Order_No,
                   Type,
                   from: location.pathname,
                 })
+                
               }
             >
               Close
             </button>
           </Link>
 
-          {/* VEERANNA  */}
+         
           {/* <button
             className="button-style "
             // onClick={ NavigationToStepBack}

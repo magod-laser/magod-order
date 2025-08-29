@@ -1,7 +1,9 @@
 
 let globalConfig = {};
 
+
 function set(configObj) {
+  
   globalConfig = { ...configObj };
 }
 

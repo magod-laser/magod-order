@@ -10,7 +10,6 @@ const { logger } = require("../helpers/logger");
 
 //This API is for allcustomers
 customerRouter.post("/allcustomers", async (req, res, next) => {
-	console.log(" all customersss");
 	
 	try {
 		misQueryMod(

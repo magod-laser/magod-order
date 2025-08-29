@@ -3,7 +3,8 @@
 import { React } from "react";
 import { Form, Modal } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
-import LoadingPage from "../../../Loading";
+// import LoadingPage from "../../../Loading";
+import { HashLoader } from "react-spinners";
 
 // const {
 //   getRequest,
@@ -62,7 +63,15 @@ function AddNewSrlModal(props) {
 
   return (
     <div className="row mt-1">
-      {isLoading && <LoadingPage />}
+      {/* {isLoading && <LoadingPage />} */}
+       <>
+                  {isLoading && (
+                    <div className="full-page-loader">
+                      <HashLoader color="#2b3a55" />
+                      <p className="mt-2">Loading, please wait...</p>
+                    </div>
+                  )}
+                </>
       <Modal
         name="SrlModal"
         show={importdwgshow}

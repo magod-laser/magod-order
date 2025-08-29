@@ -30,7 +30,7 @@ NCprogramRoter.post(`/getFormData`, async (req, res, next) => {
 NCprogramRoter.post(`/getMachines`, async (req, res, next) => {
     // console.log("req.body /getMachines is",req.body);
     let query = `SELECT m.RefProcess,  m1.* FROM machine_data.machine_process_list m, machine_data.machine_list m1 
-    WHERE m.RefProcess='${req.body.NCprogramForm.Operation}' AND m1.Machine_srl=m.Machine_srl`;
+    WHERE m.RefProcess='${req.body.NCprogramForm.Operation}' AND m1.Machine_srl=m.Machine_srl AND m1.Working=1`;
     try {
         misQueryMod(query, (err, data) => {
             if (err) {

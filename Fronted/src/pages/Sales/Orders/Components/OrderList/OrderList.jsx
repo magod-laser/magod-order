@@ -34,33 +34,86 @@ export default function OrderList(props) {
   const [selectedOrderType, setSelectedOrderType] = useState("");
 
   const [selectedOrderRow, setSelectedOrderRow] = useState({});
+ const [isLoading, setisLoading] = useState(false);
 
-  const fetchData = () => {
-    Axios.post(apipoints.getOrderListByType, {
-      type: props.type,
-      Order_Status: props.orderStatus,
-      Order_Ref: props.Order_Ref,
-    }).then((res) => {
-      setOriginalOrderListData(res.data);
-      setFilteredOrderListData(res.data);
-      Axios.post(apipoints.getOrderListByTypeGroupedCustomer, {
-        type: props.type,
-        Order_Status: props.orderStatus,
-        Order_Ref: props.Order_Ref,
-      }).then((res) => {
-        // let arr = [{ label: "All", Cust_Code: "All" }];
+  // const fetchData = () => {
+  //   try{
+  //   setisLoading(true);
+   
+  //   Axios.post(apipoints.getOrderListByType, {
+  //     type: props.type,
+  //     Order_Status: props.orderStatus,
+  //     Order_Ref: props.Order_Ref,
+  //   }).then((res) => {
+  //     setOriginalOrderListData(res.data);
+  //     setFilteredOrderListData(res.data);
+      
+  //     Axios.post(apipoints.getOrderListByTypeGroupedCustomer, {
+  //       type: props.type,
+  //       Order_Status: props.orderStatus,
+  //       Order_Ref: props.Order_Ref,
+  //     }).then((res) => {
+  //       // let arr = [{ label: "All", Cust_Code: "All" }];
 
-        let arr = [];
-        for (let i = 0; i < res.data.length; i++) {
-          res.data[i].label = res.data[i].Cust_name;
-          arr.push(res.data[i]);
-        }
-        setCustData(arr);
-      });
-    });
-    if (props.orderStatus !== "All") {
-      const arr = OrderStatus.filter((obj) => obj.label === props.orderStatus);
-      setSelectedOrderStatus(arr);
+  //       let arr = [];
+  //       for (let i = 0; i < res.data.length; i++) {
+  //         res.data[i].label = res.data[i].Cust_name;
+  //         arr.push(res.data[i]);
+  //       }
+  //       setCustData(arr);
+  //     });
+  //   });
+  //   if (props.orderStatus !== "All") {
+  //     const arr = OrderStatus.filter((obj) => obj.label === props.orderStatus);
+  //     setSelectedOrderStatus(arr);
+  //   }
+
+  // }
+  // catch (error) {
+  //   console.error("Error fetching data:", error); }
+  //   finally {
+  //     setisLoading(false);
+  //   }
+    
+  // };
+
+
+  const fetchData = async () => {
+    try {
+      setisLoading(true);
+
+      const [orderListRes, customerListRes] = await Promise.all([
+        Axios.post(apipoints.getOrderListByType, {
+          type: props.type,
+          Order_Status: props.orderStatus,
+          Order_Ref: props.Order_Ref,
+        }),
+        Axios.post(apipoints.getOrderListByTypeGroupedCustomer, {
+          type: props.type,
+          Order_Status: props.orderStatus,
+          Order_Ref: props.Order_Ref,
+        }),
+      ]);
+
+      setOriginalOrderListData(orderListRes.data);
+      setFilteredOrderListData(orderListRes.data);
+
+      const customerArr = customerListRes.data.map((item) => ({
+        ...item,
+        label: item.Cust_name,
+      }));
+      setCustData(customerArr);
+
+      if (props.orderStatus !== "All") {
+        const arr = OrderStatus.filter(
+          (obj) => obj.label === props.orderStatus
+        );
+        setSelectedOrderStatus(arr);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setisLoading(false);
     }
   };
 
@@ -203,13 +256,15 @@ export default function OrderList(props) {
     }
   };
 
+
+
   return (
     <>
       <div>
         <h4 className="title m-0">
           Order List : {props.type} - {props.orderStatus}
         </h4>
-
+       
         <div>
           <Header
             type={props.type}
@@ -232,6 +287,9 @@ export default function OrderList(props) {
             FilteredOrderListData={FilteredOrderListData}
             selectedOrderRow={selectedOrderRow}
             handleOrderRowSelection={handleOrderRowSelection}
+            isLoading={isLoading}
+            
+            
           />
         </div>
       </div>

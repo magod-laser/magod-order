@@ -53,8 +53,7 @@ export default function ModalProfarmaInvoice(props) {
     });
   }
 
-  
-
+  // Fetch PDF data when the modal opens
   useEffect(() => {
     if (props.printInvoiceModal) {
       fetchPDFData();
@@ -96,6 +95,16 @@ export default function ModalProfarmaInvoice(props) {
       console.error("Error saving PDF to server:", error);
     }
   };
+
+    useEffect(() => {
+      if (props.printInvoiceModal) {
+        const timeout = setTimeout(() => {
+          savePdfToServer();
+        }, 3000); // Adjust delay if needed
+
+        return () => clearTimeout(timeout); // Cleanup timeout on unmount
+      }
+    }, [props.printInvoiceModal]);
   return (
     <>
       <Modal fullscreen show={props.printInvoiceModal} onHide={handleClose}>

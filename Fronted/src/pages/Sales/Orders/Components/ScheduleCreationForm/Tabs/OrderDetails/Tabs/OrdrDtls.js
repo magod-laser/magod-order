@@ -6,6 +6,7 @@ import { Typeahead } from "react-bootstrap-typeahead";
 import LoadingPage from "../../../Loading";
 import { postRequest } from "../../../../../../../api/apiinstance";
 import { endpoints } from "../../../../../../../api/constants";
+import { HashLoader } from "react-spinners";
 
 function OrdrDtls(props) {
   const {
@@ -75,7 +76,6 @@ function OrdrDtls(props) {
     // OdrDtlMtrlSrc
   } = props;
 
-  
   // eslint-disable-next-line no-unused-vars
   const [materialCode, setMaterialCode] = useState(
     selectedItems[0]?.Mtrl_Code || ""
@@ -88,14 +88,14 @@ function OrdrDtls(props) {
 
   useEffect(() => {
     setQuantity(LastSlctedRow?.Qty_Ordered || "");
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [LastSlctedRow]);
   useEffect(() => {
     // Set the default value from the array
     if (LastSlctedRow && LastSlctedRow.length > 0) {
       setQuantity(LastSlctedRow?.Qty_Ordered);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [LastSlctedRow]);
 
   // eslint-disable-next-line no-unused-vars
@@ -108,48 +108,59 @@ function OrdrDtls(props) {
   //   deleteRowsBySrl();
   // }, []);
 
-const SaveToCustDwgs = () =>{
-  console.log("entering into the save to dwg funtion");
-  
-console.log("selectedRow",selectedRow);
+  const SaveToCustDwgs = () => {
+    console.log("entering into the save to dwg funtion");
 
-// 1. To bring Orderno, Drawingname, CustCode
-// 2. Send the same to API
-// 3. API -> to Check the folder inside CustDwg\DXF
-//      a. Not Present then Create CustDwg\DXF Folder
-//      b. Then Copy the File from WO\Dxf File   to  CustDwg\Dxf
+    console.log("selectedRow", selectedRow);
+    if ( selectedRow === null) {
+      alert("Please select the row");
+      return;
+    }
+    // 1. To bring Orderno, Drawingname, CustCode
+    // 2. Send the same to API
+    // 3. API -> to Check the folder inside CustDwg\DXF
+    //      a. Not Present then Create CustDwg\DXF Folder
+    //      b. Then Copy the File from WO\Dxf File   to  CustDwg\Dxf
 
-let orderno = selectedRow.Order_No;
-let ccode = selectedRow.Cust_Code;
-let dwgname = selectedRow.DwgName;
-let mtrlcode = selectedRow.Mtrl_Code;
-let operation = selectedRow.Operation;
-let mtrlcost = selectedRow.MtrlCost;
-let jwcost = selectedRow.JWCost;
-let dwgcode = selectedRow.Dwg_Code;
-let dxfloc = OrderCustData.DwgLoc;
+    let orderno = selectedRow.Order_No;
+    let ccode = selectedRow.Cust_Code;
+    let dwgname = selectedRow.DwgName;
+    let mtrlcode = selectedRow.Mtrl_Code;
+    let operation = selectedRow.Operation;
+    let mtrlcost = selectedRow.MtrlCost;
+    let jwcost = selectedRow.JWCost;
+    let dwgcode = selectedRow.Dwg_Code;
+    let dxfloc = OrderCustData.DwgLoc;
 
-
-postRequest(endpoints.saveToCustDwg, {orderno, ccode, dwgname},(respdwg)=> {
-  console.log("respdwg : ",respdwg);
-  console.log("respdwg.status : ",respdwg.status);
-  // if (respdwg.status)
-  // {
-    postRequest(endpoints.saveToCustDwgsinsrt,{
-      dwgcode, ccode, dwgname, mtrlcode,dxfloc, operation, mtrlcost,jwcost
-    },(insrres)=>{
-      console.log("insrres",insrres);
-      
-    
-    })
-  // }
-  // toast.warning("not saved check save to dwg")
-  
-
-})
-
-
-}
+    postRequest(
+      endpoints.saveToCustDwg,
+      { orderno, ccode, dwgname },
+      (respdwg) => {
+        console.log("respdwg : ", respdwg);
+        console.log("respdwg.status : ", respdwg.status);
+        // if (respdwg.status)
+        // {
+        postRequest(
+          endpoints.saveToCustDwgsinsrt,
+          {
+            dwgcode,
+            ccode,
+            dwgname,
+            mtrlcode,
+            dxfloc,
+            operation,
+            mtrlcost,
+            jwcost,
+          },
+          (insrres) => {
+            console.log("insrres", insrres);
+          }
+        );
+        // }
+        // toast.warning("not saved check save to dwg")
+      }
+    );
+  };
 
   return (
     <div>
@@ -199,7 +210,13 @@ postRequest(endpoints.saveToCustDwg, {orderno, ccode, dwgname},(respdwg)=> {
         Operation={Operation}
         setOperation={setOperation}
       />
-      {isLoading && <LoadingPage />}
+      {/* {isLoading && <LoadingPage />} */}
+      {isLoading && (
+        <div className="full-page-loader">
+          <HashLoader color="#2b3a55" />
+          <p className="mt-2">Loading, please wait...</p>
+        </div>
+      )}
 
       <div className="d-flex form-bg">
         <div className="col-md-8">
@@ -536,7 +553,8 @@ postRequest(endpoints.saveToCustDwg, {orderno, ccode, dwgname},(respdwg)=> {
                     // (props.OrderData?.Order_Type === "Complete" &&
                     //   props.OrderData?.Order_Status === "Recorded")
                     // LastSlctedRow?.Mtrl_Source  === "Customer"
-                    LastSlctedRow?.Mtrl_Source && ordrDetailsChange.MtrlSrc === "Customer"
+                    LastSlctedRow?.Mtrl_Source &&
+                    ordrDetailsChange.MtrlSrc === "Customer"
                     // OdrDtlMtrlSrc || ordrDetailsChange.MtrlSrc|| LastSlctedRow?.Mtrl_Source  === "Customer"
                   }
                 />
@@ -568,11 +586,16 @@ postRequest(endpoints.saveToCustDwg, {orderno, ccode, dwgname},(respdwg)=> {
                   //   parseFloat(ordrDetailsChange.materialRate)
                   // }
                   value={
-                    LastSlctedRow?.Mtrl_Source && ordrDetailsChange.MtrlSrc === "Customer"
+                    LastSlctedRow?.Mtrl_Source &&
+                    ordrDetailsChange.MtrlSrc === "Customer"
                       ? parseFloat(ordrDetailsChange.jwRate).toFixed(2)
-                      : LastSlctedRow?.Mtrl_Source && ordrDetailsChange.MtrlSrc === "Magod"
-                      ? (parseFloat(ordrDetailsChange.jwRate) + parseFloat(ordrDetailsChange.materialRate)).toFixed(2)
-                      : 0.00
+                      : LastSlctedRow?.Mtrl_Source &&
+                        ordrDetailsChange.MtrlSrc === "Magod"
+                      ? (
+                          parseFloat(ordrDetailsChange.jwRate) +
+                          parseFloat(ordrDetailsChange.materialRate)
+                        ).toFixed(2)
+                      : 0.0
                   }
                   disabled
                 />
@@ -754,7 +777,9 @@ postRequest(endpoints.saveToCustDwg, {orderno, ccode, dwgname},(respdwg)=> {
                 </button>
               </div>
               <div className="col-md-4">
-                <button className="button-style" onClick={SaveToCustDwgs} >Save to Customer Dwg</button>
+                <button className="button-style" onClick={SaveToCustDwgs}>
+                  Save to Customer Dwg
+                </button>
               </div>
             </div>
 

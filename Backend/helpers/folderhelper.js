@@ -40,10 +40,14 @@ let checkdrawings = async (qtnNo, callback) => {
   }
 };
 
+const serverIP = "192.168.1.100";
+
 // This function creates a folder structure based on the type of serial number (SrlType) and the question number (qno).
 let createFolder = async (SrlType, qno, month, callback) => {
-  const workOrderPath = globalConfig.getAll();
-  let folderBase = workOrderPath.WORKORDER;
+  const workOrderPath = globalConfig.getAll(); // Fetch all paths
+  let folderBase = workOrderPath.WORKORDER; 
+// const folderBase = `\\\\${serverIP}\\${workOrderPath.WORKORDER}`;
+
 
   try {
     console.log("folderBase", folderBase);
