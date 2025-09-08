@@ -304,7 +304,7 @@ await Promise.all(finalUpdatePromises);
               .replace("T", " ")
               .split(".")[0];
             console.log("row.TaskNo is", row.TaskNo);
-            console.log("row is ", row);
+            // console.log("row is ", row);
             const insertTaskQuery = `
               INSERT INTO magodmis.nc_task_list 
               (TaskNo, ScheduleID, DeliveryDate, order_No, ScheduleNo, Cust_Code, Mtrl_Code, MTRL, Thickness, CustMtrl, NoOfDwgs, TotalParts, MProcess, Operation)
@@ -342,7 +342,7 @@ GROUP BY o.DwgName
             WHERE ScheduleId = '${row.ScheduleID}'`;
           const existingDetails = await mchQueryMod1(selectDetailsQuery);
 
-          console.log("existingDetails", existingDetails);
+          // console.log("existingDetails", existingDetails);
 
           // Insert into orderscheduledetails using lastInsertTaskId and fetched existing data
           for (const detail of existingDetails) {

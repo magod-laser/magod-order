@@ -408,7 +408,7 @@ export const endpoints = {
   CreateScheduleforSales: `${API}/CombinedScheduleCreate/createScheduleforSales`,
   afterCombinedSchedule: `${API}/CombinedScheduleCreate/afterCombineSchedule`,
   getSchedudleDetails: `${API}/scheduleListCombined/scheduleListDetails`,
-  getSchedudleDetailssales: `${API}/scheduleListCombined/scheduleListDetailssales`, 
+  getSchedudleDetailssales: `${API}/scheduleListCombined/scheduleListDetailssales`,
   scheduleListDetailssalescreate: `${API}/scheduleListCombined/scheduleListDetailssalescreate`,
   CombinedTasksTaskTable: `${API}/scheduleListCombined/combinedTaksTaskTable`,
   CombinedTasksShowDwg: `${API}/scheduleListCombined/combinedTaksShowDwgName`,
@@ -429,6 +429,10 @@ export const endpoints = {
   CopyDwg: `${API}/scheduleListCombined/copyDwg`,
   cmbordcopydxf: `${API}/file/cmbordcopydxf`,
   getFolders: `${API}/file/getfoldernames`,
+
+  allfileuploads: `${API}/file/allfileupload`,
+  deleteDwgFile: `${API}/file/deletedwgfile`,
+
   onClickLoginSchedule: `${API}/ScheduleList/scheduleAfterLogin`,
 
   // WS  Related urls

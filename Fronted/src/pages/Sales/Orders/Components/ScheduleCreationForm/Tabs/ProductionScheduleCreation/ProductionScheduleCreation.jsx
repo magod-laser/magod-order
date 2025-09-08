@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { endpoints } from "../../../../../../api/constants";
 import { getRequest, postRequest } from "../../../../../../api/apiinstance";
 import AlertModal from "../../../../Menus/Service/Components/Alert";
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
 import OkayModal from "../../../../../../components/OkayModal";
 
 export default function ProductionScheduleCreation({
@@ -27,6 +27,8 @@ export default function ProductionScheduleCreation({
   setSelectedRow,
   fetchData,
 }) {
+  // console.log("OrderData-----", OrderData.Type);
+
   // API call to fetch schedule list
   const fetchScheduleList = (type) => {
     postRequest(
@@ -46,7 +48,7 @@ export default function ProductionScheduleCreation({
     if (OrderData && scheduleType) {
       fetchScheduleList(scheduleType);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [OrderData, scheduleType]);
 
   useEffect(() => {
@@ -56,7 +58,7 @@ export default function ProductionScheduleCreation({
     setSelectedSrl([]);
     setLastSlctedRow(null);
     setSelectedRow(null);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scheduleType]);
 
   //onclick Refresh Status
@@ -169,16 +171,15 @@ export default function ProductionScheduleCreation({
           const allMtrlCodes = materialArr.map((mtrl) => mtrl.Mtrl_Code);
 
           const hasValidMtrlCode = filteredItems2.every((item) => {
-            
-           const code = item.Mtrl_Code;
+            const code = item.Mtrl_Code;
 
-           // Check if code is non-empty, not null, and exists in allMtrlCodes
-           const isValid =
-             code !== null && code !== "" && allMtrlCodes.includes(code); 
-             
-  // console.log("Checking Mtrl_Code:", code, "=> Valid:", isValid);
+            // Check if code is non-empty, not null, and exists in allMtrlCodes
+            const isValid =
+              code !== null && code !== "" && allMtrlCodes.includes(code);
 
-             return isValid;   
+            // console.log("Checking Mtrl_Code:", code, "=> Valid:", isValid);
+
+            return isValid;
             return allMtrlCodes.includes(item.Mtrl_Code);
           });
 
@@ -486,6 +487,17 @@ export default function ProductionScheduleCreation({
 
   //cancel Order
   const onClickCancel = () => {
+    console.log("OrderData?.Order_Status", OrderData?.Order_Status);
+
+    if (
+      OrderData?.Order_Status === "Processing" ||
+      OrderData?.Order_Status === "Dispatched"
+    ) {
+      alert(
+        "Cannot cancel order as it is in Processing or Dispatched status, Please choose Suspend or Shortclose"
+      );
+      return;
+    }
     if (OrderData?.Order_Status === "Cancelled") {
       postRequest(endpoints.canceltoRecorded, { OrderData }, (response) => {
         // console.log(response.message);
@@ -500,6 +512,7 @@ export default function ProductionScheduleCreation({
           toast.success(response.message, {
             position: toast.POSITION.TOP_CENTER,
           });
+          fetchData();
         } else {
           toast.warning(response.message, {
             position: toast.POSITION.TOP_CENTER,
@@ -530,7 +543,7 @@ export default function ProductionScheduleCreation({
                 disabled={
                   OrderData?.Order_Status === "Closed" ||
                   OrderData?.Order_Status === "Cancelled" ||
-                  OrderData?.Order_Status === "Dispatched" ||
+                  // OrderData?.Order_Status === "Dispatched" ||
                   OrderData?.Order_Status === "ShortClosed" ||
                   OrderData?.Order_Status === "Created" ||
                   OrderData?.Order_Status === "Recorded" ||
@@ -538,7 +551,7 @@ export default function ProductionScheduleCreation({
                   OrderData?.Order_Status === "Produced"
                 }
               >
-                Suspended Order
+                Suspend Order
               </button>
             </div>
 
@@ -549,9 +562,9 @@ export default function ProductionScheduleCreation({
                 disabled={
                   OrderData?.Order_Status === "Closed" ||
                   OrderData?.Order_Status === "Cancelled" ||
-                  OrderData?.Order_Status === "Dispatched" ||
+                  // OrderData?.Order_Status === "Dispatched" ||
                   OrderData?.Order_Status === "Suspended" ||
-                  OrderData?.Order_Status === "Recorded" ||
+                  // OrderData?.Order_Status === "Recorded" ||
                   OrderData?.Order_Status === "Packed" ||
                   OrderData?.Order_Status === "Produced" ||
                   OrderData?.Order_Status === "ShortClosed"
@@ -568,7 +581,7 @@ export default function ProductionScheduleCreation({
                 disabled={
                   OrderData?.Order_Status === "Closed" ||
                   OrderData?.Order_Status === "Cancelled" ||
-                  OrderData?.Order_Status === "Dispatched" ||
+                  // OrderData?.Order_Status === "Dispatched" ||
                   OrderData?.Order_Status === "Suspended" ||
                   OrderData?.Order_Status === "Recorded" ||
                   OrderData?.Order_Status === "Packed" ||
@@ -784,37 +797,38 @@ export default function ProductionScheduleCreation({
             </div>
           </div>
         </div>
+        {OrderData.Type === "Profile" ? (
+          <div className=" row mt-3 ">
+            {/* <div className="col-md-1"></div> */}
 
-        <div className=" row mt-3 ">
-          {/* <div className="col-md-1"></div> */}
-
-          {/* <div className="col-md-6 justify-content-center"> */}
-          {/* <div className="row"> */}
-          {/* <div className="col-md-4 mt-3 col-sm-12">
+            {/* <div className="col-md-6 justify-content-center"> */}
+            {/* <div className="row"> */}
+            {/* <div className="col-md-4 mt-3 col-sm-12">
                 <button className="button-style" onClick={openFolder}>
                   Open Folder
                 </button>
               </div> */}
 
-          <div
-            className="col-md-1 mt-3 col-sm-12"
-            style={{ marginLeft: "420px" }}
-          >
-            <button className="button-style" onClick={fnCheckDxf}>
-              Check DXF
-            </button>
-          </div>
+            <div
+              className="col-md-1 mt-3 col-sm-12"
+              style={{ marginLeft: "420px" }}
+            >
+              <button className="button-style" onClick={fnCheckDxf}>
+                Check DXF
+              </button>
+            </div>
 
-          <div className="col-md-1 mt-3 col-sm-12">
-            <button className="button-style" onClick={fnCopyDxf}>
-              Copy DXF
-            </button>
-          </div>
-          {/* </div> */}
-          {/* </div> */}
+            <div className="col-md-1 mt-3 col-sm-12">
+              <button className="button-style" onClick={fnCopyDxf}>
+                Copy DXF
+              </button>
+            </div>
+            {/* </div> */}
+            {/* </div> */}
 
-          {/* <div className="col-md-5"></div> */}
-        </div>
+            {/* <div className="col-md-5"></div> */}
+          </div>
+        ) : null}
       </div>
 
       <AlertModal

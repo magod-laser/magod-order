@@ -1,11 +1,13 @@
 /** @format */
 
 import React, { useState } from "react";
-import {  useNavigate } from "react-router-dom";
-import { Table,} from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { Table } from "react-bootstrap";
 import { Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
-const {  postRequest } = require("../../../../api/apiinstance");
+import FolderFilesModal from "../../../../Combined Schedules_JobWork/FolderFilesModal";
+import OpenfolderFile from "./OpenfolderFile";
+const { postRequest } = require("../../../../api/apiinstance");
 const { endpoints } = require("../../../../api/constants");
 
 export default function FormHeader(props) {
@@ -17,6 +19,8 @@ export default function FormHeader(props) {
   const [fuploadClose, setFUploadClose] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [handleUploadMdl, sethandleUploadMdl] = useState(false);
+  const [openfileModal, setOpenFileModal] = useState(false);
+  const [files, setFiles] = useState([]);
 
   const {
     // OrderData,
@@ -33,38 +37,92 @@ export default function FormHeader(props) {
   } = props;
 
   const handleClick = async () => {
+    // console.log(JSON.parse(localStorage.getItem("LazerUser")));
+    const storedData = JSON.parse(localStorage.getItem("LazerUser"));
+    console.log("---", storedData.setupDetails[0].SetUpValue);
+
     let docNo = props.OrderData.Order_No;
 
     let Doctype = "Order";
     let mspath = process.env.REACT_APP_SERVER_FILES;
+    // let mspath = storedData.setupDetails[0].SetUpValue;
     // eslint-disable-next-line no-unused-vars
     let mpath = `${mspath}\\${docNo}\\DXF\\`;
 
-    // Popup to open the folder 
+    // Popup to open the folder
     setDxfFolderShow(true);
 
-    let destPath = `\\Wo\\` + docNo + "\\DXF\\";
+    // let destPath = `\\Wo\\` + docNo + "\\DXF\\";
+    let destPath = mpath;
     console.log("despath : ", destPath);
-    await postRequest(endpoints.getDwgFiles, { Doctype, docNo, destPath }, (fileslist) => {
-      console.log("fileslist : ", fileslist.files);
-      setBS_DxfFilesList(fileslist);
-    });
-
+    await postRequest(
+      endpoints.getDwgFiles,
+      { Doctype, docNo, destPath },
+      (fileslist) => {
+        console.log("fileslist : ", fileslist.files);
+        setBS_DxfFilesList(fileslist);
+      }
+    );
   };
+
+  console.log("props?.OrderData", props?.OrderData);
+  console.log("props?.OrderData?.Order_No", props?.OrderData?.Order_No);
+
+  const onClickOpenFolder = () => {
+    //  let Comb_Order_No = selectedRow.Order_No;
+    // let docNo = selectedRow.Order_No;
+    let docNo = props?.OrderData.Order_No;
+    console.log("docNo", docNo);
+
+    setOpenFileModal(true);
+    // let destPath =  process.env.REACT_APP_SERVER_FILES + `\\` + docNo + "\\" + selectedFolder + "\\"; //"\\DXF\\";
+    // let despath = process.env.REACT_APP_SERVER_FILES + `\\Wo\\` + docNo + "\\";
+    let despath = process.env.REACT_APP_SERVER_FILES + docNo + "\\";
+
+    postRequest(
+      endpoints.getFolders,
+      { docNo: docNo, despath },
+      (folderslist) => {
+        console.log("folderslist : ", folderslist);
+        setFiles(folderslist);
+      }
+    );
+
+    // setOpenFileModal(true);
+
+    // if (openFolder) {
+    //   // Prepare data to send in the POST request
+    //   const requestData = {
+    //     OrderNo: selectedRow?.Order_No,
+    //   };
+    //   // Send POST request to fetch files from the server
+    //   postRequest(endpoints.openFolder, { requestData }, (response) => {
+    //     setFiles(response);
+    //     setOpenFileModal(true);
+    //   });
+    // } else {
+    //   fileInputRef.current.click();
+    // }
+  };
+  console.log("setFiles", files);
 
   const handleCloseDwgFolder = () => setDxfFolderShow(false);
 
   const handleFileSelect = async (filenm) => {
     setSelectedFile(filenm);
 
-    await postRequest(endpoints.CheckDwgFileStatus, { docno: props.OrderData.Order_No, uploadfiles: filenm.name }, (res) => {
-      console.log(res);
-      if (res.status === "Locked") {
-        //toast.error("File is Locked by another User", { position: toast.POSITION.TOP_CENTER, autoClose: 1200 });
-        alert("File is Locked by another User");
-        return;
+    await postRequest(
+      endpoints.CheckDwgFileStatus,
+      { docno: props.OrderData.Order_No, uploadfiles: filenm.name },
+      (res) => {
+        console.log(res);
+        if (res.status === "Locked") {
+          //toast.error("File is Locked by another User", { position: toast.POSITION.TOP_CENTER, autoClose: 1200 });
+          alert("File is Locked by another User");
+          return;
+        }
       }
-    });
+    );
 
     let file = new Blob([filenm.fcontent], { type: "application/dxf" });
 
@@ -77,7 +135,7 @@ export default function FormHeader(props) {
     } else {
       element.download = filenm.name; // file.name;
     }
- 
+
     // Create a URL for the Blob and set it as the href attribute
     element.href = URL.createObjectURL(file);
     // Append the link to the body
@@ -87,21 +145,22 @@ export default function FormHeader(props) {
     element.click();
 
     handleDownload();
-
-  }
+  };
 
   const handleDownload = async () => {
-   // alert("Clicked on Order dxf download");
+    // alert("Clicked on Order dxf download");
     if (selectedFile) {
       try {
         // Create a Blob from the file content
-        const blob = new Blob([selectedFile.fcontent], { type: 'application/octet-stream' });
+        const blob = new Blob([selectedFile.fcontent], {
+          type: "application/octet-stream",
+        });
 
         // Create a URL for the Blob
         const url = window.URL.createObjectURL(blob);
 
         // Create an anchor tag to trigger the download
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = url;
         link.download = selectedFile.name; // File name for the downloaded file
 
@@ -117,41 +176,45 @@ export default function FormHeader(props) {
         let flocked = true;
         let docno = props.OrderData.Order_No;
 
-        await postRequest(endpoints.updateUploadFiles, { docno, uploadfiles: selectedFile.name, flocked }, (res) => {
-          console.log(res);
-          if (res.status === "Updated") {
-            setFUploadClose(true);
-            sethandleUploadMdl(false);
+        await postRequest(
+          endpoints.updateUploadFiles,
+          { docno, uploadfiles: selectedFile.name, flocked },
+          (res) => {
+            console.log(res);
+            if (res.status === "Updated") {
+              setFUploadClose(true);
+              sethandleUploadMdl(false);
+            }
           }
-        });
+        );
 
         sethandleUploadMdl(false);
       } catch (error) {
         console.error("Error during file download", error);
-      //  alert("An error occurred while saving the file to the local drive.");
+        //  alert("An error occurred while saving the file to the local drive.");
       }
     } else {
       alert("No file selected!");
     }
   };
 
-
   const handleUpload = () => {
     alert("Clicked on Order dxf upload");
     let docno = props.OrderData.Order_No;
     if (docno === "") {
-      toast.info("Order No Upload Files", { position: toast.POSITION.TOP_CENTER, autoClose: 1500 });
+      toast.info("Order No Upload Files", {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 1500,
+      });
       return;
     }
     alert("Upload Files");
     sethandleUploadMdl(true);
   };
 
-
-
   const getRightmostCharactersAfterDot = (str) => {
-    const parts = str.split('.');
-    return parts.length > 1 ? parts[parts.length - 1] : '';
+    const parts = str.split(".");
+    return parts.length > 1 ? parts[parts.length - 1] : "";
   };
 
   return (
@@ -175,7 +238,6 @@ export default function FormHeader(props) {
         <div className="col-md-4">
           <button
             className="button-style"
-           
             onClick={props.openRegisterOrder}
             disabled={
               props.isButtonDisabled ||
@@ -198,26 +260,26 @@ export default function FormHeader(props) {
           >
             Save
           </button>
-          
-          <button className="button-style" onClick={handleClick}>
+
+          {/* <button className="button-style" onClick={handleClick}> */}
+          <button className="button-style" onClick={onClickOpenFolder}>
             Open folder
           </button>
-         
+
           <button
             className="button-style "
-            
             onClick={() => {
               const orderNo = props.OrderData?.Order_No;
               const fromPath = props.fromPath;
               console.log("clicked close button");
-             
+
               const sharedState = {
                 Order_No: props.FabOrderNo,
                 Type: "Fabrication",
                 Cust_Code: props.Cust_Code,
               };
               console.log("sharedState", sharedState);
-              
+
               if (
                 (orderNo?.startsWith("6") || orderNo?.startsWith("7")) &&
                 (fromPath === "/Orders/Profile/ProfileOpenSchedule" ||
@@ -233,14 +295,13 @@ export default function FormHeader(props) {
                 // console.log("6,7--1");
                 navigate(-1);
                 // navigate("/Orders/Fabrication/FabricationOpenSchedule");
-              } else if (props.OrderData?.Order_No.startsWith('2')) {
+              } else if (props.OrderData?.Order_No.startsWith("2")) {
                 navigate("/Orders");
               } else {
                 // console.log("--/");
                 navigate("/"); // optional fallback
               }
             }}
-            
             style={{ float: "right" }}
           >
             Close
@@ -285,7 +346,6 @@ export default function FormHeader(props) {
                       </tr>
                     </thead>
                     <tbody className="tablebody">
-                      
                       {BS_dxfFilesList?.length > 0 ? (
                         BS_dxfFilesList.map((file, index) => (
                           <tr
@@ -343,8 +403,13 @@ export default function FormHeader(props) {
           </Modal>
         </div>
       </div>
-
-      
+      <OpenfolderFile
+        openfileModal={openfileModal}
+        setOpenFileModal={setOpenFileModal}
+        files={files}
+        setFiles={setFiles}
+        selectedRow={props?.OrderData?.Order_No}
+      />
     </>
   );
 }
