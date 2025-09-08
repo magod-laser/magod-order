@@ -11,6 +11,7 @@ logs
 .pnp.js
 logs/
 uploads/
+tempUploads/
 
 # testing
 /coverage

@@ -954,6 +954,7 @@ function ServiceOpenSchedule() {
                   responsedata: responsedata,
                   Type: Type,
                   DwgNameList: DwgNameList,
+                  rowselectTaskMaterial: rowselectTaskMaterial,
                 },
               });
             }
@@ -1748,20 +1749,17 @@ function ServiceOpenSchedule() {
             <button
               className="button-style"
               onClick={() =>
-                
                 console.log("Navigating with:", {
                   Order_No: formdata[0]?.Order_No,
                   Type,
                   from: location.pathname,
                 })
-                
               }
             >
               Close
             </button>
           </Link>
 
-         
           {/* <button
             className="button-style "
             // onClick={ NavigationToStepBack}
@@ -2203,7 +2201,6 @@ function ServiceOpenSchedule() {
               </Table>
             </div>
           </Tab>
-
           {/* Task and Material List */}
           <Tab eventKey="Task and Material List" title="Task and Material List">
             <div className="row">
@@ -2427,99 +2424,44 @@ function ServiceOpenSchedule() {
               </div>
             </div> */}
           </Tab>
-
-          {/* Suresh sir code */}
-          <Tab eventKey="Material Planner" title="Material Planner">
-            <div className="row mt-2">
-              <div className="col-md-2 col-sm-12">
-                <button className="button-style " onClick={fnSchCreateWS}>
-                  Create DXF WS
-                </button>
-              </div>
-
-              <div className="col-md-2 col-sm-12">
-                <button className="button-style " onClick={fnSchCreatePartsWS}>
-                  Create Parts WS
-                </button>
-              </div>
-
-              <div className="col-md-2 col-sm-12">
-                <button className="button-style " onClick={fnReadSchWS}>
-                  Read WS
-                </button>
-              </div>
-
-              {/*<div className="col-md-2 col-sm-12">
-                <button className="button-style " disabled>Print Estimate</button>
-              </div> */}
-            </div>
-
-            <div className="row mt-2">
-              <div className="col-md-7 col-sm-12">
-                <div
-                  className=""
-                  style={{
-                    overflowX: "scroll",
-                    overflowY: "scroll",
-                    height: "200px",
-                  }}
-                >
-                  <Table
-                    striped
-                    className="table-data border"
-                    style={{ border: "1px" }}
-                  >
-                    <thead className="tableHeaderBGColor">
-                      <tr>
-                        <th style={{ whiteSpace: "nowrap" }}>Task No</th>
-                        <th>Material</th>
-                        <th>Source</th>
-                        <th>Operation</th>
-                        <th>Dwgs</th>
-                        <th style={{ whiteSpace: "nowrap" }}>Total Parts</th>
-                        <th style={{ whiteSpace: "nowrap" }}>Nc Task Id</th>
-                        {/* <th style={{ whiteSpace: "nowrap" }}>Task No</th> */}
-                        <th style={{ whiteSpace: "nowrap" }}>Schedule ID</th>
-                      </tr>
-                    </thead>
-
-                    <tbody className="tablebody">
-                      {taskdata.map((item, id) => {
-                        return (
-                          <tr
-                            className=""
-                            style={{
-                              height: "30px",
-                              backgroundColor:
-                                selectedTaskId === id ? "#5d88fc" : "",
-                              cursor: "pointer",
-                            }}
-                            id={id}
-                            onClick={() => selectedTaskrow(item, id)}
-                          >
-                            <td>{item.TaskNo}</td>
-                            <td>{item.Mtrl_Code}</td>
-                            <td>{item.CustMtrl || item.Mtrl_Source}</td>
-                            <td>{item.Operation}</td>
-                            <td>{item.NoOfDwgs || item.Dwgs}</td>
-                            <td>{item.TotalParts || item.SumQty}</td>
-                            <td>{item.NcTaskId}</td>
-                            {/* <td>{item.TaskNo}</td> */}
-                            <td>{item.ScheduleID || item.ScheduleId}</td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </Table>
+          {/* ss code */}
+          {Type === "Profile" ? (
+            <Tab eventKey="Material Planner" title="Material Planner">
+              <div className="row mt-2">
+                <div className="col-md-2 col-sm-12">
+                  <button className="button-style " onClick={fnSchCreateWS}>
+                    Create DXF WS
+                  </button>
                 </div>
 
-                <div className="row mt-2">
+                <div className="col-md-2 col-sm-12">
+                  <button
+                    className="button-style "
+                    onClick={fnSchCreatePartsWS}
+                  >
+                    Create Parts WS
+                  </button>
+                </div>
+
+                <div className="col-md-2 col-sm-12">
+                  <button className="button-style " onClick={fnReadSchWS}>
+                    Read WS
+                  </button>
+                </div>
+
+                {/*<div className="col-md-2 col-sm-12">
+                <button className="button-style " disabled>Print Estimate</button>
+              </div> */}
+              </div>
+
+              <div className="row mt-2">
+                <div className="col-md-7 col-sm-12">
                   <div
-                    className="col-md-6 col-sm-12"
+                    className=""
                     style={{
                       overflowX: "scroll",
                       overflowY: "scroll",
-                      height: "190px",
+                      height: "200px",
                     }}
                   >
                     <Table
@@ -2529,155 +2471,219 @@ function ServiceOpenSchedule() {
                     >
                       <thead className="tableHeaderBGColor">
                         <tr>
-                          <th>Length(mm)</th>
-                          <th>Width(mm)</th>
-                          <th>Quantity</th>
-                          <th>ID</th>
-                          {/*<th style={{ whiteSpace: "nowrap" }}>Nc Task Id</th>
+                          <th style={{ whiteSpace: "nowrap" }}>Task No</th>
+                          <th>Material</th>
+                          <th>Source</th>
+                          <th>Operation</th>
+                          <th>Dwgs</th>
+                          <th style={{ whiteSpace: "nowrap" }}>Total Parts</th>
+                          <th style={{ whiteSpace: "nowrap" }}>Nc Task Id</th>
+                          {/* <th style={{ whiteSpace: "nowrap" }}>Task No</th> */}
+                          <th style={{ whiteSpace: "nowrap" }}>Schedule ID</th>
+                        </tr>
+                      </thead>
+
+                      <tbody className="tablebody">
+                        {taskdata.map((item, id) => {
+                          return (
+                            <tr
+                              className=""
+                              style={{
+                                height: "30px",
+                                backgroundColor:
+                                  selectedTaskId === id ? "#5d88fc" : "",
+                                cursor: "pointer",
+                              }}
+                              id={id}
+                              onClick={() => selectedTaskrow(item, id)}
+                            >
+                              <td>{item.TaskNo}</td>
+                              <td>{item.Mtrl_Code}</td>
+                              <td>{item.CustMtrl || item.Mtrl_Source}</td>
+                              <td>{item.Operation}</td>
+                              <td>{item.NoOfDwgs || item.Dwgs}</td>
+                              <td>{item.TotalParts || item.SumQty}</td>
+                              <td>{item.NcTaskId}</td>
+                              {/* <td>{item.TaskNo}</td> */}
+                              <td>{item.ScheduleID || item.ScheduleId}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </Table>
+                  </div>
+
+                  <div className="row mt-2">
+                    <div
+                      className="col-md-6 col-sm-12"
+                      style={{
+                        overflowX: "scroll",
+                        overflowY: "scroll",
+                        height: "190px",
+                      }}
+                    >
+                      <Table
+                        striped
+                        className="table-data border"
+                        style={{ border: "1px" }}
+                      >
+                        <thead className="tableHeaderBGColor">
+                          <tr>
+                            <th>Length(mm)</th>
+                            <th>Width(mm)</th>
+                            <th>Quantity</th>
+                            <th>ID</th>
+                            {/*<th style={{ whiteSpace: "nowrap" }}>Nc Task Id</th>
                           <th style={{ whiteSpace: "nowrap" }}>Task No</th>
                           <th>Length</th>
                           <th>Width</th>
                           <th>Quantity</th>
                           <th style={{ whiteSpace: "nowrap" }}>Limit To Qty</th>*/}
-                        </tr>
-                      </thead>
-
-                      <tbody className="tablebody">
-                        {mtrlDetails && mtrlDetails.length > 0 ? (
-                          mtrlDetails.map((itm, id) => {
-                            return (
-                              <tr
-                                style={{
-                                  height: "35px",
-                                  backgroundColor:
-                                    selectedMtrlDimenId === id ? "#5d88fc" : "",
-                                  cursor: "pointer",
-                                }}
-                                id={id}
-                                onClick={() => selectedMtrlDimenrow(itm, id)}
-                              >
-                                <td>{itm.Length}</td>
-                                <td>{itm.Width}</td>
-                                <td>{itm.Quantity}</td>
-                                <td>{itm.ID}</td>
-                              </tr>
-                            );
-                          })
-                        ) : (
-                          <tr>
-                            <td colSpan="3">No data available</td>
                           </tr>
-                        )}
-                      </tbody>
-                    </Table>
-                  </div>
+                        </thead>
 
-                  <div className="col-md-6 col-sm-12">
-                    <Form style={{ width: "300px" }}>
-                      <div className="ip-box form-bg">
-                        <h6>
-                          <b>Task No: {strtaskno}</b>
-                        </h6>
-                        <div className="col-md-12 col-sm-12">
-                          <div className="row">
-                            <div className="col-md-5 col-sm-12">
-                              <label className="form-label mt-2">Length</label>
+                        <tbody className="tablebody">
+                          {mtrlDetails && mtrlDetails.length > 0 ? (
+                            mtrlDetails.map((itm, id) => {
+                              return (
+                                <tr
+                                  style={{
+                                    height: "35px",
+                                    backgroundColor:
+                                      selectedMtrlDimenId === id
+                                        ? "#5d88fc"
+                                        : "",
+                                    cursor: "pointer",
+                                  }}
+                                  id={id}
+                                  onClick={() => selectedMtrlDimenrow(itm, id)}
+                                >
+                                  <td>{itm.Length}</td>
+                                  <td>{itm.Width}</td>
+                                  <td>{itm.Quantity}</td>
+                                  <td>{itm.ID}</td>
+                                </tr>
+                              );
+                            })
+                          ) : (
+                            <tr>
+                              <td colSpan="3">No data available</td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </Table>
+                    </div>
+
+                    <div className="col-md-6 col-sm-12">
+                      <Form style={{ width: "300px" }}>
+                        <div className="ip-box form-bg">
+                          <h6>
+                            <b>Task No: {strtaskno}</b>
+                          </h6>
+                          <div className="col-md-12 col-sm-12">
+                            <div className="row">
+                              <div className="col-md-5 col-sm-12">
+                                <label className="form-label mt-2">
+                                  Length
+                                </label>
+                              </div>
+                              <div className="col-md-6 col-sm-12">
+                                <input
+                                  className="mt-3" // in-fields"
+                                  style={{ fontSize: "14px" }}
+                                  type="text"
+                                  value={mtrlLength}
+                                />
+                                {/* onChange={(e) => setMtrlLength(e.target.value)} */}
+                              </div>
                             </div>
-                            <div className="col-md-6 col-sm-12">
-                              <input
-                                className="mt-3" // in-fields"
-                                style={{ fontSize: "14px" }}
-                                type="text"
-                                value={mtrlLength}
-                              />
-                              {/* onChange={(e) => setMtrlLength(e.target.value)} */}
+                            <div className="row">
+                              <div className="col-md-5 col-sm-12">
+                                <label className="form-label mt-3">Width</label>
+                              </div>
+                              <div className="col-md-6 col-sm-12">
+                                <input
+                                  className="mt-3" // in-fields"
+                                  style={{ fontSize: "14px" }}
+                                  type="text"
+                                  value={mtrlwidth}
+                                />
+                                {/* onChange={(e) => setMtrlWidth(e.target.value)} */}
+                              </div>
                             </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-md-5 col-sm-12">
-                              <label className="form-label mt-3">Width</label>
+                            <div className="row">
+                              <div className="col-md-5 col-sm-12">
+                                <label className="form-label mt-3">
+                                  Quantity
+                                </label>
+                              </div>
+                              <div className="col-md-6 col-sm-12">
+                                <input
+                                  className="mt-3" // in-fields"
+                                  style={{ fontSize: "14px" }}
+                                  type="text"
+                                  value={mtrlquantity}
+                                />
+                                {/* onChange={(e) => setMtrlQuantity(e.target.value)} */}
+                              </div>
                             </div>
-                            <div className="col-md-6 col-sm-12">
-                              <input
-                                className="mt-3" // in-fields"
-                                style={{ fontSize: "14px" }}
-                                type="text"
-                                value={mtrlwidth}
-                              />
-                              {/* onChange={(e) => setMtrlWidth(e.target.value)} */}
-                            </div>
-                          </div>
-                          <div className="row">
-                            <div className="col-md-5 col-sm-12">
-                              <label className="form-label mt-3">
-                                Quantity
-                              </label>
-                            </div>
-                            <div className="col-md-6 col-sm-12">
-                              <input
-                                className="mt-3" // in-fields"
-                                style={{ fontSize: "14px" }}
-                                type="text"
-                                value={mtrlquantity}
-                              />
-                              {/* onChange={(e) => setMtrlQuantity(e.target.value)} */}
-                            </div>
-                          </div>
-                          {/* <div className="col-md-5 col-sm-12">
+                            {/* <div className="col-md-5 col-sm-12">
                            
                            
                             <input className="mt-3 mb-5 in-fields" type="text" />
                           </div> */}
+                          </div>
                         </div>
-                      </div>
-                    </Form>
+                      </Form>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div
-                className="col-md-5 col-sm-12"
-                style={{ overflowX: "scroll" }}
-              >
-                <Table
-                  striped
-                  className="table-data border"
-                  style={{ border: "1px" }}
+                <div
+                  className="col-md-5 col-sm-12"
+                  style={{ overflowX: "scroll" }}
                 >
-                  <thead className="tableHeaderBGColor">
-                    <tr>
-                      <th>Dwg Part Name</th>
-                      <th>Quantity</th>
-                      <th>Nested</th>
-                      <th>Produced</th>
-                      <th>Cleared</th>
-                    </tr>
-                  </thead>
-
-                  <tbody style={{ textAlign: "center" }}>
-                    {partDetails1 && partDetails1.length > 0 ? (
-                      partDetails1.map((itm, index) => {
-                        return (
-                          <tr>
-                            <td style={{ textAlign: "left" }}>{itm.DwgName}</td>
-                            <td>{itm.QtyToNest}</td>
-                            <td>{itm.QtyNested}</td>
-                            <td>{itm.QtyProduced}</td>
-                            <td>{itm.QtyCleared}</td>
-                          </tr>
-                        );
-                      })
-                    ) : (
+                  <Table
+                    striped
+                    className="table-data border"
+                    style={{ border: "1px" }}
+                  >
+                    <thead className="tableHeaderBGColor">
                       <tr>
-                        <td colSpan="5">No data available</td>
+                        <th>Dwg Part Name</th>
+                        <th>Quantity</th>
+                        <th>Nested</th>
+                        <th>Produced</th>
+                        <th>Cleared</th>
                       </tr>
-                    )}
-                  </tbody>
-                </Table>
-              </div>
-            </div>
-          </Tab>
+                    </thead>
 
+                    <tbody style={{ textAlign: "center" }}>
+                      {partDetails1 && partDetails1.length > 0 ? (
+                        partDetails1.map((itm, index) => {
+                          return (
+                            <tr>
+                              <td style={{ textAlign: "left" }}>
+                                {itm.DwgName}
+                              </td>
+                              <td>{itm.QtyToNest}</td>
+                              <td>{itm.QtyNested}</td>
+                              <td>{itm.QtyProduced}</td>
+                              <td>{itm.QtyCleared}</td>
+                            </tr>
+                          );
+                        })
+                      ) : (
+                        <tr>
+                          <td colSpan="5">No data available</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </Table>
+                </div>
+              </div>
+            </Tab>
+          ) : null}
           <Tab eventKey="Packing Notes/Invoices" title="Packing Notes/Invoices">
             <PackingNoteAndInvoice
               PNAndInvRegisterData={PNAndInvRegisterData}

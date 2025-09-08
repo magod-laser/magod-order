@@ -26,7 +26,6 @@ const upload = multer({ storage: storage });
 
 // This API is for uploaddxf
 fileRouter.post("/uploaddxf", upload.array("files"), function (req, res, next) {
-  
   console.log(" Upload DXF ");
   console.log(req.files);
   res.send({ status: "success" });
@@ -47,21 +46,131 @@ fileRouter.post("/getdxf", async (req, res, next) => {
   }
 });
 
+//upload files
+// const fileUpload = multer({ dest: "tempUploads/" });
+const fileUpload = multer({ dest: "tempUploads/" });
+// POST /upload - expects 'file' and 'folderPath' (in form-data)
+// fileRouter.post("/allfileupload", fileUpload.single("file"), (req, res) => {
+//   console.log("BODY:", req.body.folderPath); // Should contain 'folderPath'
+//   console.log("FILE:", req.file); // Should contain uploaded file info
+
+//   if (!req.file || !req.body.folderPath) {
+//     return res.status(400).json({ error: "Missing file or folderPath" });
+//   }
+
+//   const folderPath = path.resolve("uploads", req.body.folderPath);
+//   fs.mkdirSync(folderPath, { recursive: true });
+
+//   const destination = path.join(folderPath, req.file.originalname);
+
+//   console.log("Uploaded file:", req.file);
+//   console.log("Destination:", destination);
+//   fs.rename(req.file.path, destination, (err) => {
+//     if (err) return res.status(500).json({ error: "Failed to save file" });
+
+//     res.json({ message: "File uploaded successfully!", path: destination });
+//   });
+// });
+fileRouter.post("/allfileupload", fileUpload.single("file"), (req, res) => {
+  try {
+    if (!req.file || !req.body.folderPath) {
+      return res.status(400).json({ error: "Missing file or folderPath" });
+    }
+
+    const folderPath = path.resolve(req.body.folderPath.trim());
+    fs.mkdirSync(folderPath, { recursive: true });
+
+    const destination = path.join(folderPath, req.file.originalname);
+
+    console.log("Copying from:", req.file.path);
+    console.log("To destination:", destination);
+
+    // Copy + delete for cross-device support
+    fs.copyFile(req.file.path, destination, (err) => {
+      if (err) {
+        console.error("Copy error:", err);
+        return res.status(500).json({ error: "Failed to save file" });
+      }
+
+      fs.unlink(req.file.path, (unlinkErr) => {
+        if (unlinkErr) {
+          console.warn("Could not delete temp file:", unlinkErr);
+        }
+        res.json({
+          message: "File uploaded successfully!",
+          fileName: req.file.originalname,
+          savedPath: destination,
+        });
+      });
+    });
+  } catch (err) {
+    console.error("Upload handler error:", err);
+    res.status(500).json({ error: "Unexpected server error" });
+  }
+});
+
+fileRouter.post("/deletedwgfile", async (req, res) => {
+  console.log("deletedwgfile");
+  let filedetails = [];
+
+  try {
+    const filepath = req.body.filepath;
+    console.log("filepath :", filepath);
+
+    // Check if path exists
+    if (!fs.existsSync(filepath)) {
+      return res.status(404).json({ error: "File or directory not found" });
+    }
+
+    // Check if it's a file
+    const stat = fs.statSync(filepath);
+
+    if (stat.isFile()) {
+      // ✅ Delete the file
+      fs.unlinkSync(filepath);
+      return res.status(200).json({ message: "File deleted successfully" });
+    }
+
+    if (stat.isDirectory()) {
+      // ✅ List files in directory
+      const files = fs
+        .readdirSync(filepath, { withFileTypes: true })
+        .filter((dirent) => dirent.isFile())
+        .map((dirent) => {
+          const filePath = path.join(filepath, dirent.name);
+          const stats = fs.statSync(filePath);
+          return {
+            name: dirent.name,
+            size: (stats.size / 1024).toFixed(2) + " KB",
+            fcontent: fs.readFileSync(filePath, "utf8"),
+          };
+        });
+
+      // return res.json(files);
+      res.send(files, { status: "Deleted" });
+    }
+
+    res.status(400).json({ error: "Invalid path type" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 // This API is for getfoldernames
 fileRouter.post("/getfoldernames", async (req, res) => {
   try {
-    
     const quoteno = req.body.docNo;
+    console.log("quoteno", quoteno);
+    console.log("req.body.docNo", req.body.docNo);
 
-    let filepath = process.env.FILE_SERVER_PATH + "\\WO\\"; 
+    let filepath = process.env.FILE_SERVER_PATH + "\\WO\\";
     console.log("filepath :", filepath);
 
-    const directoryPath = filepath + quoteno + "\\"; 
+    const directoryPath = filepath + quoteno + "\\";
     console.log("directoryPath :", directoryPath);
-   
 
     const files = fs.readdirSync(directoryPath).map((file) => {
-      
       return {
         name: file,
         isDirectory: fs.statSync(directoryPath).isDirectory(),
@@ -71,12 +180,14 @@ fileRouter.post("/getfoldernames", async (req, res) => {
     const folders = files
       .filter((file) => file.isDirectory)
       .map((folder) => folder.name);
-    console.log("Folders:", folders); 
+    console.log("Folders:", folders);
     res.json(folders);
   } catch (error) {
     console.log(error);
   }
 });
+
+
 
 // This API is for orddxf
 fileRouter.get("/orddxf", async (req, res, next) => {
@@ -91,7 +202,7 @@ fileRouter.get("/orddxf", async (req, res, next) => {
     const path = require("path");
     let basefolder = process.env.FILE_SERVER_PATH;
     const filePath = path.join(basefolder, srcPath, dxfName);
-   
+
     let content = fsSync.readFileSync(filePath);
     if (!content) {
       throw createError(404, "DXF not found");
@@ -265,15 +376,14 @@ fileRouter.post("/compareCustDwg", async (req, res, next) => {
 
 // This API is for copying DXF files to a specified destination
 fileRouter.post("/copydxf", async (req, res, next) => {
- 
   try {
     let files = req.body.Dwg;
     let destination = req.body.destPath;
-    
+
     let srcfolder = "uploads\\" + files;
     let destdir = basefolder + destination;
     let destfolder = path.join(destdir, files);
-    
+
     fsSync.copyFile(srcfolder, destfolder, (err) => {
       if (err) {
         console.error("Error during file copy:", err);
@@ -283,8 +393,6 @@ fileRouter.post("/copydxf", async (req, res, next) => {
         res.send({ status: "success" });
       }
     });
-
-    
   } catch (error) {
     console.log(error);
     next(error);
@@ -293,7 +401,6 @@ fileRouter.post("/copydxf", async (req, res, next) => {
 
 // Order Copy Dxf File
 fileRouter.post("/ordcopydxf", async (req, res, next) => {
-
   try {
     let files = req.body.orderdwg; //OrdrDetailsData.DwgName; //custdwgname;
 
@@ -318,7 +425,6 @@ fileRouter.post("/ordcopydxf", async (req, res, next) => {
       });
     }
     res.send({ status: "success" });
-   
   } catch (error) {
     next(error);
   }
@@ -326,12 +432,9 @@ fileRouter.post("/ordcopydxf", async (req, res, next) => {
 
 // This API is for getting folder file names
 fileRouter.post("/getfolderfilenames", async (req, res) => {
-  
   let filedetails = [];
   try {
-    
     let strpath = req.body.destPath;
-
 
     const directoryPath = strpath; // '/path/to/your/directory';
 
@@ -350,8 +453,8 @@ fileRouter.post("/getfolderfilenames", async (req, res) => {
     // Step 3: Read each file's content (optional)
     files.forEach((file) => {
       const filePath = directoryPath + file.name;
-      const content = fsSync.readFileSync(filePath, "utf8"); 
-      
+      const content = fsSync.readFileSync(filePath, "utf8");
+
       filedetails = [
         ...filedetails,
         {
@@ -533,7 +636,6 @@ const queryDatabase = (query) => {
 
 // This API is for  checking the import old order dxf files
 fileRouter.post(`/checkdxffilesimportoldorder`, async (req, res, next) => {
-
   let Old_Order_No = req.body.Old_Order_No;
   let New_Order_No = req.body.New_Order_No;
   let srcfilepth = path.join(
@@ -625,8 +727,6 @@ fileRouter.post(`/checkdxffilesimportoldorder`, async (req, res, next) => {
 
 // This API is for  orddxffilesimporttocombsch
 fileRouter.post(`/orddxffilesimporttocombsch`, async (req, res, next) => {
-  
-
   let Doctype = req.body.Doctype;
   let Old_Order_No = req.body.docNo;
   let New_Order_No = req.body.newdocNo;
@@ -642,7 +742,7 @@ fileRouter.post(`/orddxffilesimporttocombsch`, async (req, res, next) => {
     New_Order_No,
     "//DXF//"
   );
-  
+
   try {
     const sourceFolder = srcfilepth;
     const destinationFolder = dstfilepth;
@@ -687,7 +787,6 @@ fileRouter.post(`/orddxffilesimporttocombsch`, async (req, res, next) => {
 
 //  This API is for Combined Order Copy Dxf File
 fileRouter.post("/cmbordcopydxf", async (req, res, next) => {
-
   try {
     let SourceOrdno = req.body.DwgDatas;
     let DestinationOrdno = req.body.Comb_Order_No;
@@ -712,18 +811,26 @@ fileRouter.post("/cmbordcopydxf", async (req, res, next) => {
       //   SourceOrdno[i].DwgName_Details
       // );
 
-             let sourcefld = ''; // path.join(process.env.FILE_SERVER_PATH, "\\WO\\", SourceOrdno[i].order_no,  "\\DXF\\", SourceOrdno[i].DwgName_Details);
+      let sourcefld = ""; // path.join(process.env.FILE_SERVER_PATH, "\\WO\\", SourceOrdno[i].order_no,  "\\DXF\\", SourceOrdno[i].DwgName_Details);
 
+      if (SourceOrdno[i].DwgName_Details != undefined) {
+        sourcefld = path.join(
+          process.env.FILE_SERVER_PATH,
+          "\\WO\\",
+          SourceOrdno[i].order_no,
+          "\\DXF\\",
+          SourceOrdno[i].DwgName_Details
+        );
+      } else {
+        sourcefld = path.join(
+          process.env.FILE_SERVER_PATH,
+          "\\WO\\",
+          SourceOrdno[i].order_no,
+          "\\DXF\\",
+          SourceOrdno[i].DwgName
+        );
+      }
 
-if(SourceOrdno[i].DwgName_Details != undefined){
-        sourcefld = path.join(process.env.FILE_SERVER_PATH, "\\WO\\", SourceOrdno[i].order_no,  "\\DXF\\", SourceOrdno[i].DwgName_Details);
-
-}
-else {
-    sourcefld = path.join(process.env.FILE_SERVER_PATH, "\\WO\\", SourceOrdno[i].order_no,  "\\DXF\\", SourceOrdno[i].DwgName);
-
-}
-      
       let destinationfld = path.join(
         process.env.FILE_SERVER_PATH,
         "\\WO\\",
