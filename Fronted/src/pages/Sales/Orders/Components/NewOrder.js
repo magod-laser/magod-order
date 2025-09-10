@@ -5,7 +5,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Form } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { useNavigate } from "react-router-dom";
-import { toast  } from "react-toastify";
+import { toast } from "react-toastify";
 import AlertModal from "./Components/Alert";
 import OkayModal from "../../../components/OkayModal";
 const { postRequest } = require("../../../api/apiinstance");
@@ -67,8 +67,6 @@ function NewOrder(props) {
     // This ensures the Import Drawing modal starts fresh without any retained values
     localStorage.removeItem("importDwgModalValues");
     // console.log("123",JSON.parse(localStorage.getItem("LazerUser")));
-  
-    
 
     let data = JSON.parse(localStorage.getItem("LazerUser"));
     setuserName(data?.data?.Name);
@@ -111,34 +109,34 @@ function NewOrder(props) {
       );
     }
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     toggleSelectDisabled();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isChecked]);
 
-   const [UnitName, setUnitName] = useState();
+  const [UnitName, setUnitName] = useState();
 
-   useEffect(() => {
-     const storedData = localStorage.getItem("userData");
+  useEffect(() => {
+    const storedData = localStorage.getItem("userData");
 
-     if (storedData) {
-       try {
-         const parsedData = JSON.parse(storedData);
-         const AppunitName = parsedData.UnitName;
+    if (storedData) {
+      try {
+        const parsedData = JSON.parse(storedData);
+        const AppunitName = parsedData.UnitName;
 
-         if (AppunitName) {
-           setUnitName(AppunitName);
-         }
-       } catch (err) {
-         console.error("Error parsing userData from localStorage:", err);
-       }
-     } else {
-       console.log("No userData in localStorage.");
-     }
-   }, []);
+        if (AppunitName) {
+          setUnitName(AppunitName);
+        }
+      } catch (err) {
+        console.error("Error parsing userData from localStorage:", err);
+      }
+    } else {
+      console.log("No userData in localStorage.");
+    }
+  }, []);
   // alert modals for register and save
   // eslint-disable-next-line no-unused-vars
   const openModal = (e) => {
@@ -164,6 +162,7 @@ function NewOrder(props) {
     selectedqtnno = input;
   };
 
+  const [custStateId, setcustStateId] = useState("");
   let selectCust = async (e) => {
     let cust;
     // console.log("custdata.length", custdata.length);
@@ -174,6 +173,9 @@ function NewOrder(props) {
         break;
       }
     }
+    console.log("cust?.StateId", cust?.StateId);
+    setcustStateId(cust?.StateId);
+
     // console.log("cust", cust);
 
     setCustCode(cust.Cust_Code);
@@ -197,8 +199,14 @@ function NewOrder(props) {
         document.getElementById("formPaymentTerms").value = cust.CreditTerms;
         document.getElementById("formBillingAddress").value = cust.Address;
         // document.getElementById("formGSTNNo").value = cust?.GSTNo;
-        if (cust?.StateId === "00" || cust?.StateId === 0) {
-          toast.warning("Please update StateId in CustomerInfo.");
+        if (
+          cust?.StateId === "00" ||
+          cust?.StateId === 0 ||
+          cust?.StateId === ""
+        ) {
+          // toast.warning("Please update StateId in CustomerInfo.");
+          // toast.warning("Please update StateId in CustomerInfo.");
+          // return;
         } else if (cust?.GSTNo) {
           document.getElementById("formGSTNNo").value = cust.GSTNo;
         } else {
@@ -224,6 +232,8 @@ function NewOrder(props) {
   // console.log("selectedOrderType", selectedOrderType);
   const [isGenerating, setIsGenerating] = useState(false);
   async function SaveOrder(e) {
+    
+
     if (e) {
       e.preventDefault();
       // toast.error("Event", e);
@@ -248,6 +258,11 @@ function NewOrder(props) {
       alert("Data too long for Special_Instruction field, Data not Saved..");
       return;
     }
+    else if (custStateId === "00" || custStateId === 0 || custStateId === "") {
+      alert("Please update StateId in CustomerInfo");
+      return;
+    }
+
     // Order_Type = "complete"
     // Type = "Service"
     // console.log("Type", e.target.elements?.formOrderType.value);
@@ -298,7 +313,7 @@ function NewOrder(props) {
       deliveryModeSelectRef?.current.reportValidity();
     }
     // Unit name
-    
+
     await postRequest(
       endpoints.saveCreateOrder,
       {
@@ -327,7 +342,7 @@ function NewOrder(props) {
       },
       async (resp) => {
         // console.log("resp---000",resp);
-        
+
         setOrderno(resp.orderno);
         // postRequest(endpoints.getCustomerDets, { CustCode }, (custdata) => {
         //   //Console.log(custdata[0]["Cust_name"]
@@ -469,7 +484,13 @@ function NewOrder(props) {
                 ? "button-style"
                 : "button-style button-disabled"
             }
-            disabled={!purchaseorder || isGenerating}
+            disabled={
+              !purchaseorder ||
+              isGenerating 
+              // custStateId === "00" ||
+              // custStateId === 0 ||
+              // custStateId === ""
+            }
           >
             Save Order
           </button>
