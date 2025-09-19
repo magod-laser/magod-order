@@ -122,7 +122,7 @@ import { OrderDetailsProvider } from "./context/OrderDetailsContext";
 
 function App() {
 	return (
-    <BrowserRouter>
+    <BrowserRouter basename="/orders">
       {/* <MenuProvider> */}
       <OrderDetailsProvider>
         <ScheduleDataProvider>
